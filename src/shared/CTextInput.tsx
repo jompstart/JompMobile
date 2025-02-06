@@ -1,38 +1,83 @@
-import {StyleSheet, Platform, TextInput, TextInputProps} from 'react-native';
-import React from 'react';
-import {size} from '../config/size';
-import {colors} from '../constants/colors';
-import {TextStyle} from 'react-native';
+import {
+  StyleSheet,
+  Platform,
+  View,
+  TextInput,
+  TextInputProps,
+} from 'react-native';
+import React, { ReactNode } from 'react';
+import { size } from '../config/size';
+import { colors } from '../constants/colors';
+import { TextStyle } from 'react-native';
+import CText from './CText';
 
 interface CTextInputProps extends TextInputProps {
   style?: TextStyle;
   showWarning?: boolean;
+  rightIcon?: ReactNode;
+  title?: string;
 }
 
 const CTextInput: React.FC<CTextInputProps> = ({
   style,
   showWarning,
+  rightIcon,
+  title,
   ...props
 }) => {
   return (
-    <TextInput
-      {...props}
-      cursorColor={'#F5F7FF'}
-      placeholderTextColor={'#5A5A5A'}
-      style={[
-        styles.input,
-        style,
+    <View
+      style={{
+        gap: size.getHeightSize(8),
+      }}
+    >
+      {title && (
+        <CText
+          fontSize={14}
+          lineHeight={19.6}
+          style={{
+            letterSpacing: size.getWidthSize(0.2),
+          }}
+          fontFamily="semibold"
+          color="secondaryBlack"
+        >
+          {title}
+        </CText>
+      )}
+      <View
+        style={{
+          borderColor: '#21212130',
+          borderWidth: size.getHeightSize(1),
+          backgroundColor: colors.white(),
+          borderRadius: size.getHeightSize(8),
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: size.getWidthSize(8),
+          paddingHorizontal: size.getWidthSize(16),
+        }}
+      >
+        <TextInput
+          numberOfLines={1}
+          {...props}
+          cursorColor={'#F5F7FF'}
+          placeholderTextColor={'#61616150'}
+          style={[
+            styles.input,
+            style,
 
-        {
-          paddingVertical:
-            Platform.OS === 'ios'
-              ? size.getHeightSize(17.5)
-              : size.getHeightSize(17.5),
-          color: style?.color ? style?.color : colors.white(),
-        },
-        showWarning && {borderColor: colors.warningColor(), borderWidth: 1},
-      ]}
-    />
+            {
+              paddingVertical:
+                Platform.OS === 'ios'
+                  ? size.getHeightSize(14.5)
+                  : size.getHeightSize(10.5),
+              color: style?.color ? style?.color : colors.black(),
+            },
+            // showWarning && {borderColor: colors.warningColor(), borderWidth: 1},
+          ]}
+        />
+        {rightIcon}
+      </View>
+    </View>
   );
 };
 
@@ -40,12 +85,11 @@ export default CTextInput;
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#2B2B2F',
-    borderRadius: size.getHeightSize(26),
     // paddingVertical: size.getHeightSize(17.5),
-    paddingHorizontal: size.getWidthSize(16),
-    fontSize: size.fontSize(12),
-    lineHeight: size.getHeightSize(15),
-    fontFamily: 'PlusJakartaSans-Medium',
+
+    fontSize: size.fontSize(16),
+    // lineHeight: size.getHeightSize(22.4),
+    fontFamily: 'AvenirLTStd-Medium',
+    flex: 1,
   },
 });

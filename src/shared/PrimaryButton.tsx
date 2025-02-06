@@ -1,28 +1,50 @@
-import {StyleSheet, Pressable, View, ViewProps, ViewStyle} from 'react-native';
+import {
+  StyleSheet,
+  Pressable,
+  View,
+  ViewProps,
+  ViewStyle,
+} from 'react-native';
 import React from 'react';
-import {colors} from '../constants/colors';
-import {size} from '../config/size';
+import { colors } from '../constants/colors';
+import { size } from '../config/size';
 import CText from './CText';
-import LinearGradient from 'react-native-linear-gradient';
-import MaskedView from '@react-native-community/masked-view';
+
 interface Props {
   onPress?: () => void;
   disabled?: boolean;
   label: string;
   style?: ViewStyle;
+  opacity?: string;
+  width?: string;
 }
-const PrimaryButton = ({onPress, disabled, label, style}: Props) => {
+const PrimaryButton = ({
+  onPress,
+  disabled,
+  label,
+  style,
+  opacity,
+  width,
+}: Props) => {
   return (
     <Pressable
       disabled={disabled}
       onPress={() => onPress?.()}
-      style={[styles.pressable, style]}>
+      style={[
+        styles.pressable,
+        style,
+        {
+          backgroundColor: colors.primary(opacity),
+        },
+      ]}
+    >
       <CText
-        lineHeight={22.4}
-        style={{textAlign: 'center'}}
-        fontSize={13}
+        lineHeight={19.2}
+        style={{ textAlign: 'center' }}
+        fontSize={16}
         fontFamily="bold"
-        color="primaryButtonTextColor">
+        color={opacity ? 'primaryColor' : 'white'}
+      >
         {label}
       </CText>
     </Pressable>
@@ -33,11 +55,9 @@ export default PrimaryButton;
 
 const styles = StyleSheet.create({
   pressable: {
-    paddingVertical: size.getHeightSize(12),
+    paddingVertical: size.getHeightSize(13),
     borderRadius: size.getHeightSize(24),
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.white(),
-    width: '100%',
   },
 });

@@ -4,25 +4,49 @@
     "slug": "JompStart",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/pngs/appLogo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
+    "android": {},
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/AvenirLTStd-Black.otf",
+            "./assets/fonts/AvenirLTStd-BlackOblique.otf",
+            "./assets/fonts/AvenirLTStd-Book.otf",
+            "./assets/fonts/AvenirLTStd-BookOblique.otf",
+            "./assets/fonts/AvenirLTStd-Heavy.otf",
+            "./assets/fonts/AvenirLTStd-HeavyOblique.otf",
+            "./assets/fonts/AvenirLTStd-Light.otf",
+            "./assets/fonts/AvenirLTStd-LightOblique.otf",
+            "./assets/fonts/AvenirLTStd-Medium.otf",
+            "./assets/fonts/AvenirLTStd-MediumOblique.otf",
+            "./assets/fonts/AvenirLTStd-Roman.otf",
+            "./assets/fonts/AvenirLTStd-Oblique.otf",
+            "./assets/fonts/AvenirLTStd-Black.otf",
+            "./assets/fonts/AvenirLTStd-BlackOblique.otf",
+            "./assets/fonts/AvenirLTStd-Book.otf",
+            "./assets/fonts/AvenirLTStd-BookOblique.otf",
+            "./assets/fonts/AvenirLTStd-Heavy.otf",
+            "./assets/fonts/AvenirLTStd-HeavyOblique.otf",
+            "./assets/fonts/AvenirLTStd-Light.otf",
+            "./assets/fonts/AvenirLTStd-LightOblique.otf",
+            "./assets/fonts/AvenirLTStd-Medium.otf",
+            "./assets/fonts/AvenirLTStd-MediumOblique.otf",
+            "./assets/fonts/AvenirLTStd-Roman.otf",
+            "./assets/fonts/AvenirLTStd-Oblique.otf"
+          ]
+        }
+      ]
+    ]
   }
 }

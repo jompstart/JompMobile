@@ -12,6 +12,10 @@ declare global {
 
 export type RootStackParamList = {
   SplashScreen: undefined;
+  OnboardingScreen: undefined;
+  SignUp: undefined;
+  AccountPreference: undefined;
+  Login: undefined;
 };
 
 type AuthScreenProps = {

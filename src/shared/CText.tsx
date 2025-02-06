@@ -6,19 +6,17 @@ import { colors } from '../constants/colors';
 // Define the props interface
 interface CTextProps extends TextProps {
   fontFamily?: keyof typeof fontFamilyMap;
-  color?: keyof typeof fontColorMap | string;
+  color?: keyof typeof fontColorMap;
   fontSize?: number;
   lineHeight?: number;
 }
 
 // Map font family names to actual font files
 const fontFamilyMap = {
-  regular: 'PlusJakartaSans-Regular',
-  bold: 'PlusJakartaSans-Bold',
-  medium: 'PlusJakartaSans-Medium',
-  light: 'PlusJakartaSans-Light',
-  semibold: 'PlusJakartaSans-SemiBold',
-  extrabold: 'PlusJakartaSans-ExtraBold',
+  regular: 'AvenirLTStd-Light',
+  medium: 'AvenirLTStd-Medium',
+  bold: 'AvenirLTStd-Heavy',
+  semibold: 'AvenirLTStd-Black',
 };
 
 // Map color names to actual color codes
@@ -26,9 +24,12 @@ export const fontColorMap = {
   black: '#212121',
   secondaryBlack: '#616161',
   warning: '#F75555',
-  success: '#F75555',
+  success: '#2ECC71',
   white: '#FFFFFF',
   secondary: '#00008B',
+  black2: '#303030',
+  primaryColor: '#EFA005',
+  aappBackground: '#F9F8FF',
 };
 
 const CText: React.FC<CTextProps> = ({

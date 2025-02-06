@@ -6,7 +6,10 @@ import {
 import { Easing, Animated, Platform } from 'react-native';
 import { RootStackParamList } from '../types/navigations.types';
 import SplashScreen from '../screens/onboarding/SplashScreen';
-
+import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
+import SignUp from '../screens/auth/SignUp';
+import Login from '../screens/auth/Login';
+import AccountPreference from '../screens/onboarding/AccountPreference';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -30,9 +33,25 @@ const MainNavigator = () => {
     },
   };
   const pages: pages[] = [
+    // {
+    //   name: 'SplashScreen',
+    //   component: SplashScreen,
+    // },
+    // {
+    //   name: 'OnboardingScreen',
+    //   component: OnboardingScreen,
+    // },
+    // {
+    //   name: 'SignUp',
+    //   component: SignUp,
+    // },
+    // {
+    //   name: 'AccountPreference',
+    //   component: AccountPreference,
+    // },
     {
-      name: 'SplashScreen',
-      component: SplashScreen,
+      name: 'Login',
+      component: Login,
     },
   ];
 
