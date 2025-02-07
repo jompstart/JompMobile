@@ -9,7 +9,9 @@ import SplashScreen from '../screens/onboarding/SplashScreen';
 import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
 import SignUp from '../screens/auth/SignUp';
 import Login from '../screens/auth/Login';
+import VerifyBvn from '../screens/compliance/VerifyBvn';
 import AccountPreference from '../screens/onboarding/AccountPreference';
+import VerifyNin from '../screens/compliance/VerifyNin';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -49,9 +51,17 @@ const MainNavigator = () => {
     //   name: 'AccountPreference',
     //   component: AccountPreference,
     // },
+    // {
+    //   name: 'Login',
+    //   component: Login,
+    // },
+    // {
+    //   name: 'VerifyBvn',
+    //   component: VerifyBvn,
+    // },
     {
-      name: 'Login',
-      component: Login,
+      name: 'VerifyNin',
+      component: VerifyNin,
     },
   ];
 

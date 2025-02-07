@@ -10,12 +10,14 @@ import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import { TextStyle } from 'react-native';
 import CText from './CText';
+import Asterisks from '../../assets/svgs/Onboarding/Asterisks';
 
 interface CTextInputProps extends TextInputProps {
   style?: TextStyle;
   showWarning?: boolean;
   rightIcon?: ReactNode;
   title?: string;
+  required?: boolean;
 }
 
 const CTextInput: React.FC<CTextInputProps> = ({
@@ -23,6 +25,7 @@ const CTextInput: React.FC<CTextInputProps> = ({
   showWarning,
   rightIcon,
   title,
+  required,
   ...props
 }) => {
   return (
@@ -32,17 +35,26 @@ const CTextInput: React.FC<CTextInputProps> = ({
       }}
     >
       {title && (
-        <CText
-          fontSize={14}
-          lineHeight={19.6}
+        <View
           style={{
-            letterSpacing: size.getWidthSize(0.2),
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: size.getWidthSize(10),
           }}
-          fontFamily="semibold"
-          color="secondaryBlack"
         >
-          {title}
-        </CText>
+          <CText
+            fontSize={14}
+            lineHeight={19.6}
+            style={{
+              letterSpacing: size.getWidthSize(0.2),
+            }}
+            fontFamily="semibold"
+            color="secondaryBlack"
+          >
+            {title}
+          </CText>
+          {required && <Asterisks size={size.getHeightSize(12)} />}
+        </View>
       )}
       <View
         style={{

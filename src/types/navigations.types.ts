@@ -16,6 +16,8 @@ export type RootStackParamList = {
   SignUp: undefined;
   AccountPreference: undefined;
   Login: undefined;
+  VerifyBvn: undefined;
+  VerifyNin: undefined;
 };
 
 type AuthScreenProps = {

@@ -13,10 +13,10 @@ interface CTextProps extends TextProps {
 
 // Map font family names to actual font files
 const fontFamilyMap = {
-  regular: 'AvenirLTStd-Light',
+  regular: 'AvenirLTStd-Roman',
   medium: 'AvenirLTStd-Medium',
-  bold: 'AvenirLTStd-Heavy',
-  semibold: 'AvenirLTStd-Black',
+  bold: 'AvenirLTStd-Black',
+  semibold: 'AvenirLTStd-Heavy',
 };
 
 // Map color names to actual color codes
@@ -30,6 +30,8 @@ export const fontColorMap = {
   black2: '#303030',
   primaryColor: '#EFA005',
   aappBackground: '#F9F8FF',
+  blue: '#175CD3',
+  black3: '#475467',
 };
 
 const CText: React.FC<CTextProps> = ({

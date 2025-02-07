@@ -17,14 +17,16 @@ interface Props {
   style?: ViewStyle;
   opacity?: string;
   width?: string;
+  icon?: React.ReactNode;
 }
-const SecondaryButton = ({
+const SecondaryButtonWithIcon = ({
   onPress,
   disabled,
   label,
   style,
   opacity,
   width,
+  icon,
 }: Props) => {
   return (
     <Pressable
@@ -40,12 +42,13 @@ const SecondaryButton = ({
         },
       ]}
     >
+      {icon}
       <CText
         lineHeight={19.2}
         style={{ textAlign: 'center' }}
         fontSize={16}
-        fontFamily="bold"
-        color="primaryColor"
+        fontFamily="regular"
+        color="secondaryBlack"
       >
         {label}
       </CText>
@@ -53,7 +56,7 @@ const SecondaryButton = ({
   );
 };
 
-export default SecondaryButton;
+export default SecondaryButtonWithIcon;
 
 const styles = StyleSheet.create({
   pressable: {

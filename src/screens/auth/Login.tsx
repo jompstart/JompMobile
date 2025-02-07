@@ -1,18 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
-import CheckIcon from '../../../assets/svgs/Onboarding/CheckIcon';
-import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
 import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
-import SecondaryButton from '../../shared/SecondaryButton';
+import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
@@ -136,15 +134,15 @@ const Login = () => {
         >
           <SecondaryButton
             icon={<GoogleIcon size={size.getHeightSize(24)} />}
-            label="Sign up with Google"
+            label="Login with Google"
           />
           <SecondaryButton
             icon={<AppleIcon size={size.getHeightSize(24)} />}
-            label="Sign up with Apple"
+            label="Login with Apple"
           />
           <SecondaryButton
             icon={<FacebookIcon size={size.getHeightSize(24)} />}
-            label="Sign up with Facebook"
+            label="Login with Facebook"
           />
         </View>
         <CText
