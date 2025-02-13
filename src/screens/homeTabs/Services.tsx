@@ -1,14 +1,185 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import GradientHeader from '../../shared/GradientHeader';
+import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
+import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
+import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
+import { size } from '../../config/size';
+import CText from '../../shared/CText';
+import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
+import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
+import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
+import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
+import { colors } from '../../constants/colors';
 const Services = () => {
   return (
-    <View>
-      <Text>Services</Text>
-    </View>
-  )
-}
+    <GradientSafeAreaView>
+      <GradientHeader>
+        <MenuIcon size={size.getHeightSize(28)} />
+        <View style={{ flex: 1 }} />
+        <SearchIcon size={size.getHeightSize(28)} />
+        <NotificationBell size={size.getHeightSize(28)} />
+      </GradientHeader>
+      <View
+        style={{
+          paddingHorizontal: size.getWidthSize(16),
+          paddingTop: size.getHeightSize(16),
+        }}
+      >
+        <CText
+          color={'black'}
+          fontSize={18}
+          lineHeight={28.8}
+          fontFamily="bold"
+          style={{
+            opacity: 0.75,
+          }}
+        >
+          Services
+        </CText>
+        <CText
+          color={'secondaryBlack'}
+          fontSize={16}
+          lineHeight={22.4}
+          fontFamily="regular"
+          style={{
+            opacity: 0.75,
+            marginTop: size.getHeightSize(4),
+          }}
+        >
+          View the services you clicked on the links
+        </CText>
+        <View
+          style={{
+            marginTop: size.getHeightSize(24),
+            gap: size.getHeightSize(16),
+          }}
+        >
+          <View style={styles.view}>
+            <PersonIcon size={size.getHeightSize(46)} />
+            <View
+              style={{
+                flex: 1,
+                gap: size.getHeightSize(6),
+              }}
+            >
+              <CText
+                color={'black'}
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                User Created
+              </CText>
+              <CText
+                color={'secondaryBlack'}
+                fontSize={13}
+                lineHeight={18.2}
+                fontFamily="regular"
+              >
+                Pay for services you have already received or not listed.
+              </CText>
+            </View>
+            <ArrowRightIcon
+              width={size.getWidthSize(12)}
+              height={size.getHeightSize(24)}
+            />
+          </View>
+          <View
+            style={[
+              styles.view,
+              {
+                backgroundColor: colors.white(),
+              },
+            ]}
+          >
+            <ProviderIcon size={size.getHeightSize(46)} />
+            <View
+              style={{
+                flex: 1,
+                gap: size.getHeightSize(6),
+              }}
+            >
+              <CText
+                color={'black'}
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                Providers Created
+              </CText>
+              <CText
+                color={'secondaryBlack'}
+                fontSize={13}
+                lineHeight={18.2}
+                fontFamily="regular"
+              >
+                Access endless services created just for you
+              </CText>
+            </View>
+            <ArrowRightIcon
+              width={size.getWidthSize(12)}
+              height={size.getHeightSize(24)}
+            />
+          </View>
+          <View
+            style={[
+              styles.view,
+              {
+                backgroundColor: '#ED9F0510',
+              },
+            ]}
+          >
+            <OrderBooks size={size.getHeightSize(46)} />
+            <View
+              style={{
+                flex: 1,
+                gap: size.getHeightSize(6),
+              }}
+            >
+              <CText
+                color={'black'}
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                Jomp Curated
+              </CText>
+              <CText
+                color={'secondaryBlack'}
+                fontSize={13}
+                lineHeight={18.2}
+                fontFamily="regular"
+              >
+                Coming soon
+              </CText>
+            </View>
+            <ArrowRightIcon
+              width={size.getWidthSize(12)}
+              height={size.getHeightSize(24)}
+            />
+          </View>
+        </View>
+      </View>
+    </GradientSafeAreaView>
+  );
+};
 
-export default Services
+export default Services;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  view: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: size.getWidthSize(8),
+    paddingVertical: size.getHeightSize(16),
+    paddingHorizontal: size.getWidthSize(16),
+    backgroundColor: '#424E9B10',
+    borderRadius: size.getHeightSize(8),
+  },
+  text: {
+    opacity: 0.75,
+    marginTop: size.getHeightSize(4),
+  },
+});
