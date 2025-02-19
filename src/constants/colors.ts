@@ -6,5 +6,5 @@ export const colors = {
   disabled: (opacity?: string) => `#333333${opacity || ''}`,
   white: (opacity?: string) => `#FFFFFF${opacity || ''}`,
   idle: (opacity?: string) => `#333333${opacity || ''}`,
-  appBackground: (opacity?: string) => `#F9F8FF${opacity || ''}`,
+  appBackground: (opacity?: string) => `#F2F0FF${opacity || ''}`,
 };

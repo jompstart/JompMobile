@@ -16,7 +16,9 @@ import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
+import { useNavigation } from '@react-navigation/native';
 const SignUp = () => {
+  const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -154,6 +156,9 @@ const SignUp = () => {
           </View>
           <PrimaryButton
             label="Get Started"
+            onPress={()=>{
+              navigation.navigate('AccountPreference')
+            }}
             style={{
               marginTop: size.getHeightSize(24),
             }}

@@ -11,7 +11,10 @@ import Avatar1 from '../../../assets/svgs/Onboarding/Avatar1';
 import PrimaryButton from '../../shared/PrimaryButton';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import EmailVerificationSuccessModal from '../../components/auth/EmailVerificationSuccessModal';
+import { useNavigation } from '@react-navigation/native';
+
 const AccountPreference = () => {
+  const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -146,6 +149,9 @@ const AccountPreference = () => {
         <PrimaryButton
           label="Get Started"
           style={{ marginBottom: size.getHeightSize(40) }}
+          onPress={() => {
+            navigation.navigate('Login');
+          }}
         />
         <VerifyEmailBottomsheet />
         <EmailVerificationSuccessModal />

@@ -13,6 +13,8 @@ import VerifyBvn from '../screens/compliance/VerifyBvn';
 import AccountPreference from '../screens/onboarding/AccountPreference';
 import VerifyNin from '../screens/compliance/VerifyNin';
 import BottomtabNavigation from './BottomtabNavigation';
+import Profile from '../screens/Dashboard/Profile';
+import AddBank from '../screens/Dashboard/AddBank';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -64,9 +66,17 @@ const MainNavigator = () => {
     //   name: 'VerifyNin',
     //   component: VerifyNin,
     // },
+    // {
+    //   name: 'BottomtabNavigation',
+    //   component: BottomtabNavigation,
+    // },
+    // {
+    //   name: 'Profile',
+    //   component: Profile,
+    // },
     {
-      name: 'BottomtabNavigation',
-      component: BottomtabNavigation,
+      name: 'AddBank',
+      component: AddBank,
     },
   ];
 

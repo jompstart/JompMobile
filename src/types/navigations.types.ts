@@ -19,6 +19,8 @@ export type RootStackParamList = {
   VerifyBvn: undefined;
   VerifyNin: undefined;
   BottomtabNavigation: undefined;
+  Profile: undefined;
+  AddBank: undefined;
 };
 
 type AuthScreenProps = {

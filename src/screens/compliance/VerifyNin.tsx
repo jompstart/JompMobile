@@ -16,7 +16,9 @@ import SuccessModal from '../../shared/SuccessModal';
 import Asterisks from '../../../assets/svgs/Onboarding/Asterisks';
 import AttachFileIcon from '../../../assets/svgs/Onboarding/AttachFileIcon';
 import UploadIamgeModal from '../../components/compliance/UploadIamgeModal';
+import { useNavigation } from '@react-navigation/native';
 const VerifyNin = () => {
+  const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -176,7 +178,12 @@ const VerifyNin = () => {
             marginBottom: size.getHeightSize(32),
           }}
         >
-          <PrimaryButton label="Submit" />
+          <PrimaryButton
+            label="Submit"
+            onPress={() => {
+              navigation.navigate('BottomtabNavigation');
+            }}
+          />
         </View>
         <UploadIamgeModal />
       </View>

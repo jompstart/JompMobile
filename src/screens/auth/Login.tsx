@@ -15,7 +15,9 @@ import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
+import { useNavigation } from '@react-navigation/native';
 const Login = () => {
+  const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -135,6 +137,7 @@ const Login = () => {
           <SecondaryButton
             icon={<GoogleIcon size={size.getHeightSize(24)} />}
             label="Login with Google"
+            onPress={() => navigation.navigate('VerifyBvn')}
           />
           <SecondaryButton
             icon={<AppleIcon size={size.getHeightSize(24)} />}

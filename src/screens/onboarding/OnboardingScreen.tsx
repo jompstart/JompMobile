@@ -13,7 +13,7 @@ import CText from '../../shared/CText';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
-
+import { useNavigation } from '@react-navigation/native';
 const OnboardingScreen = () => {
   const onboardingContent = [
     {
@@ -41,6 +41,7 @@ const OnboardingScreen = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const widthAnim = useRef(new Animated.Value(size.getWidthSize(11))).current;
+  const navigation = useNavigation();
   useEffect(() => {
     // Fade in the image when the component mounts
     Animated.timing(fadeAnim, {
@@ -157,6 +158,7 @@ const OnboardingScreen = () => {
                 setCurrentSlideIndex(currentSlideIndex + 1);
               } else {
                 // Navigate to the next screen
+                navigation.navigate('SignUp');
               }
             }}
             label="Next"

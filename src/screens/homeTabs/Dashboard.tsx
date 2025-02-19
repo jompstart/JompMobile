@@ -22,6 +22,7 @@ import OrderIcon from '../../../assets/svgs/Home/OrderIcon';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
 import TxnIcon from '../../../assets/svgs/Home/TxnIcon';
+import WalletAccountDetails from '../../components/Dashboard/WalletAccountDetails';
 const Dashboard = () => {
   return (
     <GradientSafeAreaView>

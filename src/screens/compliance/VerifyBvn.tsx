@@ -13,7 +13,9 @@ import CheckCircle from '../../../assets/svgs/Onboarding/CheckCircle';
 import SecondaryButton from '../../shared/SecondaryButton';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SuccessModal from '../../shared/SuccessModal';
+import { useNavigation } from '@react-navigation/native';
 const VerifyBvn = () => {
+  const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -267,7 +269,12 @@ const VerifyBvn = () => {
           }}
         >
           <SecondaryButton label="Verify" />
-          <PrimaryButton label="Next" />
+          <PrimaryButton
+            label="Next"
+            onPress={() => {
+              navigation.navigate('VerifyNin');
+            }}
+          />
         </View>
         <SuccessModal
           buttonText="Submit"
