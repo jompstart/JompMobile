@@ -15,6 +15,9 @@ import VerifyNin from '../screens/compliance/VerifyNin';
 import BottomtabNavigation from './BottomtabNavigation';
 import Profile from '../screens/Dashboard/Profile';
 import AddBank from '../screens/Dashboard/AddBank';
+import WithdrawFunds from '../screens/Dashboard/WithdrawFunds';
+import GuardianDetails from '../screens/ChildBills/GuardianDetails';
+import SelfDetails from '../screens/ChildBills/SelfDetails';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -74,10 +77,22 @@ const MainNavigator = () => {
     //   name: 'Profile',
     //   component: Profile,
     // },
+    // {
+    //   name: 'AddBank',
+    //   component: AddBank,
+    // },
+    // {
+    //   name: 'WithdrawFunds',
+    //   component: WithdrawFunds,
+    // },
     {
-      name: 'AddBank',
-      component: AddBank,
+      name: 'GuardianDetails',
+      component: GuardianDetails,
     },
+    // {
+    //   name: 'SelfDetails',
+    //   component: SelfDetails,
+    // },
   ];
 
   return (

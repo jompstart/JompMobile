@@ -21,6 +21,9 @@ export type RootStackParamList = {
   BottomtabNavigation: undefined;
   Profile: undefined;
   AddBank: undefined;
+  WithdrawFunds: undefined;
+  GuardianDetails: undefined;
+  SelfDetails: undefined;
 };
 
 type AuthScreenProps = {
