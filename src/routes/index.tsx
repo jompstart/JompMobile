@@ -18,6 +18,10 @@ import AddBank from '../screens/Dashboard/AddBank';
 import WithdrawFunds from '../screens/Dashboard/WithdrawFunds';
 import GuardianDetails from '../screens/ChildBills/GuardianDetails';
 import SelfDetails from '../screens/ChildBills/SelfDetails';
+import LoanPage from '../screens/LoanCalculator/LoanPage';
+import SchoolFees from '../screens/LoanCalculator/SchoolFees';
+import Transport from '../screens/LoanCalculator/Transport';
+import HouseRent from '../screens/LoanCalculator/HouseRent';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -85,14 +89,30 @@ const MainNavigator = () => {
     //   name: 'WithdrawFunds',
     //   component: WithdrawFunds,
     // },
-    {
-      name: 'GuardianDetails',
-      component: GuardianDetails,
-    },
+    // {
+    //   name: 'GuardianDetails',
+    //   component: GuardianDetails,
+    // },
     // {
     //   name: 'SelfDetails',
     //   component: SelfDetails,
     // },
+    // {
+    //   name: 'LoanPage',
+    //   component: LoanPage,
+    // },
+    // {
+    //   name: 'SchoolFees',
+    //   component: SchoolFees,
+    // },
+    // {
+    //   name: 'Transport',
+    //   component: Transport,
+    // },
+    {
+      name: 'HouseRent',
+      component: HouseRent,
+    },
   ];
 
   return (

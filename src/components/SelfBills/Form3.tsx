@@ -33,6 +33,9 @@ const Form3 = () => {
           }}
         >
           <PTextInput
+            outerStyle={{
+              flex: 1,
+            }}
             placeholder="Years of working/operation"
             rightIcon={
               <MaterialIcons
@@ -44,6 +47,9 @@ const Form3 = () => {
         </View>
 
         <PTextInput
+          outerStyle={{
+            flex: 1,
+          }}
           placeholder="Month"
           rightIcon={
             <MaterialIcons

@@ -4,6 +4,7 @@ import {
   View,
   TextInput,
   TextInputProps,
+  ViewStyle,
 } from 'react-native';
 import React, { ReactNode } from 'react';
 import { size } from '../config/size';
@@ -18,6 +19,7 @@ interface CTextInputProps extends TextInputProps {
   rightIcon?: ReactNode;
   title?: string;
   required?: boolean;
+  outerStyle?: ViewStyle;
 }
 const PTextInput: React.FC<CTextInputProps> = ({
   style,
@@ -25,13 +27,14 @@ const PTextInput: React.FC<CTextInputProps> = ({
   rightIcon,
   title,
   required,
+  outerStyle,
   ...props
 }) => {
   return (
     <View
       style={{
         gap: size.getHeightSize(8),
-        flex:1
+        ...outerStyle,
       }}
     >
       <View
