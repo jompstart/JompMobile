@@ -98,6 +98,7 @@ const Login = () => {
           style={{
             marginTop: size.getHeightSize(24),
           }}
+          onPress={() => navigation.navigate('VerifyBvn')}
         />
         <View
           style={{
@@ -137,7 +138,6 @@ const Login = () => {
           <SecondaryButton
             icon={<GoogleIcon size={size.getHeightSize(24)} />}
             label="Login with Google"
-            onPress={() => navigation.navigate('VerifyBvn')}
           />
           <SecondaryButton
             icon={<AppleIcon size={size.getHeightSize(24)} />}

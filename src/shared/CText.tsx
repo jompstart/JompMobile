@@ -15,8 +15,8 @@ interface CTextProps extends TextProps {
 const fontFamilyMap = {
   regular: 'AvenirLTStd-Roman',
   medium: 'AvenirLTStd-Medium',
-  bold: 'AvenirLTStd-Black',
-  semibold: 'AvenirLTStd-Heavy',
+  bold: 'AvenirLTStd-Heavy',
+  semibold: 'AvenirLTStd-Medium',
 };
 
 // Map color names to actual color codes

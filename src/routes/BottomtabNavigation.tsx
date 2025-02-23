@@ -43,7 +43,7 @@ const BottomtabNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior="none"
-      initialRouteName={home}
+      initialRouteName={savings}
       screenOptions={({ route }: any) => ({
         tabBarStyle: {
           borderWidth: 0,
@@ -54,8 +54,6 @@ const BottomtabNavigation = () => {
           backgroundColor: colors.white(),
           borderTopWidth: 0,
           paddingTop: size.getHeightSize(6),
-          position: 'absolute',
-          zIndex: 100,
         },
         tabBarLabel: ({ focused }) => {
           if (route.name === home) {

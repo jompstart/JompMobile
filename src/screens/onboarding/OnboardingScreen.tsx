@@ -22,11 +22,11 @@ const OnboardingScreen = () => {
     },
     {
       backgroundImage: images.onboarding2,
-      title: '.............Rent.............',
+      title: 'Rent',
     },
     {
       backgroundImage: images.onboarding3,
-      title: '............Transport Credit...........',
+      title: 'Transport Credit',
     },
     {
       backgroundImage: images.onboarding4,

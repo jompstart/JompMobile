@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import PayBills from './src/components/Dashboard/PayBills';
 import BillTypes from './src/components/Dashboard/BillTypes';
 import SchoolPreference from './src/components/Dashboard/SchoolPreference';
+import FilterBottomsheet from './src/components/Savings/FilterBottomsheet';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -34,6 +35,7 @@ export default function App() {
         <PayBills />
         <BillTypes />
         <SchoolPreference />
+        <FilterBottomsheet />
       </NavigationContainer>
     </GestureHandlerRootView>
   );

@@ -22,6 +22,10 @@ import LoanPage from '../screens/LoanCalculator/LoanPage';
 import SchoolFees from '../screens/LoanCalculator/SchoolFees';
 import Transport from '../screens/LoanCalculator/Transport';
 import HouseRent from '../screens/LoanCalculator/HouseRent';
+import UserCreated from '../services/UserCreated';
+import PayServices from '../services/PayServices';
+import SavingsGoal from '../screens/Savings/SavingsGoal';
+import CreateSavings from '../screens/Savings/CreateSavings';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -109,9 +113,25 @@ const MainNavigator = () => {
     //   name: 'Transport',
     //   component: Transport,
     // },
+    // {
+    //   name: 'HouseRent',
+    //   component: HouseRent,
+    // },
+    // {
+    //   name: 'UserCreated',
+    //   component: UserCreated,
+    // },
+    // {
+    //   name: 'PayServices',
+    //   component: PayServices,
+    // },
+    // {
+    //   name: 'SavingsGoal',
+    //   component: SavingsGoal,
+    // },
     {
-      name: 'HouseRent',
-      component: HouseRent,
+      name: 'CreateSavings',
+      component: CreateSavings,
     },
   ];
 

@@ -28,6 +28,10 @@ export type RootStackParamList = {
   SchoolFees: undefined;
   Transport: undefined;
   HouseRent: undefined;
+  UserCreated: undefined;
+  PayServices: undefined;
+  SavingsGoal: undefined;
+  CreateSavings: undefined;
 };
 
 type AuthScreenProps = {

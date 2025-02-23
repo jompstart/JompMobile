@@ -1,27 +1,37 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
-import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
-import GradientHeader from '../../shared/GradientHeader';
-import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
-import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
-import { size } from '../../config/size';
-import CText from '../../shared/CText';
+import { size } from '../config/size';
+import { colors } from '../constants/colors';
+import CText from '../shared/CText';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import GradientHeader from '../shared/GradientHeader';
+import GradientSafeAreaView from '../shared/GradientSafeAreaView';
+import HeartIcon from '../../assets/svgs/Dashboard/HeartIcon';
+import CarIcon from '../../assets/svgs/Home/CarIcon';
+import SchoolIcon from '../../assets/svgs/Home/SchoolIcon';
+import PenBookIcon from '../../assets/svgs/Dashboard/PenBookIcon';
+import HouseIcon from '../../assets/svgs/Loan/HouseIcon';
+import StudentIcon from '../../assets/svgs/Dashboard/StudentIcon';
+import ChildIcon from '../../assets/svgs/Dashboard/ChildIcon';
 import { useNavigation } from '@react-navigation/native';
-import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
-import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
-import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
-import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
-import { colors } from '../../constants/colors';
-const Services = () => {
+const PayServices = () => {
   const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
       <GradientHeader>
-        <MenuIcon size={size.getHeightSize(28)} />
-        <View style={{ flex: 1 }} />
-        <SearchIcon size={size.getHeightSize(28)} />
-        <NotificationBell size={size.getHeightSize(28)} />
+        <MaterialIcons
+          name="arrow-back-ios"
+          size={size.getHeightSize(20)}
+          color="white"
+        />
+        <CText
+          color={'white'}
+          fontSize={16}
+          lineHeight={25.6}
+          fontFamily="bold"
+        >
+          Go Back
+        </CText>
       </GradientHeader>
       <View
         style={{
@@ -38,7 +48,7 @@ const Services = () => {
             opacity: 0.75,
           }}
         >
-          Services
+          Pay School Fees for Your Child or Yourself
         </CText>
         <CText
           color={'secondaryBlack'}
@@ -50,7 +60,8 @@ const Services = () => {
             marginTop: size.getHeightSize(4),
           }}
         >
-          View the services you clicked on the links
+          Get access to school fees for you and your loved ones and pay at your
+          convenience.
         </CText>
         <View
           style={{
@@ -60,11 +71,25 @@ const Services = () => {
         >
           <Pressable
             onPress={() => {
-              navigate('UserCreated');
+              navigate('GuardianDetails');
             }}
-            style={styles.view}
+            style={[
+              styles.view,
+              {
+                backgroundColor: '#56BAEB26',
+              },
+            ]}
           >
-            <PersonIcon size={size.getHeightSize(46)} />
+            <View
+              style={[
+                styles.view2,
+                {
+                  backgroundColor: '#56BAEB4D',
+                },
+              ]}
+            >
+              <ChildIcon size={size.getHeightSize(27)} />
+            </View>
             <View
               style={{
                 flex: 1,
@@ -77,7 +102,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                Services
+                For My Child
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -85,23 +110,36 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                Pay for services you have already received or not listed.
+                Apply for school fees loan for your child.
               </CText>
             </View>
-            <ArrowRightIcon
-              width={size.getWidthSize(12)}
-              height={size.getHeightSize(24)}
+            <MaterialIcons
+              name="keyboard-arrow-right"
+              size={size.getHeightSize(20)}
+              color={colors.primary()}
             />
           </Pressable>
-          <View
+          <Pressable
+            onPress={() => {
+              navigate('SelfDetails');
+            }}
             style={[
               styles.view,
               {
-                backgroundColor: colors.white(),
+                backgroundColor: '#EFA00526',
               },
             ]}
           >
-            <ProviderIcon size={size.getHeightSize(46)} />
+            <View
+              style={[
+                styles.view2,
+                {
+                  backgroundColor: '#EFA0054D',
+                },
+              ]}
+            >
+              <StudentIcon size={size.getHeightSize(27)} />
+            </View>
             <View
               style={{
                 flex: 1,
@@ -114,7 +152,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                Providers Created
+                For Myself
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -122,58 +160,22 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                Access endless services created just for you
+                Apply for school fees loan for yourself.
               </CText>
             </View>
-            <ArrowRightIcon
-              width={size.getWidthSize(12)}
-              height={size.getHeightSize(24)}
+            <MaterialIcons
+              name="keyboard-arrow-right"
+              size={size.getHeightSize(20)}
+              color={colors.primary()}
             />
-          </View>
-          <View
-            style={[
-              styles.view,
-              {
-                backgroundColor: '#ED9F0510',
-              },
-            ]}
-          >
-            <OrderBooks size={size.getHeightSize(46)} />
-            <View
-              style={{
-                flex: 1,
-                gap: size.getHeightSize(6),
-              }}
-            >
-              <CText
-                color={'black'}
-                fontSize={16}
-                lineHeight={22.4}
-                fontFamily="bold"
-              >
-                Jomp Curated
-              </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={13}
-                lineHeight={18.2}
-                fontFamily="regular"
-              >
-                Coming soon
-              </CText>
-            </View>
-            <ArrowRightIcon
-              width={size.getWidthSize(12)}
-              height={size.getHeightSize(24)}
-            />
-          </View>
+          </Pressable>
         </View>
       </View>
     </GradientSafeAreaView>
   );
 };
 
-export default Services;
+export default PayServices;
 
 const styles = StyleSheet.create({
   view: {
@@ -188,5 +190,11 @@ const styles = StyleSheet.create({
   text: {
     opacity: 0.75,
     marginTop: size.getHeightSize(4),
+  },
+  view2: {
+    backgroundColor: '#F0EDFF',
+    paddingVertical: size.getHeightSize(9),
+    paddingHorizontal: size.getHeightSize(9),
+    borderRadius: '100%',
   },
 });

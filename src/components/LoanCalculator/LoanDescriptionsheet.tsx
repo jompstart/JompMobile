@@ -11,7 +11,7 @@ import CarIcon from '../../../assets/svgs/Dashboard/CarIcon';
 import HeartIcon from '../../../assets/svgs/Dashboard/HeartIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
-
+import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
 const LoanDescriptionsheet = () => {
   return (
     <BottomsheetWrapper
@@ -66,6 +66,40 @@ const LoanDescriptionsheet = () => {
             ₦120,000.00
           </CText>{' '}
           to be repaid in 3 months.
+        </CText>
+      </View>
+      <View
+        style={{
+          backgroundColor: '#F0EDFF',
+          paddingHorizontal: size.getWidthSize(16),
+          paddingVertical: size.getHeightSize(8),
+          borderRadius: size.getHeightSize(8),
+          marginTop: size.getHeightSize(16),
+          gap: size.getWidthSize(8),
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <LoanInfoIcon size={size.getHeightSize(24)} />
+        <CText
+          color="secondaryBlack"
+          fontSize={16}
+          lineHeight={22.4}
+          fontFamily="regular"
+          style={{
+            textAlign: 'left',
+            flex: 1,
+          }}
+        >
+          The maximum amount you can get for transport loan is{' '}
+          <CText
+            color={'#31005C' as any}
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="bold"
+          >
+            ₦100,000.00
+          </CText>
         </CText>
       </View>
       <CText
