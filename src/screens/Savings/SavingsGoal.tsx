@@ -12,7 +12,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 import FundSourceBottomsheet from '../../components/Savings/FundSourceBottomsheet';
+import { useNavigation } from '@react-navigation/native';
 const SavingsGoal = () => {
+  const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -224,6 +226,33 @@ const SavingsGoal = () => {
                 </View>
               </View>
             </View>
+
+            <View
+              style={{
+                backgroundColor: '#DBD4FC',
+                paddingHorizontal: size.getWidthSize(16),
+                paddingVertical: size.getHeightSize(8),
+                borderRadius: size.getHeightSize(8),
+                marginTop: size.getHeightSize(16),
+                gap: size.getWidthSize(8),
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <CText
+                color="secondary"
+                fontSize={12}
+                lineHeight={16.8}
+                fontFamily="regular"
+                style={{
+                  textAlign: 'left',
+                  flex: 1,
+                }}
+              >
+                Based on your selection above, you can be saving ₦ 100,000.00
+                per month.
+              </CText>
+            </View>
             <PTextInput placeholder="₦ Preferred amount to save on a basis" />
             <View style={styles.view3}>
               <View style={styles.view2}>
@@ -339,7 +368,10 @@ const SavingsGoal = () => {
             marginBottom: size.getHeightSize(32),
           }}
         >
-          <PrimaryButton label="Proceed" />
+          <PrimaryButton
+            onPress={() => navigate('CreateSavings')}
+            label="Proceed"
+          />
         </View>
       </ScrollView>
       <FundSourceBottomsheet />

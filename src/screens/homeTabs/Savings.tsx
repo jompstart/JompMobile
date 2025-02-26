@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
@@ -17,8 +17,13 @@ import AddIcon from '../../../assets/svgs/Savings/AddIcon';
 import VectorIcon from '../../../assets/svgs/Savings/VectorIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SaveMoneyIcon from '../../../assets/svgs/Savings/SaveMoneyIcon';
-import FilterBottomsheet from '../../components/Savings/FilterBottomsheet';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { useNavigation } from '@react-navigation/native';
+import TargetIcon from '../../../assets/svgs/Savings/TargetIcon';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import { LinearGradient } from 'expo-linear-gradient';
 const Savings = () => {
+  const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -122,7 +127,10 @@ const Savings = () => {
               />
             </View>
           </BalanceCard>
-          <View style={styles.view}>
+          <Pressable
+            onPress={() => navigate('SavingsGoal')}
+            style={styles.view}
+          >
             <AddIcon
               style={{
                 position: 'absolute',
@@ -155,8 +163,48 @@ const Savings = () => {
                 with 25% interest P.A
               </CText>
             </View>
-          </View>
-          <View style={styles.view}>
+          </Pressable>
+          <LinearGradient
+            colors={['#EFA005', '#C5520A']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: size.getWidthSize(14),
+              gap: size.getWidthSize(16),
+              paddingVertical: size.getHeightSize(14),
+              borderRadius: size.getHeightSize(8),
+              alignItems: 'center',
+              marginTop: size.getHeightSize(16),
+            }}
+          >
+            <CText
+              color={'white'}
+              fontSize={14}
+              lineHeight={19.6}
+              fontFamily="semibold"
+              style={{
+                flex: 1,
+              }}
+            >
+              This is all you have earned based on all your savings. To earn
+              more, keep saving!
+            </CText>
+            <CText
+              color={'white'}
+              fontSize={24}
+              lineHeight={38.4}
+              fontFamily="bold"
+            >
+              ₦2,250.86
+            </CText>
+          </LinearGradient>
+          <Pressable
+            onPress={() => {
+              navigate('SavingsTransactions');
+            }}
+            style={styles.view}
+          >
             <View style={styles.view2}>
               <VectorIcon size={size.getHeightSize(20)} />
             </View>
@@ -187,7 +235,7 @@ const Savings = () => {
               color={colors.primary()}
               size={size.getHeightSize(15)}
             />
-          </View>
+          </Pressable>
           <View style={styles.view}>
             <View
               style={{
@@ -283,14 +331,121 @@ const Savings = () => {
               borderRadius: size.getHeightSize(8),
               marginTop: size.getHeightSize(28),
               justifyContent: 'center',
-              alignItems: 'center',
+              paddingHorizontal: size.getWidthSize(8),
+              paddingVertical: size.getHeightSize(8),
+              // alignItems: 'center',
             }}
           >
-            <SaveMoneyIcon size={size.getHeightSize(103)} />
+            {/* <SaveMoneyIcon
+              style={{
+                alignSelf: 'center',
+              }}
+              size={size.getHeightSize(103)}
+            /> */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: size.getWidthSize(8),
+                backgroundColor: colors.appBackground(),
+                paddingVertical: size.getHeightSize(8),
+                paddingHorizontal: size.getWidthSize(8),
+                borderRadius: size.getHeightSize(8),
+              }}
+            >
+              <View
+                style={{
+                  height: size.getHeightSize(57),
+                  width: size.getHeightSize(57),
+                  borderRadius: '100%',
+                  backgroundColor: '#53AF9226',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <TargetIcon size={size.getHeightSize(40)} />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                }}
+              >
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={22}
+                  fontFamily="bold"
+                >
+                  My Savings
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={22}
+                  fontFamily="bold"
+                >
+                  ₦150,000.00
+                </CText>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: size.getWidthSize(3.18),
+                  }}
+                >
+                  <Fontisto
+                    name="locked"
+                    color={'#876DFF'}
+                    size={size.getHeightSize(9)}
+                  />
+                  <CText
+                    color={colors.black('70') as any}
+                    fontSize={14}
+                    lineHeight={22}
+                    fontFamily="regular"
+                  >
+                    Maturity Time:{' '}
+                    <CText
+                      color={'secondaryBlack'}
+                      fontSize={14}
+                      lineHeight={22}
+                      fontFamily="regular"
+                    >
+                      4 Weeks
+                    </CText>
+                  </CText>
+                </View>
+              </View>
+              <AnimatedCircularProgress
+                fill={25}
+                size={size.getHeightSize(61)}
+                width={size.getHeightSize(6)}
+                tintColor="#F75555"
+                backgroundColor={'#F7555526'}
+                backgroundWidth={size.getHeightSize(6)}
+                rotation={0}
+                lineCap="round"
+                style={
+                  {
+                    // flex: 1,
+                  }
+                }
+              >
+                {(fill) => (
+                  <CText
+                    color={'#F75555' as any}
+                    fontSize={12}
+                    lineHeight={16.8}
+                    fontFamily="bold"
+                  >
+                    25%
+                  </CText>
+                )}
+              </AnimatedCircularProgress>
+            </View>
           </View>
         </View>
       </ScrollView>
-     
     </GradientSafeAreaView>
   );
 };

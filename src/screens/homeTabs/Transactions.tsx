@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
@@ -13,7 +13,7 @@ import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
 import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
 import { colors } from '../../constants/colors';
 import Transaction from '../../components/Transaction/Transaction';
-import { ScrollView } from 'react-native-gesture-handler';
+
 const Transactions = () => {
   return (
     <GradientSafeAreaView>
