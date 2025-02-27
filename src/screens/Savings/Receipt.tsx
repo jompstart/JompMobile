@@ -2,21 +2,13 @@ import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
-import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
-import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
-import Octicons from '@expo/vector-icons/Octicons';
-import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
-import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
-import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
-import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
 import { colors } from '../../constants/colors';
-import Transaction from '../../components/Transaction/Transaction';
 import WithdrawBottomsheet from '../../components/Savings/WithdrawBottomsheet';
 const Receipt = () => {
+  
   return (
     <GradientSafeAreaView>
       <GradientHeader>

@@ -28,6 +28,7 @@ import SavingsGoal from '../screens/Savings/SavingsGoal';
 import CreateSavings from '../screens/Savings/CreateSavings';
 import SavingsTransactions from '../screens/Savings/SavingsTransactions';
 import Receipt from '../screens/Savings/Receipt';
+import TransportDetails from '../screens/TransportCredit/TransportDetails';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -139,9 +140,13 @@ const MainNavigator = () => {
     //   name: 'SavingsTransactions',
     //   component: SavingsTransactions,
     // },
+    // {
+    //   name: 'Receipt',
+    //   component: Receipt,
+    // },
     {
-      name: 'Receipt',
-      component: Receipt,
+      name: 'TransportDetails',
+      component: TransportDetails,
     },
   ];
 
