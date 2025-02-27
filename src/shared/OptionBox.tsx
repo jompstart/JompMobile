@@ -9,6 +9,7 @@ interface Props {
   selectIcon: React.ReactNode;
   deselectIcon: React.ReactNode;
   selected?: boolean;
+  flex?: boolean;
 }
 
 const OptionBox = ({
@@ -16,6 +17,7 @@ const OptionBox = ({
   selectIcon,
   deselectIcon,
   selected,
+  flex = true,
 }: Props) => {
   return (
     <View
@@ -29,7 +31,7 @@ const OptionBox = ({
         borderColor: colors.black('30'),
         borderRadius: size.getHeightSize(8),
         backgroundColor: colors.white(),
-        flex:1
+        flex: flex ? 1 : 0,
       }}
     >
       {selected ? selectIcon : deselectIcon}

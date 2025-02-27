@@ -24,11 +24,13 @@ import Transport from '../screens/LoanCalculator/Transport';
 import HouseRent from '../screens/LoanCalculator/HouseRent';
 import UserCreated from '../services/UserCreated';
 import PayServices from '../services/PayServices';
+import PreviewRequest from '../shared/PreviewRequest';
 import SavingsGoal from '../screens/Savings/SavingsGoal';
 import CreateSavings from '../screens/Savings/CreateSavings';
 import SavingsTransactions from '../screens/Savings/SavingsTransactions';
 import Receipt from '../screens/Savings/Receipt';
 import TransportDetails from '../screens/TransportCredit/TransportDetails';
+import OtherServices from '../services/OtherServices';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -144,9 +146,17 @@ const MainNavigator = () => {
     //   name: 'Receipt',
     //   component: Receipt,
     // },
+    // {
+    //   name: 'TransportDetails',
+    //   component: TransportDetails,
+    // },
+    // {
+    //   name: 'PreviewRequest',
+    //   component: PreviewRequest,
+    // },
     {
-      name: 'TransportDetails',
-      component: TransportDetails,
+      name: 'OtherServices',
+      component: OtherServices,
     },
   ];
 

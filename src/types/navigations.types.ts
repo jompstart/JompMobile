@@ -35,6 +35,8 @@ export type RootStackParamList = {
   SavingsTransactions: undefined;
   Receipt: undefined;
   TransportDetails: undefined;
+  PreviewRequest: undefined;
+  OtherServices: undefined;
 };
 
 type AuthScreenProps = {

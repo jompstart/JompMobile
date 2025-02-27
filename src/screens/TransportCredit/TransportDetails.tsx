@@ -5,7 +5,6 @@ import GradientHeader from '../../shared/GradientHeader';
 import { size } from '../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import PTextInput from '../../shared/PTextInput';
@@ -13,7 +12,7 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import PhoneInput from '../../shared/PhoneInput';
 import Form1 from '../../components/Transport/Form1';
 import Form2 from '../../components/Transport/Form2';
-import Form3 from '../../components/SelfBills/Form3';
+import Form3 from '../../components/Transport/Form3';
 import Form4 from '../../components/SelfBills/Form4';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -33,14 +32,9 @@ const TransportDetails = () => {
       component: <Form2 />,
     },
     {
-      label: 'Employment/Business Details',
-      title: 'Next: Document Uploads',
+      label: 'Required Uploads',
+      title: 'Next: Review',
       component: <Form3 />,
-    },
-    {
-      label: 'Document Uploads',
-      title: '',
-      component: <Form4 />,
     },
   ];
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -54,9 +48,10 @@ const TransportDetails = () => {
         animated: true,
       });
       setViewIndex(viewIndex + 1);
-      setProgress(progress + 100 / views.length);
+      setProgress(progress + 111.3333 / views.length);
     }
   };
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -103,7 +98,7 @@ const TransportDetails = () => {
           >
             <AnimatedCircularProgress
               fill={progress}
-              size={size.getHeightSize(123)}
+              size={size.getHeightSize(119)}
               width={size.getHeightSize(8)}
               tintColor="#4CAF50"
               backgroundColor={colors.primaryDisabled()}
@@ -156,28 +151,44 @@ const TransportDetails = () => {
               </CText>
             </View>
           </View>
-          <CText
-            color={'secondaryBlack'}
-            fontSize={16}
-            lineHeight={22.4}
-            fontFamily="regular"
-            style={{
-              textAlign: 'left',
-              marginTop: size.getHeightSize(24),
-              marginBottom: size.getHeightSize(16),
-            }}
-          >
-            Complete the fields below (
+          {viewIndex == 2 ? (
             <CText
-              color={'warning'}
+              color={'secondaryBlack'}
               fontSize={16}
               lineHeight={22.4}
               fontFamily="regular"
+              style={{
+                textAlign: 'left',
+                marginTop: size.getHeightSize(24),
+                marginBottom: size.getHeightSize(16),
+              }}
             >
-              all are necessary to complete the process
+              Ensure all documents are clear and legible.
             </CText>
-            ).
-          </CText>
+          ) : (
+            <CText
+              color={'secondaryBlack'}
+              fontSize={16}
+              lineHeight={22.4}
+              fontFamily="regular"
+              style={{
+                textAlign: 'left',
+                marginTop: size.getHeightSize(24),
+                marginBottom: size.getHeightSize(16),
+              }}
+            >
+              Complete the fields below (
+              <CText
+                color={'warning'}
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="regular"
+              >
+                all are necessary to complete the process
+              </CText>
+              ).
+            </CText>
+          )}
 
           <View
             style={{
