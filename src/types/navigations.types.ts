@@ -37,6 +37,7 @@ export type RootStackParamList = {
   TransportDetails: undefined;
   PreviewRequest: undefined;
   OtherServices: undefined;
+  AddCard: undefined;
 };
 
 type AuthScreenProps = {

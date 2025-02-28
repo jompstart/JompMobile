@@ -3,17 +3,13 @@ import GradientHeader from '../../shared/GradientHeader';
 import CText from '../../shared/CText';
 import InfoIcon from '../../../assets/svgs/Loan/InfoIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
-import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
-import PTextInput from '../../shared/PTextInput';
 import { ScrollView } from 'react-native-gesture-handler';
 import Feather from '@expo/vector-icons/Feather';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
-import PencilIcon from '../../../assets/svgs/Dashboard/PencilIcon';
-import AddIcon from '../../../assets/svgs/Dashboard/AddIcon';
+
 const CreateSavings = () => {
   return (
     <GradientSafeAreaView>

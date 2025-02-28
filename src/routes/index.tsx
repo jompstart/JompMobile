@@ -31,6 +31,7 @@ import SavingsTransactions from '../screens/Savings/SavingsTransactions';
 import Receipt from '../screens/Savings/Receipt';
 import TransportDetails from '../screens/TransportCredit/TransportDetails';
 import OtherServices from '../services/OtherServices';
+import AddCard from '../screens/Cards/AddCard';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -154,9 +155,13 @@ const MainNavigator = () => {
     //   name: 'PreviewRequest',
     //   component: PreviewRequest,
     // },
+    // {
+    //   name: 'OtherServices',
+    //   component: OtherServices,
+    // },
     {
-      name: 'OtherServices',
-      component: OtherServices,
+      name: 'AddCard',
+      component: AddCard,
     },
   ];
 
