@@ -20,7 +20,11 @@ const CustomSafeArea: React.FC<{
         paddingBottom: bottomSafeAreaInset ? bottom : 0,
       }}
     >
-      <StatusBar translucent={false} backgroundColor={backgroundColor} />
+      <StatusBar
+        translucent={true}
+        backgroundColor={backgroundColor}
+        style="dark"
+      />
       <View
         style={{
           flex: 1,

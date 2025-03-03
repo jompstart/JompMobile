@@ -1,4 +1,10 @@
-import { StyleSheet, Platform, View } from 'react-native';
+import {
+  StyleSheet,
+  Platform,
+  View,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 import React, { ReactNode } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
@@ -33,6 +39,20 @@ type BottomTabNavigationRouteProp = RouteProp<
   keyof RootStackParamList
 >;
 
+// interface CustomTabBarButtonProps {
+//   children?: React.ReactNode;
+//   onPress?: () => void;
+//   style?: ViewStyle;
+// }
+
+const CustomTabBarButton: React.FC<any> = ({ children, onPress, style }) => {
+  return (
+    <TouchableOpacity activeOpacity={1} onPress={onPress} style={style}>
+      {children}
+    </TouchableOpacity>
+  );
+};
+
 const home = 'Home';
 const services = 'Services';
 const transactions = 'Transactions';
@@ -55,6 +75,7 @@ const BottomtabNavigation = () => {
           borderTopWidth: 0,
           paddingTop: size.getHeightSize(6),
         },
+        tabBarButton: (props) => <CustomTabBarButton {...props} />,
         tabBarLabel: ({ focused }) => {
           if (route.name === home) {
             return (

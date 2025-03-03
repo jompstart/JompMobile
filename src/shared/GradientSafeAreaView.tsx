@@ -24,7 +24,7 @@ const GradientSafeAreaView: React.FC<{
         paddingBottom: bottomSafeAreaInset ? bottom : 0,
       }}
     >
-      <StatusBar translucent={false} backgroundColor={backgroundColor} />
+      <StatusBar translucent={true} style="dark" />
       <View
         style={{
           flex: 1,
