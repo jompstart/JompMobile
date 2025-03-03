@@ -26,7 +26,7 @@ const Savings = () => {
   const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
-      <GradientHeader>
+         <GradientHeader disable>
         <MenuIcon size={size.getHeightSize(28)} />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />

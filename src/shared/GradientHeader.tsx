@@ -3,10 +3,17 @@ import { size } from '../config/size';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-const GradientHeader = ({ children }: { children: ReactNode }) => {
+const GradientHeader = ({
+  children,
+  disable = false,
+}: {
+  children: ReactNode;
+  disable?: boolean;
+}) => {
   const { goBack } = useNavigation();
+
   return (
-    <Pressable onPress={goBack}>
+    <Pressable onPress={goBack} disabled={disable ? true : false}>
       <LinearGradient
         colors={['#EFA005', '#C5520A']}
         start={{ x: 1, y: 0 }}

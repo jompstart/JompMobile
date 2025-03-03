@@ -32,6 +32,7 @@ import Receipt from '../screens/Savings/Receipt';
 import TransportDetails from '../screens/TransportCredit/TransportDetails';
 import OtherServices from '../services/OtherServices';
 import AddCard from '../screens/Cards/AddCard';
+import FundWallet from '../screens/Savings/FundWallet';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -55,110 +56,115 @@ const MainNavigator = () => {
     },
   };
   const pages: pages[] = [
-    // {
-    //   name: 'SplashScreen',
-    //   component: SplashScreen,
-    // },
-    // {
-    //   name: 'OnboardingScreen',
-    //   component: OnboardingScreen,
-    // },
-    // {
-    //   name: 'SignUp',
-    //   component: SignUp,
-    // },
-    // {
-    //   name: 'AccountPreference',
-    //   component: AccountPreference,
-    // },
-    // {
-    //   name: 'Login',
-    //   component: Login,
-    // },
-    // {
-    //   name: 'VerifyBvn',
-    //   component: VerifyBvn,
-    // },
-    // {
-    //   name: 'VerifyNin',
-    //   component: VerifyNin,
-    // },
-    // {
-    //   name: 'BottomtabNavigation',
-    //   component: BottomtabNavigation,
-    // },
-    // {
-    //   name: 'Profile',
-    //   component: Profile,
-    // },
-    // {
-    //   name: 'AddBank',
-    //   component: AddBank,
-    // },
-    // {
-    //   name: 'WithdrawFunds',
-    //   component: WithdrawFunds,
-    // },
-    // {
-    //   name: 'GuardianDetails',
-    //   component: GuardianDetails,
-    // },
-    // {
-    //   name: 'SelfDetails',
-    //   component: SelfDetails,
-    // },
-    // {
-    //   name: 'LoanPage',
-    //   component: LoanPage,
-    // },
-    // {
-    //   name: 'SchoolFees',
-    //   component: SchoolFees,
-    // },
-    // {
-    //   name: 'Transport',
-    //   component: Transport,
-    // },
-    // {
-    //   name: 'HouseRent',
-    //   component: HouseRent,
-    // },
-    // {
-    //   name: 'UserCreated',
-    //   component: UserCreated,
-    // },
-    // {
-    //   name: 'PayServices',
-    //   component: PayServices,
-    // },
-    // {
-    //   name: 'SavingsGoal',
-    //   component: SavingsGoal,
-    // },
-    // {
-    //   name: 'CreateSavings',
-    //   component: CreateSavings,
-    // },
-    // {
-    //   name: 'SavingsTransactions',
-    //   component: SavingsTransactions,
-    // },
-    // {
-    //   name: 'Receipt',
-    //   component: Receipt,
-    // },
-    // {
-    //   name: 'TransportDetails',
-    //   component: TransportDetails,
-    // },
-    // {
-    //   name: 'PreviewRequest',
-    //   component: PreviewRequest,
-    // },
-    // {
-    //   name: 'OtherServices',
-    //   component: OtherServices,
-    // },
+    {
+      name: 'SplashScreen',
+      component: SplashScreen,
+    },
+    {
+      name: 'OnboardingScreen',
+      component: OnboardingScreen,
+    },
+    {
+      name: 'SignUp',
+      component: SignUp,
+    },
+    {
+      name: 'AccountPreference',
+      component: AccountPreference,
+    },
+    {
+      name: 'Login',
+      component: Login,
+    },
+    {
+      name: 'VerifyBvn',
+      component: VerifyBvn,
+    },
+    {
+      name: 'VerifyNin',
+      component: VerifyNin,
+    },
+    {
+      name: 'BottomtabNavigation',
+      component: BottomtabNavigation,
+    },
+    {
+      name: 'Profile',
+      component: Profile,
+    },
+    {
+      name: 'AddBank',
+      component: AddBank,
+    },
+    {
+      name: 'WithdrawFunds',
+      component: WithdrawFunds,
+    },
+    {
+      name: 'GuardianDetails',
+      component: GuardianDetails,
+    },
+    {
+      name: 'SelfDetails',
+      component: SelfDetails,
+    },
+    {
+      name: 'LoanPage',
+      component: LoanPage,
+    },
+    {
+      name: 'SchoolFees',
+      component: SchoolFees,
+    },
+    {
+      name: 'Transport',
+      component: Transport,
+    },
+    {
+      name: 'HouseRent',
+      component: HouseRent,
+    },
+    {
+      name: 'UserCreated',
+      component: UserCreated,
+    },
+    {
+      name: 'PayServices',
+      component: PayServices,
+    },
+    {
+      name: 'SavingsGoal',
+      component: SavingsGoal,
+    },
+    {
+      name: 'CreateSavings',
+      component: CreateSavings,
+    },
+    {
+      name: 'SavingsTransactions',
+      component: SavingsTransactions,
+    },
+    {
+      name: 'Receipt',
+      component: Receipt,
+    },
+    {
+      name: 'TransportDetails',
+      component: TransportDetails,
+    },
+    {
+      name: 'PreviewRequest',
+      component: PreviewRequest,
+    },
+    {
+      name: 'OtherServices',
+      component: OtherServices,
+    },
+
+    {
+      name: 'FundWallet',
+      component: FundWallet,
+    },
     {
       name: 'AddCard',
       component: AddCard,

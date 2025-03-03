@@ -117,7 +117,10 @@ const UserCreated = () => {
               color={colors.primary()}
             />
           </View>
-          <View
+          <Pressable
+            onPress={() => {
+              navigate('HouseRent');
+            }}
             style={[
               styles.view,
               {
@@ -163,8 +166,11 @@ const UserCreated = () => {
               size={size.getHeightSize(20)}
               color={colors.primary()}
             />
-          </View>
-          <View
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigate('TransportDetails');
+            }}
             style={[
               styles.view,
               {
@@ -211,7 +217,7 @@ const UserCreated = () => {
               size={size.getHeightSize(20)}
               color={colors.primary()}
             />
-          </View>
+          </Pressable>
           <View
             style={[
               styles.view,
@@ -259,7 +265,10 @@ const UserCreated = () => {
               color={colors.primary()}
             />
           </View>
-          <View
+          <Pressable
+            onPress={() => {
+              navigate('OtherServices');
+            }}
             style={[
               styles.view,
               {
@@ -305,7 +314,7 @@ const UserCreated = () => {
               size={size.getHeightSize(20)}
               color={colors.primary()}
             />
-          </View>
+          </Pressable>
         </View>
       </View>
     </GradientSafeAreaView>

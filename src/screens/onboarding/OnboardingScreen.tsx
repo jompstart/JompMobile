@@ -22,19 +22,19 @@ const OnboardingScreen = () => {
     },
     {
       backgroundImage: images.onboarding2,
-      title: 'Rent',
+      title: 'Pay Your Rent Now and Get a Good Sleep',
     },
     {
       backgroundImage: images.onboarding3,
-      title: 'Transport Credit',
+      title: 'Access to Transport Credit',
     },
     {
       backgroundImage: images.onboarding4,
       title: 'Fix Your Car Today, Pay Later with Jomp',
     },
     {
-      backgroundImage: images.onboarding5,
-      title: 'Stop Stressing About Hospital Bills. We Have Got You.',
+      backgroundImage: images.onboaarding6,
+      title: 'Access Essential Services Now',
     },
   ];
   const [currentSlide, setCurrentSlide] = useState(onboardingContent[0]);

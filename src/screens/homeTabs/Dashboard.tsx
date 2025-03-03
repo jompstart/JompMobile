@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
@@ -22,18 +22,25 @@ import OrderIcon from '../../../assets/svgs/Home/OrderIcon';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
 import TxnIcon from '../../../assets/svgs/Home/TxnIcon';
+import { useNavigation } from '@react-navigation/native';
 import WalletAccountDetails from '../../components/Dashboard/WalletAccountDetails';
 const Dashboard = () => {
+  const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
-      <GradientHeader>
+      <GradientHeader disable>
         <MenuIcon size={size.getHeightSize(28)} />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
         <NotificationBell size={size.getHeightSize(28)} />
       </GradientHeader>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.view3}>
+        <Pressable
+          onPress={() => {
+            navigate('Profile');
+          }}
+          style={styles.view3}
+        >
           <PersonIcon size={size.getHeightSize(40)} />
           <CText
             color={'black'}
@@ -43,7 +50,7 @@ const Dashboard = () => {
           >
             Hello, Timmy
           </CText>
-        </View>
+        </Pressable>
         <View style={styles.walletView}>
           <View
             style={{
@@ -145,7 +152,12 @@ const Dashboard = () => {
             }}
             horizontal
           >
-            <View style={styles.cardView}>
+            <Pressable
+              onPress={() => {
+                navigate('PayServices');
+              }}
+              style={styles.cardView}
+            >
               <View
                 style={{
                   flexDirection: 'row',
@@ -217,7 +229,7 @@ const Dashboard = () => {
                   style={{}}
                 />
               </View>
-            </View>
+            </Pressable>
             <View style={styles.cardView}>
               <View
                 style={{
@@ -352,7 +364,12 @@ const Dashboard = () => {
               Savings
             </CText>
           </View>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('FundWallet');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <WalletIcon size={size.getHeightSize(26)} />
             </View>
@@ -367,8 +384,13 @@ const Dashboard = () => {
             >
               Fund Wallet
             </CText>
-          </View>
-          <View style={styles.view1}>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigate('WithdrawFunds');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <WithdrawIcon size={size.getHeightSize(26)} />
             </View>
@@ -383,7 +405,7 @@ const Dashboard = () => {
             >
               Withdraw to your Bank
             </CText>
-          </View>
+          </Pressable>
           <View style={styles.view1}>
             <View style={styles.view}>
               <BankIcon size={size.getHeightSize(26)} />
@@ -439,8 +461,38 @@ const Dashboard = () => {
               Total Transactions
             </CText>
             <View style={styles.view4}>
-              <View>
-                <OrderIcon size={size.getHeightSize(41)} />
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: size.getHeightSize(8),
+                }}
+              >
+                <TxnIcon size={size.getHeightSize(41)} />
+                <CText
+                  color={'black'}
+                  fontSize={17}
+                  lineHeight={27.2}
+                  fontFamily="bold"
+                >
+                  ₦ 12,000,000.00
+                </CText>
+                <CText
+                  color={'black'}
+                  fontSize={12}
+                  lineHeight={19.2}
+                  fontFamily="semibold"
+                >
+                  <CText
+                    color={'success'}
+                    fontSize={12}
+                    lineHeight={19.2}
+                    fontFamily="semibold"
+                  >
+                    +1.42%
+                  </CText>{' '}
+                  From last month
+                </CText>
               </View>
             </View>
           </View>
@@ -459,8 +511,38 @@ const Dashboard = () => {
               Number of Orders
             </CText>
             <View style={styles.view4}>
-              <View>
-                <TxnIcon size={size.getHeightSize(41)} />
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: size.getHeightSize(8),
+                }}
+              >
+                <OrderIcon size={size.getHeightSize(41)} />
+                <CText
+                  color={'black'}
+                  fontSize={17}
+                  lineHeight={27.2}
+                  fontFamily="bold"
+                >
+                  42
+                </CText>
+                <CText
+                  color={'black'}
+                  fontSize={12}
+                  lineHeight={19.2}
+                  fontFamily="semibold"
+                >
+                  <CText
+                    color={'success'}
+                    fontSize={12}
+                    lineHeight={19.2}
+                    fontFamily="semibold"
+                  >
+                    +8.42%
+                  </CText>{' '}
+                  From last month
+                </CText>
               </View>
             </View>
           </View>

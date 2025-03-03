@@ -73,6 +73,7 @@ const AddCard = () => {
             gap: size.getWidthSize(16),
           }}
           horizontal
+          showsHorizontalScrollIndicator={false}
         >
           <View
             style={{
@@ -81,6 +82,7 @@ const AddCard = () => {
               gap: size.getHeightSize(4),
               backgroundColor: colors.white(),
               borderRadius: size.getWidthSize(8),
+              paddingHorizontal: size.getWidthSize(16),
             }}
           >
             <AddBankIcon size={size.getHeightSize(80)} />

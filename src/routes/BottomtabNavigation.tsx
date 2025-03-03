@@ -43,7 +43,7 @@ const BottomtabNavigation = () => {
   return (
     <Tab.Navigator
       backBehavior="none"
-      initialRouteName={savings}
+      initialRouteName={home}
       screenOptions={({ route }: any) => ({
         tabBarStyle: {
           borderWidth: 0,
@@ -207,13 +207,13 @@ const BottomtabNavigation = () => {
         name={savings}
         component={Savings}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         options={{
           headerShown: false,
         }}
         name={more}
         component={More}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

@@ -17,7 +17,7 @@ import Transaction from '../../components/Transaction/Transaction';
 const Transactions = () => {
   return (
     <GradientSafeAreaView>
-      <GradientHeader>
+      <GradientHeader disable>
         <MenuIcon size={size.getHeightSize(28)} />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />

@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, Image, View, Pressable } from 'react-native';
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,9 +15,10 @@ import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import IdIcon from '../../../assets/svgs/Dashboard/IdIcon';
 import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { useNavigation } from '@react-navigation/native';
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
+  const { navigate } = useNavigation();
   return (
     <View
       style={{
@@ -285,7 +286,8 @@ const Profile = () => {
             >
               Linked Bank Accounts
             </CText>
-            <View
+            <Pressable
+              onPress={() => navigate('AddBank')}
               style={{
                 height: size.getHeightSize(80),
                 backgroundColor: colors.white(),
@@ -296,7 +298,7 @@ const Profile = () => {
               }}
             >
               <AddBankIcon size={size.getHeightSize(80)} />
-            </View>
+            </Pressable>
           </View>
         </ScrollView>
       </View>
