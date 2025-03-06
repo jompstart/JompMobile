@@ -1,16 +1,16 @@
 import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
-import { size } from '../config/size';
-import { colors } from '../constants/colors';
-import CText from '../shared/CText';
+import { size } from '../../config/size';
+import { colors } from '../../constants/colors';
+import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import GradientHeader from '../shared/GradientHeader';
-import GradientSafeAreaView from '../shared/GradientSafeAreaView';
-import HeartIcon from '../../assets/svgs/Dashboard/HeartIcon';
-import CarIcon from '../../assets/svgs/Home/CarIcon';
-import SchoolIcon from '../../assets/svgs/Home/SchoolIcon';
-import PenBookIcon from '../../assets/svgs/Dashboard/PenBookIcon';
-import HouseIcon from '../../assets/svgs/Loan/HouseIcon';
+import GradientHeader from '../../shared/GradientHeader';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import HeartIcon from '../../../assets/svgs/Dashboard/HeartIcon';
+import CarIcon from '../../../assets/svgs/Home/CarIcon';
+import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
+import PenBookIcon from '../../../assets/svgs/Dashboard/PenBookIcon';
+import HouseIcon from '../../../assets/svgs/Loan/HouseIcon';
 import { useNavigation } from '@react-navigation/native';
 const UserCreated = () => {
   const { navigate } = useNavigation();

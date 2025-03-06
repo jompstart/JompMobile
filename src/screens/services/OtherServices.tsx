@@ -1,20 +1,20 @@
 import { StyleSheet, Pressable, View, ScrollView } from 'react-native';
 import React from 'react';
-import { size } from '../config/size';
-import { colors } from '../constants/colors';
-import CText from '../shared/CText';
+import { size } from '../../config/size';
+import { colors } from '../../constants/colors';
+import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
-import GradientHeader from '../shared/GradientHeader';
-import GradientSafeAreaView from '../shared/GradientSafeAreaView';
-import StudentIcon from '../../assets/svgs/Dashboard/StudentIcon';
-import ChildIcon from '../../assets/svgs/Dashboard/ChildIcon';
+import GradientHeader from '../../shared/GradientHeader';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import StudentIcon from '../../../assets/svgs/Dashboard/StudentIcon';
+import ChildIcon from '../../../assets/svgs/Dashboard/ChildIcon';
 import { useNavigation } from '@react-navigation/native';
-import PTextInput from '../shared/PTextInput';
-import PhoneInput from '../shared/PhoneInput';
-import AttachmentView from '../shared/AttachmentView';
-import PrimaryButton from '../shared/PrimaryButton';
-import ServiceCategory from '../components/Service/ServiceCategory';
+import PTextInput from '../../shared/PTextInput';
+import PhoneInput from '../../shared/PhoneInput';
+import AttachmentView from '../../shared/AttachmentView';
+import PrimaryButton from '../../shared/PrimaryButton';
+import ServiceCategory from '../../components/Service/ServiceCategory';
 const OtherServices = () => {
   return (
     <GradientSafeAreaView>

@@ -22,15 +22,15 @@ import LoanPage from '../screens/LoanCalculator/LoanPage';
 import SchoolFees from '../screens/LoanCalculator/SchoolFees';
 import Transport from '../screens/LoanCalculator/Transport';
 import HouseRent from '../screens/LoanCalculator/HouseRent';
-import UserCreated from '../services/UserCreated';
-import PayServices from '../services/PayServices';
+import UserCreated from '../screens/services/UserCreated';
+import PayServices from '../screens/services/PayServices';
 import PreviewRequest from '../shared/PreviewRequest';
 import SavingsGoal from '../screens/Savings/SavingsGoal';
 import CreateSavings from '../screens/Savings/CreateSavings';
 import SavingsTransactions from '../screens/Savings/SavingsTransactions';
 import Receipt from '../screens/Savings/Receipt';
 import TransportDetails from '../screens/TransportCredit/TransportDetails';
-import OtherServices from '../services/OtherServices';
+import OtherServices from '../screens/services/OtherServices';
 import AddCard from '../screens/Cards/AddCard';
 import FundWallet from '../screens/Savings/FundWallet';
 interface pages {
@@ -65,13 +65,14 @@ const MainNavigator = () => {
       component: OnboardingScreen,
     },
     {
-      name: 'SignUp',
-      component: SignUp,
-    },
-    {
       name: 'AccountPreference',
       component: AccountPreference,
     },
+    {
+      name: 'SignUp',
+      component: SignUp,
+    },
+
     {
       name: 'Login',
       component: Login,

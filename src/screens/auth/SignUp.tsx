@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -9,16 +9,36 @@ import CheckIcon from '../../../assets/svgs/Onboarding/CheckIcon';
 import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
 import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
+import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import { useNavigation } from '@react-navigation/native';
-const SignUp = () => {
+import { SignupScreenProps } from '../../types/navigations.types';
+import Ionicons from '@expo/vector-icons/Ionicons';
+const SignUp = ({
+  route: {
+    params: { accountPreference },
+  },
+}: SignupScreenProps) => {
+  //https://github.dev/jompstart/jomp_frontend/blob/main/src/api/axios.ts
+  const [passwordValidation, setPasswordValidation] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    specialCharacter: false,
+    number: false,
+  });
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const navigation = useNavigation();
+
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -28,11 +48,12 @@ const SignUp = () => {
           backgroundColor: colors.appBackground(),
         }}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
+        <KeyboardAwareScrollView
           contentContainerStyle={{
             paddingBottom: size.getHeightSize(20),
           }}
+          showsVerticalScrollIndicator={false}
+          extraScrollHeight={size.getHeightSize(16)}
         >
           <View
             style={{
@@ -79,85 +100,182 @@ const SignUp = () => {
             }}
           >
             <CTextInput
+              keyboardType="email-address"
               title="Email Address"
               placeholder="@mail.com"
               rightIcon={<MailIcon size={size.getHeightSize(24)} />}
             />
             <CTextInput
+              keyboardType="email-address"
+              title="First Name"
+              placeholder="Enter your first name"
+              rightIcon={
+                <Ionicons
+                  name="person"
+                  color={colors.primary()}
+                  size={size.getHeightSize(20)}
+                />
+              }
+            />
+            <CTextInput
+              keyboardType="email-address"
+              title="Last Name"
+              placeholder="Enter your last name"
+              rightIcon={
+                <Ionicons
+                  name="person"
+                  color={colors.primary()}
+                  size={size.getHeightSize(20)}
+                />
+              }
+            />
+            <CTextInput
               title="Password"
+              secureTextEntry
               placeholder="Password"
+              onChangeText={(text) => {
+                setPassword(text);
+                setPasswordValidation({
+                  length: text.length >= 8,
+                  uppercase: /[A-Z]/.test(text),
+                  lowercase: /[a-z]/.test(text),
+                  specialCharacter: /[^A-Za-z0-9]/.test(text),
+                  number: /[0-9]/.test(text),
+                });
+              }}
               rightIcon={<LockIcon size={size.getHeightSize(24)} />}
             />
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              gap: size.getWidthSize(16),
-              marginTop: size.getHeightSize(8),
-            }}
-          >
+          {password.length > 0 && (
             <View
               style={{
-                flex: 1,
-                gap: size.getHeightSize(8),
+                flexDirection: 'row',
+                alignItems: 'flex-start',
+                gap: size.getWidthSize(16),
+                marginTop: size.getHeightSize(8),
               }}
             >
-              <View style={styles.row}>
-                <CancelIcon size={size.getHeightSize(16)} />
-                <CText color="warning" fontSize={12} lineHeight={16}>
-                  Minimum 8 characters
-                </CText>
-              </View>
+              <View
+                style={{
+                  flex: 1,
+                  gap: size.getHeightSize(8),
+                }}
+              >
+                <View style={styles.row}>
+                  {passwordValidation.length ? (
+                    <CheckIcon size={size.getHeightSize(16)} />
+                  ) : (
+                    <CancelIcon size={size.getHeightSize(16)} />
+                  )}
+                  <CText
+                    color={passwordValidation.length ? 'success' : 'warning'}
+                    fontSize={12}
+                    lineHeight={16}
+                  >
+                    Minimum 8 characters
+                  </CText>
+                </View>
 
-              <View style={styles.row}>
-                <CancelIcon size={size.getHeightSize(16)} />
-                <CText color="warning" fontSize={12} lineHeight={16}>
-                  One uppercase character
-                </CText>
+                <View style={styles.row}>
+                  {passwordValidation.uppercase ? (
+                    <CheckIcon size={size.getHeightSize(16)} />
+                  ) : (
+                    <CancelIcon size={size.getHeightSize(16)} />
+                  )}
+                  <CText
+                    color={passwordValidation.uppercase ? 'success' : 'warning'}
+                    fontSize={12}
+                    lineHeight={16}
+                  >
+                    One uppercase character
+                  </CText>
+                </View>
+                <View style={styles.row}>
+                  {passwordValidation.lowercase ? (
+                    <CheckIcon size={size.getHeightSize(16)} />
+                  ) : (
+                    <CancelIcon size={size.getHeightSize(16)} />
+                  )}
+                  <CText
+                    color={passwordValidation.lowercase ? 'success' : 'warning'}
+                    fontSize={12}
+                    lineHeight={16}
+                  >
+                    One lowercase character
+                  </CText>
+                </View>
               </View>
-              <View style={styles.row}>
-                <CancelIcon size={size.getHeightSize(16)} />
-                <CText color="warning" fontSize={12} lineHeight={16}>
-                  One lowercase character
-                </CText>
+              <View
+                style={{
+                  flex: 1,
+                  gap: size.getHeightSize(8),
+                }}
+              >
+                <View style={styles.row}>
+                  {passwordValidation.specialCharacter ? (
+                    <CheckIcon size={size.getHeightSize(16)} />
+                  ) : (
+                    <CancelIcon size={size.getHeightSize(16)} />
+                  )}
+                  <CText
+                    color={
+                      passwordValidation.specialCharacter
+                        ? 'success'
+                        : 'warning'
+                    }
+                    fontSize={12}
+                    lineHeight={16}
+                  >
+                    One special character
+                  </CText>
+                </View>
+                <View style={styles.row}>
+                  {passwordValidation.number ? (
+                    <CheckIcon size={size.getHeightSize(16)} />
+                  ) : (
+                    <CancelIcon size={size.getHeightSize(16)} />
+                  )}
+                  <CText
+                    color={passwordValidation.number ? 'success' : 'warning'}
+                    fontSize={12}
+                    lineHeight={16}
+                  >
+                    One number
+                  </CText>
+                </View>
               </View>
             </View>
-            <View
-              style={{
-                flex: 1,
-                gap: size.getHeightSize(8),
-              }}
-            >
-              <View style={styles.row}>
-                <CancelIcon size={size.getHeightSize(16)} />
-                <CText color="warning" fontSize={12} lineHeight={16}>
-                  One special character
-                </CText>
-              </View>
-              <View style={styles.row}>
-                <CheckIcon size={size.getHeightSize(16)} />
-                <CText color="success" fontSize={12} lineHeight={16}>
-                  One number
-                </CText>
-              </View>
-            </View>
-          </View>
+          )}
+
           <View
             style={{
               marginTop: size.getHeightSize(16),
+              gap: size.getHeightSize(8),
             }}
           >
             <CTextInput
+              secureTextEntry
+              onChangeText={(text) => setConfirmPassword(text)}
               title="Confirm password"
               placeholder="Password"
               rightIcon={<LockIcon size={size.getHeightSize(24)} />}
             />
+
+            {confirmPassword.length > 0 && confirmPassword !== password && (
+              <View style={styles.row}>
+                <CancelIcon size={size.getHeightSize(16)} />
+
+                <CText color={'warning'} fontSize={12} lineHeight={16}>
+                  Password does not match
+                </CText>
+              </View>
+            )}
           </View>
+
           <PrimaryButton
             label="Get Started"
-            onPress={()=>{
-              navigation.navigate('AccountPreference')
+            onPress={() => {
+              navigation.navigate('AccountPreference');
             }}
             style={{
               marginTop: size.getHeightSize(24),
@@ -223,7 +341,7 @@ const SignUp = () => {
               Login
             </CText>
           </CText>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     </CustomSafeArea>
   );

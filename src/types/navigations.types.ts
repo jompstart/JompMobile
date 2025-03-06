@@ -3,6 +3,7 @@ import {
   ParamListBase,
   RouteProp,
 } from '@react-navigation/native';
+import { UserAccountPreference } from '../models/user';
 
 declare global {
   namespace ReactNavigation {
@@ -13,7 +14,9 @@ declare global {
 export type RootStackParamList = {
   SplashScreen: undefined;
   OnboardingScreen: undefined;
-  SignUp: undefined;
+  SignUp: {
+    accountPreference: UserAccountPreference;
+  };
   AccountPreference: undefined;
   Login: undefined;
   VerifyBvn: undefined;
@@ -41,12 +44,9 @@ export type RootStackParamList = {
   FundWallet: undefined;
 };
 
-type AuthScreenProps = {
-  [AuthPage: string]: {
-    data?: string;
-    nonce?: string;
-    phantom_encryption_public_key?: string;
-    show_bottomsheet?: string;
+type SignUpScreenParams = {
+  [SignUpScreenProps: string]: {
+    accountPreference: UserAccountPreference;
   };
 };
 
@@ -66,7 +66,7 @@ type EmailConfirmationPageParams = {
   };
 };
 
-// export type SignupWithWalletPageProps = {
-//   navigation: NavigationProp<RootStackParamList, 'SignupWithWallet'>;
-//   route: RouteProp<SignupWithWalletPageParams, 'SignupWithWallet'>;
-// };
+export type SignupScreenProps = {
+  navigation: NavigationProp<RootStackParamList, 'SignUp'>;
+  route: RouteProp<SignUpScreenParams, 'SignUp'>;
+};

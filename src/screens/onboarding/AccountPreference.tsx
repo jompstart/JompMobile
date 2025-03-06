@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { StyleSheet, Pressable, View } from 'react-native';
+import React, { useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
@@ -12,9 +12,12 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import EmailVerificationSuccessModal from '../../components/auth/EmailVerificationSuccessModal';
 import { useNavigation } from '@react-navigation/native';
+import { UserAccountPreference } from '../../models/user';
 
 const AccountPreference = () => {
   const navigation = useNavigation();
+  const [accountPreference, setAccountPreference] =
+    useState<UserAccountPreference | null>(null);
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -63,16 +66,27 @@ const AccountPreference = () => {
         >
           Please select account preference
         </CText>
-        <View style={styles.view1}>
+        <Pressable
+          onPress={() => {
+            setAccountPreference('customer');
+          }}
+          style={styles.view1}
+        >
           <View
             style={[
               styles.view2,
               {
-                backgroundColor: colors.appBackground(),
+                backgroundColor: '#F9F8FF',
               },
             ]}
           >
-            <View style={styles.view3} />
+            {accountPreference === 'customer' ? (
+              <View style={styles.view4}>
+                <View style={styles.view5} />
+              </View>
+            ) : (
+              <View style={styles.view4} />
+            )}
             <View
               style={{
                 flex: 1,
@@ -101,8 +115,13 @@ const AccountPreference = () => {
             </View>
             <Avatar1 size={size.getHeightSize(46)} />
           </View>
-        </View>
-        <View style={styles.view1}>
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setAccountPreference('provider');
+          }}
+          style={styles.view1}
+        >
           <View
             style={[
               styles.view2,
@@ -111,7 +130,13 @@ const AccountPreference = () => {
               },
             ]}
           >
-            <View style={styles.view3} />
+            {accountPreference === 'provider' ? (
+              <View style={styles.view4}>
+                <View style={styles.view5} />
+              </View>
+            ) : (
+              <View style={styles.view4} />
+            )}
             <View
               style={{
                 flex: 1,
@@ -140,17 +165,20 @@ const AccountPreference = () => {
             </View>
             <Avatar2 size={size.getHeightSize(46)} />
           </View>
-        </View>
+        </Pressable>
         <View
           style={{
             flex: 1,
           }}
         />
         <PrimaryButton
+          disabled={!accountPreference}
           label="Get Started"
           style={{ marginBottom: size.getHeightSize(40) }}
           onPress={() => {
-            navigation.navigate('Login');
+            if (accountPreference) {
+              navigation.navigate('SignUp', { accountPreference });
+            }
           }}
         />
         <VerifyEmailBottomsheet />
@@ -177,6 +205,7 @@ const styles = StyleSheet.create({
     gap: size.getWidthSize(8),
     paddingVertical: size.getHeightSize(8),
     paddingHorizontal: size.getWidthSize(8),
+    borderRadius: size.getHeightSize(8),
   },
   view3: {
     height: size.getHeightSize(18),
@@ -184,5 +213,20 @@ const styles = StyleSheet.create({
     borderRadius: size.getHeightSize(200),
     borderColor: '#333333',
     borderWidth: size.getHeightSize(2),
+  },
+  view4: {
+    height: size.getHeightSize(18),
+    width: size.getHeightSize(18),
+    borderRadius: size.getHeightSize(200),
+    borderColor: '#333333',
+    borderWidth: size.getHeightSize(2),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  view5: {
+    height: size.getHeightSize(11),
+    width: size.getHeightSize(11),
+    borderRadius: '100%',
+    backgroundColor: colors.primary(),
   },
 });

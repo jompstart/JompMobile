@@ -13,7 +13,10 @@ import CText from '../../shared/CText';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
+
+
 import { useNavigation } from '@react-navigation/native';
+
 const OnboardingScreen = () => {
   const onboardingContent = [
     {
@@ -158,7 +161,7 @@ const OnboardingScreen = () => {
                 setCurrentSlideIndex(currentSlideIndex + 1);
               } else {
                 // Navigate to the next screen
-                navigation.navigate('SignUp');
+                navigation.navigate('AccountPreference');
               }
             }}
             label="Next"

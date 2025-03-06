@@ -34,7 +34,9 @@ const PrimaryButton = ({
         styles.pressable,
         style,
         {
-          backgroundColor: colors.primary(opacity),
+          backgroundColor: disabled
+            ? colors.disabled('20')
+            : colors.primary(opacity),
         },
       ]}
     >
