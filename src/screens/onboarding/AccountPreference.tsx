@@ -9,7 +9,6 @@ import CText from '../../shared/CText';
 import Avatar2 from '../../../assets/svgs/Onboarding/Avatar2';
 import Avatar1 from '../../../assets/svgs/Onboarding/Avatar1';
 import PrimaryButton from '../../shared/PrimaryButton';
-import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import EmailVerificationSuccessModal from '../../components/auth/EmailVerificationSuccessModal';
 import { useNavigation } from '@react-navigation/native';
 import { UserAccountPreference } from '../../models/user';
@@ -181,7 +180,7 @@ const AccountPreference = () => {
             }
           }}
         />
-        <VerifyEmailBottomsheet />
+
         <EmailVerificationSuccessModal />
       </View>
     </CustomSafeArea>

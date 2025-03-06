@@ -8,7 +8,10 @@ import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 
-const VerifyEmailBottomsheet = () => {
+interface Props {
+  isVisible: boolean;
+}
+const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
   const inputRefs = useRef<TextInput[]>([]);
   const handleTextChange = (text: string, index: number) => {
     if (text.length === 1) {
@@ -57,7 +60,11 @@ const VerifyEmailBottomsheet = () => {
     }
   };
   return (
-    <BottomsheetWrapper enableBackdrop visibility={false} onClose={() => {}}>
+    <BottomsheetWrapper
+      enableBackdrop
+      visibility={isVisible}
+      onClose={() => {}}
+    >
       <View>
         <VerifyMailIcon
           style={{

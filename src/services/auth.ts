@@ -2,7 +2,7 @@ import { makeRequest } from '../config/api.config';
 import { CustomerUserRequest, ProviderUserRequest } from '../models/auth';
 import { UserAccountPreference } from '../models/user';
 
-export class Auth {
+export class AuthService {
   constructor() {}
   async signup(
     accountType: UserAccountPreference,
@@ -19,11 +19,32 @@ export class Auth {
       },
     });
   }
-  async getOtp(email: string) {
+  async validateEmail(email: string) {
     return await makeRequest({
       method: 'POST',
       url: '/validate-email',
       data: { emailAddress: email },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+  async resendOTP(email: string) {
+    return await makeRequest({
+      method: 'POST',
+      url: '/resend-otp',
+      data: { email: email },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  async verifyOTP(email: string, otp: string) {
+    return await makeRequest({
+      method: 'POST',
+      url: '/otp-verification',
+      data: { email, otp },
       headers: {
         'Content-Type': 'application/json',
       },

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -15,12 +15,19 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
 import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
+import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
 import { SignupScreenProps } from '../../types/navigations.types';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { AuthService } from '../../services/auth';
+import {
+  signUpFormReducer,
+  signUpInitailState,
+} from '../../features/signup_onboarding/onboarding.reducers';
 const SignUp = ({
   route: {
     params: { accountPreference },
@@ -37,7 +44,35 @@ const SignUp = ({
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [showVerifyEmailBottomsheet, setShowVerifyEmailBottomsheet] =
+    useState(false);
+
+  const [state, dispatch] = useReducer(signUpFormReducer, signUpInitailState);
   const navigation = useNavigation();
+  const authInstance = new AuthService();
+  const { mutate: validateEmail } = useMutation({
+    mutationFn: authInstance.validateEmail,
+    onSuccess: async (data) => {
+      try {
+        console.log('========= otp response here ======');
+        console.log(data.message);
+
+        if (data.statusCode === 200 && data.success === true) {
+          const resendOtpResponse = await authInstance.resendOTP(state.email);
+          console.log('======= otp response here ======');
+          console.log(state.email);
+          console.log(resendOtpResponse);
+        }
+      } catch (error) {
+        console.log('========= otp error here ======');
+        console.log(error);
+      }
+    },
+    onError: (error) => {
+      console.log('========= otp error here ======');
+      console.log(error);
+    },
+  });
 
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
@@ -100,13 +135,25 @@ const SignUp = ({
             }}
           >
             <CTextInput
+              onChangeText={(text) =>
+                dispatch({
+                  type: 'SET_EMAIL',
+                  payload: text,
+                })
+              }
               keyboardType="email-address"
               title="Email Address"
               placeholder="@mail.com"
               rightIcon={<MailIcon size={size.getHeightSize(24)} />}
             />
             <CTextInput
-              keyboardType="email-address"
+              onChangeText={(text) =>
+                dispatch({
+                  type: 'SET_FIRST_NAME',
+                  payload: text,
+                })
+              }
+              keyboardType="default"
               title="First Name"
               placeholder="Enter your first name"
               rightIcon={
@@ -118,7 +165,12 @@ const SignUp = ({
               }
             />
             <CTextInput
-              keyboardType="email-address"
+              onChangeText={(text) =>
+                dispatch({
+                  type: 'SET_LAST_NAME',
+                  payload: text,
+                })
+              }
               title="Last Name"
               placeholder="Enter your last name"
               rightIcon={
@@ -134,6 +186,11 @@ const SignUp = ({
               secureTextEntry
               placeholder="Password"
               onChangeText={(text) => {
+                dispatch({
+                  type: 'SET_PASSWORD',
+                  payload: text,
+                });
+
                 setPassword(text);
                 setPasswordValidation({
                   length: text.length >= 8,
@@ -275,7 +332,7 @@ const SignUp = ({
           <PrimaryButton
             label="Get Started"
             onPress={() => {
-              navigation.navigate('AccountPreference');
+              validateEmail(state.email);
             }}
             style={{
               marginTop: size.getHeightSize(24),
@@ -343,6 +400,7 @@ const SignUp = ({
           </CText>
         </KeyboardAwareScrollView>
       </View>
+      <VerifyEmailBottomsheet isVisible={showVerifyEmailBottomsheet} />
     </CustomSafeArea>
   );
 };
