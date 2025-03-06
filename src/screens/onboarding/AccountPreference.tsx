@@ -124,7 +124,7 @@ const AccountPreference = () => {
                   letterSpacing: size.getWidthSize(0.2),
                 }}
               >
-                Customer
+                Provider
               </CText>
               <CText
                 fontSize={12}
@@ -135,7 +135,7 @@ const AccountPreference = () => {
                   letterSpacing: size.getWidthSize(0.2),
                 }}
               >
-                Select this to register as a customer
+                Select this to register as a provider
               </CText>
             </View>
             <Avatar2 size={size.getHeightSize(46)} />
