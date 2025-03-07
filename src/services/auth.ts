@@ -10,7 +10,7 @@ export class AuthService {
   ) {
     const path =
       accountType === 'provider' ? '/create-vendor' : '/create-customer';
-    return await makeRequest({
+    return await makeRequest<{ otp: string }>({
       method: 'POST',
       url: path,
       data,

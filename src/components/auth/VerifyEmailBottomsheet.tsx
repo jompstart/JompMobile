@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -7,13 +7,29 @@ import VerifyMailIcon from '../../../assets/svgs/Onboarding/VerifyMailIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
-
+import { AuthService } from '../../services/auth';
+import { obfuscateEmail } from '../../utils/stringManipulation';
 interface Props {
   isVisible: boolean;
+  email?: string;
+  onSuccess?: () => void;
+  otp: string;
+  onClose: () => void;
 }
-const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
+const VerifyEmailBottomsheet = ({
+  isVisible,
+  email,
+  onSuccess,
+  otp,
+  onClose,
+}: Props) => {
+  const authInstance = new AuthService();
   const inputRefs = useRef<TextInput[]>([]);
+  const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
+
   const handleTextChange = (text: string, index: number) => {
+    const newUserInput = [...userInput];
+    newUserInput[index] = text;
     if (text.length === 1) {
       // Move to the next input when a single character is entered
       if (index < inputRefs.current.length - 1) {
@@ -40,6 +56,7 @@ const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
       // Move to the previous input on backspace
       inputRefs.current[index - 1].focus();
     }
+    setUserInput(newUserInput);
   };
 
   const handleKeyPress = (e: any, index: number) => {
@@ -59,11 +76,40 @@ const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
       });
     }
   };
+
+  const handleVerify = async () => {
+    console.log('========= verifying otp =========');
+    console.log(`otp: ${otp}`);
+    const userOtpInput = userInput.join('');
+    console.log(`user input: ${userOtpInput}`);
+    if (userInput.length < 4) {
+      return;
+    }
+    try {
+      const response = await authInstance.verifyOTP(
+        email!,
+        `${otp}-${userOtpInput}`
+      );
+      console.log('========= otp verification response =========');
+      console.log(response);
+
+      if (response.success) {
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.log('========= otp verification error =========');
+      console.log(error);
+    }
+  };
   return (
     <BottomsheetWrapper
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="none"
       enableBackdrop
       visibility={isVisible}
-      onClose={() => {}}
+      onClose={() => {
+        onClose();
+      }}
     >
       <View>
         <VerifyMailIcon
@@ -94,7 +140,7 @@ const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
             marginTop: size.getHeightSize(16),
           }}
         >
-          Please enter the code sent to tun******li@gmail.com
+          Please enter the code sent to {obfuscateEmail(email || '')}
         </CText>
         <View
           style={{
@@ -105,7 +151,7 @@ const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
             marginTop: size.getHeightSize(24),
           }}
         >
-          {Array(6)
+          {Array(4)
             .fill(null)
             .map((_, index) => (
               <BottomSheetTextInput
@@ -122,6 +168,7 @@ const VerifyEmailBottomsheet = ({ isVisible }: Props) => {
             ))}
         </View>
         <PrimaryButton
+          onPress={handleVerify}
           style={{
             marginTop: size.getHeightSize(32),
           }}

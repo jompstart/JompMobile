@@ -1,5 +1,5 @@
-import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -17,6 +17,8 @@ import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
 import { useNavigation } from '@react-navigation/native';
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigation = useNavigation();
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
@@ -82,7 +84,10 @@ const Login = () => {
             rightIcon={<LockIcon size={size.getHeightSize(24)} />}
           />
         </View>
-        <View
+        <Pressable
+          onPress={() => {
+            setShowForgotPasswordModal(true);
+          }}
           style={{
             gap: size.getWidthSize(16),
             marginTop: size.getHeightSize(8),
@@ -92,7 +97,7 @@ const Login = () => {
           <CText fontSize={14} lineHeight={19} color="warning">
             Forgot Password?
           </CText>
-        </View>
+        </Pressable>
         <PrimaryButton
           label="Get Started"
           style={{
@@ -160,7 +165,12 @@ const Login = () => {
             Get Started
           </CText>
         </CText>
-        <ForgotPasswordModal />
+        <ForgotPasswordModal
+          onClose={() => {
+            setShowForgotPasswordModal(false);
+          }}
+          isVisible={showForgotPasswordModal}
+        />
       </View>
     </CustomSafeArea>
   );

@@ -9,7 +9,7 @@ const SplashScreen = () => {
   const navigation = useNavigation();
   React.useEffect(() => {
     setTimeout(() => {
-      navigation.dispatch(StackActions.replace('OnboardingScreen'));
+      navigation.dispatch(StackActions.replace('Login'));
     }, 2000);
   }, []);
   return (

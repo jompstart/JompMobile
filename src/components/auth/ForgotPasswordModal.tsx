@@ -9,13 +9,19 @@ import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 import ForgotPasswordLockIcon from '../../../assets/svgs/Onboarding/ForgotPasswordLockIcon';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
-const ForgotPasswordModal = () => {
+interface Props {
+  isVisible: boolean;
+  onClose: () => void;
+}
+const ForgotPasswordModal = ({ isVisible, onClose }: Props) => {
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
-      visibility={true}
-      onClose={() => {}}
+      visibility={isVisible}
+      onClose={() => {
+        onClose();
+      }}
     >
       <View>
         <ForgotPasswordLockIcon

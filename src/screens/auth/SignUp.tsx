@@ -15,6 +15,7 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
 import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
+import SuccessModal from '../../shared/SuccessModal';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
@@ -24,6 +25,7 @@ import { useMutation } from '@tanstack/react-query';
 import { SignupScreenProps } from '../../types/navigations.types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthService } from '../../services/auth';
+import { StackActions } from '@react-navigation/native';
 import {
   signUpFormReducer,
   signUpInitailState,
@@ -32,6 +34,7 @@ const SignUp = ({
   route: {
     params: { accountPreference },
   },
+  navigation,
 }: SignupScreenProps) => {
   //https://github.dev/jompstart/jomp_frontend/blob/main/src/api/axios.ts
   const [passwordValidation, setPasswordValidation] = useState({
@@ -46,22 +49,30 @@ const SignUp = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showVerifyEmailBottomsheet, setShowVerifyEmailBottomsheet] =
     useState(false);
-
+  const [otp, setOtp] = useState('');
+  const [showSucessModal, setShowSuccessModal] = useState(false);
   const [state, dispatch] = useReducer(signUpFormReducer, signUpInitailState);
-  const navigation = useNavigation();
+
   const authInstance = new AuthService();
   const { mutate: validateEmail } = useMutation({
     mutationFn: authInstance.validateEmail,
     onSuccess: async (data) => {
       try {
-        console.log('========= otp response here ======');
-        console.log(data.message);
-
         if (data.statusCode === 200 && data.success === true) {
-          const resendOtpResponse = await authInstance.resendOTP(state.email);
-          console.log('======= otp response here ======');
-          console.log(state.email);
-          console.log(resendOtpResponse);
+          console.log('========= data here ======');
+          console.log(data);
+          const createUserAccountResponse = await authInstance.signup(
+            accountPreference,
+            state
+          );
+          if (
+            createUserAccountResponse.statusCode === 200 &&
+            createUserAccountResponse.success === true &&
+            createUserAccountResponse?.data?.otp
+          ) {
+            setOtp(createUserAccountResponse?.data?.otp);
+            setShowVerifyEmailBottomsheet(true);
+          }
         }
       } catch (error) {
         console.log('========= otp error here ======');
@@ -69,7 +80,7 @@ const SignUp = ({
       }
     },
     onError: (error) => {
-      console.log('========= otp error here ======');
+      console.log('========= validation error here ======');
       console.log(error);
     },
   });
@@ -337,6 +348,12 @@ const SignUp = ({
             style={{
               marginTop: size.getHeightSize(24),
             }}
+            disabled={
+              !state.email ||
+              !state.password ||
+              !state.firstName ||
+              !state.lastName
+            }
           />
           <View
             style={{
@@ -400,7 +417,30 @@ const SignUp = ({
           </CText>
         </KeyboardAwareScrollView>
       </View>
-      <VerifyEmailBottomsheet isVisible={showVerifyEmailBottomsheet} />
+      <VerifyEmailBottomsheet
+        onClose={() => {
+          setShowVerifyEmailBottomsheet(false);
+        }}
+        otp={otp}
+        onSuccess={() => {
+          setShowVerifyEmailBottomsheet(false);
+          setShowSuccessModal(true);
+        }}
+        email={state.email}
+        isVisible={showVerifyEmailBottomsheet}
+      />
+      <SuccessModal
+        onClose={() => {
+          setShowSuccessModal(false);
+        }}
+        description="Your email address has been successfully verified, proceed to complete your onboarding details."
+        buttonText="Okay"
+        title="Email Verification Successful!"
+        onContinue={() => {
+          navigation.dispatch(StackActions.replace('Login'));
+        }}
+        visibility={showSucessModal}
+      />
     </CustomSafeArea>
   );
 };

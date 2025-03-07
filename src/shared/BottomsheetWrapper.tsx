@@ -1,6 +1,7 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
+  BottomSheetProps
 } from '@gorhom/bottom-sheet';
 import React, {
   ReactNode,
@@ -16,7 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const { height, width } = Dimensions.get('window');
 const size = new sizes(height, width);
 
-interface Props {
+interface Props extends BottomSheetProps {
   visibility: boolean;
   onClose: () => void;
   hideHandle?: boolean;

@@ -10,19 +10,25 @@ interface Props {
   title: string;
   description: string;
   buttonText: string;
+  visibility: boolean;
+  onClose: () => void;
 }
 const SuccessModal = ({
   onContinue,
   title,
   description,
   buttonText,
+  visibility,
+  onClose,
 }: Props) => {
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
-      visibility={true}
-      onClose={() => {}}
+      visibility={visibility}
+      onClose={() => {
+        onClose();
+      }}
     >
       <View>
         <View
@@ -55,6 +61,7 @@ const SuccessModal = ({
         </CText>
 
         <PrimaryButton
+          onPress={() => onContinue?.()}
           style={{
             marginTop: size.getHeightSize(32),
             paddingVertical: size.getHeightSize(15.5),
