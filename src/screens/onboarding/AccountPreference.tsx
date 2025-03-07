@@ -12,6 +12,7 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import EmailVerificationSuccessModal from '../../components/auth/EmailVerificationSuccessModal';
 import { useNavigation } from '@react-navigation/native';
 import { UserAccountPreference } from '../../models/user';
+import { UserAccount } from '../../enums/user.enums';
 
 const AccountPreference = () => {
   const navigation = useNavigation();
@@ -67,7 +68,7 @@ const AccountPreference = () => {
         </CText>
         <Pressable
           onPress={() => {
-            setAccountPreference('customer');
+            setAccountPreference(UserAccount.Customer);
           }}
           style={styles.view1}
         >
@@ -79,7 +80,7 @@ const AccountPreference = () => {
               },
             ]}
           >
-            {accountPreference === 'customer' ? (
+            {accountPreference === UserAccount.Customer ? (
               <View style={styles.view4}>
                 <View style={styles.view5} />
               </View>
@@ -117,7 +118,7 @@ const AccountPreference = () => {
         </Pressable>
         <Pressable
           onPress={() => {
-            setAccountPreference('provider');
+            setAccountPreference(UserAccount.Provider);
           }}
           style={styles.view1}
         >
@@ -129,7 +130,7 @@ const AccountPreference = () => {
               },
             ]}
           >
-            {accountPreference === 'provider' ? (
+            {accountPreference === UserAccount.Provider ? (
               <View style={styles.view4}>
                 <View style={styles.view5} />
               </View>

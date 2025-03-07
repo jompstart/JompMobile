@@ -1,4 +1,5 @@
 import { makeRequest } from '../config/api.config';
+import { UserAccount } from '../enums/user.enums';
 import { CustomerUserRequest, ProviderUserRequest } from '../models/auth';
 import { UserAccountPreference } from '../models/user';
 
@@ -9,7 +10,9 @@ export class AuthService {
     data: ProviderUserRequest | CustomerUserRequest
   ) {
     const path =
-      accountType === 'provider' ? '/create-vendor' : '/create-customer';
+      accountType === UserAccount.Provider
+        ? '/create-vendor'
+        : '/create-customer';
     return await makeRequest<{ otp: string }>({
       method: 'POST',
       url: path,
@@ -51,11 +54,25 @@ export class AuthService {
     });
   }
 
-  async login(email: string, password: string) {
-    return await makeRequest({
+  async login({ email, password }: { email: string; password: string }) {
+    return await makeRequest<{
+      complianceStatus: boolean;
+      status: string;
+      token: string;
+    }>({
       method: 'POST',
       url: '/user-login',
       data: { email, password },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+  async forgotPassword(email: string) {
+    return await makeRequest({
+      method: 'POST',
+      url: '/forgot-password',
+      data: { email },
       headers: {
         'Content-Type': 'application/json',
       },

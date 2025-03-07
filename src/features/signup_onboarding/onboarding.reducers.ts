@@ -17,6 +17,7 @@ export type FormAction =
   | { type: 'SET_PASSWORD'; payload: string }
   | { type: 'SET_FIRST_NAME'; payload: string }
   | { type: 'SET_LAST_NAME'; payload: string };
+
 export const signUpFormReducer = (
   state: FormState,
   action: FormAction

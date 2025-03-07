@@ -27,6 +27,7 @@ const VerifyEmailBottomsheet = ({
   const inputRefs = useRef<TextInput[]>([]);
   const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
   const [newOtp, setNewOtp] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const handleTextChange = (text: string, index: number) => {
     const newUserInput = [...userInput];
     newUserInput[index] = text;
@@ -84,6 +85,7 @@ const VerifyEmailBottomsheet = ({
       return;
     }
     try {
+      setIsLoading(true);
       const response = await authInstance.verifyOTP(
         email!,
         `${newOtp ? newOtp : otp}-${userOtpInput}`
@@ -97,10 +99,14 @@ const VerifyEmailBottomsheet = ({
     } catch (error) {
       console.log('========= otp verification error =========');
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <BottomsheetWrapper
+      disableBackdropPress
+      enablePanDownToClose={false}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="none"
       enableBackdrop
@@ -166,6 +172,7 @@ const VerifyEmailBottomsheet = ({
             ))}
         </View>
         <PrimaryButton
+          isLoading={isLoading}
           onPress={handleVerify}
           style={{
             marginTop: size.getHeightSize(32),
@@ -182,10 +189,12 @@ const VerifyEmailBottomsheet = ({
           Didn't receive the email?{' '}
           <CText
             onPress={async () => {
+              setIsLoading(true);
               const response = await authInstance.resendOTP(email!);
               if (response.success) {
                 setNewOtp(response.data?.otp || '');
               }
+              setIsLoading(false);
             }}
             color="secondary"
             fontFamily="semibold"

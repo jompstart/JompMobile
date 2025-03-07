@@ -1,7 +1,7 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
-  BottomSheetProps
+  BottomSheetProps,
 } from '@gorhom/bottom-sheet';
 import React, {
   ReactNode,
@@ -31,6 +31,7 @@ interface Props extends BottomSheetProps {
   enablePanDownToClose?: boolean;
   backgroundColor?: string;
   topRadius?: number;
+  disableBackdropPress?: boolean;
 }
 const BottomsheetWrapper = ({
   onClose,
@@ -46,6 +47,7 @@ const BottomsheetWrapper = ({
   enablePanDownToClose = true,
   backgroundColor = colors.white(),
   topRadius = 32,
+  disableBackdropPress = false,
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -72,7 +74,7 @@ const BottomsheetWrapper = ({
     (props: any) => (
       <BottomSheetBackdrop
         {...props}
-        pressBehavior={'close'}
+        pressBehavior={disableBackdropPress ? 'none' : 'close'}
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         opacity={backdropOpacity ? backdropOpacity : 0.8}

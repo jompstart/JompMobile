@@ -6,6 +6,7 @@ import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { size } from '../../config/size';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CText from '../../shared/CText';
+import { jwtDecode } from 'jwt-decode';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
 import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
@@ -15,14 +16,63 @@ import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
 import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch } from '../../controller/redux.controller';
+import { AuthService } from '../../services/auth';
+import { UserService } from '../../services/user';
+import ShowLoader from '../../shared/ShowLoader';
+import { updateUserState } from '../../features/user/user.slice';
+import SuccessModal from '../../shared/SuccessModal';
+import { obfuscateEmail } from '../../utils/stringManipulation';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [resetPasswordEmail, setResetPasswordEmail] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
+  const authInstance = new AuthService();
+
+  const { mutate: loginUser, isPending } = useMutation({
+    mutationFn: authInstance.login,
+    onSuccess: async (data) => {
+      try {
+        console.log('========= login data here ======');
+        console.log(data);
+        if (data.statusCode === 200 && data.success === true) {
+          const decoded: any = jwtDecode(data.data?.token!);
+          console.log('========= decoded here ======');
+          console.log(decoded);
+          await AsyncStorage.setItem('token', data.data?.token!);
+          dispatch(
+            updateUserState({
+              accountPreference: decoded.clientId,
+              token: data.data?.token!,
+              customerId: decoded.customerId,
+              userId: decoded.userId,
+            })
+          );
+          const userInstance = new UserService(decoded.userId);
+          const user = await userInstance.getCustomer();
+
+          console.log('========= user here ======');
+          console.log(user);
+        }
+      } catch (error) {
+        console.log('========= login error here ======');
+        console.log(error);
+      }
+    },
+    onError: (error) => {
+      console.log('========= login error here ======');
+      console.log(error);
+    },
+  });
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -118,7 +168,12 @@ const Login = () => {
             style={{
               marginTop: size.getHeightSize(24),
             }}
-            onPress={() => navigation.navigate('VerifyBvn')}
+            onPress={() => {
+              loginUser({
+                email,
+                password,
+              });
+            }}
           />
           <View
             style={{
@@ -189,10 +244,30 @@ const Login = () => {
         </KeyboardAwareScrollView>
       </View>
       <ForgotPasswordModal
+        onChangeText={setResetPasswordEmail}
+        onSuccess={() => {
+          setShowForgotPasswordModal(false);
+          setShowSuccessModal(true);
+        }}
         onClose={() => {
           setShowForgotPasswordModal(false);
         }}
         isVisible={showForgotPasswordModal}
+      />
+      <ShowLoader isLoading={isPending} />
+      <SuccessModal
+        visibility={showSuccessModal}
+        buttonText="Okay"
+        description={`Your password reset email has been successfully sent to ${obfuscateEmail(
+          resetPasswordEmail
+        )}, kindly proceed to click on the link in the password reset email.`}
+        title="Email Successfully Sent"
+        onClose={() => {
+          setShowSuccessModal(false);
+        }}
+        onContinue={() => {
+          setShowSuccessModal(false);
+        }}
       />
     </CustomSafeArea>
   );

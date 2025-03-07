@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import onboardingSlice from '../features/signup_onboarding/onboarding.slice';
+import userSlice from '../features/user/user.slice';
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -7,6 +8,7 @@ export const store = configureStore({
     }),
   reducer: {
     onboarding: onboardingSlice,
+    user: userSlice,
   },
 });
 

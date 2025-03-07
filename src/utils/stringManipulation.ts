@@ -1,16 +1,26 @@
 /**
- * Obfuscates the local part of an email address by replacing the second half with asterisks.
+ * Obfuscates an email address by masking part of the local part.
  *
- * @param {string} email - The email address to obfuscate.
- * @returns {string} The obfuscated email address. If the input email is empty, returns an empty string.
+ * The function ensures that the first three characters and the last two characters
+ * of the local part of the email are visible, while the middle part is replaced with asterisks.
+ * If the local part is 3 characters or less, only the first character is shown followed by asterisks.
+ *
+ * @param email - The email address to be obfuscated.
+ * @returns The obfuscated email address. If the input is not a valid email, it returns the original input.
  */
-export const obfuscateEmail = (email: string) => {
+export const obfuscateEmail = (email: string): string => {
   if (!email) return '';
 
   const [localPart, domain] = email.split('@');
-  const halfLength = Math.ceil(localPart.length / 2);
-  const firstHalf = localPart.slice(0, halfLength);
-  const secondHalf = localPart.slice(halfLength);
+  if (!localPart || !domain) return email; // Ensure valid email format
 
-  return `${firstHalf}*****${secondHalf}@${domain}`;
+  // Always show the first and last character, obfuscate the middle part
+  if (localPart.length <= 3) {
+    return `${localPart[0]}*****@${domain}`;
+  }
+
+  const firstPart = localPart.slice(0, 3); // Show first 3 characters
+  const lastPart = localPart.slice(-2); // Show last 2 characters
+
+  return `${firstPart}*****${lastPart}@${domain}`;
 };

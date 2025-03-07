@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -7,13 +7,41 @@ import VerifyMailIcon from '../../../assets/svgs/Onboarding/VerifyMailIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
+import { useNavigation } from '@react-navigation/native';
 import ForgotPasswordLockIcon from '../../../assets/svgs/Onboarding/ForgotPasswordLockIcon';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
+import { AuthService } from '../../services/auth';
 interface Props {
   isVisible: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
+  onChangeText?: (text: string) => void;
 }
-const ForgotPasswordModal = ({ isVisible, onClose }: Props) => {
+const ForgotPasswordModal = ({
+  isVisible,
+  onSuccess,
+  onClose,
+  onChangeText,
+}: Props) => {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const authInstance = new AuthService();
+  const navigation = useNavigation();
+  const handleForgotPassword = async () => {
+    setIsLoading(true);
+    try {
+      const response = await authInstance.forgotPassword(email);
+      console.log('====== forgot password response ======');
+      if (response.statusCode == 200 && response.success) {
+        onSuccess?.();
+      }
+    } catch (error) {
+      console.log('====== forgot password error ======');
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <BottomsheetWrapper
       topRadius={16}
@@ -78,13 +106,20 @@ const ForgotPasswordModal = ({ isVisible, onClose }: Props) => {
         >
           <BottomSheetTextInput
             cursorColor={colors.black()}
-            maxLength={1}
+            numberOfLines={1}
             placeholder="@mail.com"
             style={styles.input}
+            onChangeText={(text) => {
+              setEmail(text);
+              onChangeText?.(text);
+            }}
           />
           <MailIcon size={size.getHeightSize(24)} />
         </View>
         <PrimaryButton
+          onPress={handleForgotPassword}
+          disabled={!email}
+          isLoading={isLoading}
           style={{
             marginTop: size.getHeightSize(32),
             paddingVertical: size.getHeightSize(15.5),
@@ -99,7 +134,13 @@ const ForgotPasswordModal = ({ isVisible, onClose }: Props) => {
           }}
         >
           Remember your login password?{' '}
-          <CText color="secondary" fontFamily="semibold">
+          <CText
+            onPress={() => {
+              onClose();
+            }}
+            color="secondary"
+            fontFamily="semibold"
+          >
             Login
           </CText>
         </CText>

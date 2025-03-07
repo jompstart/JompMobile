@@ -18,6 +18,7 @@ import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import SuccessModal from '../../shared/SuccessModal';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
+import ShowLoader from '../../shared/ShowLoader';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import { useMutation } from '@tanstack/react-query';
@@ -29,6 +30,7 @@ import {
   signUpFormReducer,
   signUpInitailState,
 } from '../../features/signup_onboarding/onboarding.reducers';
+import { UserAccount } from '../../enums/user.enums';
 const SignUp = ({
   route: {
     params: { accountPreference },
@@ -53,7 +55,7 @@ const SignUp = ({
   const [state, dispatch] = useReducer(signUpFormReducer, signUpInitailState);
 
   const authInstance = new AuthService();
-  const { mutate: validateEmail } = useMutation({
+  const { mutate: validateEmail, isPending } = useMutation({
     mutationFn: authInstance.validateEmail,
     onSuccess: async (data) => {
       try {
@@ -62,7 +64,15 @@ const SignUp = ({
           console.log(data);
           const createUserAccountResponse = await authInstance.signup(
             accountPreference,
-            state
+            accountPreference == UserAccount.Customer
+              ? state
+              : {
+                  businessEmail: state.email,
+                  countryID: 125,
+                  firstName: state.firstName,
+                  lastName: state.lastName,
+                  password: state.password,
+                }
           );
           if (
             createUserAccountResponse.statusCode === 200 &&
@@ -440,6 +450,7 @@ const SignUp = ({
         }}
         visibility={showSucessModal}
       />
+      <ShowLoader isLoading={isPending} />
     </CustomSafeArea>
   );
 };
