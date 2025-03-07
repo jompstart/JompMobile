@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import React, { useState, useEffect, useReducer } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useReducer } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -20,7 +20,6 @@ import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
-import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { SignupScreenProps } from '../../types/navigations.types';
 import Ionicons from '@expo/vector-icons/Ionicons';

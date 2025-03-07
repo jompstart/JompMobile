@@ -30,7 +30,7 @@ export class AuthService {
     });
   }
   async resendOTP(email: string) {
-    return await makeRequest({
+    return await makeRequest<{ otp: string }>({
       method: 'POST',
       url: '/resend-otp',
       data: { email: email },
@@ -45,6 +45,17 @@ export class AuthService {
       method: 'POST',
       url: '/otp-verification',
       data: { email, otp },
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  async login(email: string, password: string) {
+    return await makeRequest({
+      method: 'POST',
+      url: '/user-login',
+      data: { email, password },
       headers: {
         'Content-Type': 'application/json',
       },

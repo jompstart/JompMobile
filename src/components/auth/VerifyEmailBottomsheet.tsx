@@ -26,7 +26,7 @@ const VerifyEmailBottomsheet = ({
   const authInstance = new AuthService();
   const inputRefs = useRef<TextInput[]>([]);
   const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
-
+  const [newOtp, setNewOtp] = useState('');
   const handleTextChange = (text: string, index: number) => {
     const newUserInput = [...userInput];
     newUserInput[index] = text;
@@ -78,17 +78,15 @@ const VerifyEmailBottomsheet = ({
   };
 
   const handleVerify = async () => {
-    console.log('========= verifying otp =========');
-    console.log(`otp: ${otp}`);
     const userOtpInput = userInput.join('');
-    console.log(`user input: ${userOtpInput}`);
+
     if (userInput.length < 4) {
       return;
     }
     try {
       const response = await authInstance.verifyOTP(
         email!,
-        `${otp}-${userOtpInput}`
+        `${newOtp ? newOtp : otp}-${userOtpInput}`
       );
       console.log('========= otp verification response =========');
       console.log(response);
@@ -182,7 +180,16 @@ const VerifyEmailBottomsheet = ({
           }}
         >
           Didn't receive the email?{' '}
-          <CText color="secondary" fontFamily="semibold">
+          <CText
+            onPress={async () => {
+              const response = await authInstance.resendOTP(email!);
+              if (response.success) {
+                setNewOtp(response.data?.otp || '');
+              }
+            }}
+            color="secondary"
+            fontFamily="semibold"
+          >
             Click to Resend
           </CText>
         </CText>

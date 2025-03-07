@@ -4,6 +4,7 @@ import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { size } from '../../config/size';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CText from '../../shared/CText';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
@@ -14,10 +15,12 @@ import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
+import { useMutation } from '@tanstack/react-query';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
 import { useNavigation } from '@react-navigation/native';
 const Login = () => {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigation = useNavigation();
   return (
@@ -29,149 +32,168 @@ const Login = () => {
           backgroundColor: colors.appBackground(),
         }}
       >
-        <View
-          style={{
-            alignSelf: 'center',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: size.getHeightSize(24),
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            paddingBottom: size.getHeightSize(20),
           }}
-        >
-          <JompLogo size={size.getHeightSize(44)} />
-          <JompTextLogo
-            width={size.getWidthSize(155.27)}
-            height={size.getHeightSize(30.19)}
-          />
-        </View>
-        <CText
-          fontSize={16}
-          lineHeight={22}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          Welcome Back!
-        </CText>
-        <CText
-          color="secondaryBlack"
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-            letterSpacing: size.getWidthSize(0.2),
-          }}
-        >
-          Complete the fields below to continue enjoying Jompstart
-        </CText>
-        <View
-          style={{
-            marginTop: size.getHeightSize(32),
-            gap: size.getHeightSize(16),
-          }}
-        >
-          <CTextInput
-            title="Email Address"
-            placeholder="@mail.com"
-            rightIcon={<MailIcon size={size.getHeightSize(24)} />}
-          />
-          <CTextInput
-            title="Password"
-            placeholder="Password"
-            rightIcon={<LockIcon size={size.getHeightSize(24)} />}
-          />
-        </View>
-        <Pressable
-          onPress={() => {
-            setShowForgotPasswordModal(true);
-          }}
-          style={{
-            gap: size.getWidthSize(16),
-            marginTop: size.getHeightSize(8),
-            alignSelf: 'flex-end',
-          }}
-        >
-          <CText fontSize={14} lineHeight={19} color="warning">
-            Forgot Password?
-          </CText>
-        </Pressable>
-        <PrimaryButton
-          label="Get Started"
-          style={{
-            marginTop: size.getHeightSize(24),
-          }}
-          onPress={() => navigation.navigate('VerifyBvn')}
-        />
-        <View
-          style={{
-            marginTop: size.getHeightSize(26),
-            width: '100%',
-          }}
+          showsVerticalScrollIndicator={false}
+          extraScrollHeight={size.getHeightSize(16)}
         >
           <View
             style={{
-              width: '100%',
-              height: size.getHeightSize(1),
-              backgroundColor: '#E0E0E0',
+              alignSelf: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: size.getHeightSize(24),
             }}
-          />
+          >
+            <JompLogo size={size.getHeightSize(44)} />
+            <JompTextLogo
+              width={size.getWidthSize(155.27)}
+              height={size.getHeightSize(30.19)}
+            />
+          </View>
+          <CText
+            fontSize={16}
+            lineHeight={22}
+            fontFamily="semibold"
+            style={{
+              textAlign: 'center',
+              marginTop: size.getHeightSize(16),
+            }}
+          >
+            Welcome Back!
+          </CText>
           <CText
             color="secondaryBlack"
             fontSize={14}
             lineHeight={19.6}
             fontFamily="semibold"
             style={{
-              position: 'absolute',
-              backgroundColor: colors.appBackground(),
-              bottom: size.getHeightSize(-11),
-              alignSelf: 'center',
-              paddingHorizontal: size.getWidthSize(16),
+              textAlign: 'center',
+              marginTop: size.getHeightSize(16),
+              letterSpacing: size.getWidthSize(0.2),
             }}
           >
-            OR
+            Complete the fields below to continue enjoying Jompstart
           </CText>
-        </View>
-        <View
-          style={{
-            marginTop: size.getHeightSize(26),
-            gap: size.getHeightSize(16),
-          }}
-        >
-          <SecondaryButton
-            icon={<GoogleIcon size={size.getHeightSize(24)} />}
-            label="Login with Google"
+          <View
+            style={{
+              marginTop: size.getHeightSize(32),
+              gap: size.getHeightSize(16),
+            }}
+          >
+            <CTextInput
+              keyboardType="email-address"
+              onChangeText={setEmail}
+              title="Email Address"
+              placeholder="@mail.com"
+              rightIcon={<MailIcon size={size.getHeightSize(24)} />}
+            />
+            <CTextInput
+              secureTextEntry
+              onChangeText={setPassword}
+              title="Password"
+              placeholder="Password"
+              rightIcon={<LockIcon size={size.getHeightSize(24)} />}
+            />
+          </View>
+          <Pressable
+            onPress={() => {
+              setShowForgotPasswordModal(true);
+            }}
+            style={{
+              gap: size.getWidthSize(16),
+              marginTop: size.getHeightSize(8),
+              alignSelf: 'flex-end',
+            }}
+          >
+            <CText fontSize={14} lineHeight={19} color="warning">
+              Forgot Password?
+            </CText>
+          </Pressable>
+          <PrimaryButton
+            disabled={!email || !password}
+            label="Login"
+            style={{
+              marginTop: size.getHeightSize(24),
+            }}
+            onPress={() => navigation.navigate('VerifyBvn')}
           />
-          <SecondaryButton
-            icon={<AppleIcon size={size.getHeightSize(24)} />}
-            label="Login with Apple"
-          />
-          <SecondaryButton
-            icon={<FacebookIcon size={size.getHeightSize(24)} />}
-            label="Login with Facebook"
-          />
-        </View>
-        <CText
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          Don't have an account?{' '}
-          <CText color="secondary" fontFamily="semibold">
-            Get Started
+          <View
+            style={{
+              marginTop: size.getHeightSize(26),
+              width: '100%',
+            }}
+          >
+            <View
+              style={{
+                width: '100%',
+                height: size.getHeightSize(1),
+                backgroundColor: '#E0E0E0',
+              }}
+            />
+            <CText
+              color="secondaryBlack"
+              fontSize={14}
+              lineHeight={19.6}
+              fontFamily="semibold"
+              style={{
+                position: 'absolute',
+                backgroundColor: colors.appBackground(),
+                bottom: size.getHeightSize(-11),
+                alignSelf: 'center',
+                paddingHorizontal: size.getWidthSize(16),
+              }}
+            >
+              OR
+            </CText>
+          </View>
+          <View
+            style={{
+              marginTop: size.getHeightSize(26),
+              gap: size.getHeightSize(16),
+            }}
+          >
+            <SecondaryButton
+              icon={<GoogleIcon size={size.getHeightSize(24)} />}
+              label="Login with Google"
+            />
+            <SecondaryButton
+              icon={<AppleIcon size={size.getHeightSize(24)} />}
+              label="Login with Apple"
+            />
+            <SecondaryButton
+              icon={<FacebookIcon size={size.getHeightSize(24)} />}
+              label="Login with Facebook"
+            />
+          </View>
+          <CText
+            fontFamily="semibold"
+            style={{
+              textAlign: 'center',
+              marginTop: size.getHeightSize(16),
+            }}
+          >
+            Don't have an account?{' '}
+            <CText
+              onPress={() => {
+                navigation.navigate('AccountPreference');
+              }}
+              color="secondary"
+              fontFamily="semibold"
+            >
+              Get Started
+            </CText>
           </CText>
-        </CText>
-        <ForgotPasswordModal
-          onClose={() => {
-            setShowForgotPasswordModal(false);
-          }}
-          isVisible={showForgotPasswordModal}
-        />
+        </KeyboardAwareScrollView>
       </View>
+      <ForgotPasswordModal
+        onClose={() => {
+          setShowForgotPasswordModal(false);
+        }}
+        isVisible={showForgotPasswordModal}
+      />
     </CustomSafeArea>
   );
 };
