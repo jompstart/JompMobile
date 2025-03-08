@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "jompstart",
     "name": "JompStart",
     "slug": "JompStart",
     "version": "1.0.0",
@@ -11,7 +12,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.jomp.jompstart",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSCameraUsageDescription": "This app requires camera access to enable you to upload your documents. We respect your privacy and do not access your camera without your explicit permission.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos.",
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
       }
     },
     "splash": {
@@ -20,7 +24,14 @@
       "backgroundColor": "#ffffff"
     },
     "android": {
-      "package": "com.jomp.jompstart"
+      "package": "com.jomp.jompstart",
+      "permissions": [
+        "android.permission.CAMERA_ROLL",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -55,6 +66,21 @@
             "./assets/fonts/AvenirLTStd-Roman.otf",
             "./assets/fonts/AvenirLTStd-Oblique.otf"
           ]
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app requires camera access to enable you to upload your documents."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "NSCameraUsageDescription": "This app requires camera access to enable you to upload your documents. We respect your privacy and do not access your camera without your explicit permission.",
+          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
+          "isAccessMediaLocationEnabled": "true"
         }
       ]
     ],

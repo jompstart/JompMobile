@@ -33,6 +33,7 @@ import TransportDetails from '../screens/TransportCredit/TransportDetails';
 import OtherServices from '../screens/services/OtherServices';
 import AddCard from '../screens/Cards/AddCard';
 import FundWallet from '../screens/Savings/FundWallet';
+import Verification from '../screens/compliance/Verification';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -169,6 +170,10 @@ const MainNavigator = () => {
     {
       name: 'AddCard',
       component: AddCard,
+    },
+    {
+      name: 'Verification',
+      component: Verification,
     },
   ];
 

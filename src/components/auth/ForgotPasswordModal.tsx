@@ -31,12 +31,10 @@ const ForgotPasswordModal = ({
     setIsLoading(true);
     try {
       const response = await authInstance.forgotPassword(email);
-      console.log('====== forgot password response ======');
       if (response.statusCode == 200 && response.success) {
         onSuccess?.();
       }
     } catch (error) {
-      console.log('====== forgot password error ======');
       console.log(error);
     } finally {
       setIsLoading(false);

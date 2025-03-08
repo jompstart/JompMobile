@@ -4,6 +4,7 @@ import {
   View,
   ViewProps,
   ViewStyle,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
@@ -17,6 +18,7 @@ interface Props {
   style?: ViewStyle;
   opacity?: string;
   width?: string;
+  isLoading?: boolean;
 }
 const SecondaryButton = ({
   onPress,
@@ -25,6 +27,7 @@ const SecondaryButton = ({
   style,
   opacity,
   width,
+  isLoading,
 }: Props) => {
   return (
     <Pressable
@@ -40,15 +43,22 @@ const SecondaryButton = ({
         },
       ]}
     >
-      <CText
-        lineHeight={19.2}
-        style={{ textAlign: 'center' }}
-        fontSize={16}
-        fontFamily="bold"
-        color="primaryColor"
-      >
-        {label}
-      </CText>
+      {isLoading ? (
+        <ActivityIndicator
+          size={size.getHeightSize(24)}
+          color={colors.primary()}
+        />
+      ) : (
+        <CText
+          lineHeight={19.2}
+          style={{ textAlign: 'center' }}
+          fontSize={16}
+          fontFamily="bold"
+          color={'primaryColor'}
+        >
+          {label}
+        </CText>
+      )}
     </Pressable>
   );
 };

@@ -1,17 +1,83 @@
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Pressable, Alert } from 'react-native';
 import React from 'react';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import SecondaryButton from '../../shared/SecondaryButton';
-const UploadIamgeModal = () => {
+import {
+  launchImageLibraryAsync,
+  MediaType,
+  launchCameraAsync,
+  useCameraPermissions,
+} from 'expo-image-picker';
+import { PermissionStatus } from 'expo-permissions';
+
+interface Props {
+  isVisible: boolean;
+  onClose?: () => void;
+  onSelectedImage?: (image: string) => void;
+}
+const UploadIamgeModal = ({ onClose, isVisible, onSelectedImage }: Props) => {
+  const [cameraPermissionInformation, requestPermission] =
+    useCameraPermissions();
+
+  async function verifyPermission() {
+    if (cameraPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
+    }
+    if (cameraPermissionInformation?.status === PermissionStatus.DENIED) {
+      const permissionResponse = await requestPermission();
+      console.log(permissionResponse);
+      if (permissionResponse.granted === false) {
+        Alert.alert(
+          'Insufficient permission!',
+          'You need to grant camera access to use this app'
+        );
+      }
+      return permissionResponse.granted;
+    }
+    return true;
+  }
+  const pickImage = async () => {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    let result = await launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (result.assets != null) {
+      onSelectedImage?.(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+      return;
+    }
+    let result = await launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+    });
+
+    if (result.assets != null) {
+      onSelectedImage?.(result.assets[0].uri);
+    }
+  };
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
-      visibility={true}
-      onClose={() => {}}
+      visibility={isVisible}
+      onClose={() => onClose?.()}
     >
       <View
         style={{
@@ -24,7 +90,12 @@ const UploadIamgeModal = () => {
             gap: size.getHeightSize(16),
           }}
         >
-          <View style={styles.button}>
+          <Pressable
+            onPress={async () => {
+              await takePhoto();
+            }}
+            style={styles.button}
+          >
             <CText
               color={'#31005C' as any}
               fontSize={16}
@@ -33,8 +104,13 @@ const UploadIamgeModal = () => {
             >
               Take Photo with Camera
             </CText>
-          </View>
-          <View style={styles.button}>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              pickImage();
+            }}
+            style={styles.button}
+          >
             <CText
               color={'#31005C' as any}
               fontSize={16}
@@ -43,9 +119,14 @@ const UploadIamgeModal = () => {
             >
               Select from Device Photos
             </CText>
-          </View>
+          </Pressable>
         </View>
-        <SecondaryButton label="Cancel" />
+        <SecondaryButton
+          onPress={() => {
+            onClose?.();
+          }}
+          label="Cancel"
+        />
       </View>
     </BottomsheetWrapper>
   );

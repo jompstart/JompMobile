@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import { colors } from '../../constants/colors';
 import { size } from '../../config/size';
@@ -7,18 +7,41 @@ import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import CText from '../../shared/CText';
 import CTextInput from '../../shared/CTextInput';
-import InfoIcon from '../../../assets/svgs/Onboarding/InfoIcon';
-import { ScrollView } from 'react-native-gesture-handler';
-import CheckCircle from '../../../assets/svgs/Onboarding/CheckCircle';
 import SecondaryButton from '../../shared/SecondaryButton';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SuccessModal from '../../shared/SuccessModal';
 import Asterisks from '../../../assets/svgs/Onboarding/Asterisks';
-import AttachFileIcon from '../../../assets/svgs/Onboarding/AttachFileIcon';
 import UploadIamgeModal from '../../components/compliance/UploadIamgeModal';
 import { useNavigation } from '@react-navigation/native';
+import AttachmentView from '../../shared/AttachmentView';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import { ComplianceService } from '../../services/compliance';
 const VerifyNin = () => {
   const navigation = useNavigation();
+  const [showUploadFileModal, setShowUploadFileModal] = useState(false);
+  const [fileUri, setFileUri] = useState('');
+  const [isVerified, setVerificationStatus] = useState(false);
+  const [isVerificationLoading, setVerificationLoadingState] = useState(false);
+  const [nin, setNin] = useState('');
+  const user = useAppSelector(userSelector);
+  const complianceInstance = new ComplianceService(user.userId);
+  const handleVerifyNin = async () => {
+    setVerificationLoadingState(true);
+    try {
+      const response = await complianceInstance.verifyCustomer('nin', nin);
+      console.log('====== verify bvn response ======');
+      console.log(response);
+      if (response.statusCode == 200 && response.success) {
+        setVerificationStatus(true);
+      }
+    } catch (error) {
+      console.log('====== verify bvn error ======');
+      console.log(error);
+    } finally {
+      setVerificationLoadingState(false);
+    }
+  };
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -68,7 +91,7 @@ const VerifyNin = () => {
           Confirming your BVN helps us verify your identity and keeps your
           account from fraud.
         </CText>
-        <View
+        {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -111,11 +134,11 @@ const VerifyNin = () => {
               backgroundColor: '#31005C',
             }}
           />
-        </View>
+        </View> */}
 
         <View
           style={{
-            marginTop: size.getHeightSize(24),
+            marginTop: size.getHeightSize(32),
             gap: size.getHeightSize(24),
             flex: 1,
           }}
@@ -142,34 +165,14 @@ const VerifyNin = () => {
             </CText>
             <Asterisks size={size.getHeightSize(16)} />
           </View>
-          <View
-            style={{
-              paddingVertical: size.getHeightSize(24),
-              justifyContent: 'center',
-              gap: size.getHeightSize(8),
-              backgroundColor: colors.white(),
-              borderRadius: size.getHeightSize(8),
-              alignItems: 'center',
+          <AttachmentView
+            fileUri={fileUri}
+            onPress={() => {
+              setShowUploadFileModal(true);
             }}
-          >
-            <AttachFileIcon size={size.getHeightSize(50)} />
-            <CText
-              color="blue"
-              fontSize={14}
-              lineHeight={19.6}
-              fontFamily="semibold"
-            >
-              Click to upload{' '}
-              <CText
-                color="black3"
-                fontSize={14}
-                lineHeight={19.6}
-                fontFamily="regular"
-              >
-                .pdf, .Jpeg (max. 1MB)
-              </CText>
-            </CText>
-          </View>
+            description=" "
+            type=".png .Jpeg (max. 1MB)"
+          />
         </View>
         <View
           style={{
@@ -178,14 +181,29 @@ const VerifyNin = () => {
             marginBottom: size.getHeightSize(32),
           }}
         >
+          <SecondaryButton
+            isLoading={isVerificationLoading}
+            disabled={!fileUri || !nin}
+            label="Verify"
+            onPress={handleVerifyNin}
+          />
           <PrimaryButton
+            disabled={isVerified}
             label="Submit"
             onPress={() => {
-              navigation.navigate('BottomtabNavigation');
+              // navigation.navigate('BottomtabNavigation');
             }}
           />
         </View>
-        <UploadIamgeModal />
+        <UploadIamgeModal
+          isVisible={showUploadFileModal}
+          onClose={() => {
+            setShowUploadFileModal(false);
+          }}
+          onSelectedImage={(uri) => {
+            setFileUri(uri);
+          }}
+        />
       </View>
     </CustomSafeArea>
   );

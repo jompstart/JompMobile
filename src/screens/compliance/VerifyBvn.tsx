@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import { colors } from '../../constants/colors';
 import { size } from '../../config/size';
@@ -14,8 +14,34 @@ import SecondaryButton from '../../shared/SecondaryButton';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SuccessModal from '../../shared/SuccessModal';
 import { useNavigation } from '@react-navigation/native';
+import { ComplianceService } from '../../services/compliance';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
 const VerifyBvn = () => {
+  const [isVerified, setVerificationStatus] = useState(false);
+  const [bvn, setBvn] = useState('');
+  const [isVerificationLoading, setVerificationLoadingState] = useState(false);
   const navigation = useNavigation();
+  const user = useAppSelector(userSelector);
+  console.log(user);
+  const complianceInstance = new ComplianceService(user.userId);
+
+  const handleVerifyBvn = async () => {
+    setVerificationLoadingState(true);
+    try {
+      const response = await complianceInstance.verifyCustomer('bvn', bvn);
+      console.log('====== verify bvn response ======');
+      console.log(response);
+      if (response.statusCode == 200 && response.success) {
+        setVerificationStatus(true);
+      }
+    } catch (error) {
+      console.log('====== verify bvn error ======');
+      console.log(error);
+    } finally {
+      setVerificationLoadingState(false);
+    }
+  };
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -65,7 +91,7 @@ const VerifyBvn = () => {
           Select the method that helps us verify your identity and keeps your
           account from fraud
         </CText>
-        <View
+        {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -108,7 +134,7 @@ const VerifyBvn = () => {
               backgroundColor: '#31005C',
             }}
           />
-        </View>
+        </View> */}
         <View
           style={{
             paddingHorizontal: size.getWidthSize(8),
@@ -133,7 +159,12 @@ const VerifyBvn = () => {
             marginTop: size.getHeightSize(24),
           }}
         >
-          <CTextInput required placeholder="Enter here" title="BVN" />
+          <CTextInput
+            onChangeText={setBvn}
+            required
+            placeholder="Enter here"
+            title="BVN"
+          />
           <View
             style={{
               flexDirection: 'row',
@@ -264,12 +295,24 @@ const VerifyBvn = () => {
         </View>
         <View
           style={{
+            flex: 1,
+          }}
+        />
+        <View
+          style={{
             marginTop: size.getHeightSize(8),
             gap: size.getHeightSize(24),
+            marginBottom: size.getHeightSize(40),
           }}
         >
-          <SecondaryButton label="Verify" />
+          <SecondaryButton
+            isLoading={isVerificationLoading}
+            disabled={!bvn}
+            label="Verify"
+            onPress={handleVerifyBvn}
+          />
           <PrimaryButton
+            disabled={!isVerified}
             label="Next"
             onPress={() => {
               navigation.navigate('VerifyNin');
@@ -277,6 +320,8 @@ const VerifyBvn = () => {
           />
         </View>
         <SuccessModal
+          visibility={false}
+          onClose={() => {}}
           buttonText="Submit"
           onContinue={() => {}}
           title="BVN Verified!"

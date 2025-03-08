@@ -42,6 +42,7 @@ export type RootStackParamList = {
   OtherServices: undefined;
   AddCard: undefined;
   FundWallet: undefined;
+  Verification: undefined;
 };
 
 type SignUpScreenParams = {

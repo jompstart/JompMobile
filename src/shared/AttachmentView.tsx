@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
@@ -9,10 +9,21 @@ interface Props {
   description: string;
   type: string;
   required?: boolean;
+  onPress?: () => void;
+  fileUri?: string;
 }
-const AttachmentView = ({ description, type, required }: Props) => {
+const AttachmentView = ({
+  fileUri,
+  description,
+  type,
+  required,
+  onPress,
+}: Props) => {
+  console.log('======= file uri ========');
+  console.log(fileUri);
   return (
-    <View
+    <Pressable
+      onPress={onPress}
       style={{
         paddingVertical: size.getHeightSize(14),
         backgroundColor: colors.white(),
@@ -54,7 +65,7 @@ const AttachmentView = ({ description, type, required }: Props) => {
         </CText>
         {' \n'} {type}
       </CText>
-    </View>
+    </Pressable>
   );
 };
 

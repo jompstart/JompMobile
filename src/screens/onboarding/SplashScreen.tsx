@@ -35,7 +35,7 @@ const SplashScreen = () => {
     </View>
   );
 };
-
+//visajej863@calmpros.com
 export default SplashScreen;
 
 const styles = StyleSheet.create({});

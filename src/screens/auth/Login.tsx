@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -27,15 +27,42 @@ import ShowLoader from '../../shared/ShowLoader';
 import { updateUserState } from '../../features/user/user.slice';
 import SuccessModal from '../../shared/SuccessModal';
 import { obfuscateEmail } from '../../utils/stringManipulation';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+
 const Login = () => {
   const [email, setEmail] = useState('');
+  const [userInfo, setUserInfo] = useState<any>();
+  const [request, response, prompAsync] = Google.useAuthRequest({
+    androidClientId:
+      '801607727056-tfa731fpcvcn45qjlbso5rutbffvi891.apps.googleusercontent.com',
+    iosClientId:
+      '801607727056-4praconm2f06hvvek28slfenq30gpoer.apps.googleusercontent.com',
+  });
   const [password, setPassword] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [resetPasswordEmail, setResetPasswordEmail] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const getUserInfo = async (accessToken: string) => {
+    const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const userInfoResponse = await response.json();
+    console.log('========= userInfoResponse here ======');
+    console.log(userInfoResponse);
+    setUserInfo(userInfoResponse);
+  };
 
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      console.log('========= authentication here ======');
+      console.log(authentication?.accessToken);
+      getUserInfo(authentication?.accessToken!);
+    }
+  }, [response]);
   const authInstance = new AuthService();
 
   const { mutate: loginUser, isPending } = useMutation({
@@ -54,14 +81,17 @@ const Login = () => {
               accountPreference: decoded.clientId,
               token: data.data?.token!,
               customerId: decoded.customerId,
-              userId: decoded.userId,
+              userId: decoded.UserId,
             })
           );
-          const userInstance = new UserService(decoded.userId);
-          const user = await userInstance.getCustomer();
+          if (data.data?.complianceStatus == false) {
+            navigation.navigate('Verification');
+          }
+          // const userInstance = new UserService(decoded.userId);
+          // const user = await userInstance.getCustomer();
 
-          console.log('========= user here ======');
-          console.log(user);
+          // console.log('========= user here ======');
+          // console.log(user);
         }
       } catch (error) {
         console.log('========= login error here ======');
@@ -211,6 +241,9 @@ const Login = () => {
             }}
           >
             <SecondaryButton
+              onPress={() => {
+                prompAsync();
+              }}
               icon={<GoogleIcon size={size.getHeightSize(24)} />}
               label="Login with Google"
             />
