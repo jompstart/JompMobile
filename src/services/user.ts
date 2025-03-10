@@ -10,7 +10,7 @@ export class UserService {
     console.log(`get-customer?${this.userId}`);
     return await makeRequest({
       method: 'GET',
-      url: `/get-customer?${this.userId}`,
+      url: `/get-customer?customerId=${this.userId}`,
     });
   }
 }

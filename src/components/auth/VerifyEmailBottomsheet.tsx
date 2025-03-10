@@ -9,6 +9,8 @@ import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { AuthService } from '../../services/auth';
 import { obfuscateEmail } from '../../utils/stringManipulation';
+import { useAppDispatch } from '../../controller/redux.controller';
+import { updateToast } from '../../features/ui/ui.slice';
 interface Props {
   isVisible: boolean;
   email?: string;
@@ -28,6 +30,7 @@ const VerifyEmailBottomsheet = ({
   const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
   const [newOtp, setNewOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const handleTextChange = (text: string, index: number) => {
     const newUserInput = [...userInput];
     newUserInput[index] = text;
@@ -96,9 +99,16 @@ const VerifyEmailBottomsheet = ({
       if (response.success) {
         onSuccess?.();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('========= otp verification error =========');
       console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error?.message,
+          toastType: 'info',
+        })
+      );
     } finally {
       setIsLoading(false);
     }

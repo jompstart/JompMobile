@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
@@ -17,7 +17,6 @@ import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import SuccessModal from '../../shared/SuccessModal';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
-import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 import ShowLoader from '../../shared/ShowLoader';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
@@ -26,11 +25,14 @@ import { SignupScreenProps } from '../../types/navigations.types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthService } from '../../services/auth';
 import { StackActions } from '@react-navigation/native';
+import * as Google from 'expo-auth-session/providers/google';
 import {
   signUpFormReducer,
   signUpInitailState,
 } from '../../features/signup_onboarding/onboarding.reducers';
 import { UserAccount } from '../../enums/user.enums';
+import { updateToast } from '../../features/ui/ui.slice';
+import { useAppDispatch } from '../../controller/redux.controller';
 const SignUp = ({
   route: {
     params: { accountPreference },
@@ -48,11 +50,20 @@ const SignUp = ({
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [userInfo, setUserInfo] = useState<any>();
   const [showVerifyEmailBottomsheet, setShowVerifyEmailBottomsheet] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [showSucessModal, setShowSuccessModal] = useState(false);
   const [state, dispatch] = useReducer(signUpFormReducer, signUpInitailState);
+  const stateDispatch = useAppDispatch();
+  const [request, response, prompAsync] = Google.useAuthRequest({
+    androidClientId:
+      '801607727056-tfa731fpcvcn45qjlbso5rutbffvi891.apps.googleusercontent.com',
+    iosClientId:
+      '801607727056-4praconm2f06hvvek28slfenq30gpoer.apps.googleusercontent.com',
+  });
 
   const authInstance = new AuthService();
   const { mutate: validateEmail, isPending } = useMutation({
@@ -60,8 +71,6 @@ const SignUp = ({
     onSuccess: async (data) => {
       try {
         if (data.statusCode === 200 && data.success === true) {
-          console.log('========= data here ======');
-          console.log(data);
           const createUserAccountResponse = await authInstance.signup(
             accountPreference,
             accountPreference == UserAccount.Customer
@@ -83,16 +92,73 @@ const SignUp = ({
             setShowVerifyEmailBottomsheet(true);
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log('========= otp error here ======');
         console.log(error);
+        stateDispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: error.message,
+            toastType: 'info',
+          })
+        );
       }
     },
     onError: (error) => {
       console.log('========= validation error here ======');
       console.log(error);
+      stateDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message,
+          toastType: 'info',
+        })
+      );
     },
   });
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      console.log('========= authentication here ======');
+      console.log(authentication?.accessToken);
+      getUserInfo(authentication?.accessToken!);
+    }
+  }, [response]);
+
+  const getUserInfo = async (accessToken: string) => {
+    setIsLoading(true);
+    const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const userInfoResponse = await response.json();
+    const createUserAccountResponse = await authInstance.signup(
+      accountPreference,
+      accountPreference == UserAccount.Customer
+        ? {
+            email: userInfoResponse.email,
+            firstName: userInfoResponse.given_name,
+            lastName: userInfoResponse.family_name,
+            password: userInfoResponse.id,
+          }
+        : {
+            businessEmail: userInfoResponse.email,
+            countryID: 125,
+            firstName: userInfoResponse.given_name,
+            lastName: userInfoResponse.family_name,
+            password: userInfoResponse.id,
+          }
+    );
+    setIsLoading(false);
+    if (
+      createUserAccountResponse.statusCode === 200 &&
+      createUserAccountResponse.success === true &&
+      createUserAccountResponse?.data?.otp
+    ) {
+      setOtp(createUserAccountResponse?.data?.otp);
+      setShowVerifyEmailBottomsheet(true);
+    }
+  };
 
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
@@ -400,6 +466,9 @@ const SignUp = ({
             }}
           >
             <SecondaryButton
+              onPress={() => {
+                prompAsync();
+              }}
               icon={<GoogleIcon size={size.getHeightSize(24)} />}
               label="Sign up with Google"
             />
@@ -450,7 +519,7 @@ const SignUp = ({
         }}
         visibility={showSucessModal}
       />
-      <ShowLoader isLoading={isPending} />
+      <ShowLoader isLoading={isPending || isLoading} />
     </CustomSafeArea>
   );
 };

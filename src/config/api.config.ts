@@ -49,11 +49,11 @@ export const makeRequest = async <T>({
     if (axios.isAxiosError(error)) {
       // Handle Axios-specific errors
 
-      console.error('Axios error:', error.response?.data || error.message);
+      console.log('Axios error:', error.response?.data || error.message);
       throw error.response?.data || error.message;
     } else {
       // Handle non-Axios errors
-      console.error('Unexpected error:', error);
+      console.log('Unexpected error:', error);
       throw error;
     }
   }

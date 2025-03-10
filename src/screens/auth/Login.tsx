@@ -19,7 +19,6 @@ import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
-import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch } from '../../controller/redux.controller';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
@@ -27,8 +26,14 @@ import ShowLoader from '../../shared/ShowLoader';
 import { updateUserState } from '../../features/user/user.slice';
 import SuccessModal from '../../shared/SuccessModal';
 import { obfuscateEmail } from '../../utils/stringManipulation';
+import {
+  CommonActions,
+  StackActions,
+  useNavigation,
+} from '@react-navigation/native';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import { updateToast } from '../../features/ui/ui.slice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -84,23 +89,32 @@ const Login = () => {
               userId: decoded.UserId,
             })
           );
-          if (data.data?.complianceStatus == false) {
-            navigation.navigate('Verification');
-          }
-          // const userInstance = new UserService(decoded.userId);
-          // const user = await userInstance.getCustomer();
 
-          // console.log('========= user here ======');
-          // console.log(user);
+          const userInstance = new UserService(decoded.customerId);
+          const user = await userInstance.getCustomer();
+
+          navigation.dispatch(StackActions.replace('BottomtabNavigation'));
         }
-      } catch (error) {
-        console.log('========= login error here ======');
-        console.log(error);
+      } catch (error: any) {
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: error.message,
+            toastType: 'info',
+          })
+        );
       }
     },
     onError: (error) => {
       console.log('========= login error here ======');
       console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message,
+          toastType: 'info',
+        })
+      );
     },
   });
   return (

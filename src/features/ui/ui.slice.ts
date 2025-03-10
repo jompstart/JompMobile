@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {UIState} from './ui.types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UIState } from './ui.types';
 const initialState: UIState = {
   toast: {
     displayToast: false,
@@ -38,7 +38,7 @@ const uiSlice = createSlice({
     },
     updateAuthBottomSheet(
       state,
-      action: PayloadAction<Partial<UIState['authBottomsheetComponent']>>,
+      action: PayloadAction<Partial<UIState['authBottomsheetComponent']>>
     ) {
       state.authBottomsheetComponent = {
         ...state.authBottomsheetComponent,
