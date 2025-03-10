@@ -34,10 +34,20 @@ import {
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { updateToast } from '../../features/ui/ui.slice';
+import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [userInfo, setUserInfo] = useState<any>();
+
+  const [showVerifyEmailBottomsheet, setShowVerifyEmailBottomsheet] =
+    useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [succesModal, setSuccessModalText] = useState({
+    description: '',
+    title: '',
+  });
+  const [otp, setOtp] = useState('');
   const [request, response, prompAsync] = Google.useAuthRequest({
     androidClientId:
       '801607727056-tfa731fpcvcn45qjlbso5rutbffvi891.apps.googleusercontent.com',
@@ -51,13 +61,43 @@ const Login = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const getUserInfo = async (accessToken: string) => {
+    setIsLoading(true);
     const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const userInfoResponse = await response.json();
-    console.log('========= userInfoResponse here ======');
-    console.log(userInfoResponse);
+
     setUserInfo(userInfoResponse);
+    const loginResponse: any = await authInstance.login({
+      email: userInfoResponse.email,
+      password: userInfoResponse.id,
+    });
+    setEmail(userInfoResponse.email);
+
+    if (loginResponse.data.otp) {
+      setOtp(loginResponse.data.otp);
+      setShowVerifyEmailBottomsheet(true);
+    } else if (loginResponse.data.token) {
+      const decoded: any = jwtDecode(loginResponse.data?.token!);
+
+      await AsyncStorage.setItem('token', loginResponse.data?.token!);
+      dispatch(
+        updateUserState({
+          accountPreference: decoded.clientId,
+          token: loginResponse.data?.token!,
+          customerId: decoded.customerId,
+          userId: decoded.UserId,
+        })
+      );
+
+      const userInstance = new UserService(decoded.customerId);
+      const user = await userInstance.getCustomer();
+
+      console.log(user);
+
+      navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+    }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -294,6 +334,12 @@ const Login = () => {
         onChangeText={setResetPasswordEmail}
         onSuccess={() => {
           setShowForgotPasswordModal(false);
+          setSuccessModalText({
+            description: `Your password reset email has been successfully sent to ${obfuscateEmail(
+              resetPasswordEmail
+            )}, kindly proceed to click on the link in the password reset email.`,
+            title: 'Email Successfully Sent',
+          });
           setShowSuccessModal(true);
         }}
         onClose={() => {
@@ -301,20 +347,34 @@ const Login = () => {
         }}
         isVisible={showForgotPasswordModal}
       />
-      <ShowLoader isLoading={isPending} />
+      <ShowLoader isLoading={isPending || isLoading} />
       <SuccessModal
         visibility={showSuccessModal}
         buttonText="Okay"
-        description={`Your password reset email has been successfully sent to ${obfuscateEmail(
-          resetPasswordEmail
-        )}, kindly proceed to click on the link in the password reset email.`}
-        title="Email Successfully Sent"
+        description={succesModal.description}
+        title={succesModal.title}
         onClose={() => {
           setShowSuccessModal(false);
         }}
         onContinue={() => {
           setShowSuccessModal(false);
         }}
+      />
+      <VerifyEmailBottomsheet
+        onClose={() => {
+          setShowVerifyEmailBottomsheet(false);
+        }}
+        otp={otp}
+        onSuccess={() => {
+          setShowVerifyEmailBottomsheet(false);
+          setSuccessModalText({
+            description: `Your email address has been successfully verified, proceed to complete your onboarding details.`,
+            title: 'Email Verification Successful!',
+          });
+          setShowSuccessModal(true);
+        }}
+        email={email}
+        isVisible={showVerifyEmailBottomsheet}
       />
     </CustomSafeArea>
   );

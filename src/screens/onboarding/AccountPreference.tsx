@@ -160,7 +160,7 @@ const AccountPreference = () => {
                   letterSpacing: size.getWidthSize(0.2),
                 }}
               >
-                Select this to register as a provider
+                Select this to register as a service provider
               </CText>
             </View>
             <Avatar2 size={size.getHeightSize(46)} />
