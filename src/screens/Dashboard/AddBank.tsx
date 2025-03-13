@@ -1,5 +1,5 @@
 import { StyleSheet, ScrollView, View } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -9,7 +9,20 @@ import CheckCircle from '../../../assets/svgs/Onboarding/CheckCircle';
 import { colors } from '../../constants/colors';
 import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
+import { ProviderService } from '../../services/provider';
+import BanksBottomsheet from '../../components/Dashboard/BanksBottomsheet';
+import { useMutation } from '@tanstack/react-query';
+import { useGetBanks } from '../../hooks/api/auth';
+import { Banks } from '../../interface/provider';
 const AddBank = () => {
+  const serProviderInstance = new ProviderService();
+  const [bankData, setBankData] = useState<Array<Banks>>([]);
+  const { data, isLoading } = useGetBanks();
+  useEffect(() => {
+    if (data?.data) {
+      setBankData(data.data);
+    }
+  }, [data]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -221,6 +234,7 @@ const AddBank = () => {
           />
         </View>
       </ScrollView>
+      <BanksBottomsheet banks={bankData} isVisible onClose={() => {}} />
     </GradientSafeAreaView>
   );
 };

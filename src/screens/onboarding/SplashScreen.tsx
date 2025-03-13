@@ -32,48 +32,62 @@ const SplashScreen = () => {
           })
         );
 
-        console.log('decoded', decoded);
         const userInstance = new UserService(decoded.customerId);
-        // const user = await userInstance.getCustomer();
-        // console.log('user', user);
+        const user = await userInstance.getCustomer();
+        if (user.data) {
+          dispatch(
+            changeUserState({
+              key: 'ninStatus',
+              value: user.data.ninStatus,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'email',
+              value: user.data.email,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'fullName',
+              value: user.data.fullName,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'bvnStatus',
+              value: user.data.bvnStatus,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'complianceStatus',
+              value: user.data.complianceFlag,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'niN',
+              value: user.data.niN,
+            })
+          );
 
-        // if (user.data) {
-        //   dispatch(
-        //     changeUserState({
-        //       key: 'ninStatus',
-        //       value: user.data.ninStatus,
-        //     })
-        //   );
-        //   dispatch(
-        //     changeUserState({
-        //       key: 'email',
-        //       value: user.data.email,
-        //     })
-        //   );
-        //   dispatch(
-        //     changeUserState({
-        //       key: 'fullName',
-        //       value: user.data.fullName,
-        //     })
-        //   );
-        //   dispatch(
-        //     changeUserState({
-        //       key: 'bvnStatus',
-        //       value: user.data.bvnStatus,
-        //     })
-        //   );
-        //   dispatch(
-        //     changeUserState({
-        //       key: 'complianceStatus',
-        //       value: user.data.complianceFlag,
-        //     })
-        //   );
-
-        //   navigation.dispatch(StackActions.replace('BottomtabNavigation'));
-        // } else {
-        //   navigation.dispatch(StackActions.replace('Login'));
-        // }
-        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+          dispatch(
+            changeUserState({
+              key: 'bvn',
+              value: user.data.bvn,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'phoneNumber',
+              value: user.data.phoneNumber,
+            })
+          );
+          navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+        } else {
+          navigation.dispatch(StackActions.replace('Login'));
+        }
       } else {
         navigation.dispatch(StackActions.replace('Login'));
       }

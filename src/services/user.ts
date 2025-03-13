@@ -14,6 +14,9 @@ export class UserService {
       email: string;
       fullName: string;
       ninStatus: string;
+      niN?: string;
+      bvn?: string;
+      phoneNumber?: string;
     }>({
       method: 'GET',
       url: `/get-customer?customerId=${this.userId}`,

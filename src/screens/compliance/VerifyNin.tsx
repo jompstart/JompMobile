@@ -62,7 +62,7 @@ const VerifyNin = () => {
           'nin',
           response.data?.status,
           nin.toString(),
-          'Nin',
+          'NIN',
           `${response.data?.firstName} ${response.data?.lastName}`,
           fileData,
           phoneNumber

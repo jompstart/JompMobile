@@ -10,5 +10,8 @@ export interface UserModel {
   fullName: string;
   ninStatus: string;
   bvnStatus: string;
+  phoneNumber: string;
+  bvn?: string;
+  niN?: string;
 }
 export type UserAccountPreference = UserAccount;

@@ -23,7 +23,10 @@ import { useAppDispatch } from '../../controller/redux.controller';
 import { AuthService } from '../../services/auth';
 import { UserService } from '../../services/user';
 import ShowLoader from '../../shared/ShowLoader';
-import { updateUserState } from '../../features/user/user.slice';
+import {
+  changeUserState,
+  updateUserState,
+} from '../../features/user/user.slice';
 import SuccessModal from '../../shared/SuccessModal';
 import { obfuscateEmail } from '../../utils/stringManipulation';
 import {
@@ -114,8 +117,6 @@ const Login = () => {
     mutationFn: authInstance.login,
     onSuccess: async (data) => {
       try {
-        console.log('========= login data here ======');
-        console.log(data);
         if (data.statusCode === 200 && data.success === true) {
           const decoded: any = jwtDecode(data.data?.token!);
           console.log('========= decoded here ======');
@@ -133,7 +134,66 @@ const Login = () => {
           const userInstance = new UserService(decoded.customerId);
           const user = await userInstance.getCustomer();
 
-          navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+          if (user.data) {
+            dispatch(
+              changeUserState({
+                key: 'ninStatus',
+                value: user.data.ninStatus,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'email',
+                value: user.data.email,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'fullName',
+                value: user.data.fullName,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'bvnStatus',
+                value: user.data.bvnStatus,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'complianceStatus',
+                value: user.data.complianceFlag,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'niN',
+                value: user.data.niN,
+              })
+            );
+
+            dispatch(
+              changeUserState({
+                key: 'bvn',
+                value: user.data.bvn,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'phoneNumber',
+                value: user.data.phoneNumber,
+              })
+            );
+            navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+          } else {
+            dispatch(
+              updateToast({
+                displayToast: true,
+                toastMessage: 'User not found',
+                toastType: 'info',
+              })
+            );
+          }
         }
       } catch (error: any) {
         dispatch(

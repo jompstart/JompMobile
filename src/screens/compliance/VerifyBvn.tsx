@@ -62,12 +62,12 @@ const VerifyBvn = () => {
           name: 'image.jpg',
           type: 'image/jpeg',
         };
-
+        console.log(user);
         const verifyCustomer = await complianceInstance.verifyCustomer(
           'bvn',
           response.data?.status,
           bvn.toString(),
-          'Bvn',
+          'BVN',
           `${response.data?.firstName} ${response.data?.lastName}`,
           fileData,
           phoneNumber
