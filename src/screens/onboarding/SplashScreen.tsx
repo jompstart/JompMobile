@@ -31,8 +31,11 @@ const SplashScreen = () => {
             userId: decoded.UserId,
           })
         );
-        // const userInstance = new UserService(decoded.customerId);
+
+        console.log('decoded', decoded);
+        const userInstance = new UserService(decoded.customerId);
         // const user = await userInstance.getCustomer();
+        // console.log('user', user);
 
         // if (user.data) {
         //   dispatch(

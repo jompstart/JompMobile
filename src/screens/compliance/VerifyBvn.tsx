@@ -50,8 +50,6 @@ const VerifyBvn = () => {
         bvn
       );
 
-      // call the endpoint to update the bvn status
-
       if (
         response.statusCode == 200 &&
         response.success &&
@@ -60,9 +58,9 @@ const VerifyBvn = () => {
         const file = await base64ToFile(response.data.image);
 
         const fileData = {
-          uri: file.startsWith('file://') ? file : `file://${fileUri}`, // Ensure proper format
-          name: 'image.jpg', // Adjust based on file type
-          type: 'image/jpeg', // Change if necessary
+          uri: file.startsWith('file://') ? file : `file://${fileUri}`,
+          name: 'image.jpg',
+          type: 'image/jpeg',
         };
 
         const verifyCustomer = await complianceInstance.verifyCustomer(
@@ -92,6 +90,14 @@ const VerifyBvn = () => {
             })
           );
         }
+      } else {
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: 'BVN Verification failed!',
+            toastType: 'info',
+          })
+        );
       }
     } catch (error: any) {
       console.log('====== verify bvn error ======');

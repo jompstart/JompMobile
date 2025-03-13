@@ -38,10 +38,8 @@ const VerifyNin = () => {
   const dispatch = useAppDispatch();
 
   const handleVerifyNin = async () => {
-    console.log('==== here ====');
     setVerificationLoadingState(true);
     try {
-      console.log('==== here 2====');
       const response = await complianceInstance.validateCustomerCompliance(
         'nin',
         nin
@@ -56,8 +54,8 @@ const VerifyNin = () => {
 
         const fileData = {
           uri: file.startsWith('file://') ? file : `file://${fileUri}`, // Ensure proper format
-          name: 'image.jpg', // Adjust based on file type
-          type: 'image/jpeg', // Change if necessary
+          name: 'image.jpg',
+          type: 'image/jpeg',
         };
 
         const verifyCustomer = await complianceInstance.verifyCustomer(
@@ -87,6 +85,14 @@ const VerifyNin = () => {
             })
           );
         }
+      } else {
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: 'NIN Verification failed!',
+            toastType: 'info',
+          })
+        );
       }
     } catch (error) {
       console.log(error);
