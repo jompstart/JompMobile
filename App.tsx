@@ -12,6 +12,7 @@ import FilterBottomsheet from './src/components/Savings/FilterBottomsheet';
 import { Provider } from 'react-redux';
 import { store } from './src/app/redux.store';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import CompliancePromptModal from './src/components/compliance/CompliancePromptModal';
 import OverlayWrapper from './src/shared/OverlayWrapper';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -41,6 +42,7 @@ export default function App() {
             <BillTypes />
             <SchoolPreference />
             <FilterBottomsheet />
+            <CompliancePromptModal />
           </NavigationContainer>
           <OverlayWrapper />
         </Provider>

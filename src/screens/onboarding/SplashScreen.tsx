@@ -4,13 +4,77 @@ import { size } from '../../config/size';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { StackActions, useNavigation } from '@react-navigation/native';
-
+import { useAppDispatch } from '../../controller/redux.controller';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { jwtDecode } from 'jwt-decode';
+import {
+  changeUserState,
+  updateUserState,
+} from '../../features/user/user.slice';
+import { UserService } from '../../services/user';
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   React.useEffect(() => {
-    setTimeout(() => {
-      navigation.dispatch(StackActions.replace('Login'));
-    }, 2000);
+    // setTimeout(() => {
+    //   navigation.dispatch(StackActions.replace('Login'));
+    // }, 2000);
+    (async () => {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        const decoded: any = jwtDecode(token);
+        dispatch(
+          updateUserState({
+            accountPreference: decoded.clientId,
+            token: token,
+            customerId: decoded.customerId,
+            userId: decoded.UserId,
+          })
+        );
+        // const userInstance = new UserService(decoded.customerId);
+        // const user = await userInstance.getCustomer();
+
+        // if (user.data) {
+        //   dispatch(
+        //     changeUserState({
+        //       key: 'ninStatus',
+        //       value: user.data.ninStatus,
+        //     })
+        //   );
+        //   dispatch(
+        //     changeUserState({
+        //       key: 'email',
+        //       value: user.data.email,
+        //     })
+        //   );
+        //   dispatch(
+        //     changeUserState({
+        //       key: 'fullName',
+        //       value: user.data.fullName,
+        //     })
+        //   );
+        //   dispatch(
+        //     changeUserState({
+        //       key: 'bvnStatus',
+        //       value: user.data.bvnStatus,
+        //     })
+        //   );
+        //   dispatch(
+        //     changeUserState({
+        //       key: 'complianceStatus',
+        //       value: user.data.complianceFlag,
+        //     })
+        //   );
+
+        //   navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+        // } else {
+        //   navigation.dispatch(StackActions.replace('Login'));
+        // }
+        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+      } else {
+        navigation.dispatch(StackActions.replace('Login'));
+      }
+    })();
   }, []);
   return (
     <View

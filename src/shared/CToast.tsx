@@ -16,7 +16,6 @@ const CToast = () => {
   const [animation] = useState(new Animated.Value(0));
   const toastProperty = useAppSelector(toastSelector);
 
-  console.log(progressValue);
   useEffect(() => {
     if (toastProperty) {
       Toast.show({

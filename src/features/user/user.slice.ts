@@ -9,6 +9,10 @@ const initialState: UserState = {
   status: '',
   accountPreference: UserAccount.Provider,
   userId: '',
+  email: '',
+  fullName: '',
+  bvnStatus: '',
+  ninStatus: '',
 };
 
 const userSlice = createSlice({

@@ -95,7 +95,7 @@ const Verification = () => {
               }
             />
             <CText
-              color="secondaryBlack"
+              color="black"
               fontSize={18}
               lineHeight={23.6}
               fontFamily="semibold"

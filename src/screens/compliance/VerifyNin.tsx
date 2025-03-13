@@ -12,11 +12,16 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import SuccessModal from '../../shared/SuccessModal';
 import Asterisks from '../../../assets/svgs/Onboarding/Asterisks';
 import UploadIamgeModal from '../../components/compliance/UploadIamgeModal';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
+import { useAppDispatch } from '../../controller/redux.controller';
 import AttachmentView from '../../shared/AttachmentView';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { ComplianceService } from '../../services/compliance';
+import { base64ToFile, convertImageToBinary } from '../../utils/fileReader';
+import { changeUserState } from '../../features/user/user.slice';
+import { updateToast } from '../../features/ui/ui.slice';
 const VerifyNin = () => {
   const navigation = useNavigation();
   const [showUploadFileModal, setShowUploadFileModal] = useState(false);
@@ -24,19 +29,66 @@ const VerifyNin = () => {
   const [isVerified, setVerificationStatus] = useState(false);
   const [isVerificationLoading, setVerificationLoadingState] = useState(false);
   const [nin, setNin] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const user = useAppSelector(userSelector);
-  const complianceInstance = new ComplianceService(user.userId);
+  const complianceInstance = new ComplianceService(
+    user.userId,
+    user.customerId
+  );
+  const dispatch = useAppDispatch();
+
   const handleVerifyNin = async () => {
+    console.log('==== here ====');
     setVerificationLoadingState(true);
     try {
-      const response = await complianceInstance.verifyCustomer('nin', nin);
-      console.log('====== verify bvn response ======');
-      console.log(response);
-      if (response.statusCode == 200 && response.success) {
-        setVerificationStatus(true);
+      console.log('==== here 2====');
+      const response = await complianceInstance.validateCustomerCompliance(
+        'nin',
+        nin
+      );
+
+      if (
+        response.statusCode == 200 &&
+        response.success &&
+        response.data?.status
+      ) {
+        const file = await base64ToFile(response.data.image);
+
+        const fileData = {
+          uri: file.startsWith('file://') ? file : `file://${fileUri}`, // Ensure proper format
+          name: 'image.jpg', // Adjust based on file type
+          type: 'image/jpeg', // Change if necessary
+        };
+
+        const verifyCustomer = await complianceInstance.verifyCustomer(
+          'nin',
+          response.data?.status,
+          nin.toString(),
+          'Nin',
+          `${response.data?.firstName} ${response.data?.lastName}`,
+          fileData,
+          phoneNumber
+        );
+
+        if (verifyCustomer.statusCode == 201 && verifyCustomer.success) {
+          dispatch(
+            updateToast({
+              displayToast: true,
+              toastMessage: 'NIN Verified!',
+              toastType: 'success',
+            })
+          );
+          setVerificationStatus(true);
+          navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+          dispatch(
+            changeUserState({
+              key: 'ninStatus',
+              value: true,
+            })
+          );
+        }
       }
     } catch (error) {
-      console.log('====== verify bvn error ======');
       console.log(error);
     } finally {
       setVerificationLoadingState(false);
@@ -52,46 +104,53 @@ const VerifyNin = () => {
           paddingTop: size.getHeightSize(40),
         }}
       >
-        <View
-          style={{
-            alignSelf: 'center',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: size.getHeightSize(24),
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            paddingBottom: size.getHeightSize(20),
           }}
+          showsVerticalScrollIndicator={false}
+          extraScrollHeight={size.getHeightSize(16)}
         >
-          <JompLogo size={size.getHeightSize(44)} />
-          <JompTextLogo
-            width={size.getWidthSize(155.27)}
-            height={size.getHeightSize(30.19)}
-          />
-        </View>
-        <CText
-          fontSize={16}
-          lineHeight={22}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          Compliance Details
-        </CText>
-        <CText
-          color="secondaryBlack"
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-            letterSpacing: size.getWidthSize(0.2),
-          }}
-        >
-          Confirming your BVN helps us verify your identity and keeps your
-          account from fraud.
-        </CText>
-        {/* <View
+          <View
+            style={{
+              alignSelf: 'center',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: size.getHeightSize(24),
+            }}
+          >
+            <JompLogo size={size.getHeightSize(44)} />
+            <JompTextLogo
+              width={size.getWidthSize(155.27)}
+              height={size.getHeightSize(30.19)}
+            />
+          </View>
+          <CText
+            fontSize={16}
+            lineHeight={22}
+            fontFamily="semibold"
+            style={{
+              textAlign: 'center',
+              marginTop: size.getHeightSize(16),
+            }}
+          >
+            Compliance Details
+          </CText>
+          <CText
+            color="secondaryBlack"
+            fontSize={14}
+            lineHeight={19.6}
+            fontFamily="semibold"
+            style={{
+              textAlign: 'center',
+              marginTop: size.getHeightSize(16),
+              letterSpacing: size.getWidthSize(0.2),
+            }}
+          >
+            Confirming your BVN helps us verify your identity and keeps your
+            account from fraud.
+          </CText>
+          {/* <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -136,65 +195,82 @@ const VerifyNin = () => {
           />
         </View> */}
 
-        <View
-          style={{
-            marginTop: size.getHeightSize(32),
-            gap: size.getHeightSize(24),
-            flex: 1,
-          }}
-        >
-          <CTextInput
-            required
-            placeholder="1234567890"
-            title="National Identity Number (NIN) "
-          />
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: size.getWidthSize(8),
+              marginTop: size.getHeightSize(32),
+              gap: size.getHeightSize(24),
             }}
           >
-            <CText
-              color="secondaryBlack"
-              fontSize={14}
-              lineHeight={19.6}
-              fontFamily="semibold"
+            <CTextInput
+              keyboardType="phone-pad"
+              required
+              placeholder="1234567890"
+              title="National Identity Number (NIN) "
+              onChangeText={setNin}
+            />
+            <CTextInput
+              onChangeText={setPhoneNumber}
+              required
+              placeholder="1234567890"
+              title="Phone Number"
+              keyboardType="phone-pad"
+            />
+            {/* <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: size.getWidthSize(8),
+              }}
             >
-              Upload NIN Slip
-            </CText>
-            <Asterisks size={size.getHeightSize(16)} />
+              <CText
+                color="secondaryBlack"
+                fontSize={14}
+                lineHeight={19.6}
+                fontFamily="semibold"
+              >
+                Upload NIN Slip
+              </CText>
+              <Asterisks size={size.getHeightSize(16)} />
+            </View> */}
+            {/* <AttachmentView
+              fileUri={fileUri}
+              onPress={() => {
+                setShowUploadFileModal(true);
+              }}
+              description=" "
+              type=".png .Jpeg (max. 1MB)"
+            /> */}
           </View>
-          <AttachmentView
-            fileUri={fileUri}
-            onPress={() => {
-              setShowUploadFileModal(true);
+          <View
+            style={{
+              marginTop: size.getHeightSize(120),
+              gap: size.getHeightSize(24),
+              marginBottom: size.getHeightSize(32),
             }}
-            description=" "
-            type=".png .Jpeg (max. 1MB)"
-          />
-        </View>
-        <View
-          style={{
-            marginTop: size.getHeightSize(8),
-            gap: size.getHeightSize(24),
-            marginBottom: size.getHeightSize(32),
-          }}
-        >
-          <SecondaryButton
-            isLoading={isVerificationLoading}
-            disabled={!fileUri || !nin}
-            label="Verify"
-            onPress={handleVerifyNin}
-          />
-          <PrimaryButton
-            disabled={isVerified}
-            label="Submit"
-            onPress={() => {
-              // navigation.navigate('BottomtabNavigation');
-            }}
-          />
-        </View>
+          >
+            <PrimaryButton
+              isLoading={isVerificationLoading}
+              disabled={!nin || !phoneNumber}
+              label="Verify"
+              onPress={handleVerifyNin}
+            />
+            {/* <PrimaryButton
+              disabled={isVerified}
+              label="Submit"
+              onPress={() => {
+                // navigation.navigate('BottomtabNavigation');
+              }}
+            /> */}
+          </View>
+        </KeyboardAwareScrollView>
+        <SuccessModal
+          visibility={false}
+          onClose={() => {}}
+          buttonText="Submit"
+          onContinue={() => {}}
+          title="NIN Verified!"
+          description="Your NIN has been successfully verified."
+        />
         <UploadIamgeModal
           isVisible={showUploadFileModal}
           onClose={() => {
@@ -202,6 +278,9 @@ const VerifyNin = () => {
           }}
           onSelectedImage={(uri) => {
             setFileUri(uri);
+            setShowUploadFileModal(false);
+            // console.log('======= converting to binary ======');
+            // convertImageToBinary(uri);
           }}
         />
       </View>

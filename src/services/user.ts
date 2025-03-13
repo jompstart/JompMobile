@@ -8,7 +8,13 @@ export class UserService {
 
   async getCustomer() {
     console.log(`get-customer?${this.userId}`);
-    return await makeRequest({
+    return await makeRequest<{
+      bvnStatus: string;
+      complianceFlag: boolean;
+      email: string;
+      fullName: string;
+      ninStatus: string;
+    }>({
       method: 'GET',
       url: `/get-customer?customerId=${this.userId}`,
     });
