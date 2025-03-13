@@ -1,13 +1,13 @@
 import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
-import { size } from '../config/size';
-import { colors } from '../constants/colors';
-import CText from '../shared/CText';
+import { size } from '../../config/size';
+import { colors } from '../../constants/colors';
+import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import GradientHeader from '../shared/GradientHeader';
-import GradientSafeAreaView from '../shared/GradientSafeAreaView';
-import StudentIcon from '../../assets/svgs/Dashboard/StudentIcon';
-import ChildIcon from '../../assets/svgs/Dashboard/ChildIcon';
+import GradientHeader from '../../shared/GradientHeader';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import StudentIcon from '../../../assets/svgs/Dashboard/StudentIcon';
+import ChildIcon from '../../../assets/svgs/Dashboard/ChildIcon';
 import { useNavigation } from '@react-navigation/native';
 const PayServices = () => {
   const { navigate } = useNavigation();

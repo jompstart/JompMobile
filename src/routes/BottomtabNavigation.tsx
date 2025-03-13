@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import CText from '../shared/CText';
@@ -24,6 +24,8 @@ import ServicesIcon from '../../assets/svgs/Home/ServicesIcon';
 import TransactionsIcon from '../../assets/svgs/Home/TransactionsIcon';
 import SavingsIcon from '../../assets/svgs/Home/SavingsIcon';
 import MoreIcon from '../../assets/svgs/Home/MoreIcon';
+import { useAppDispatch, useAppSelector } from '../controller/redux.controller';
+import { updateCompliancePromptVisibility } from '../features/ui/ui.slice';
 const Tab = createBottomTabNavigator();
 
 type RootStackParamList = {
@@ -60,6 +62,14 @@ const savings = 'Savings';
 const more = 'More';
 
 const BottomtabNavigation = () => {
+  const user = useAppSelector((state) => state.user);
+  useEffect(() => {
+    if (user.userId && user.complianceStatus == false) {
+      dispatch(updateCompliancePromptVisibility(true));
+    }
+  }, [getFocusedRouteNameFromRoute, user]);
+  const dispatch = useAppDispatch();
+
   return (
     <Tab.Navigator
       backBehavior="none"

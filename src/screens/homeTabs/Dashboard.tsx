@@ -406,7 +406,12 @@ const Dashboard = () => {
               Withdraw to your Bank
             </CText>
           </Pressable>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('Profile');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <BankIcon size={size.getHeightSize(26)} />
             </View>
@@ -421,7 +426,7 @@ const Dashboard = () => {
             >
               Link Bank Account
             </CText>
-          </View>
+          </Pressable>
           <View style={styles.view1}>
             <View style={styles.view}>
               <SupportIcon size={size.getHeightSize(26)} />

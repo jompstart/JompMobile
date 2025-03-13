@@ -4,6 +4,7 @@ import {
   View,
   ViewProps,
   ViewStyle,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import { colors } from '../constants/colors';
@@ -17,6 +18,7 @@ interface Props {
   style?: ViewStyle;
   opacity?: string;
   width?: string;
+  isLoading?: boolean;
 }
 const PrimaryButton = ({
   onPress,
@@ -25,28 +27,38 @@ const PrimaryButton = ({
   style,
   opacity,
   width,
+  isLoading,
 }: Props) => {
   return (
     <Pressable
-      disabled={disabled}
+      disabled={disabled || isLoading}
       onPress={() => onPress?.()}
       style={[
         styles.pressable,
         style,
         {
-          backgroundColor: colors.primary(opacity),
+          backgroundColor: disabled
+            ? colors.disabled('20')
+            : colors.primary(opacity),
         },
       ]}
     >
-      <CText
-        lineHeight={19.2}
-        style={{ textAlign: 'center' }}
-        fontSize={16}
-        fontFamily="bold"
-        color={opacity ? 'primaryColor' : 'white'}
-      >
-        {label}
-      </CText>
+      {isLoading ? (
+        <ActivityIndicator
+          size={size.getHeightSize(24)}
+          color={colors.white()}
+        />
+      ) : (
+        <CText
+          lineHeight={19.2}
+          style={{ textAlign: 'center' }}
+          fontSize={16}
+          fontFamily="bold"
+          color={opacity ? 'primaryColor' : 'white'}
+        >
+          {label}
+        </CText>
+      )}
     </Pressable>
   );
 };
@@ -55,7 +67,7 @@ export default PrimaryButton;
 
 const styles = StyleSheet.create({
   pressable: {
-    paddingVertical: size.getHeightSize(13),
+    paddingVertical: size.getHeightSize(16),
     borderRadius: size.getHeightSize(24),
     justifyContent: 'center',
     alignItems: 'center',

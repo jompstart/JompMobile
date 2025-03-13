@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import MainNavigator from './src/routes';
@@ -10,9 +9,14 @@ import PayBills from './src/components/Dashboard/PayBills';
 import BillTypes from './src/components/Dashboard/BillTypes';
 import SchoolPreference from './src/components/Dashboard/SchoolPreference';
 import FilterBottomsheet from './src/components/Savings/FilterBottomsheet';
+import { Provider } from 'react-redux';
+import { store } from './src/app/redux.store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import CompliancePromptModal from './src/components/compliance/CompliancePromptModal';
+import OverlayWrapper from './src/shared/OverlayWrapper';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-
+  const queryClient = new QueryClient();
   // Load the fonts
   const loadFonts = async () => {
     await loadAppFonts();
@@ -29,14 +33,20 @@ export default function App() {
   }
   return (
     <GestureHandlerRootView style={styles.gestureHandler}>
-      <NavigationContainer>
-        <MainNavigator />
-        <WalletAccountDetails />
-        <PayBills />
-        <BillTypes />
-        <SchoolPreference />
-        <FilterBottomsheet />
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <NavigationContainer>
+            <MainNavigator />
+            <WalletAccountDetails />
+            <PayBills />
+            <BillTypes />
+            <SchoolPreference />
+            <FilterBottomsheet />
+            <CompliancePromptModal />
+          </NavigationContainer>
+          <OverlayWrapper />
+        </Provider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }

@@ -16,9 +16,12 @@ import IdIcon from '../../../assets/svgs/Dashboard/IdIcon';
 import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate } = useNavigation();
+  const user = useAppSelector(userSelector);
   return (
     <View
       style={{
@@ -115,7 +118,7 @@ const Profile = () => {
             marginTop: size.getHeightSize(16),
           }}
         >
-          Timmy Ajanlekoko
+          {user.fullName}
         </CText>
       </LinearGradient>
       <View
@@ -195,7 +198,7 @@ const Profile = () => {
                   textAlign: 'right',
                 }}
               >
-                timmyajanlekoko@gmail.com
+                {user.email}
               </CText>
             </View>
             <View style={styles.view1}>
@@ -220,7 +223,7 @@ const Profile = () => {
                   textAlign: 'right',
                 }}
               >
-                2348012345678
+                {user?.phoneNumber}
               </CText>
             </View>
             <View style={styles.view1}>
@@ -245,7 +248,7 @@ const Profile = () => {
                   textAlign: 'right',
                 }}
               >
-                1234567890
+                {user?.bvn}
               </CText>
             </View>
             <View style={styles.view1}>
@@ -270,7 +273,7 @@ const Profile = () => {
                   textAlign: 'right',
                 }}
               >
-                123-456-7890
+                {user?.niN}
               </CText>
             </View>
           </View>

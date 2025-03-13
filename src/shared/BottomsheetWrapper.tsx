@@ -1,6 +1,7 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
+  BottomSheetProps,
 } from '@gorhom/bottom-sheet';
 import React, {
   ReactNode,
@@ -16,7 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 const { height, width } = Dimensions.get('window');
 const size = new sizes(height, width);
 
-interface Props {
+interface Props extends BottomSheetProps {
   visibility: boolean;
   onClose: () => void;
   hideHandle?: boolean;
@@ -30,6 +31,7 @@ interface Props {
   enablePanDownToClose?: boolean;
   backgroundColor?: string;
   topRadius?: number;
+  disableBackdropPress?: boolean;
 }
 const BottomsheetWrapper = ({
   onClose,
@@ -45,6 +47,7 @@ const BottomsheetWrapper = ({
   enablePanDownToClose = true,
   backgroundColor = colors.white(),
   topRadius = 32,
+  disableBackdropPress = false,
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -71,7 +74,7 @@ const BottomsheetWrapper = ({
     (props: any) => (
       <BottomSheetBackdrop
         {...props}
-        pressBehavior={'close'}
+        pressBehavior={disableBackdropPress ? 'none' : 'close'}
         disappearsOnIndex={-1}
         appearsOnIndex={0}
         opacity={backdropOpacity ? backdropOpacity : 0.8}

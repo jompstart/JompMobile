@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -7,10 +7,33 @@ import VerifyMailIcon from '../../../assets/svgs/Onboarding/VerifyMailIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
-
-const VerifyEmailBottomsheet = () => {
+import { AuthService } from '../../services/auth';
+import { obfuscateEmail } from '../../utils/stringManipulation';
+import { useAppDispatch } from '../../controller/redux.controller';
+import { updateToast } from '../../features/ui/ui.slice';
+interface Props {
+  isVisible: boolean;
+  email?: string;
+  onSuccess?: () => void;
+  otp: string;
+  onClose: () => void;
+}
+const VerifyEmailBottomsheet = ({
+  isVisible,
+  email,
+  onSuccess,
+  otp,
+  onClose,
+}: Props) => {
+  const authInstance = new AuthService();
   const inputRefs = useRef<TextInput[]>([]);
+  const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
+  const [newOtp, setNewOtp] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
   const handleTextChange = (text: string, index: number) => {
+    const newUserInput = [...userInput];
+    newUserInput[index] = text;
     if (text.length === 1) {
       // Move to the next input when a single character is entered
       if (index < inputRefs.current.length - 1) {
@@ -37,6 +60,7 @@ const VerifyEmailBottomsheet = () => {
       // Move to the previous input on backspace
       inputRefs.current[index - 1].focus();
     }
+    setUserInput(newUserInput);
   };
 
   const handleKeyPress = (e: any, index: number) => {
@@ -56,8 +80,51 @@ const VerifyEmailBottomsheet = () => {
       });
     }
   };
+
+  const handleVerify = async () => {
+    const userOtpInput = userInput.join('');
+
+    if (userInput.length < 4) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await authInstance.verifyOTP(
+        email!,
+        `${newOtp ? newOtp : otp}-${userOtpInput}`
+      );
+      console.log('========= otp verification response =========');
+      console.log(response);
+
+      if (response.success) {
+        onSuccess?.();
+      }
+    } catch (error: any) {
+      console.log('========= otp verification error =========');
+      console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error?.message,
+          toastType: 'info',
+        })
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <BottomsheetWrapper enableBackdrop visibility={false} onClose={() => {}}>
+    <BottomsheetWrapper
+      disableBackdropPress
+      enablePanDownToClose={false}
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="none"
+      enableBackdrop
+      visibility={isVisible}
+      onClose={() => {
+        onClose();
+      }}
+    >
       <View>
         <VerifyMailIcon
           style={{
@@ -87,7 +154,7 @@ const VerifyEmailBottomsheet = () => {
             marginTop: size.getHeightSize(16),
           }}
         >
-          Please enter the code sent to tun******li@gmail.com
+          Please enter the code sent to {obfuscateEmail(email || '')}
         </CText>
         <View
           style={{
@@ -98,7 +165,7 @@ const VerifyEmailBottomsheet = () => {
             marginTop: size.getHeightSize(24),
           }}
         >
-          {Array(6)
+          {Array(4)
             .fill(null)
             .map((_, index) => (
               <BottomSheetTextInput
@@ -115,6 +182,8 @@ const VerifyEmailBottomsheet = () => {
             ))}
         </View>
         <PrimaryButton
+          isLoading={isLoading}
+          onPress={handleVerify}
           style={{
             marginTop: size.getHeightSize(32),
           }}
@@ -128,7 +197,18 @@ const VerifyEmailBottomsheet = () => {
           }}
         >
           Didn't receive the email?{' '}
-          <CText color="secondary" fontFamily="semibold">
+          <CText
+            onPress={async () => {
+              setIsLoading(true);
+              const response = await authInstance.resendOTP(email!);
+              if (response.success) {
+                setNewOtp(response.data?.otp || '');
+              }
+              setIsLoading(false);
+            }}
+            color="secondary"
+            fontFamily="semibold"
+          >
             Click to Resend
           </CText>
         </CText>
