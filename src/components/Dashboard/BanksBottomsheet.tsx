@@ -1,6 +1,9 @@
-import { StyleSheet, TextInput, View, Platform } from 'react-native';
-import React from 'react';
-import { BottomSheetFlatList } from '@gorhom/bottom-sheet';
+import { StyleSheet, TextInput, Pressable, View, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  BottomSheetFlatList,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Banks } from '../../interface/provider';
@@ -9,12 +12,21 @@ import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import ScrollablebottomsheetWrapper from '../../shared/ScrollablebottomsheetWrapper';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
+import { searchArray } from '../../utils/stringManipulation';
 interface Props {
   isVisible: boolean;
   onClose?: () => void;
   banks: Banks[];
+  onSelectedBank?: (bank: Banks) => void;
+  onSearch?: (text: string) => void;
 }
-const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
+const BanksBottomsheet = ({
+  banks,
+  onSelectedBank,
+  isVisible,
+  onClose,
+  onSearch,
+}: Props) => {
   return (
     <ScrollablebottomsheetWrapper
       topRadius={16}
@@ -22,7 +34,6 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
       visibility={isVisible}
       onClose={() => onClose?.()}
       backgroundColor={colors.appBackground()}
-      snapPoints={[size.getHeightSize(400)]}
     >
       <View
         style={{
@@ -30,6 +41,7 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
           alignItems: 'center',
           marginVertical: size.getHeightSize(16),
           justifyContent: 'space-between',
+          marginHorizontal: size.getWidthSize(16),
         }}
       >
         <CText
@@ -45,6 +57,7 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
           BANK
         </CText>
         <CancelIcon
+          onPress={() => onClose?.()}
           style={{
             alignSelf: 'flex-end',
           }}
@@ -62,10 +75,13 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
           gap: size.getWidthSize(8),
           paddingHorizontal: size.getWidthSize(16),
           marginBottom: size.getHeightSize(16),
+          marginHorizontal: size.getWidthSize(16),
         }}
       >
-        <TextInput
-          numberOfLines={1}
+        <BottomSheetTextInput
+          onChangeText={(text) => {
+            onSearch?.(text);
+          }}
           cursorColor={'#F5F7FF'}
           placeholderTextColor={'#61616150'}
           placeholder="Search..."
@@ -97,12 +113,17 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
           contentContainerStyle={{
             paddingBottom: size.getHeightSize(16),
             gap: size.getHeightSize(8),
+            paddingHorizontal: size.getWidthSize(16),
           }}
           data={banks}
           showsVerticalScrollIndicator={false}
           keyExtractor={(item) => item.name}
           renderItem={({ index, item }) => (
-            <View
+            <Pressable
+              onPress={() => {
+                onSelectedBank?.(item);
+                onClose?.();
+              }}
               key={index}
               style={{
                 backgroundColor: colors.white(),
@@ -122,7 +143,7 @@ const BanksBottomsheet = ({ banks, isVisible, onClose }: Props) => {
               >
                 {item.name}
               </CText>
-            </View>
+            </Pressable>
           )}
         />
       </View>

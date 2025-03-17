@@ -89,6 +89,12 @@ const VerifyBvn = () => {
               value: true,
             })
           );
+          dispatch(
+            changeUserState({
+              key: 'complianceStatus',
+              value: true,
+            })
+          );
         }
       } else {
         dispatch(

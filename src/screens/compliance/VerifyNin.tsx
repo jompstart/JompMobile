@@ -84,6 +84,12 @@ const VerifyNin = () => {
               value: true,
             })
           );
+          dispatch(
+            changeUserState({
+              key: 'complianceStatus',
+              value: true,
+            })
+          );
         }
       } else {
         dispatch(

@@ -489,7 +489,13 @@ const SignUp = ({
             }}
           >
             Already have an account?{' '}
-            <CText color="secondary" fontFamily="semibold">
+            <CText
+              onPress={() => {
+                navigation.dispatch(StackActions.replace('Login'));
+              }}
+              color="secondary"
+              fontFamily="semibold"
+            >
               Login
             </CText>
           </CText>
