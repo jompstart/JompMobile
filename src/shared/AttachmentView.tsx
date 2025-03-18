@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import CText from './CText';
+import PdfIcon from '../../assets/svgs/shared/PdfIcon';
+import * as DocumentPicker from 'expo-document-picker';
 import AAttachmentIcon from '../../assets/svgs/Dashboard/AttachmentIcon';
 import AttachmentRemoveIcon from '../../assets/svgs/shared/AttachmentRemoveIcon';
 import {
@@ -19,6 +21,7 @@ interface Props {
   onPress?: () => void;
   fileUri?: string;
   onFileSelected?: (file: string) => void;
+  typeOfFileToPick?: 'pdf' | 'image' | null;
 }
 const AttachmentView = ({
   fileUri,
@@ -27,9 +30,11 @@ const AttachmentView = ({
   required,
   onPress,
   onFileSelected,
+  typeOfFileToPick,
 }: Props) => {
-  console.log(fileUri);
   const [file, setFile] = useState('');
+  const [fileType, setFileType] = useState<'pdf' | 'image' | null>(null);
+  const [fileName, setFileName] = useState('');
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
 
@@ -85,55 +90,116 @@ const AttachmentView = ({
       setFile(result.assets[0].uri);
     }
   };
+  const pickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf', // You can specify other types like 'application/*' for all documents
+        copyToCacheDirectory: true,
+      });
+
+      if (result.assets != null) {
+        setFile(result.assets[0].uri);
+        onFileSelected?.(result.assets[0].uri);
+        setFileType('pdf');
+        setFileName(result.assets[0].name);
+      }
+    } catch (error) {
+      console.error('Error picking document:', error);
+    }
+  };
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => {
+        typeOfFileToPick == 'image' ? takePhoto() : pickDocument();
+      }}
       style={{
         paddingVertical: size.getHeightSize(14),
-        backgroundColor: fileUri ? colors.appBackground() : colors.white(),
+        backgroundColor: file ? colors.appBackground() : colors.white(),
         alignItems: 'center',
 
         borderRadius: size.getHeightSize(8),
-        paddingHorizontal: size.getWidthSize(16),
+
         flexDirection: 'row',
         justifyContent: 'center',
         gap: size.getWidthSize(16),
       }}
     >
       {file ? (
-        <>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: colors.white(),
-              paddingVertical: size.getHeightSize(16),
-              borderRadius: size.getHeightSize(8),
-              paddingHorizontal: size.getWidthSize(16),
-            }}
-          >
+        fileType == 'pdf' ? (
+          <>
             <View
               style={{
-                width: size.getWidthSize(121),
-                height: size.getHeightSize(84),
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                gap: size.getWidthSize(4),
+                flex: 1,
+                backgroundColor: colors.white(),
+                paddingVertical: size.getHeightSize(16),
+                borderRadius: size.getHeightSize(8),
+                paddingHorizontal: size.getWidthSize(16),
               }}
             >
-              <Image
-                source={{ uri: file }}
+              <PdfIcon size={size.getHeightSize(84)} />
+              <CText
+                color={'secondaryBlack'}
+                fontSize={14}
+                lineHeight={19.6}
+                fontFamily="semibold"
                 style={{
-                  height: '100%',
-                  width: '100%',
+                  textAlign: 'center',
+                  flex: 1,
                 }}
-              />
+              >
+                {fileName}
+              </CText>
             </View>
-          </View>
-          <AttachmentRemoveIcon
-            style={{
-              alignSelf: 'center',
-            }}
-            width={size.getWidthSize(50)}
-            height={size.getHeightSize(116)}
-          />
-        </>
+            <AttachmentRemoveIcon
+              style={{
+                alignSelf: 'center',
+              }}
+              width={size.getWidthSize(50)}
+              height={size.getHeightSize(116)}
+              onPress={() => {
+                setFile('');
+                onFileSelected?.('');
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: colors.white(),
+                paddingVertical: size.getHeightSize(16),
+                borderRadius: size.getHeightSize(8),
+                paddingHorizontal: size.getWidthSize(16),
+              }}
+            >
+              <View
+                style={{
+                  width: size.getWidthSize(121),
+                  height: size.getHeightSize(84),
+                }}
+              >
+                <Image
+                  source={{ uri: file }}
+                  style={{
+                    height: '100%',
+                    width: '100%',
+                  }}
+                />
+              </View>
+            </View>
+            <AttachmentRemoveIcon
+              style={{
+                alignSelf: 'center',
+              }}
+              width={size.getWidthSize(50)}
+              height={size.getHeightSize(116)}
+            />
+          </>
+        )
       ) : (
         <View
           style={{

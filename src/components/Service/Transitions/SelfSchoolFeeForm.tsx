@@ -6,32 +6,29 @@ import CText from '../../../shared/CText';
 import { colors } from '../../../constants/colors';
 import { CustomerServicesContext } from '../../../context/ServicesContext';
 import PrimaryButton from '../../../shared/PrimaryButton';
-import Form1 from '../../ChildBills/Form1';
+import Form1 from '../../SelfBills/Form1';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Form2 from '../../ChildBills/Form2';
-import Form3 from '../../ChildBills/Form3';
-import Form4 from '../../ChildBills/Form4';
+import Form2 from '../../SelfBills/Form2';
+import Form3 from '../../SelfBills/Form3';
+import Form4 from '../../SelfBills/Form4';
 import { isAnyFieldEmpty } from '../../../utils/forms';
-const GuardianDetailsForm = () => {
-  const { width, height } = Dimensions.get('window');
-  const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
-    CustomerServicesContext
-  );
+const SelfSchoolFeeForm = () => {
+  const { width } = Dimensions.get('window');
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
   const views = [
     {
-      label: "Parent or Guardian's Details",
-      title: 'Next: Child and School Details',
+      label: 'Basic Information (Personal Details)',
+      title: 'Next: Education Details ',
       component: <Form1 />,
     },
     {
-      label: 'Child and School Details',
-      title: 'Next: Parent Employment Details',
+      label: 'Education Details (Your Education Details)',
+      title: 'Next: Employment/Business Details',
       component: <Form2 />,
     },
     {
-      label: 'Parent Employment Details',
+      label: 'Employment/Business Details',
       title: 'Next: Document Uploads',
       component: <Form3 />,
     },
@@ -41,7 +38,6 @@ const GuardianDetailsForm = () => {
       component: <Form4 />,
     },
   ];
-
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -54,11 +50,8 @@ const GuardianDetailsForm = () => {
       });
       setViewIndex(viewIndex + 1);
       setProgress(progress + 100 / views.length);
-    } else {
-      console.log(childSchoolFeeDetails);
     }
   };
-
   return (
     <View
       style={{
@@ -66,13 +59,10 @@ const GuardianDetailsForm = () => {
         paddingHorizontal: size.getWidthSize(16),
       }}
     >
-      <      </View>
-
-        extraScrollHeight={size.getHeightSize(16)}
+      <KeyboardAwareScrollView
         contentContainerStyle={{
           paddingTop: size.getHeightSize(16),
         }}
-        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
@@ -215,6 +205,6 @@ const GuardianDetailsForm = () => {
   );
 };
 
-export default GuardianDetailsForm;
+export default SelfSchoolFeeForm;
 
 const styles = StyleSheet.create({});

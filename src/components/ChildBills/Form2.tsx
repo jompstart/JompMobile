@@ -21,7 +21,9 @@ const Form2 = () => {
       <>
         <PTextInput
           placeholder="Name of School"
-          value={childSchoolFeeDetails.childSchoolDetails[0]?.nameOfSchool || ''}
+          value={
+            childSchoolFeeDetails.childSchoolDetails[0]?.nameOfSchool || ''
+          }
           onChangeText={(text) =>
             setChildSchoolFeeDetails(
               'childSchoolDetails',
@@ -75,11 +77,11 @@ const Form2 = () => {
         />
         <PTextInput
           placeholder="Child's Grade (Class)"
-          value={childSchoolFeeDetails.childSchoolDetails[0]?.nameOfSchool || ''}
+          value={childSchoolFeeDetails.childSchoolDetails[0]?.childGrade || ''}
           onChangeText={(text) =>
             setChildSchoolFeeDetails(
               'childSchoolDetails',
-              'nameOfSchool',
+              'childGrade',
               text,
               0
             )
@@ -160,11 +162,11 @@ const Form2 = () => {
             <PTextInput
               key={index + 1}
               placeholder="Child's Grade (Class)"
-              value={child.nameOfSchool || ''}
+              value={child.childGrade || ''}
               onChangeText={(text) =>
                 setChildSchoolFeeDetails(
                   'childSchoolDetails',
-                  'nameOfSchool',
+                  'childGrade',
                   text,
                   index + 1
                 )

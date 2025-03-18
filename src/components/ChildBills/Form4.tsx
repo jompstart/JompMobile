@@ -1,124 +1,61 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
+import { CustomerServicesContext } from '../../context/ServicesContext';
 import PTextInput from '../../shared/PTextInput';
 import CText from '../../shared/CText';
 import AAttachmentIcon from '../../../assets/svgs/Dashboard/AttachmentIcon';
+import AttachmentView from '../../shared/AttachmentView';
 const Form4 = () => {
+  const { setChildSchoolFeeDetails } = useContext(CustomerServicesContext);
   return (
     <View
       style={{
         gap: size.getHeightSize(16),
       }}
     >
-      <View style={styles.view}>
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          6 Months Bank Statement.
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            {' '}
-            Click to upload
-          </CText>
-          <CText
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="regular"
-            color={'#475467' as any}
-          >
-            {'\n'}.pdf, .xsls (max. 1MB)
-          </CText>
-        </CText>
-      </View>
-      <View style={styles.view}>
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Utility Bill.
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            {' '}
-            Click to upload
-          </CText>
-          <CText
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="regular"
-            color={'#475467' as any}
-          >
-            {'\n'}.pdf, .xsls (max. 1MB)
-          </CText>
-        </CText>
-      </View>
-      <View style={styles.view}>
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          School Fee Invoice.{' '}
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            Click to upload
-          </CText>
-        </CText>
-      </View>
-      <View style={styles.view}>
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          School Id Card.{' '}
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            Click to upload
-          </CText>
-        </CText>
-      </View>
+      <AttachmentView
+        fileUri={''}
+        onPress={() => {}}
+        description="6 Months Bank Statement"
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails('documentUploads', 'bankStatement', file);
+        }}
+      />
+
+      <AttachmentView
+        fileUri={''}
+        onPress={() => {}}
+        description="Utility Bill."
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails('documentUploads', 'utilityBill', file);
+        }}
+      />
+
+      <AttachmentView
+        fileUri={''}
+        onPress={() => {}}
+        description="School Fee Invoice"
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails('documentUploads', 'schoolFeeInvoice', file);
+        }}
+      />
+
+      <AttachmentView
+        fileUri={''}
+        typeOfFileToPick={'image'}
+        onPress={() => {}}
+        description="School Id Card"
+        type=".png, .jpeg (max. 1MB)"
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails('documentUploads', 'schoolIdCard', file);
+        }}
+      />
     </View>
   );
 };

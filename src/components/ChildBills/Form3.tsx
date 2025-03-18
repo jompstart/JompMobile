@@ -111,6 +111,13 @@ const Form3 = () => {
         onPress={() => {}}
         description=" "
         type="3 Months Payment Slip."
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'paymentSlip',
+            file
+          );
+        }}
       />
     </View>
   );
