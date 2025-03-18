@@ -13,10 +13,12 @@ import PTextInput from '../../../shared/PTextInput';
 import PrimaryButton from '../../../shared/PrimaryButton';
 import PhoneInput from '../../../shared/PhoneInput';
 import Form1 from '../../ChildBills/Form1';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { ScrollView } from 'react-native-gesture-handler';
 import Form2 from '../../ChildBills/Form2';
 import Form3 from '../../ChildBills/Form3';
 import Form4 from '../../ChildBills/Form4';
+import { isAnyFieldEmpty } from '../../../utils/forms';
 const GuardianDetailsForm = () => {
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
@@ -46,6 +48,7 @@ const GuardianDetailsForm = () => {
       component: <Form4 />,
     },
   ];
+
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -60,6 +63,7 @@ const GuardianDetailsForm = () => {
       setProgress(progress + 100 / views.length);
     }
   };
+
   return (
     <View
       style={{
@@ -67,10 +71,12 @@ const GuardianDetailsForm = () => {
         paddingHorizontal: size.getWidthSize(16),
       }}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
+        extraScrollHeight={size.getHeightSize(16)}
         contentContainerStyle={{
           paddingTop: size.getHeightSize(16),
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
@@ -197,9 +203,12 @@ const GuardianDetailsForm = () => {
             }}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <PrimaryButton
-        disabled={!childSchoolFeeDetails.guardianDetails}
+        // disabled={
+        //   viewIndex == 0 &&
+        //   isAnyFieldEmpty(childSchoolFeeDetails.guardianDetails)
+        // }
         style={{
           marginBottom: size.getHeightSize(32),
         }}

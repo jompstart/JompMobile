@@ -1,24 +1,83 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
+import { CustomerServicesContext } from '../../context/ServicesContext';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
 import PTextInput from '../../shared/PTextInput';
 import CText from '../../shared/CText';
 import AAttachmentIcon from '../../../assets/svgs/Dashboard/AttachmentIcon';
+import AttachmentView from '../../shared/AttachmentView';
 const Form3 = () => {
+  const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
+    CustomerServicesContext
+  );
   return (
     <View
       style={{
         gap: size.getHeightSize(16),
       }}
     >
-      <PTextInput placeholder="Name of Company" />
-      <PTextInput placeholder="Company’s Email Address" />
-      <PTextInput placeholder="Company’s Location" />
-      <PhoneInput placeholder="Company’s Phone Number" />
-      <PTextInput placeholder="Years of Working with them" />
-      <View
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'nameOfCompany',
+            text
+          )
+        }
+        placeholder="Name of Company"
+      />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyEmail}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyEmail',
+            text
+          )
+        }
+        placeholder="Company’s Email Address"
+      />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyLocation}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyLocation',
+            text
+          )
+        }
+        placeholder="Company’s Location"
+      />
+      <PhoneInput
+        value={
+          childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber
+        }
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyPhoneNumber',
+            text
+          )
+        }
+        keyboardType="number-pad"
+        placeholder="Company’s Phone Number"
+      />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'yearsInCompany',
+            text
+          )
+        }
+        keyboardType="number-pad"
+        placeholder="Years of Working with them"
+      />
+      {/* <View
         style={{
           paddingTop: size.getHeightSize(14),
           backgroundColor: colors.white(),
@@ -46,7 +105,13 @@ const Form3 = () => {
             Click to upload
           </CText>
         </CText>
-      </View>
+      </View> */}
+      <AttachmentView
+        fileUri={''}
+        onPress={() => {}}
+        description=" "
+        type="3 Months Payment Slip."
+      />
     </View>
   );
 };

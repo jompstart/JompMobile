@@ -1,17 +1,24 @@
-import { StyleSheet, Pressable, View, Image } from 'react-native';
+import { StyleSheet, Pressable, View, Alert, Image } from 'react-native';
 import React, { useState } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import CText from './CText';
 import AAttachmentIcon from '../../assets/svgs/Dashboard/AttachmentIcon';
 import AttachmentRemoveIcon from '../../assets/svgs/shared/AttachmentRemoveIcon';
-
+import {
+  launchImageLibraryAsync,
+  MediaType,
+  launchCameraAsync,
+  useCameraPermissions,
+} from 'expo-image-picker';
+import { PermissionStatus } from 'expo-permissions';
 interface Props {
   description: string;
   type: string;
   required?: boolean;
   onPress?: () => void;
   fileUri?: string;
+  onFileSelected?: (file: string) => void;
 }
 const AttachmentView = ({
   fileUri,
@@ -19,9 +26,65 @@ const AttachmentView = ({
   type,
   required,
   onPress,
+  onFileSelected,
 }: Props) => {
   console.log(fileUri);
   const [file, setFile] = useState('');
+  const [cameraPermissionInformation, requestPermission] =
+    useCameraPermissions();
+
+  async function verifyPermission() {
+    if (cameraPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
+      const permissionResponse = await requestPermission();
+      return permissionResponse.granted;
+    }
+    if (cameraPermissionInformation?.status === PermissionStatus.DENIED) {
+      const permissionResponse = await requestPermission();
+      console.log(permissionResponse);
+      if (permissionResponse.granted === false) {
+        Alert.alert(
+          'Insufficient permission!',
+          'You need to grant camera access to use this app'
+        );
+      }
+      return permissionResponse.granted;
+    }
+    return true;
+  }
+  const pickImage = async () => {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+      return;
+    }
+
+    let result = await launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (result.assets != null) {
+      onFileSelected?.(result.assets[0].uri);
+      setFile(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+      return;
+    }
+    let result = await launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+    });
+
+    if (result.assets != null) {
+      onFileSelected?.(result.assets[0].uri);
+      setFile(result.assets[0].uri);
+    }
+  };
   return (
     <Pressable
       onPress={onPress}
@@ -37,7 +100,7 @@ const AttachmentView = ({
         gap: size.getWidthSize(16),
       }}
     >
-      {fileUri ? (
+      {file ? (
         <>
           <View
             style={{
@@ -55,7 +118,7 @@ const AttachmentView = ({
               }}
             >
               <Image
-                source={{ uri: fileUri }}
+                source={{ uri: file }}
                 style={{
                   height: '100%',
                   width: '100%',
