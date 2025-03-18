@@ -24,3 +24,18 @@ export const obfuscateEmail = (email: string): string => {
 
   return `${firstPart}*****${lastPart}@${domain}`;
 };
+
+export const searchArray = <T>(
+  array: T[],
+  key: keyof T,
+  searchTerm: string
+): T[] => {
+  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  return array.filter((item) => {
+    const value = item[key];
+    if (typeof value === 'string') {
+      return value.toLowerCase().includes(lowerCaseSearchTerm);
+    }
+    return false; // Skip non-string values
+  });
+};

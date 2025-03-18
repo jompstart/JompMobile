@@ -1,4 +1,10 @@
-import { StyleSheet, ScrollView, View } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
@@ -14,15 +20,77 @@ import BanksBottomsheet from '../../components/Dashboard/BanksBottomsheet';
 import { useMutation } from '@tanstack/react-query';
 import { useGetBanks } from '../../hooks/api/auth';
 import { Banks } from '../../interface/provider';
+import { useNavigation } from '@react-navigation/native';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import { updateToast } from '../../features/ui/ui.slice';
+import { searchArray } from '../../utils/stringManipulation';
 const AddBank = () => {
-  const serProviderInstance = new ProviderService();
+  const user = useAppSelector(userSelector);
+  const { goBack } = useNavigation();
+  const dispatch = useAppDispatch();
+  const serProviderInstance = new ProviderService(user.userId);
   const [bankData, setBankData] = useState<Array<Banks>>([]);
-  const { data, isLoading } = useGetBanks();
+  const [filteredBankData, setFilteredBankData] = useState<Array<Banks>>([]);
+  const { data, isLoading } = useGetBanks(user.userId);
+  const [showBankList, setShowBankList] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<Banks | null>(null);
+  const [accountNumber, setAccountNumber] = useState('');
+  const [acctName, setAccountName] = useState('');
+
+  const {
+    mutate: validateBank,
+    isPending,
+    isError,
+    isSuccess: validationSuccess,
+    error,
+    data: validationData,
+  } = useMutation({
+    mutationFn: serProviderInstance.validateAcct,
+    onError: (error) => {
+      console.log('======= acct validation error =======');
+      console.log(error);
+    },
+  });
+  const { mutate: addBank, isPending: isAddingBank } = useMutation({
+    mutationFn: serProviderInstance.addBank,
+    onError: (error) => {
+      console.log('======= add bank error =======');
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      console.log('======= add bank success =======');
+      console.log(data);
+      dispatch(
+        updateToast({
+          toastMessage: 'Bank added successfully',
+          displayToast: true,
+          toastType: 'success',
+        })
+      );
+      goBack();
+    },
+  });
   useEffect(() => {
     if (data?.data) {
       setBankData(data.data);
+      setFilteredBankData(data.data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (accountNumber.length === 10 && selectedBank) {
+      validateBank({
+        accountNumber,
+        bankCode: selectedBank?.code,
+        bankName: selectedBank?.name,
+      });
+    }
+  }, [accountNumber, selectedBank]);
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -79,9 +147,14 @@ const AddBank = () => {
             gap: size.getHeightSize(16),
           }}
         >
-          <View style={styles.dropDown}>
+          <Pressable
+            onPress={() => {
+              setShowBankList(true);
+            }}
+            style={styles.dropDown}
+          >
             <CText
-              color={colors.black('50') as any}
+              color={colors.black(selectedBank ? '' : '50') as any}
               fontSize={16}
               lineHeight={19.6}
               fontFamily="regular"
@@ -89,32 +162,53 @@ const AddBank = () => {
                 letterSpacing: size.getWidthSize(0.2),
               }}
             >
-              Select Bank
+              {selectedBank?.name ? selectedBank.name : 'Select Bank'}
             </CText>
             <MaterialIcons
               name="arrow-drop-down"
               color={colors.primary()}
               size={size.getHeightSize(40)}
             />
-          </View>
+          </Pressable>
 
           <View
             style={{
               gap: size.getHeightSize(8),
             }}
           >
-            <PTextInput title="" placeholder="Account Number" />
-            <CText
-              color={'#31005C' as any}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="bold"
-              style={{
-                textAlign: 'right',
-              }}
-            >
-              Timmy Ajanlekoko
-            </CText>
+            <PTextInput
+              title={accountNumber ? 'Account Number' : ''}
+              onChangeText={setAccountNumber}
+              placeholder="Account Number"
+              keyboardType="number-pad"
+              maxLength={10}
+            />
+            {isPending ? (
+              <ActivityIndicator
+                color={colors.idle()}
+                style={{
+                  marginTop: size.getHeightSize(8),
+                  alignSelf: 'flex-end',
+                }}
+                size={size.getHeightSize(28)}
+              />
+            ) : (
+              <CText
+                color={isError ? colors.primaryWarning() : ('#31005C' as any)}
+                fontSize={12}
+                lineHeight={19.2}
+                fontFamily="bold"
+                style={{
+                  textAlign: 'right',
+                }}
+              >
+                {isError
+                  ? error?.message
+                  : validationSuccess
+                  ? validationData?.data?.account_name
+                  : ''}
+              </CText>
+            )}
           </View>
           <PTextInput title="" placeholder="BVN" />
         </View>
@@ -227,6 +321,16 @@ const AddBank = () => {
             </View>
           </View>
           <PrimaryButton
+            onPress={() => {
+              addBank({
+                accountName: validationData?.data?.account_name!,
+                accountNumber,
+                bankCode: selectedBank?.code!,
+                bankName: selectedBank?.name!,
+              });
+            }}
+            isLoading={isAddingBank}
+            disabled={!validationSuccess}
             style={{
               marginTop: size.getHeightSize(40),
             }}
@@ -234,7 +338,21 @@ const AddBank = () => {
           />
         </View>
       </ScrollView>
-      <BanksBottomsheet banks={bankData} isVisible onClose={() => {}} />
+      <BanksBottomsheet
+        banks={filteredBankData}
+        isVisible={showBankList}
+        onClose={() => {
+          setShowBankList(false);
+          setFilteredBankData(bankData);
+        }}
+        onSelectedBank={(bank) => {
+          setSelectedBank(bank);
+        }}
+        onSearch={(text) => {
+          const filtered = searchArray(bankData, 'name', text);
+          setFilteredBankData(filtered);
+        }}
+      />
     </GradientSafeAreaView>
   );
 };

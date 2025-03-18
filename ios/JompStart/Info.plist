@@ -47,6 +47,14 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires camera access to enable you to upload your documents and record videos.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to save photos.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app requires camera access to enable you to upload your documents.</string>
     <key>UIAppFonts</key>
     <array>
       <string>AvenirLTStd-Black.otf</string>

@@ -49,7 +49,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
           justifyContent: 'center',
         }}
       >
-        {title && (
+        {props.value && (
           <View
             style={{
               flexDirection: 'row',
@@ -66,7 +66,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
               fontFamily="semibold"
               color={colors.black('50') as any}
             >
-              {title}
+              {props.placeholder}
             </CText>
             {required && <Asterisks size={size.getHeightSize(12)} />}
           </View>

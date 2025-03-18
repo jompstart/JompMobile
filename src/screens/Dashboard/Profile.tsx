@@ -18,10 +18,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
+import { useGetUserBanks } from '../../hooks/api/auth';
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
+  const { data: banks } = useGetUserBanks(user.userId);
   return (
     <View
       style={{

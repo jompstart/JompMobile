@@ -106,18 +106,7 @@ const ScrollablebottomsheetWrapper = ({
           handleComponent={() => <></>}
           backdropComponent={enableBackdrop ? renderBackdrop : null}
         >
-          {
-            <BottomSheetView
-              style={{
-                paddingHorizontal: size.getWidthSize(16),
-
-                paddingBottom: size.getHeightSize(40),
-               
-              }}
-            >
-              {children}
-            </BottomSheetView>
-          }
+          {children}
         </BottomSheet>
       )}
     </>

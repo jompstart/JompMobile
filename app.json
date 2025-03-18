@@ -13,7 +13,7 @@
       "bundleIdentifier": "com.jomp.jompstart",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSCameraUsageDescription": "This app requires camera access to enable you to upload your documents. We respect your privacy and do not access your camera without your explicit permission.",
+        "NSCameraUsageDescription": "This app requires camera access to enable you to upload your documents and record videos.",
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos.",
         "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
       }
