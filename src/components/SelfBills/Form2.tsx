@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
@@ -7,20 +7,108 @@ import PTextInput from '../../shared/PTextInput';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import CText from '../../shared/CText';
 import PlusIcon from '../../../assets/svgs/Dashboard/PlusIcon';
+import { CustomerServicesContext } from '../../context/ServicesContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AttachmentView from '../../shared/AttachmentView';
 const Form2 = () => {
+  const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
+    CustomerServicesContext
+  );
   return (
     <View
       style={{
         gap: size.getHeightSize(16),
       }}
     >
-      <PTextInput placeholder="Name of Institution" />
-      <PTextInput placeholder="Course of Study" />
-      <PTextInput placeholder="Level of Education" />
-      <PTextInput placeholder="Location of Institution" />
-      <PTextInput placeholder="Location of Institution 2 (Optional)" />
-      <PTextInput placeholder="₦ Tuition Fee" />
-      <PTextInput placeholder="₦ Loan Amount" />
+      <PTextInput
+        placeholder="Name of Institution"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'nameOfSchool', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.nameOfSchool}
+      />
+      <PTextInput
+        placeholder="Course of Study"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'course', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.course}
+      />
+      <PTextInput
+        placeholder="Level of Education"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'level', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.level}
+      />
+      <PTextInput
+        placeholder="Location of Institution"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'location', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.location}
+      />
+      <PTextInput
+        placeholder="Location of Institution 2 (Optional)"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails(
+            'educationnDetails',
+            'locationOfSchool2',
+            text
+          )
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.locationOfSchool2}
+      />
+      <PTextInput
+        placeholder="₦ Tuition Fee"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'tuitionFee', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.tuitionFee}
+      />
+      <PTextInput
+        placeholder="₦ Loan Amount"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'loanAmount', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.loanAmount}
+      />
+      <PTextInput
+        editable={false}
+        placeholder="Select Country"
+        rightIcon={
+          <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
+        }
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'tuitionFee', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.country}
+      />
+      <PTextInput
+        placeholder="Select State"
+        rightIcon={
+          <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.country}
+      />
+      <PTextInput
+        placeholder="City"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'city', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.city}
+      />
+      <AttachmentView
+        description="School Fee Invoice"
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setSelfSchoolFeeDetails(
+            'educationnDetails',
+            'tutionFeeInvoice',
+            file
+          );
+        }}
+      />
     </View>
   );
 };

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import React, { useState, useRef } from 'react';
 import { size } from '../../config/size';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
@@ -48,6 +48,7 @@ const ServiceCategory = () => {
         }}
       >
         <OptionBox
+          onSelect={() => {}}
           flex={false}
           deselectIcon={
             <Fontisto
@@ -66,6 +67,7 @@ const ServiceCategory = () => {
           description="Auto Care"
         />
         <OptionBox
+          onSelect={() => {}}
           flex={false}
           deselectIcon={
             <Fontisto
@@ -84,6 +86,7 @@ const ServiceCategory = () => {
           description="Medical Bill"
         />
         <OptionBox
+          onSelect={() => {}}
           flex={false}
           deselectIcon={
             <Fontisto
@@ -102,6 +105,7 @@ const ServiceCategory = () => {
           description="Household Bill"
         />
         <OptionBox
+          onSelect={() => {}}
           flex={false}
           deselectIcon={
             <Fontisto
@@ -120,6 +124,7 @@ const ServiceCategory = () => {
           description="Utility Bill"
         />
         <OptionBox
+          onSelect={() => {}}
           flex={false}
           deselectIcon={
             <Fontisto

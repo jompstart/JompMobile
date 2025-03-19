@@ -85,11 +85,41 @@ type CustomerServices = {
     paySlip?: string;
     tenancyAgreement?: string;
   };
+  transportDetails: {
+    creditRequestDetails: {
+      transportMode?: Array<{
+        value: string;
+        index: number;
+      }>;
+      estimatedMonthlyCost?: string;
+      requestedAmount?: string;
+      paymentDuration?: string;
+    };
+    employmentDetails: {
+      employmentStatus?: Array<{
+        value: string;
+        index: number;
+      }>;
+      others?: string;
+      name?: string;
+      address?: string;
+      incomeRange?: string;
+      payday?: string;
+      modeOfPayment?: string;
+      employerName?: string;
+      employerContact?: string;
+    };
+    documentUploads: {
+      identificationType?: string;
+      idFile?: string;
+      typeOfProofOfEmployment?: string;
+      proofOfEmployment?: string;
+      proofOfMonthlyIncome?: string;
+      utilityBill?: string;
+    };
+  };
 
-  setHouseRentDetails: <
-    Section extends keyof CustomerServices['houseRentDetails']
-  >(
-    section: Section,
+  setHouseRentDetails: (
     field: keyof CustomerServices['houseRentDetails'],
     value: string
   ) => void;
@@ -111,6 +141,15 @@ type CustomerServices = {
     value: string,
     index?: number
   ) => void;
+  setTransportDetails: <
+    Section extends keyof CustomerServices['transportDetails']
+  >(
+    section: Section,
+    field: keyof CustomerServices['transportDetails'][Section],
+    value: string | Array<string>,
+    action?: 'add' | 'remove' | 'set',
+    index?: number
+  ) => void;
 };
 
 // Default values for context
@@ -127,16 +166,27 @@ const defaultSelfSchoolFeeDetails: CustomerServices['selfSchoolFeeDetails'] = {
   employmentDetails: {},
   documentUploads: {},
 };
+const defaultTransportDetails: CustomerServices['transportDetails'] = {
+  creditRequestDetails: {
+    transportMode: [],
+  },
+  employmentDetails: {
+    employmentStatus: [],
+  },
+  documentUploads: {},
+};
 
 export const CustomerServicesContext = createContext<CustomerServices>({
   service: null,
   childSchoolFeeDetails: defaultChildSchoolFeeDetails,
   selfSchoolFeeDetails: defaultSelfSchoolFeeDetails,
+  transportDetails: defaultTransportDetails,
   houseRentDetails: {},
   setHouseRentDetails: () => {},
   setService: () => {},
   setChildSchoolFeeDetails: () => {},
   setSelfSchoolFeeDetails: () => {},
+  setTransportDetails: () => {},
 });
 
 const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
@@ -152,6 +202,9 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
   const [houseRentDetails, setHouseRentDetails] = useState<
     CustomerServices['houseRentDetails']
   >({});
+  const [transportDetails, setTransportDetails] = useState<
+    CustomerServices['transportDetails']
+  >(defaultTransportDetails);
   // Function to update the service
   const handleSetService = useCallback(
     (newService: CustomerServices['service']) => {
@@ -206,6 +259,62 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
     []
   );
 
+  // Function to update specific fields in transportDetails
+  const handleSetTransportDetails = useCallback(
+    <Section extends keyof CustomerServices['transportDetails']>(
+      section: Section,
+      field: keyof CustomerServices['transportDetails'][Section],
+      value: string | Array<string>,
+      action?: 'add' | 'remove' | 'set',
+      index?: number
+    ) => {
+      setTransportDetails((prevDetails) => {
+        const sectionData = prevDetails[section];
+
+        if (Array.isArray(sectionData[field])) {
+          let updatedArray = [
+            ...(sectionData[field] as Array<{
+              value: string;
+              index: number;
+            }>),
+          ];
+          if (action === 'add') {
+            // Add a new value to the array
+            updatedArray.push({
+              value: value as string,
+              index: index as number,
+            });
+          } else if (action === 'remove') {
+            console.log('==== to remove =====');
+            // remove the object by finding the index
+            updatedArray = updatedArray.filter((item) => item.index != index);
+          } else if (action === 'set') {
+            // Replace the entire array
+            updatedArray[index as number] = {
+              value: value as string,
+              index: index as number,
+            };
+          }
+          return {
+            ...prevDetails,
+            [section]: {
+              ...sectionData,
+              [field]: updatedArray,
+            },
+          };
+        }
+        return {
+          ...prevDetails,
+          [section]: {
+            ...sectionData,
+            [field]: value,
+          },
+        };
+      });
+    },
+    []
+  );
+
   // Function to update specific fields in selfSchoolFeeDetails
   const handleSetSelfSchoolFeeDetails = useCallback(
     <Section extends keyof CustomerServices['selfSchoolFeeDetails']>(
@@ -229,10 +338,12 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
     childSchoolFeeDetails,
     selfSchoolFeeDetails,
     houseRentDetails,
+    transportDetails,
+    setTransportDetails: handleSetTransportDetails,
     setService: handleSetService,
     setChildSchoolFeeDetails: handleSetChildSchoolFeeDetails,
     setSelfSchoolFeeDetails: handleSetSelfSchoolFeeDetails,
-    setHouseRentDetails: (section, field, value) => {
+    setHouseRentDetails: (field, value) => {
       setHouseRentDetails((prevDetails) => ({
         ...prevDetails,
         [field]: value,

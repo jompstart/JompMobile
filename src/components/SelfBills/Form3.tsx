@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
@@ -7,18 +7,53 @@ import PTextInput from '../../shared/PTextInput';
 import CText from '../../shared/CText';
 import AAttachmentIcon from '../../../assets/svgs/Dashboard/AttachmentIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
+import { CustomerServicesContext } from '../../context/ServicesContext';
+import AttachmentView from '../../shared/AttachmentView';
 const Form3 = () => {
+  const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
+    CustomerServicesContext
+  );
   return (
     <View
       style={{
         gap: size.getHeightSize(16),
       }}
     >
-      <PTextInput placeholder="Name of Company/Business" />
-      <PTextInput placeholder="Company/Business Email Address" />
-      <PTextInput placeholder="Company/Business Location" />
-      <PhoneInput placeholder="Company/Business Line" />
+      <PTextInput
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'nameOfCompany', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.nameOfCompany}
+        placeholder="Name of Company/Business"
+      />
+      <PTextInput
+        placeholder="Company/Business Email Address"
+        keyboardType="email-address"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'companyEmail', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.companyEmail}
+      />
+      <PTextInput
+        placeholder="Company/Business Location"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'companyLocation', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.companyLocation}
+      />
+      <PhoneInput
+        placeholder="Company/Business Line"
+        keyboardType="phone-pad"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails(
+            'employmentDetails',
+            'companyPhoneNumber',
+            text
+          )
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.companyPhoneNumber}
+      />
+
       <View
         style={{
           flexDirection: 'row',
@@ -43,6 +78,14 @@ const Form3 = () => {
                 size={size.getHeightSize(25)}
               />
             }
+            onChangeText={(text) =>
+              setSelfSchoolFeeDetails(
+                'employmentDetails',
+                'yearsInCompany',
+                text
+              )
+            }
+            value={selfSchoolFeeDetails?.employmentDetails?.yearsInCompany}
           />
         </View>
 
@@ -57,39 +100,19 @@ const Form3 = () => {
               size={size.getHeightSize(25)}
             />
           }
+          onChangeText={(text) =>
+            setSelfSchoolFeeDetails('employmentDetails', 'month', text)
+          }
+          value={selfSchoolFeeDetails?.employmentDetails?.month}
         />
       </View>
-      <View style={styles.view}>
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          6 Months Bank Statement.
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            {' '}
-            Click to upload
-          </CText>
-          <CText
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="regular"
-            color={'#475467' as any}
-          >
-            {'\n'}.pdf, .xsls (max. 1MB)
-          </CText>
-        </CText>
-      </View>
+      <AttachmentView
+        description="6 Months Bank Statement."
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setSelfSchoolFeeDetails('employmentDetails', 'paymentSlip', file);
+        }}
+      />
     </View>
   );
 };

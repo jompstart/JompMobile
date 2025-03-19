@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
@@ -10,6 +10,7 @@ interface Props {
   deselectIcon: React.ReactNode;
   selected?: boolean;
   flex?: boolean;
+  onSelect: () => void;
 }
 
 const OptionBox = ({
@@ -18,9 +19,13 @@ const OptionBox = ({
   deselectIcon,
   selected,
   flex = true,
+  onSelect,
 }: Props) => {
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        onSelect?.();
+      }}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -43,7 +48,7 @@ const OptionBox = ({
       >
         {description}
       </CText>
-    </View>
+    </Pressable>
   );
 };
 

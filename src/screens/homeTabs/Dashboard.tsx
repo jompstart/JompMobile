@@ -319,7 +319,12 @@ const Dashboard = () => {
               School Fees
             </CText>
           </View>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('HouseRentService');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <HouseIcon size={size.getHeightSize(26)} />
             </View>
@@ -331,8 +336,13 @@ const Dashboard = () => {
             >
               House Rent
             </CText>
-          </View>
-          <View style={styles.view1}>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigate('TransportDetails');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <CarIcon size={size.getHeightSize(26)} />
             </View>
@@ -347,7 +357,7 @@ const Dashboard = () => {
             >
               Transport Credit
             </CText>
-          </View>
+          </Pressable>
           <View style={styles.view1}>
             <View style={styles.view}>
               <PiggyIcon size={size.getHeightSize(26)} />

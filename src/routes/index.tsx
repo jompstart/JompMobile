@@ -34,6 +34,7 @@ import OtherServices from '../screens/services/OtherServices';
 import AddCard from '../screens/Cards/AddCard';
 import FundWallet from '../screens/Savings/FundWallet';
 import Verification from '../screens/compliance/Verification';
+import HouseRentService from '../screens/services/HouseRentService';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -174,6 +175,10 @@ const MainNavigator = () => {
     {
       name: 'Verification',
       component: Verification,
+    },
+    {
+      name: 'HouseRentService',
+      component: HouseRentService,
     },
   ];
 

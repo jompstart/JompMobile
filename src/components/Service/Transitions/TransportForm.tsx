@@ -1,47 +1,41 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState } from 'react';
+import GradientSafeAreaView from '../../../shared/GradientSafeAreaView';
+import GradientHeader from '../../../shared/GradientHeader';
 import { size } from '../../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../../shared/CText';
 import { colors } from '../../../constants/colors';
-import { CustomerServicesContext } from '../../../context/ServicesContext';
+import PTextInput from '../../../shared/PTextInput';
 import PrimaryButton from '../../../shared/PrimaryButton';
-import Form1 from '../../ChildBills/Form1';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import Form2 from '../../ChildBills/Form2';
-import Form3 from '../../ChildBills/Form3';
-import Form4 from '../../ChildBills/Form4';
-import { isAnyFieldEmpty } from '../../../utils/forms';
-const GuardianDetailsForm = () => {
+import PhoneInput from '../../../shared/PhoneInput';
+import Form1 from '../../../components/Transport/Form1';
+import Form2 from '../../../components/Transport/Form2';
+import Form3 from '../../../components/Transport/Form3';
+import { CustomerServicesContext } from '../../../context/ServicesContext';
+const TransportForm = () => {
   const { width, height } = Dimensions.get('window');
-  const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
-    CustomerServicesContext
-  );
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
   const views = [
     {
-      label: "Parent or Guardian's Details",
-      title: 'Next: Child and School Details',
+      label: 'Transport Credit Request Details',
+      title: 'Next: Employment/Occupation Details',
       component: <Form1 />,
     },
     {
-      label: 'Child and School Details',
-      title: 'Next: Parent Employment Details',
+      label: 'Employment/Occupation Details',
+      title: 'Next: Required Uploads',
       component: <Form2 />,
     },
     {
-      label: 'Parent Employment Details',
-      title: 'Next: Document Uploads',
+      label: 'Required Uploads',
+      title: 'Next: Review',
       component: <Form3 />,
     },
-    {
-      label: 'Document Uploads',
-      title: '',
-      component: <Form4 />,
-    },
   ];
-
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -53,9 +47,7 @@ const GuardianDetailsForm = () => {
         animated: true,
       });
       setViewIndex(viewIndex + 1);
-      setProgress(progress + 100 / views.length);
-    } else {
-      console.log(childSchoolFeeDetails);
+      setProgress(progress + 111.3333 / views.length);
     }
   };
 
@@ -67,31 +59,34 @@ const GuardianDetailsForm = () => {
       }}
     >
       <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
         extraScrollHeight={size.getHeightSize(16)}
         contentContainerStyle={{
           paddingTop: size.getHeightSize(16),
         }}
-        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            gap: size.getWidthSize(16),
           }}
         >
           <AnimatedCircularProgress
             fill={progress}
-            size={size.getHeightSize(123)}
+            size={size.getHeightSize(119)}
             width={size.getHeightSize(8)}
             tintColor="#4CAF50"
             backgroundColor={colors.primaryDisabled()}
             backgroundWidth={size.getHeightSize(8)}
             rotation={0}
             lineCap="round"
-            style={{
-              flex: 1,
-            }}
+            style={
+              {
+                // flex: 1,
+              }
+            }
           >
             {(fill) => (
               <CText
@@ -133,28 +128,44 @@ const GuardianDetailsForm = () => {
             </CText>
           </View>
         </View>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={16}
-          lineHeight={22.4}
-          fontFamily="regular"
-          style={{
-            textAlign: 'left',
-            marginTop: size.getHeightSize(24),
-            marginBottom: size.getHeightSize(16),
-          }}
-        >
-          Complete the fields below (
+        {viewIndex == 2 ? (
           <CText
-            color={'warning'}
+            color={'secondaryBlack'}
             fontSize={16}
             lineHeight={22.4}
             fontFamily="regular"
+            style={{
+              textAlign: 'left',
+              marginTop: size.getHeightSize(24),
+              marginBottom: size.getHeightSize(16),
+            }}
           >
-            all are necessary to complete the process
+            Ensure all documents are clear and legible.
           </CText>
-          ).
-        </CText>
+        ) : (
+          <CText
+            color={'secondaryBlack'}
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="regular"
+            style={{
+              textAlign: 'left',
+              marginTop: size.getHeightSize(24),
+              marginBottom: size.getHeightSize(16),
+            }}
+          >
+            Complete the fields below (
+            <CText
+              color={'warning'}
+              fontSize={16}
+              lineHeight={22.4}
+              fontFamily="regular"
+            >
+              all are necessary to complete the process
+            </CText>
+            ).
+          </CText>
+        )}
 
         <View
           style={{
@@ -200,10 +211,6 @@ const GuardianDetailsForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
-        // disabled={
-        //   viewIndex == 0 &&
-        //   isAnyFieldEmpty(childSchoolFeeDetails.guardianDetails)
-        // }
         style={{
           marginBottom: size.getHeightSize(32),
         }}
@@ -214,6 +221,6 @@ const GuardianDetailsForm = () => {
   );
 };
 
-export default GuardianDetailsForm;
+export default TransportForm;
 
 const styles = StyleSheet.create({});

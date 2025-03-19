@@ -60,9 +60,11 @@ const SelfSchoolFeeForm = () => {
       }}
     >
       <KeyboardAwareScrollView
+        extraScrollHeight={size.getHeightSize(16)}
         contentContainerStyle={{
           paddingTop: size.getHeightSize(16),
         }}
+        showsVerticalScrollIndicator={false}
       >
         <View
           style={{
