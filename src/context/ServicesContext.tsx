@@ -147,7 +147,7 @@ type CustomerServices = {
     section: Section,
     field: keyof CustomerServices['transportDetails'][Section],
     value: string | Array<string>,
-    action?: 'add' | 'remove' | 'set',
+    action?: 'add' | 'remove' | 'set' | 'replace',
     index?: number
   ) => void;
 };
@@ -265,7 +265,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
       section: Section,
       field: keyof CustomerServices['transportDetails'][Section],
       value: string | Array<string>,
-      action?: 'add' | 'remove' | 'set',
+      action?: 'add' | 'remove' | 'set' | 'replace',
       index?: number
     ) => {
       setTransportDetails((prevDetails) => {
@@ -285,7 +285,6 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
               index: index as number,
             });
           } else if (action === 'remove') {
-            console.log('==== to remove =====');
             // remove the object by finding the index
             updatedArray = updatedArray.filter((item) => item.index != index);
           } else if (action === 'set') {
@@ -294,6 +293,26 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
               value: value as string,
               index: index as number,
             };
+          } else if (action === 'replace') {
+            const fieldObject = updatedArray.find(
+              (item) => item.index === index
+            );
+            if (!fieldObject) {
+              updatedArray.push({
+                value: value as string,
+                index: index as number,
+              });
+            } else {
+              updatedArray = updatedArray.map((item) => {
+                if (item.index === index) {
+                  return {
+                    value: value as string,
+                    index: index as number,
+                  };
+                }
+                return item;
+              });
+            }
           }
           return {
             ...prevDetails,

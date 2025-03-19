@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
@@ -13,7 +13,14 @@ import AttachmentView from '../../shared/AttachmentView';
 import SelectBox from '../../../assets/svgs/Transport/SelectBox';
 import SelectedBox from '../../../assets/svgs/Transport/SelectedBox';
 import InfoIcon from '../../../assets/svgs/Transport/InfoIcon';
+import { CustomerServicesContext } from '../../context/ServicesContext';
 const Form3 = () => {
+  const [indentification, setIndetification] = useState<
+    Array<'nin' | 'passport' | 'license' | 'voter'>
+  >([]);
+  const { transportDetails, setTransportDetails } = React.useContext(
+    CustomerServicesContext
+  );
   return (
     <View>
       <View style={styles.row}>
@@ -49,8 +56,28 @@ const Form3 = () => {
             />
           }
           description="National ID Card"
+          selected={indentification.includes('nin')}
+          onSelect={() =>
+            setIndetification((previous) => {
+              if (previous.includes('nin')) {
+                return previous.filter((item) => item !== 'nin');
+              } else {
+                return [...previous, 'nin'];
+              }
+            })
+          }
         />
         <OptionBox
+          selected={indentification.includes('passport')}
+          onSelect={() =>
+            setIndetification((previous) => {
+              if (previous.includes('passport')) {
+                return previous.filter((item) => item !== 'passport');
+              } else {
+                return [...previous, 'passport'];
+              }
+            })
+          }
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -68,6 +95,16 @@ const Form3 = () => {
           description="International Passport"
         />
         <OptionBox
+          selected={indentification.includes('license')}
+          onSelect={() =>
+            setIndetification((previous) => {
+              if (previous.includes('license')) {
+                return previous.filter((item) => item !== 'license');
+              } else {
+                return [...previous, 'license'];
+              }
+            })
+          }
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -85,6 +122,16 @@ const Form3 = () => {
           description="Driver’s License"
         />
         <OptionBox
+          selected={indentification.includes('voter')}
+          onSelect={() =>
+            setIndetification((previous) => {
+              if (previous.includes('voter')) {
+                return previous.filter((item) => item !== 'voter');
+              } else {
+                return [...previous, 'voter'];
+              }
+            })
+          }
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -125,16 +172,19 @@ const Form3 = () => {
         }}
       >
         <OptionBox
+            onSelect={()=>{}}
           deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           selectIcon={<SelectBox size={size.getHeightSize(24)} />}
           description="Employment Letter"
         />
         <OptionBox
+            onSelect={()=>{}}
           deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           selectIcon={<SelectBox size={size.getHeightSize(24)} />}
           description="Work ID/Student ID"
         />
         <OptionBox
+        onSelect={()=>{}}
           deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           selectIcon={<SelectBox size={size.getHeightSize(24)} />}
           description="Business Registration Document"
@@ -160,6 +210,9 @@ const Form3 = () => {
         description="Proof of Employment. "
         type=".pdf, .jpeg (max. 1MB)"
         required
+        onFileSelected={(file) => {
+          setTransportDetails('documentUploads', 'proofOfEmployment', file);
+        }}
       />
       <View style={styles.view3} />
 
@@ -172,17 +225,27 @@ const Form3 = () => {
           description="Proof of Monthly Income (Bank statement showing last 6 month’s salary deposits). "
           type=".pdf, .xsl (max. 1MB)"
           required
+          onFileSelected={(file) => {
+            setTransportDetails(
+              'documentUploads',
+              'proofOfMonthlyIncome',
+              file
+            );
+          }}
         />
         <AttachmentView
           description="Proof of Monthly Income (Pay slip showing last 6 month’s salary deposits). "
           type=".pdf, .xsl (max. 1MB)"
           required
+          onFileSelected={(file) => {
+            setTransportDetails('documentUploads', 'utilityBill', file);
+          }}
         />
-        <AttachmentView
+        {/* <AttachmentView
           description="Utility Bill (Electricity, Water, or Water Bill - Not older than 3 months). "
           type=".pdf, .xsl (max. 1MB)"
           required
-        />
+        /> */}
       </View>
     </View>
   );

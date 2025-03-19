@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { StyleSheet, Pressable, Platform, View } from 'react-native';
+import React, { useContext, useState } from 'react';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
@@ -11,7 +11,25 @@ import OptionBox from '../../shared/OptionBox';
 import SelectBox from '../../../assets/svgs/Transport/SelectBox';
 import SelectedBox from '../../../assets/svgs/Transport/SelectedBox';
 import Asterisks from '../../../assets/svgs/Onboarding/Asterisks';
+import { CustomerServicesContext } from '../../context/ServicesContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
 const Form2 = () => {
+  const { transportDetails, setTransportDetails } = useContext(
+    CustomerServicesContext
+  );
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+  console.log(date);
+  const onChange = (event: any, selectedDate?: Date) => {
+    // Close the picker after selection
+    if (selectedDate) {
+      setDate(selectedDate); // Update the selected date
+    }
+  };
+
+  const showDatePicker = () => {
+    setShow(true);
+  };
   return (
     <View>
       <View style={styles.row}>
@@ -32,24 +50,114 @@ const Form2 = () => {
         }}
       >
         <OptionBox
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Employed"
+          onSelect={() => {
+            transportDetails?.employmentDetails?.employmentStatus?.some(
+              (item) => item.index === 0 && item.value === 'Employed'
+            )
+              ? setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Employed',
+                  'remove',
+                  0
+                )
+              : setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Employed',
+                  'add',
+                  0
+                );
+          }}
+          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
+            (item) => item.index === 0 && item.value === 'Employed'
+          )}
         />
         <OptionBox
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Self-Employed"
+          onSelect={() => {
+            transportDetails?.employmentDetails?.employmentStatus?.some(
+              (item) => item.index === 1 && item.value === 'Self-Employed'
+            )
+              ? setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Self-Employed',
+                  'remove',
+                  1
+                )
+              : setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Self-Employed',
+                  'add',
+                  1
+                );
+          }}
+          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
+            (item) => item.index === 1 && item.value === 'Self-Employed'
+          )}
         />
         <OptionBox
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Student"
+          onSelect={() => {
+            transportDetails?.employmentDetails?.employmentStatus?.some(
+              (item) => item.index === 2 && item.value === 'Student'
+            )
+              ? setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Student',
+                  'remove',
+                  2
+                )
+              : setTransportDetails(
+                  'employmentDetails',
+                  'employmentStatus',
+                  'Student',
+                  'add',
+                  2
+                );
+          }}
+          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
+            (item) => item.index === 2 && item.value === 'Student'
+          )}
         />
 
-        <PTextInput placeholder="Other? Please specify." />
-        <PTextInput placeholder="Company/Business/School Name" />
-        <PTextInput placeholder="Work/School Address" />
+        <PTextInput
+          onChangeText={(text) => {
+            setTransportDetails(
+              'employmentDetails',
+              'employmentStatus',
+              text,
+              'replace',
+              3
+            );
+          }}
+          value={transportDetails.employmentDetails?.employerName}
+          placeholder="Other? Please specify."
+        />
+        <PTextInput
+          onChangeText={(text) => {
+            setTransportDetails('employmentDetails', 'name', text);
+          }}
+          value={transportDetails.employmentDetails?.name}
+          placeholder="Company/Business/School Name"
+        />
+        <PTextInput
+          onChangeText={(text) => {
+            setTransportDetails('employmentDetails', 'address', text);
+          }}
+          value={transportDetails.employmentDetails?.address}
+          placeholder="Work/School Address"
+        />
 
         <View
           style={{
@@ -84,8 +192,36 @@ const Form2 = () => {
             />
           }
           description="Below ₦5,000.00"
+          selected={
+            transportDetails.employmentDetails?.incomeRange ===
+            'Below ₦5,000.00'
+          }
+          onSelect={() => {
+            transportDetails.employmentDetails?.incomeRange ===
+            'Below ₦5,000.00'
+              ? setTransportDetails('employmentDetails', 'incomeRange', '')
+              : setTransportDetails(
+                  'employmentDetails',
+                  'incomeRange',
+                  'Below ₦5,000.00'
+                );
+          }}
         />
         <OptionBox
+          selected={
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦50,000.00 - ₦100,000.00'
+          }
+          onSelect={() => {
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦50,000.00 - ₦100,000.00'
+              ? setTransportDetails('employmentDetails', 'incomeRange', '')
+              : setTransportDetails(
+                  'employmentDetails',
+                  'incomeRange',
+                  '₦50,000.00 - ₦100,000.00'
+                );
+          }}
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -103,6 +239,20 @@ const Form2 = () => {
           description="₦50,000.00 - ₦100,000.00"
         />
         <OptionBox
+          selected={
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦100,000.00 - ₦200,000.00'
+          }
+          onSelect={() => {
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦100,000.00 - ₦200,000.00'
+              ? setTransportDetails('employmentDetails', 'incomeRange', '')
+              : setTransportDetails(
+                  'employmentDetails',
+                  'incomeRange',
+                  '₦100,000.00 - ₦200,000.00'
+                );
+          }}
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -120,6 +270,20 @@ const Form2 = () => {
           description="₦100,000.00 - ₦200,000.00"
         />
         <OptionBox
+          selected={
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦200,000.00 & Above'
+          }
+          onSelect={() => {
+            transportDetails.employmentDetails?.incomeRange ===
+            '₦200,000.00 & Above'
+              ? setTransportDetails('employmentDetails', 'incomeRange', '')
+              : setTransportDetails(
+                  'employmentDetails',
+                  'incomeRange',
+                  '₦200,000.00 & Above'
+                );
+          }}
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -137,6 +301,10 @@ const Form2 = () => {
           description="₦200,000.00 & Above"
         />
         <PTextInput
+          onChangeText={(text) => {
+            setTransportDetails('employmentDetails', 'payday', text);
+          }}
+          value={transportDetails.employmentDetails?.payday}
           placeholder="Payday (Salary Payment Date)"
           rightIcon={
             <Feather
@@ -146,6 +314,17 @@ const Form2 = () => {
             />
           }
         />
+        {/* {show && (
+          <DateTimePicker
+            value={date}
+            mode="date" // Can be "date", "time", or "datetime"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={onChange}
+            style={{
+              alignSelf: 'center',
+            }}
+          />
+        )} */}
 
         <View
           style={{
@@ -173,6 +352,20 @@ const Form2 = () => {
           }}
         >
           <OptionBox
+            selected={
+              transportDetails.employmentDetails?.modeOfPayment ===
+              'Bank Transfer'
+            }
+            onSelect={() => {
+              transportDetails.employmentDetails?.modeOfPayment ===
+              'Bank Transfer'
+                ? setTransportDetails('employmentDetails', 'modeOfPayment', '')
+                : setTransportDetails(
+                    'employmentDetails',
+                    'modeOfPayment',
+                    'Bank Transfer'
+                  );
+            }}
             deselectIcon={
               <Fontisto
                 name="radio-btn-passive"
@@ -190,6 +383,18 @@ const Form2 = () => {
             description="Bank Transfer"
           />
           <OptionBox
+            selected={
+              transportDetails.employmentDetails?.modeOfPayment === 'Cash'
+            }
+            onSelect={() => {
+              transportDetails.employmentDetails?.modeOfPayment === 'Cash'
+                ? setTransportDetails('employmentDetails', 'modeOfPayment', '')
+                : setTransportDetails(
+                    'employmentDetails',
+                    'modeOfPayment',
+                    'Cash'
+                  );
+            }}
             deselectIcon={
               <Fontisto
                 name="radio-btn-passive"
@@ -208,6 +413,18 @@ const Form2 = () => {
           />
         </View>
         <OptionBox
+          selected={
+            transportDetails.employmentDetails?.modeOfPayment === 'Cheque'
+          }
+          onSelect={() => {
+            transportDetails.employmentDetails?.modeOfPayment === 'Cheque'
+              ? setTransportDetails('employmentDetails', 'modeOfPayment', '')
+              : setTransportDetails(
+                  'employmentDetails',
+                  'modeOfPayment',
+                  'Cheque'
+                );
+          }}
           deselectIcon={
             <Fontisto
               name="radio-btn-passive"
@@ -230,8 +447,21 @@ const Form2 = () => {
             backgroundColor: colors.primary('30'),
           }}
         />
-        <PTextInput placeholder="Employer’s Name (If Applicable)" />
-        <PhoneInput placeholder="Employer’s Contact Number" />
+        <PTextInput
+          onChangeText={(text) => {
+            setTransportDetails('employmentDetails', 'employerName', text);
+          }}
+          value={transportDetails.employmentDetails?.employerName}
+          placeholder="Employer’s Name (If Applicable)"
+        />
+        <PhoneInput
+          onChangeText={(text) => {
+            setTransportDetails('employmentDetails', 'employerName', text);
+          }}
+          placeholder="Employer’s Name (If Applicable)"
+          value={transportDetails.employmentDetails?.employerContact}
+          keyboardType="phone-pad"
+        />
       </View>
     </View>
   );

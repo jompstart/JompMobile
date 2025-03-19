@@ -6,7 +6,6 @@ import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
 import PTextInput from '../../shared/PTextInput';
 import Fontisto from '@expo/vector-icons/Fontisto';
-
 import OptionBox from '../../shared/OptionBox';
 import SelectBox from '../../../assets/svgs/Transport/SelectBox';
 import SelectedBox from '../../../assets/svgs/Transport/SelectedBox';
