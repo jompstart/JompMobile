@@ -14,13 +14,14 @@ import {
   useCameraPermissions,
 } from 'expo-image-picker';
 import { PermissionStatus } from 'expo-permissions';
+import { MediaFile } from '../interface/provider';
 interface Props {
   description: string;
   type: string;
   required?: boolean;
   onPress?: () => void;
   fileUri?: string;
-  onFileSelected?: (file: string) => void;
+  onFileSelected?: (file: MediaFile) => void;
   typeOfFileToPick?: 'pdf' | 'image' | null;
 }
 const AttachmentView = ({
@@ -70,8 +71,15 @@ const AttachmentView = ({
     });
 
     if (result.assets != null) {
-      onFileSelected?.(result.assets[0].uri);
-      setFile(result.assets[0].uri);
+      let uri = result.assets[0].uri;
+      uri = uri.startsWith('file://') ? uri : 'file://' + uri;
+
+      onFileSelected?.({
+        name: result.assets[0].fileName!,
+        uri: uri,
+        type: result.assets[0].mimeType!,
+      });
+      setFile(uri);
     }
   };
 
@@ -86,20 +94,39 @@ const AttachmentView = ({
     });
 
     if (result.assets != null) {
-      onFileSelected?.(result.assets[0].uri);
-      setFile(result.assets[0].uri);
+      let uri = result.assets[0].uri;
+      uri = uri.startsWith('file://') ? uri : 'file://' + uri;
+
+      onFileSelected?.({
+        name: result.assets[0].fileName!,
+        uri: uri,
+        type: result.assets[0].mimeType!,
+      });
+      setFile(uri);
     }
+  };
+  const createFile = async (uri: string, name: string, type: string) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    return new File([blob], name, { type });
   };
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf', // You can specify other types like 'application/*' for all documents
+        type: '*/*', // You can specify other types like 'application/*' for all documents
         copyToCacheDirectory: true,
       });
 
       if (result.assets != null) {
-        setFile(result.assets[0].uri);
-        onFileSelected?.(result.assets[0].uri);
+        let uri = result.assets[0].uri;
+        uri = uri.startsWith('file://') ? uri : 'file://' + uri;
+
+        onFileSelected?.({
+          name: result.assets[0].name!,
+          uri: uri,
+          type: result.assets[0].mimeType!,
+        });
+        setFile(uri);
         setFileType('pdf');
         setFileName(result.assets[0].name);
       }
@@ -161,7 +188,11 @@ const AttachmentView = ({
               height={size.getHeightSize(116)}
               onPress={() => {
                 setFile('');
-                onFileSelected?.('');
+                onFileSelected?.({
+                  name: '',
+                  uri: '',
+                  type: '',
+                });
               }}
             />
           </>

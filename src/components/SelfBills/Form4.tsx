@@ -39,6 +39,14 @@ const Form4 = () => {
           setSelfSchoolFeeDetails('documentUploads', 'schoolFeeInvoice', file);
         }}
       />
+
+      <AttachmentView
+        description="School Id Card."
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) => {
+          setSelfSchoolFeeDetails('documentUploads', 'schoolIdCard', file);
+        }}
+      />
     </View>
   );
 };

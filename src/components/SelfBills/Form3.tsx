@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
@@ -13,6 +13,7 @@ const Form3 = () => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+
   return (
     <View
       style={{
@@ -41,6 +42,67 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.companyLocation}
       />
+      <PTextInput
+        placeholder="Occupation"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'occupation', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.occupation}
+      />
+      <PTextInput
+        placeholder="Employer Name"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerName', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerName}
+      />
+
+      <PTextInput
+        keyboardType="phone-pad"
+        placeholder="HR Contact Number"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'hrContactNumber', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.hrContactNumber}
+      />
+
+      <PTextInput
+        placeholder="Employer Address"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerAddress', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerAddress}
+      />
+      <PTextInput
+        placeholder="Employer State of Residence"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerState', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerState}
+      />
+      <PTextInput
+        placeholder="Employer city"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerCity', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerCity}
+      />
+      <PTextInput
+        placeholder="Employer country"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerCountry', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerCountry}
+      />
+
+      <PTextInput
+        placeholder="Postal code"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerPostalCode', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerPostalCode}
+      />
+
       <PhoneInput
         placeholder="Company/Business Line"
         keyboardType="phone-pad"

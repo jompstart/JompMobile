@@ -47,16 +47,7 @@ const SelfDetails = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
   const [progress, setProgress] = useState(25);
-  const handleNextView = () => {
-    if (viewIndex < views.length - 1) {
-      flatListRef.current?.scrollToIndex({
-        index: viewIndex + 1,
-        animated: true,
-      });
-      setViewIndex(viewIndex + 1);
-      setProgress(progress + 100 / views.length);
-    }
-  };
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>

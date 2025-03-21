@@ -1,4 +1,9 @@
 import React, { createContext, useState, useCallback, ReactNode } from 'react';
+import {
+  SelfSchoolFeeDetails,
+  MediaFile,
+  TransportDetails,
+} from '../interface/provider';
 
 type CustomerServiceProviderProps = {
   children: ReactNode;
@@ -28,96 +33,26 @@ type CustomerServices = {
       companyLocation?: string;
       companyPhoneNumber?: string;
       yearsInCompany?: string;
-      paymentSlip?: string;
+      paymentSlip?: MediaFile;
     };
     documentUploads: {
-      bankStatement?: string;
-      utilityBill?: string;
-      schoolFeeInvoice?: string;
-      schoolIdCard?: string;
+      bankStatement?: MediaFile;
+      utilityBill?: MediaFile;
+      schoolFeeInvoice?: MediaFile;
+      schoolIdCard?: MediaFile;
     };
   };
-  selfSchoolFeeDetails: {
-    basicInformation: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      phoneNumber?: string;
-      address?: string;
-    };
-    educationnDetails: {
-      nameOfSchool?: string;
-      course?: string;
-      level?: string;
-      location?: string;
-      locationOfSchool2?: string;
-      tuitionFee?: string;
-      loanAmount?: string;
-      country?: string;
-      state?: string;
-      city?: string;
-      postalCode?: string;
-      tutionFeeInvoice?: string;
-      schoolIdCard?: string;
-    };
-    employmentDetails: {
-      nameOfCompany?: string;
-      companyEmail?: string;
-      companyLocation?: string;
-      companyPhoneNumber?: string;
-      yearsInCompany?: string;
-      month?: string;
-      paymentSlip?: string;
-    };
-    documentUploads: {
-      bankStatement?: string;
-      utilityBill?: string;
-      schoolFeeInvoice?: string;
-      schoolIdCard?: string;
-    };
-  };
+  selfSchoolFeeDetails: SelfSchoolFeeDetails;
   houseRentDetails: {
     rentAmount?: string;
     requestedAmount?: string;
-    IdCard?: string;
-    utilityBill?: string;
-    banksStatement?: string[];
-    paySlip?: string;
-    tenancyAgreement?: string;
+    IdCard?: MediaFile;
+    utilityBill?: MediaFile;
+    banksStatement?: MediaFile[];
+    paySlip?: MediaFile;
+    tenancyAgreement?: MediaFile;
   };
-  transportDetails: {
-    creditRequestDetails: {
-      transportMode?: Array<{
-        value: string;
-        index: number;
-      }>;
-      estimatedMonthlyCost?: string;
-      requestedAmount?: string;
-      paymentDuration?: string;
-    };
-    employmentDetails: {
-      employmentStatus?: Array<{
-        value: string;
-        index: number;
-      }>;
-      others?: string;
-      name?: string;
-      address?: string;
-      incomeRange?: string;
-      payday?: string;
-      modeOfPayment?: string;
-      employerName?: string;
-      employerContact?: string;
-    };
-    documentUploads: {
-      identificationType?: string;
-      idFile?: string;
-      typeOfProofOfEmployment?: string;
-      proofOfEmployment?: string;
-      proofOfMonthlyIncome?: string;
-      utilityBill?: string;
-    };
-  };
+  transportDetails: TransportDetails;
 
   setHouseRentDetails: (
     field: keyof CustomerServices['houseRentDetails'],
@@ -128,7 +63,7 @@ type CustomerServices = {
   >(
     section: Section,
     field: keyof CustomerServices['selfSchoolFeeDetails'][Section],
-    value: string
+    value: string | MediaFile
   ) => void;
   setService: (service: CustomerServices['service']) => void;
   setChildSchoolFeeDetails: <
@@ -138,7 +73,7 @@ type CustomerServices = {
     field:
       | keyof CustomerServices['childSchoolFeeDetails'][Section]
       | keyof CustomerServices['childSchoolFeeDetails']['childSchoolDetails'][number],
-    value: string,
+    value: string | MediaFile,
     index?: number
   ) => void;
   setTransportDetails: <
@@ -146,7 +81,7 @@ type CustomerServices = {
   >(
     section: Section,
     field: keyof CustomerServices['transportDetails'][Section],
-    value: string | Array<string>,
+    value: string | Array<string> | MediaFile,
     action?: 'add' | 'remove' | 'set' | 'replace',
     index?: number
   ) => void;
@@ -220,7 +155,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
       field:
         | keyof CustomerServices['childSchoolFeeDetails'][Section]
         | keyof CustomerServices['childSchoolFeeDetails']['childSchoolDetails'][number],
-      value: string,
+      value: string | MediaFile,
       index?: number
     ) => {
       setChildSchoolFeeDetailsState((prevDetails) => {
@@ -264,7 +199,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
     <Section extends keyof CustomerServices['transportDetails']>(
       section: Section,
       field: keyof CustomerServices['transportDetails'][Section],
-      value: string | Array<string>,
+      value: string | Array<string> | MediaFile,
       action?: 'add' | 'remove' | 'set' | 'replace',
       index?: number
     ) => {
@@ -339,7 +274,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
     <Section extends keyof CustomerServices['selfSchoolFeeDetails']>(
       section: Section,
       field: keyof CustomerServices['selfSchoolFeeDetails'][Section],
-      value: string
+      value: string | MediaFile
     ) => {
       setSelfSchoolFeeDetailsState((prevDetails) => ({
         ...prevDetails,

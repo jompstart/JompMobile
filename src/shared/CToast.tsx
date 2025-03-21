@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   toastRow: {
     flexDirection: 'row',
     marginHorizontal: size.getWidthSize(16),
-    gap: size.getWidthSize(4),
+    gap: size.getWidthSize(12),
     width: size.getWidthSize(286),
   },
 });

@@ -48,6 +48,7 @@ export class ComplianceService {
     file: any,
     PhoneNumber: string
   ) {
+    console.log(file)
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
     formData.append('VerificationStatus', VerificationStatus);
@@ -57,6 +58,7 @@ export class ComplianceService {
     formData.append('PhoneNumber', PhoneNumber);
 
     formData.append('file', file);
+  
     return await makeRequest({
       method: 'POST',
       url: '/verify-customer',

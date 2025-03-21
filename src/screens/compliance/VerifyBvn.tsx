@@ -42,6 +42,8 @@ const VerifyBvn = () => {
     user.customerId
   );
 
+  
+
   const handleVerifyBvn = async () => {
     setVerificationLoadingState(true);
     try {
@@ -62,7 +64,8 @@ const VerifyBvn = () => {
           name: 'image.jpg',
           type: 'image/jpeg',
         };
-        console.log(user);
+        console.log(fileData);
+
         const verifyCustomer = await complianceInstance.verifyCustomer(
           'bvn',
           response.data?.status,

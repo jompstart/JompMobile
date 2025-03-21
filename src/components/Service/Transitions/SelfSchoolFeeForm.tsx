@@ -11,9 +11,49 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Form2 from '../../SelfBills/Form2';
 import Form3 from '../../SelfBills/Form3';
 import Form4 from '../../SelfBills/Form4';
+import ShowLoader from '../../../shared/ShowLoader';
 import { isAnyFieldEmpty } from '../../../utils/forms';
+import { useMutation } from '@tanstack/react-query';
+import { ProviderService } from '../../../services/provider';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../../controller/redux.controller';
+import { userSelector } from '../../../features/user/user.selector';
+import SelfDetails from '../../../screens/ChildBills/SelfDetails';
+import { updateToast } from '../../../features/ui/ui.slice';
+import { API_RESPONSE } from '../../../types';
+import { SelfSchoolFeeDetails } from '../../../interface/provider';
 const SelfSchoolFeeForm = () => {
   const { width } = Dimensions.get('window');
+  const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
+  const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
+    CustomerServicesContext
+  );
+
+  const providerInstance = new ProviderService(user.userId);
+  const {
+    mutate: requestSchoolLoan,
+    isPending,
+    data,
+  } = useMutation<API_RESPONSE<any>, Error, SelfSchoolFeeDetails>({
+    mutationFn: (data) => providerInstance.registerSchoolFee(data), // Ensure data is passed
+    onError: (error) => {
+      console.log('======= service error =======');
+      console.log(error);
+    },
+    onSuccess: (d) => {
+      console.log('======= service success =======');
+      dispatch(
+        updateToast({
+          toastMessage: d?.message,
+          displayToast: true,
+          toastType: d?.success === true ? 'success' : 'info',
+        })
+      );
+    },
+  });
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
   const views = [
@@ -42,7 +82,7 @@ const SelfSchoolFeeForm = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
   const [progress, setProgress] = useState(25);
-  const handleNextView = () => {
+  const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
@@ -50,8 +90,84 @@ const SelfSchoolFeeForm = () => {
       });
       setViewIndex(viewIndex + 1);
       setProgress(progress + 100 / views.length);
+      return;
     }
+
+    const loanData = {
+      basicInformation: {
+        address: 'Lagos',
+        email: 'ayomide@gmail.com',
+        firstName: 'Ayomide',
+        lastName: 'Obiwale',
+        phoneNumber: '09070903614',
+      },
+      documentUploads: {
+        bankStatement: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/05A953EA-98B3-424E-ADBD-4418D3502276.pdf',
+        },
+        schoolFeeInvoice: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/24793D61-26BC-4E90-AC00-2953A8B49801.pdf',
+        },
+        schoolIdCard: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/E4CFCD88-F1BE-4659-85C0-840D21E12A03.pdf',
+        },
+        utilityBill: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/22959764-5B39-41BD-807F-9579B3A6C7E6.pdf',
+        },
+      },
+      educationnDetails: {
+        postalCode: '123344',
+        city: 'Ikeja',
+        country: 'Nigeria',
+        course: 'Medicine',
+        level: '100',
+        loanAmount: '2000',
+        location: 'Lagos',
+        nameOfSchool: 'Unilag',
+        state: 'Lagos',
+        tuitionFee: '1005',
+        tutionFeeInvoice: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/AC0A8236-7D05-449B-9C45-E3AC1A015572.pdf',
+        },
+      },
+      employmentDetails: {
+        companyEmail: 'Jomp@gmail.com',
+        companyLocation: 'Lagos',
+        companyPhoneNumber: '09070903614',
+        employerAddress: 'Lagos',
+        employerCity: 'Ikeja',
+        employerCountry: 'Nigeria',
+        employerName: 'Salami',
+        employerPostalCode: '123344',
+        employerState: 'Lagos',
+        hrContactNumber: '09070903614',
+        month: '2',
+        nameOfCompany: 'JOMP',
+        occupation: 'Developer',
+        paymentSlip: {
+          name: 'ELG3336Microprocessor.pdf',
+          type: 'application/pdf',
+          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/09736887-4B01-4386-8786-BF1D7861D70E.pdf',
+        },
+        yearsInCompany: '6',
+      },
+    };
+
+    requestSchoolLoan(loanData);
+    // const d = await providerInstance.registerSchoolFee(loanData);
+    // console.log(d);
   };
+  console.log(data);
   return (
     <View
       style={{
@@ -203,6 +319,7 @@ const SelfSchoolFeeForm = () => {
         label="Procced"
         onPress={handleNextView}
       />
+      <ShowLoader isLoading={isPending} />
     </View>
   );
 };

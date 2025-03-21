@@ -61,6 +61,7 @@ const Form2 = () => {
       />
       <PTextInput
         placeholder="₦ Tuition Fee"
+         keyboardType="number-pad"
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('educationnDetails', 'tuitionFee', text)
         }
@@ -68,19 +69,20 @@ const Form2 = () => {
       />
       <PTextInput
         placeholder="₦ Loan Amount"
+         keyboardType="number-pad"
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('educationnDetails', 'loanAmount', text)
         }
         value={selfSchoolFeeDetails?.educationnDetails?.loanAmount}
       />
       <PTextInput
-        editable={false}
+        // editable={false}
         placeholder="Select Country"
         rightIcon={
           <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
         }
         onChangeText={(text) =>
-          setSelfSchoolFeeDetails('educationnDetails', 'tuitionFee', text)
+          setSelfSchoolFeeDetails('educationnDetails', 'country', text)
         }
         value={selfSchoolFeeDetails?.educationnDetails?.country}
       />
@@ -89,7 +91,10 @@ const Form2 = () => {
         rightIcon={
           <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
         }
-        value={selfSchoolFeeDetails?.educationnDetails?.country}
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('educationnDetails', 'state', text)
+        }
+        value={selfSchoolFeeDetails?.educationnDetails?.state}
       />
       <PTextInput
         placeholder="City"

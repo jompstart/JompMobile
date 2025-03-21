@@ -132,8 +132,63 @@ const Login = () => {
           );
 
           const userInstance = new UserService(decoded.customerId);
+
           const user = await userInstance.getCustomer();
+          console.log('====== user =======');
+          console.log(user);
+          if (user.data) {
+            dispatch(
+              changeUserState({
+                key: 'ninStatus',
+                value: user.data.ninStatus,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'email',
+                value: user.data.email,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'fullName',
+                value: user.data.fullName,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'bvnStatus',
+                value: user.data.bvnStatus,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'complianceStatus',
+                value: user.data.complianceFlag,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'niN',
+                value: user.data.niN,
+              })
+            );
+
+            dispatch(
+              changeUserState({
+                key: 'bvn',
+                value: user.data.bvn,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'phoneNumber',
+                value: user.data.phoneNumber,
+              })
+            );
+          }
         }
+        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
       } catch (error: any) {
         dispatch(
           updateToast({
