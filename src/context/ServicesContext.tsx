@@ -102,12 +102,8 @@ const defaultSelfSchoolFeeDetails: CustomerServices['selfSchoolFeeDetails'] = {
   documentUploads: {},
 };
 const defaultTransportDetails: CustomerServices['transportDetails'] = {
-  creditRequestDetails: {
-    transportMode: [],
-  },
-  employmentDetails: {
-    employmentStatus: [],
-  },
+  creditRequestDetails: {},
+  employmentDetails: {},
   documentUploads: {},
 };
 
@@ -204,6 +200,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
       index?: number
     ) => {
       setTransportDetails((prevDetails) => {
+        // console.log(value)
         const sectionData = prevDetails[section];
 
         if (Array.isArray(sectionData[field])) {

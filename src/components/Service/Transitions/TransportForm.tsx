@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import GradientSafeAreaView from '../../../shared/GradientSafeAreaView';
 import GradientHeader from '../../../shared/GradientHeader';
 import { size } from '../../../config/size';
@@ -15,7 +15,15 @@ import Form1 from '../../../components/Transport/Form1';
 import Form2 from '../../../components/Transport/Form2';
 import Form3 from '../../../components/Transport/Form3';
 import { CustomerServicesContext } from '../../../context/ServicesContext';
+import { useAppSelector } from '../../../controller/redux.controller';
+import { userSelector } from '../../../features/user/user.selector';
+import { ProviderService } from '../../../services/provider';
 const TransportForm = () => {
+  const user = useAppSelector(userSelector);
+  const providerInstance = new ProviderService(user.userId);
+  const { transportDetails, setTransportDetails } = useContext(
+    CustomerServicesContext
+  );
   const { width, height } = Dimensions.get('window');
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
@@ -40,7 +48,7 @@ const TransportForm = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
   const [progress, setProgress] = useState(25);
-  const handleNextView = () => {
+  const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
@@ -48,9 +56,36 @@ const TransportForm = () => {
       });
       setViewIndex(viewIndex + 1);
       setProgress(progress + 111.3333 / views.length);
+      return;
     }
-  };
 
+    const transportResponce = await providerInstance.transportloan({
+      employerContactNumber:
+        transportDetails.employmentDetails.employerContact!,
+      creditAmount: transportDetails.creditRequestDetails.requestedAmount!,
+      employerName: transportDetails.employmentDetails.employerName!,
+      occupation: transportDetails.employmentDetails.occupation!,
+      payday: transportDetails.employmentDetails.payday!,
+      modeOfPayment: transportDetails.employmentDetails.modeOfPayment!,
+      transportMode: transportDetails.creditRequestDetails.transportMode!,
+      validId: transportDetails.documentUploads.idFile!,
+      utility: transportDetails.documentUploads.utilityBill!,
+      paySlip: transportDetails.documentUploads.proofOfMonthlyIncome!,
+      bankStatement: transportDetails.documentUploads.bankStatement!,
+      employmentStatus: transportDetails.employmentDetails.employmentStatus!,
+      income: '50000',
+      // income: transportDetails.employmentDetails.incomeRange!,
+      occupationAddress: transportDetails.employmentDetails.address!,
+      paymentDuration: transportDetails.creditRequestDetails.paymentDuration!,
+      proofEmployment: transportDetails.documentUploads.proofOfEmployment!,
+      transportCost: '400000',
+      // transportDetails.creditRequestDetails.estimatedMonthlyCost!,
+    });
+
+    console.log(transportResponce);
+  };
+  console.log('=========== transport details ===========');
+  console.log(transportDetails);
   return (
     <View
       style={{

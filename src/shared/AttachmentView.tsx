@@ -149,6 +149,7 @@ const AttachmentView = ({
         flexDirection: 'row',
         justifyContent: 'center',
         gap: size.getWidthSize(16),
+        paddingHorizontal: file ? size.getWidthSize(1) : size.getWidthSize(16),
       }}
     >
       {file ? (

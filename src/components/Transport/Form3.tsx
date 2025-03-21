@@ -14,16 +14,21 @@ import SelectBox from '../../../assets/svgs/Transport/SelectBox';
 import SelectedBox from '../../../assets/svgs/Transport/SelectedBox';
 import InfoIcon from '../../../assets/svgs/Transport/InfoIcon';
 import { CustomerServicesContext } from '../../context/ServicesContext';
+import { TransportProofOfEmployment } from '../../interface/provider';
 const Form3 = () => {
   const [indentification, setIndetification] = useState<
     Array<'nin' | 'passport' | 'license' | 'voter'>
   >([]);
+  const [proofOfEmployment, setProofOfEmployment] = useState<
+    Array<'letter' | 'id' | 'regDoc'>
+  >([]);
   const { transportDetails, setTransportDetails } = React.useContext(
     CustomerServicesContext
   );
+
   return (
     <View>
-      <View style={styles.row}>
+      {/* <View style={styles.row}>
         <CText
           color={'secondaryBlack'}
           fontSize={16}
@@ -33,8 +38,8 @@ const Form3 = () => {
           Please Select Identification Type
         </CText>
         <Asterisks size={size.getHeightSize(9.5)} />
-      </View>
-      <View
+      </View> */}
+      {/* <View
         style={{
           gap: size.getHeightSize(16),
           marginBottom: size.getHeightSize(16),
@@ -148,11 +153,14 @@ const Form3 = () => {
           }
           description="Voter’s Card"
         />
-      </View>
+      </View> */}
       <AttachmentView
         description="Valid Means of Identification"
         type=".pdf, jpeg (max. 1MB)"
         required
+        onFileSelected={(file) => {
+          setTransportDetails('documentUploads', 'idFile', file);
+        }}
       />
       <View style={styles.view3} />
       <View style={styles.row}>
@@ -166,30 +174,103 @@ const Form3 = () => {
         </CText>
         <Asterisks size={size.getHeightSize(9.5)} />
       </View>
-      <View
+      {/* <View
         style={{
           gap: size.getHeightSize(16),
         }}
       >
         <OptionBox
-            onSelect={()=>{}}
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          onSelect={() => {
+            transportDetails?.documentUploads?.proofOfEmployment?.some(
+              (item) =>
+                item.index == 1 &&
+                item.value == TransportProofOfEmployment.letter
+            )
+              ? setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.letter,
+                  'remove',
+                  1
+                )
+              : setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.letter,
+                  'add',
+                  1
+                );
+          }}
+          selected={transportDetails?.documentUploads?.proofOfEmployment?.some(
+            (item) =>
+              item.index === 1 &&
+              item.value == TransportProofOfEmployment.letter
+          )}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Employment Letter"
         />
         <OptionBox
-            onSelect={()=>{}}
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          onSelect={() => {
+            transportDetails?.documentUploads?.proofOfEmployment?.some(
+              (item) =>
+                item.index == 2 && item.value == TransportProofOfEmployment.id
+            )
+              ? setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.id,
+                  'remove',
+                  2
+                )
+              : setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.id,
+                  'add',
+                  2
+                );
+          }}
+          selected={transportDetails?.documentUploads?.proofOfEmployment?.some(
+            (item) =>
+              item.index === 2 && item.value == TransportProofOfEmployment.id
+          )}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Work ID/Student ID"
         />
         <OptionBox
-        onSelect={()=>{}}
-          deselectIcon={<SelectedBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
+          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
           description="Business Registration Document"
+          onSelect={() => {
+            transportDetails?.documentUploads?.proofOfEmployment?.some(
+              (item) =>
+                item.index === 3 &&
+                item.value === TransportProofOfEmployment.document
+            )
+              ? setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.document,
+                  'remove',
+                  3
+                )
+              : setTransportDetails(
+                  'documentUploads',
+                  'proofOfEmployment',
+                  TransportProofOfEmployment.document,
+                  'add',
+                  3
+                );
+          }}
+          selected={transportDetails?.documentUploads?.proofOfEmployment?.some(
+            (item) =>
+              item.index === 3 &&
+              item.value === TransportProofOfEmployment.document
+          )}
         />
-      </View>
+      </View> */}
       <View style={styles.view2}>
         <InfoIcon size={size.getHeightSize(24)} />
         <CText
@@ -226,11 +307,7 @@ const Form3 = () => {
           type=".pdf, .xsl (max. 1MB)"
           required
           onFileSelected={(file) => {
-            setTransportDetails(
-              'documentUploads',
-              'proofOfMonthlyIncome',
-              file
-            );
+            setTransportDetails('documentUploads', 'bankStatement', file);
           }}
         />
         <AttachmentView
@@ -238,14 +315,22 @@ const Form3 = () => {
           type=".pdf, .xsl (max. 1MB)"
           required
           onFileSelected={(file) => {
-            setTransportDetails('documentUploads', 'utilityBill', file);
+            setTransportDetails(
+              'documentUploads',
+              'proofOfMonthlyIncome',
+              file
+            );
           }}
         />
-        {/* <AttachmentView
+
+        <AttachmentView
           description="Utility Bill (Electricity, Water, or Water Bill - Not older than 3 months). "
           type=".pdf, .xsl (max. 1MB)"
           required
-        /> */}
+          onFileSelected={(file) => {
+            setTransportDetails('documentUploads', 'utilityBill', file);
+          }}
+        />
       </View>
     </View>
   );

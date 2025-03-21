@@ -19,7 +19,7 @@ const Form2 = () => {
   );
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
-  console.log(date);
+
   const onChange = (event: any, selectedDate?: Date) => {
     // Close the picker after selection
     if (selectedDate) {
@@ -50,96 +50,91 @@ const Form2 = () => {
         }}
       >
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Employed"
           onSelect={() => {
-            transportDetails?.employmentDetails?.employmentStatus?.some(
-              (item) => item.index === 0 && item.value === 'Employed'
-            )
-              ? setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Employed',
-                  'remove',
-                  0
-                )
-              : setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Employed',
-                  'add',
-                  0
-                );
+            setTransportDetails(
+              'employmentDetails',
+              'employmentStatus',
+              'Employed'
+            );
           }}
-          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
-            (item) => item.index === 0 && item.value === 'Employed'
-          )}
+          selected={
+            transportDetails?.employmentDetails?.employmentStatus === 'Employed'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Self-Employed"
           onSelect={() => {
-            transportDetails?.employmentDetails?.employmentStatus?.some(
-              (item) => item.index === 1 && item.value === 'Self-Employed'
-            )
-              ? setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Self-Employed',
-                  'remove',
-                  1
-                )
-              : setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Self-Employed',
-                  'add',
-                  1
-                );
+            setTransportDetails(
+              'employmentDetails',
+              'employmentStatus',
+              'Self-Employed'
+            );
           }}
-          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
-            (item) => item.index === 1 && item.value === 'Self-Employed'
-          )}
+          selected={
+            transportDetails?.employmentDetails?.employmentStatus ===
+            'Self-Employed'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Student"
           onSelect={() => {
-            transportDetails?.employmentDetails?.employmentStatus?.some(
-              (item) => item.index === 2 && item.value === 'Student'
-            )
-              ? setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Student',
-                  'remove',
-                  2
-                )
-              : setTransportDetails(
-                  'employmentDetails',
-                  'employmentStatus',
-                  'Student',
-                  'add',
-                  2
-                );
+            setTransportDetails(
+              'employmentDetails',
+              'employmentStatus',
+              'Student'
+            );
           }}
-          selected={transportDetails?.employmentDetails?.employmentStatus?.some(
-            (item) => item.index === 2 && item.value === 'Student'
-          )}
+          selected={
+            transportDetails?.employmentDetails?.employmentStatus === 'Student'
+          }
         />
 
         <PTextInput
           onChangeText={(text) => {
-            setTransportDetails(
-              'employmentDetails',
-              'employmentStatus',
-              text,
-              'replace',
-              3
-            );
+            setTransportDetails('employmentDetails', 'employmentStatus', text);
           }}
           value={transportDetails.employmentDetails?.employerName}
           placeholder="Other? Please specify."
@@ -456,7 +451,7 @@ const Form2 = () => {
         />
         <PhoneInput
           onChangeText={(text) => {
-            setTransportDetails('employmentDetails', 'employerName', text);
+            setTransportDetails('employmentDetails', 'employerContact', text);
           }}
           placeholder="Employer’s Name (If Applicable)"
           value={transportDetails.employmentDetails?.employerContact}

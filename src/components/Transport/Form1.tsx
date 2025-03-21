@@ -32,121 +32,127 @@ const Form1 = () => {
         }}
       >
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Bus (BRT, Danfo etc)"
           onSelect={() => {
-            transportDetails?.creditRequestDetails?.transportMode?.some(
-              (item) => item.index === 0 && item.value === 'Bus'
-            )
-              ? setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Bus',
-                  'remove',
-                  0
-                )
-              : setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Bus',
-                  'add',
-                  0
-                );
+            setTransportDetails('creditRequestDetails', 'transportMode', 'Bus');
           }}
-          selected={transportDetails?.creditRequestDetails?.transportMode?.some(
-            (item) => item.index === 0 && item.value === 'Bus'
-          )}
+          selected={
+            transportDetails?.creditRequestDetails?.transportMode === 'Bus'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Taxi (Bolt, Uber, etc)"
           onSelect={() => {
-            transportDetails?.creditRequestDetails?.transportMode?.some(
-              (item) => item.index === 1 && item.value === 'Taxi'
-            )
-              ? setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Taxi',
-                  'remove',
-                  1
-                )
-              : setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Taxi',
-                  'add',
-                  1
-                );
+            setTransportDetails(
+              'creditRequestDetails',
+              'transportMode',
+              'Taxi'
+            );
           }}
-          selected={transportDetails?.creditRequestDetails?.transportMode?.some(
-            (item) => item.index === 1 && item.value === 'Taxi'
-          )}
+          selected={
+            transportDetails?.creditRequestDetails?.transportMode === 'Taxi'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Keke (Tricycle)"
           onSelect={() => {
-            transportDetails?.creditRequestDetails?.transportMode?.some(
-              (item) => item.index === 2 && item.value === 'Keke'
-            )
-              ? setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Keke',
-                  'remove',
-                  2
-                )
-              : setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Keke',
-                  'add',
-                  2
-                );
+            setTransportDetails(
+              'creditRequestDetails',
+              'transportMode',
+              'Keke'
+            );
           }}
-          selected={transportDetails?.creditRequestDetails?.transportMode?.some(
-            (item) => item.index === 2 && item.value === 'Keke'
-          )}
+          selected={
+            transportDetails?.creditRequestDetails?.transportMode === 'Keke'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Okada (Motorbike)"
           onSelect={() => {
-            transportDetails?.creditRequestDetails?.transportMode?.some(
-              (item) => item.index === 3 && item.value === 'Okada'
-            )
-              ? setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Okada',
-                  'remove',
-                  3
-                )
-              : setTransportDetails(
-                  'creditRequestDetails',
-                  'transportMode',
-                  'Okada',
-                  'add',
-                  3
-                );
+            setTransportDetails(
+              'creditRequestDetails',
+              'transportMode',
+              'Okada'
+            );
           }}
-          selected={transportDetails?.creditRequestDetails?.transportMode?.some(
-            (item) => item.index === 3 && item.value === 'Okada'
-          )}
+          selected={
+            transportDetails?.creditRequestDetails?.transportMode === 'Okada'
+          }
         />
         <OptionBox
-          deselectIcon={<SelectBox size={size.getHeightSize(24)} />}
-          selectIcon={<SelectedBox size={size.getHeightSize(24)} />}
+          deselectIcon={
+            <Fontisto
+              name="radio-btn-passive"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
+          selectIcon={
+            <Fontisto
+              name="radio-btn-active"
+              size={size.getHeightSize(24)}
+              color={colors.primary()}
+            />
+          }
           description="Ferry"
           onSelect={() => {
-            transportDetails?.creditRequestDetails?.transportMode?.some(
-              (item) => item.index === 4 && item.value === 'Ferry'
-            )
+            transportDetails?.creditRequestDetails?.transportMode === 'Ferry'
               ? setTransportDetails(
                   'creditRequestDetails',
                   'transportMode',
@@ -162,9 +168,9 @@ const Form1 = () => {
                   4
                 );
           }}
-          selected={transportDetails?.creditRequestDetails?.transportMode?.some(
-            (item) => item.index === 4 && item.value === 'Ferry'
-          )}
+          selected={
+            transportDetails?.creditRequestDetails?.transportMode === 'Ferry'
+          }
         />
         <View
           style={{
@@ -368,6 +374,15 @@ const Form1 = () => {
           }}
           value={transportDetails.creditRequestDetails.requestedAmount}
         />
+
+        <CText
+          color={'secondaryBlack'}
+          fontSize={16}
+          lineHeight={22.4}
+          fontFamily="semibold"
+        >
+          Payment Duration
+        </CText>
         <View
           style={{
             flexDirection: 'row',

@@ -4,6 +4,11 @@ export interface Banks {
   currency: string;
   type: string;
 }
+export enum TransportProofOfEmployment {
+  letter = 'Employment Letter',
+  id = 'Work ID/Student ID',
+  document = 'Business Document',
+}
 export interface MediaFile {
   name: string;
   uri: string;
@@ -61,20 +66,13 @@ export interface SelfSchoolFeeDetails {
 
 export interface TransportDetails {
   creditRequestDetails: {
-    transportMode?: Array<{
-      value: string;
-      index: number;
-    }>;
+    transportMode?: string;
     estimatedMonthlyCost?: string;
     requestedAmount?: string;
     paymentDuration?: string;
   };
   employmentDetails: {
-    employmentStatus?: Array<{
-      value: string;
-      index: number;
-    }>;
-    others?: string;
+    occupation?: string;
     name?: string;
     address?: string;
     incomeRange?: string;
@@ -82,13 +80,14 @@ export interface TransportDetails {
     modeOfPayment?: string;
     employerName?: string;
     employerContact?: string;
+    employmentStatus?: string;
   };
   documentUploads: {
-    identificationType?: string;
-    idFile?: string;
+    idFile?: MediaFile;
     typeOfProofOfEmployment?: string;
-    proofOfEmployment?: string;
-    proofOfMonthlyIncome?: string;
-    utilityBill?: string;
+    proofOfEmployment?: MediaFile;
+    proofOfMonthlyIncome?: MediaFile;
+    utilityBill?: MediaFile;
+    bankStatement?: MediaFile;
   };
 }
