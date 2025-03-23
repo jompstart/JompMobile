@@ -1,3 +1,5 @@
+import { RootStackParamList } from '../../types/navigations.types';
+
 export interface ToastState {
   displayToast: boolean;
   toastMessage: string;
@@ -9,6 +11,15 @@ export interface UIState {
   toast: ToastState;
 
   isCompliancePromptVisible: boolean;
+  successModal: {
+    isVisble: boolean;
+    title: string;
+    description: string;
+    shouldNaviagtorTo?: RootStackParamList;
+    pop?: number;
+    callBack?: (() => void) | null;
+    buttonText: string;
+  };
 }
 
 export interface Toast {

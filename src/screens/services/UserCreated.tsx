@@ -119,7 +119,7 @@ const UserCreated = () => {
           </View>
           <Pressable
             onPress={() => {
-              navigate('HouseRent');
+              navigate('HouseRentService');
             }}
             style={[
               styles.view,

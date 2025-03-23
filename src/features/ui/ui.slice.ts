@@ -7,6 +7,13 @@ const initialState: UIState = {
     toastType: 'info',
   },
   isCompliancePromptVisible: false,
+  successModal: {
+    isVisble: false,
+    title: '',
+    description: '',
+    callBack: () => {},
+    buttonText: '',
+  },
 };
 
 const uiSlice = createSlice({
@@ -22,9 +29,26 @@ const uiSlice = createSlice({
     updateCompliancePromptVisibility(state, action: PayloadAction<boolean>) {
       state.isCompliancePromptVisible = action.payload;
     },
+    updateSuccessModalVisibility(
+      state,
+      action: PayloadAction<UIState['successModal']>
+    ) {
+      state.successModal = action.payload;
+    },
+    setSuccessModalCallback(state, action: PayloadAction<() => void>) {
+      state.successModal.callBack = action.payload;
+    },
+    resetSuccessModal(state) {
+      state.successModal = initialState.successModal;
+    },
   },
 });
-export const { updateToast, resetToast, updateCompliancePromptVisibility } =
-  uiSlice.actions;
+export const {
+  updateToast,
+  resetToast,
+  updateCompliancePromptVisibility,
+  updateSuccessModalVisibility,
+  resetSuccessModal,
+} = uiSlice.actions;
 
 export default uiSlice.reducer;

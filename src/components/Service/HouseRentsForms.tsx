@@ -1,18 +1,13 @@
-import { StyleSheet, Pressable, View } from 'react-native';
-import React, { useContext, useReducer } from 'react';
+import { StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { size } from '../../config/size';
-import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import GradientHeader from '../../shared/GradientHeader';
-import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import StudentIcon from '../../../assets/svgs/Dashboard/StudentIcon';
-import ChildIcon from '../../../assets/svgs/Dashboard/ChildIcon';
-import { useNavigation } from '@react-navigation/native';
 import PTextInput from '../../shared/PTextInput';
 import AttachmentView from '../../shared/AttachmentView';
-import { useAppSelector } from '../../controller/redux.controller';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
 import { CustomerServicesContext } from '../../context/ServicesContext';
 import PrimaryButton from '../../shared/PrimaryButton';
 import {
@@ -22,8 +17,16 @@ import {
 } from '../../features/user/user.reducer';
 import { ProviderService } from '../../services/provider';
 import { userSelector } from '../../features/user/user.selector';
-const HouseRentsForms = () => {
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../../types';
+import { updateToast } from '../../features/ui/ui.slice';
+const HouseRentsForms = ({
+  shouldLoad,
+}: {
+  shouldLoad: (state: boolean) => void;
+}) => {
   const user = useAppSelector(userSelector);
+  const appDispatch = useAppDispatch();
   const providerInstance = new ProviderService(user.userId);
   const { houseRentDetails, setHouseRentDetails } = useContext(
     CustomerServicesContext
@@ -32,6 +35,38 @@ const HouseRentsForms = () => {
     rentLoanFormReducer,
     rentLoanInitailState
   );
+  const { mutate, data, isPending } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    HouseRentLoanFormState
+  >({
+    mutationFn: (data) => providerInstance.requestHouseRentLoan(data),
+    onError: (error) => {
+      console.log('======= service error =======');
+      console.log(error);
+      appDispatch(
+        updateToast({
+          toastMessage: error?.message || 'An error occurred',
+          displayToast: true,
+          toastType: 'info',
+        })
+      );
+    },
+    onSuccess: (data) => {
+      console.log('======= service success =======');
+      console.log(data);
+      appDispatch(
+        updateToast({
+          toastMessage: data?.message,
+          displayToast: true,
+          toastType: data?.success === true ? 'success' : 'info',
+        })
+      );
+    },
+  });
+  useEffect(() => {
+    shouldLoad(isPending);
+  }, [isPending]);
   const d = {
     bankStatement: {
       name: 'ELG3336Microprocessor.pdf',
@@ -82,7 +117,7 @@ const HouseRentsForms = () => {
     },
     yearsInCompany: '2',
   } as HouseRentLoanFormState;
-  console.log(state);
+
   return (
     <View
       style={{
@@ -154,6 +189,7 @@ const HouseRentsForms = () => {
             dispatch({ type: 'SET_LANDLORD_ACCOUNT_NUMBER', payload: text });
           }}
           placeholder="Landlord Account Number"
+          keyboardType="phone-pad"
         />
         <PTextInput
           value={state.landlordBankName}
@@ -168,6 +204,7 @@ const HouseRentsForms = () => {
             dispatch({ type: 'SET_LANDLORD_CONTACT_NUMBER', payload: text });
           }}
           placeholder="Landlord Contact Number"
+          keyboardType="phone-pad"
         />
         <PTextInput
           value={state.occupation}
@@ -189,6 +226,7 @@ const HouseRentsForms = () => {
             dispatch({ type: 'SET_COMPANY_PHONE', payload: text });
           }}
           placeholder="Company Phone Number"
+          keyboardType="phone-pad"
         />
         <PTextInput
           value={state.yearsInCompany}
@@ -211,7 +249,7 @@ const HouseRentsForms = () => {
           onChangeText={(text) => {
             dispatch({ type: 'SET_COMPANY_ADDRESS', payload: text });
           }}
-          placeholder="Comapany Address"
+          placeholder="Company Address"
         />
 
         <AttachmentView
@@ -220,7 +258,6 @@ const HouseRentsForms = () => {
           }}
           description="ID Card."
           type=".pdf, .Jpeg (max. 1MB)"
-          typeOfFileToPick={'image'}
         />
         <AttachmentView
           description="Utility Bill."
@@ -274,8 +311,7 @@ const HouseRentsForms = () => {
         <PrimaryButton
           label="Proceed"
           onPress={async () => {
-            const a = await providerInstance.requestHouseRentLoan(d);
-            console.log(a);
+            mutate(state);
           }}
         />
       </View>

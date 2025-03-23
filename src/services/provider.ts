@@ -4,6 +4,7 @@ import {
   MediaFile,
   SelfSchoolFeeDetails,
   TransportDetails,
+  TransportRequest,
 } from '../interface/provider';
 
 export class ProviderService {
@@ -237,25 +238,7 @@ export class ProviderService {
     });
   }
 
-  async transportloan(data: {
-    employmentStatus: string;
-    occupation: string;
-    occupationAddress: string;
-    income: string;
-    payday: string;
-    modeOfPayment: string;
-    employerName: string;
-    employerContactNumber: string;
-    transportMode: string;
-    transportCost: string;
-    creditAmount: string;
-    paymentDuration: string;
-    proofEmployment: MediaFile;
-    validId: MediaFile;
-    paySlip: MediaFile;
-    bankStatement: MediaFile;
-    utility: MediaFile;
-  }) {
+  async transportloan(data: TransportRequest) {
     const formData = new FormData();
     formData.append('CustomerId', 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
     formData.append(

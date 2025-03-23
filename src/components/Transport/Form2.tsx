@@ -453,7 +453,7 @@ const Form2 = () => {
           onChangeText={(text) => {
             setTransportDetails('employmentDetails', 'employerContact', text);
           }}
-          placeholder="Employer’s Name (If Applicable)"
+          placeholder="Employer’s Contact (If Applicable)"
           value={transportDetails.employmentDetails?.employerContact}
           keyboardType="phone-pad"
         />

@@ -18,36 +18,6 @@ import ServicesContext from '../../context/ServicesContext';
 import SelfSchoolFeeForm from '../../components/Service/Transitions/SelfSchoolFeeForm';
 
 const SelfDetails = () => {
-  const { width, height } = Dimensions.get('window');
-  let PADDING = size.getWidthSize(26);
-  let newWidth = width - 2 * PADDING;
-  const views = [
-    {
-      label: 'Basic Information (Personal Details)',
-      title: 'Next: Education Details ',
-      component: <Form1 />,
-    },
-    {
-      label: 'Education Details (Your Education Details)',
-      title: 'Next: Employment/Business Details',
-      component: <Form2 />,
-    },
-    {
-      label: 'Employment/Business Details',
-      title: 'Next: Document Uploads',
-      component: <Form3 />,
-    },
-    {
-      label: 'Document Uploads',
-      title: '',
-      component: <Form4 />,
-    },
-  ];
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef<FlatList<any>>(null);
-  const [viewIndex, setViewIndex] = useState(0);
-  const [progress, setProgress] = useState(25);
-
   return (
     <GradientSafeAreaView>
       <GradientHeader>

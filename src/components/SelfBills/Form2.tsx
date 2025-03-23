@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useContext, useEffect } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
@@ -10,10 +10,14 @@ import PlusIcon from '../../../assets/svgs/Dashboard/PlusIcon';
 import { CustomerServicesContext } from '../../context/ServicesContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AttachmentView from '../../shared/AttachmentView';
-const Form2 = () => {
+import NigeriaFlag from '../../../assets/svgs/shared/NigeriaFlag';
+const Form2 = ({ onSelectState }: { onSelectState: () => void }) => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+  useEffect(() => {
+    setSelfSchoolFeeDetails('educationnDetails', 'country', 'Nigeria');
+  }, []);
   return (
     <View
       style={{
@@ -61,7 +65,7 @@ const Form2 = () => {
       />
       <PTextInput
         placeholder="₦ Tuition Fee"
-         keyboardType="number-pad"
+        keyboardType="number-pad"
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('educationnDetails', 'tuitionFee', text)
         }
@@ -69,17 +73,33 @@ const Form2 = () => {
       />
       <PTextInput
         placeholder="₦ Loan Amount"
-         keyboardType="number-pad"
+        keyboardType="number-pad"
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('educationnDetails', 'loanAmount', text)
         }
         value={selfSchoolFeeDetails?.educationnDetails?.loanAmount}
       />
       <PTextInput
-        // editable={false}
+        editable={false}
         placeholder="Select Country"
         rightIcon={
-          <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
+          <View
+            style={{
+              height: size.getHeightSize(24),
+              width: size.getWidthSize(32),
+            }}
+          >
+            <Image
+              resizeMode="cover"
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+              source={{
+                uri: 'https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg',
+              }}
+            />
+          </View>
         }
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('educationnDetails', 'country', text)
@@ -87,12 +107,13 @@ const Form2 = () => {
         value={selfSchoolFeeDetails?.educationnDetails?.country}
       />
       <PTextInput
-        placeholder="Select State"
+        editable={false}
+        onPress={() => {
+          onSelectState?.();
+        }}
+        placeholder="Select your State"
         rightIcon={
           <MaterialIcons name="arrow-drop-down" size={size.getHeightSize(25)} />
-        }
-        onChangeText={(text) =>
-          setSelfSchoolFeeDetails('educationnDetails', 'state', text)
         }
         value={selfSchoolFeeDetails?.educationnDetails?.state}
       />
@@ -103,7 +124,7 @@ const Form2 = () => {
         }
         value={selfSchoolFeeDetails?.educationnDetails?.city}
       />
-      <AttachmentView
+      {/* <AttachmentView
         description="School Fee Invoice"
         type=".pdf, .xsls (max. 1MB)"
         onFileSelected={(file) => {
@@ -113,7 +134,7 @@ const Form2 = () => {
             file
           );
         }}
-      />
+      /> */}
     </View>
   );
 };

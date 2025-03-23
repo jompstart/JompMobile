@@ -1,21 +1,17 @@
-import { StyleSheet, Pressable, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import { size } from '../../config/size';
-import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import StudentIcon from '../../../assets/svgs/Dashboard/StudentIcon';
-import ChildIcon from '../../../assets/svgs/Dashboard/ChildIcon';
-import { useNavigation } from '@react-navigation/native';
-import PTextInput from '../../shared/PTextInput';
-import AttachmentView from '../../shared/AttachmentView';
 import ServicesContext from '../../context/ServicesContext';
 import HouseRentsForms from '../../components/Service/HouseRentsForms';
-import PrimaryButton from '../../shared/PrimaryButton';
+
+import ShowLoader from '../../shared/ShowLoader';
 const HouseRentService = () => {
+  const [isLoading, setIsLoading] = React.useState(false);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -37,9 +33,17 @@ const HouseRentService = () => {
         <KeyboardAwareScrollView
           extraScrollHeight={size.getHeightSize(16)}
           showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingBottom: size.getHeightSize(30),
+          }}
         >
-          <HouseRentsForms />
+          <HouseRentsForms
+            shouldLoad={(state) => {
+              setIsLoading(state);
+            }}
+          />
         </KeyboardAwareScrollView>
+        <ShowLoader isLoading={isLoading} />
       </ServicesContext>
     </GradientSafeAreaView>
   );

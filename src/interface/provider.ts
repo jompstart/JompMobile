@@ -34,7 +34,6 @@ export interface SelfSchoolFeeDetails {
     state?: string;
     city?: string;
     postalCode?: string;
-    tutionFeeInvoice?: MediaFile;
     schoolIdCard?: MediaFile;
   };
   employmentDetails: {
@@ -90,4 +89,24 @@ export interface TransportDetails {
     utilityBill?: MediaFile;
     bankStatement?: MediaFile;
   };
+}
+
+export interface TransportRequest {
+  employmentStatus: string;
+  occupation: string;
+  occupationAddress: string;
+  income: string;
+  payday: string;
+  modeOfPayment: string;
+  employerName: string;
+  employerContactNumber: string;
+  transportMode: string;
+  transportCost: string;
+  creditAmount: string;
+  paymentDuration: string;
+  proofEmployment: MediaFile;
+  validId: MediaFile;
+  paySlip: MediaFile;
+  bankStatement: MediaFile;
+  utility: MediaFile;
 }

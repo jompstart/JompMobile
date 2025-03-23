@@ -4,9 +4,12 @@ import BottomsheetWrapper from './BottomsheetWrapper';
 import { size } from '../config/size';
 import CText from './CText';
 import PrimaryButton from './PrimaryButton';
+import { useAppSelector, useAppDispatch } from '../controller/redux.controller';
+import { RootStackParamList } from '../types/navigations.types';
+import { updateSuccessModalVisibility } from '../features/ui/ui.slice';
 
 interface Props {
-  onContinue: () => void;
+  onContinue?: () => void;
   title: string;
   description: string;
   buttonText: string;
@@ -21,6 +24,7 @@ const SuccessModal = ({
   visibility,
   onClose,
 }: Props) => {
+  const dispatch = useAppDispatch();
   return (
     <BottomsheetWrapper
       topRadius={16}
@@ -61,7 +65,17 @@ const SuccessModal = ({
         </CText>
 
         <PrimaryButton
-          onPress={() => onContinue?.()}
+          onPress={() => {
+            onContinue?.();
+            dispatch(
+              updateSuccessModalVisibility({
+                isVisble: false,
+                title: '',
+                description: '',
+                buttonText: '',
+              })
+            );
+          }}
           style={{
             marginTop: size.getHeightSize(32),
             paddingVertical: size.getHeightSize(15.5),

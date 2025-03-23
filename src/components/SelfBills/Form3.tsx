@@ -98,7 +98,11 @@ const Form3 = () => {
       <PTextInput
         placeholder="Postal code"
         onChangeText={(text) =>
-          setSelfSchoolFeeDetails('employmentDetails', 'employerPostalCode', text)
+          setSelfSchoolFeeDetails(
+            'employmentDetails',
+            'employerPostalCode',
+            text
+          )
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerPostalCode}
       />
@@ -169,7 +173,7 @@ const Form3 = () => {
         />
       </View>
       <AttachmentView
-        description="6 Months Bank Statement."
+        description="Payment Slip"
         type=".pdf, .xsls (max. 1MB)"
         onFileSelected={(file) => {
           setSelfSchoolFeeDetails('employmentDetails', 'paymentSlip', file);

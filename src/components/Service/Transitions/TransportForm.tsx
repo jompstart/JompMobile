@@ -1,29 +1,33 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
 import React, { useRef, useState, useContext } from 'react';
-import GradientSafeAreaView from '../../../shared/GradientSafeAreaView';
-import GradientHeader from '../../../shared/GradientHeader';
 import { size } from '../../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../../shared/CText';
 import { colors } from '../../../constants/colors';
-import PTextInput from '../../../shared/PTextInput';
 import PrimaryButton from '../../../shared/PrimaryButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import PhoneInput from '../../../shared/PhoneInput';
 import Form1 from '../../../components/Transport/Form1';
 import Form2 from '../../../components/Transport/Form2';
 import Form3 from '../../../components/Transport/Form3';
 import { CustomerServicesContext } from '../../../context/ServicesContext';
-import { useAppSelector } from '../../../controller/redux.controller';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../../controller/redux.controller';
 import { userSelector } from '../../../features/user/user.selector';
 import { ProviderService } from '../../../services/provider';
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../../../types';
+import { TransportRequest } from '../../../interface/provider';
+import { updateToast } from '../../../features/ui/ui.slice';
+import ShowLoader from '../../../shared/ShowLoader';
 const TransportForm = () => {
   const user = useAppSelector(userSelector);
   const providerInstance = new ProviderService(user.userId);
   const { transportDetails, setTransportDetails } = useContext(
     CustomerServicesContext
   );
+  const dispatch = useAppDispatch();
   const { width, height } = Dimensions.get('window');
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
@@ -44,6 +48,36 @@ const TransportForm = () => {
       component: <Form3 />,
     },
   ];
+  const {
+    mutate: requestLoan,
+    data,
+    isPending,
+  } = useMutation<API_RESPONSE<any>, Error, TransportRequest>({
+    mutationFn: (data) => providerInstance.transportloan(data),
+    onError: (error) => {
+      console.log('====== transport error =====');
+      console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage:
+            error?.message ||
+            'An error requesting occured while requesting transport loan',
+          toastType: 'success',
+        })
+      );
+    },
+    onSuccess: (data) => {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: data?.message,
+          toastType: 'success',
+        })
+      );
+    },
+  });
+
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -59,7 +93,7 @@ const TransportForm = () => {
       return;
     }
 
-    const transportResponce = await providerInstance.transportloan({
+    requestLoan({
       employerContactNumber:
         transportDetails.employmentDetails.employerContact!,
       creditAmount: transportDetails.creditRequestDetails.requestedAmount!,
@@ -82,10 +116,9 @@ const TransportForm = () => {
       // transportDetails.creditRequestDetails.estimatedMonthlyCost!,
     });
 
-    console.log(transportResponce);
+    // console.log(transportResponce);
   };
-  console.log('=========== transport details ===========');
-  console.log(transportDetails);
+
   return (
     <View
       style={{
@@ -210,7 +243,7 @@ const TransportForm = () => {
           }}
         >
           <FlatList
-            scrollEnabled={false}
+            scrollEnabled={true}
             ref={flatListRef}
             data={views}
             horizontal
@@ -219,6 +252,18 @@ const TransportForm = () => {
             snapToAlignment="center"
             showsHorizontalScrollIndicator={false}
             bounces={false}
+            onMomentumScrollEnd={(e) => {
+              // Calculate the new view index based on the scroll position
+              const newIndex = Math.round(
+                e.nativeEvent.contentOffset.x / Dimensions.get('window').width
+              );
+
+              // Update the view index and progress
+              if (newIndex !== viewIndex) {
+                setViewIndex(newIndex);
+                setProgress(((newIndex + 1) / views.length) * 100);
+              }
+            }}
             // onViewableItemsChanged={onViewChangeRef.current}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -252,6 +297,7 @@ const TransportForm = () => {
         label="Procced"
         onPress={handleNextView}
       />
+      <ShowLoader isLoading={isPending} />
     </View>
   );
 };

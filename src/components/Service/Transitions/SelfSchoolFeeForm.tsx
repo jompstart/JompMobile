@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { size } from '../../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import CText from '../../../shared/CText';
@@ -14,24 +14,31 @@ import Form4 from '../../SelfBills/Form4';
 import ShowLoader from '../../../shared/ShowLoader';
 import { isAnyFieldEmpty } from '../../../utils/forms';
 import { useMutation } from '@tanstack/react-query';
+import StatesBottomsheet from '../../../shared/StateBottomsheet';
 import { ProviderService } from '../../../services/provider';
 import {
   useAppSelector,
   useAppDispatch,
 } from '../../../controller/redux.controller';
 import { userSelector } from '../../../features/user/user.selector';
-import SelfDetails from '../../../screens/ChildBills/SelfDetails';
-import { updateToast } from '../../../features/ui/ui.slice';
+import { useNavigation } from '@react-navigation/native';
+import {
+  resetSuccessModal,
+  updateSuccessModalVisibility,
+  updateToast,
+} from '../../../features/ui/ui.slice';
 import { API_RESPONSE } from '../../../types';
 import { SelfSchoolFeeDetails } from '../../../interface/provider';
 const SelfSchoolFeeForm = () => {
   const { width } = Dimensions.get('window');
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
+
+  const [showStatesBottomsheet, setShowStatesBottomSheet] = useState(false);
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
-
+  const navigation = useNavigation();
   const providerInstance = new ProviderService(user.userId);
   const {
     mutate: requestSchoolLoan,
@@ -42,6 +49,13 @@ const SelfSchoolFeeForm = () => {
     onError: (error) => {
       console.log('======= service error =======');
       console.log(error);
+      dispatch(
+        updateToast({
+          toastMessage: error?.message,
+          displayToast: true,
+          toastType: 'info',
+        })
+      );
     },
     onSuccess: (d) => {
       console.log('======= service success =======');
@@ -52,6 +66,7 @@ const SelfSchoolFeeForm = () => {
           toastType: d?.success === true ? 'success' : 'info',
         })
       );
+      navigation.goBack();
     },
   });
   let PADDING = size.getWidthSize(26);
@@ -65,7 +80,13 @@ const SelfSchoolFeeForm = () => {
     {
       label: 'Education Details (Your Education Details)',
       title: 'Next: Employment/Business Details',
-      component: <Form2 />,
+      component: (
+        <Form2
+          onSelectState={() => {
+            setShowStatesBottomSheet(true);
+          }}
+        />
+      ),
     },
     {
       label: 'Employment/Business Details',
@@ -78,6 +99,62 @@ const SelfSchoolFeeForm = () => {
       component: <Form4 />,
     },
   ];
+  const shouldButtonDisable = () => {
+    if (viewIndex == 0) {
+      return (
+        !selfSchoolFeeDetails.basicInformation.address ||
+        !selfSchoolFeeDetails.basicInformation.email ||
+        !selfSchoolFeeDetails.basicInformation.firstName ||
+        !selfSchoolFeeDetails.basicInformation.lastName ||
+        !selfSchoolFeeDetails.basicInformation.phoneNumber
+      );
+    }
+    if (viewIndex == 1) {
+      // return isAnyFieldEmpty(selfSchoolFeeDetails.educationnDetails);
+      return (
+        !selfSchoolFeeDetails.educationnDetails.city ||
+        !selfSchoolFeeDetails.educationnDetails.country ||
+        !selfSchoolFeeDetails.educationnDetails.course ||
+        !selfSchoolFeeDetails.educationnDetails.level ||
+        !selfSchoolFeeDetails.educationnDetails.location ||
+        !selfSchoolFeeDetails.educationnDetails.nameOfSchool ||
+        !selfSchoolFeeDetails.educationnDetails.state ||
+        !selfSchoolFeeDetails.educationnDetails.tuitionFee
+      );
+    }
+    if (viewIndex == 2) {
+      // return isAnyFieldEmpty(selfSchoolFeeDetails.employmentDetails);
+      return (
+        !selfSchoolFeeDetails.employmentDetails.companyEmail ||
+        !selfSchoolFeeDetails.employmentDetails.companyLocation ||
+        !selfSchoolFeeDetails.employmentDetails.companyPhoneNumber ||
+        !selfSchoolFeeDetails.employmentDetails.employerAddress ||
+        !selfSchoolFeeDetails.employmentDetails.employerCity ||
+        !selfSchoolFeeDetails.employmentDetails.employerCountry ||
+        !selfSchoolFeeDetails.employmentDetails.employerName ||
+        !selfSchoolFeeDetails.employmentDetails.employerPostalCode ||
+        !selfSchoolFeeDetails.employmentDetails.employerState ||
+        !selfSchoolFeeDetails.employmentDetails.hrContactNumber ||
+        !selfSchoolFeeDetails.employmentDetails.month ||
+        !selfSchoolFeeDetails.employmentDetails.nameOfCompany ||
+        !selfSchoolFeeDetails.employmentDetails.occupation ||
+        !selfSchoolFeeDetails.employmentDetails.paymentSlip ||
+        !selfSchoolFeeDetails.employmentDetails.yearsInCompany ||
+        !selfSchoolFeeDetails.employmentDetails.employerPostalCode ||
+        !selfSchoolFeeDetails.employmentDetails.paymentSlip
+      );
+    }
+    if (viewIndex == 3) {
+      // return isAnyFieldEmpty(selfSchoolFeeDetails.documentUploads);
+      return (
+        !selfSchoolFeeDetails.documentUploads.bankStatement ||
+        !selfSchoolFeeDetails.documentUploads.schoolFeeInvoice ||
+        !selfSchoolFeeDetails.documentUploads.schoolIdCard ||
+        !selfSchoolFeeDetails.documentUploads.utilityBill
+      );
+    }
+    return false;
+  };
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -134,11 +211,6 @@ const SelfSchoolFeeForm = () => {
         nameOfSchool: 'Unilag',
         state: 'Lagos',
         tuitionFee: '1005',
-        tutionFeeInvoice: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/AC0A8236-7D05-449B-9C45-E3AC1A015572.pdf',
-        },
       },
       employmentDetails: {
         companyEmail: 'Jomp@gmail.com',
@@ -163,11 +235,9 @@ const SelfSchoolFeeForm = () => {
       },
     };
 
-    requestSchoolLoan(loanData);
-    // const d = await providerInstance.registerSchoolFee(loanData);
-    // console.log(d);
+    requestSchoolLoan(selfSchoolFeeDetails);
   };
-  console.log(data);
+
   return (
     <View
       style={{
@@ -273,7 +343,7 @@ const SelfSchoolFeeForm = () => {
           }}
         >
           <FlatList
-            scrollEnabled={false}
+            scrollEnabled={true}
             ref={flatListRef}
             data={views}
             horizontal
@@ -282,6 +352,18 @@ const SelfSchoolFeeForm = () => {
             snapToAlignment="center"
             showsHorizontalScrollIndicator={false}
             bounces={false}
+            onMomentumScrollEnd={(e) => {
+              // Calculate the new view index based on the scroll position
+              const newIndex = Math.round(
+                e.nativeEvent.contentOffset.x / Dimensions.get('window').width
+              );
+
+              // Update the view index and progress
+              if (newIndex !== viewIndex) {
+                setViewIndex(newIndex);
+                setProgress(((newIndex + 1) / views.length) * 100);
+              }
+            }}
             // onViewableItemsChanged={onViewChangeRef.current}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -309,10 +391,7 @@ const SelfSchoolFeeForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
-        // disabled={
-        //   viewIndex == 0 &&
-        //   isAnyFieldEmpty(childSchoolFeeDetails.guardianDetails)
-        // }
+        // disabled={shouldButtonDisable()}
         style={{
           marginBottom: size.getHeightSize(32),
         }}
@@ -320,6 +399,15 @@ const SelfSchoolFeeForm = () => {
         onPress={handleNextView}
       />
       <ShowLoader isLoading={isPending} />
+      <StatesBottomsheet
+        onStateSelected={(state) => {
+          if (viewIndex == 1) {
+            setSelfSchoolFeeDetails('educationnDetails', 'state', state.name);
+          }
+        }}
+        isVisible={showStatesBottomsheet}
+        onClose={() => setShowStatesBottomSheet(false)}
+      />
     </View>
   );
 };
