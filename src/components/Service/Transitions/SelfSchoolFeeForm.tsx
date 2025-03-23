@@ -39,7 +39,7 @@ const SelfSchoolFeeForm = () => {
     CustomerServicesContext
   );
   const navigation = useNavigation();
-  const providerInstance = new ProviderService(user.userId);
+  const providerInstance = new ProviderService(user.userId, user.customerId);
   const {
     mutate: requestSchoolLoan,
     isPending,

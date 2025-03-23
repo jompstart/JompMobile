@@ -25,7 +25,7 @@ import { updateToast } from '../../../features/ui/ui.slice';
 const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const providerInstance = new ProviderService(user.userId);
+  const providerInstance = new ProviderService(user.userId, user.customerId);
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
     CustomerServicesContext

@@ -23,7 +23,7 @@ const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
-  const { data: banks } = useGetUserBanks(user.userId);
+  const { data: banks } = useGetUserBanks(user.userId, user.customerId);
   return (
     <View
       style={{

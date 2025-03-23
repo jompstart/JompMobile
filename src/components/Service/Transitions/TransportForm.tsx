@@ -23,7 +23,7 @@ import { updateToast } from '../../../features/ui/ui.slice';
 import ShowLoader from '../../../shared/ShowLoader';
 const TransportForm = () => {
   const user = useAppSelector(userSelector);
-  const providerInstance = new ProviderService(user.userId);
+  const providerInstance = new ProviderService(user.userId, user.customerId);
   const { transportDetails, setTransportDetails } = useContext(
     CustomerServicesContext
   );

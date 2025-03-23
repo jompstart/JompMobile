@@ -32,10 +32,10 @@ const AddBank = () => {
   const user = useAppSelector(userSelector);
   const { goBack } = useNavigation();
   const dispatch = useAppDispatch();
-  const serProviderInstance = new ProviderService(user.userId);
+  const serProviderInstance = new ProviderService(user.userId, user.customerId);
   const [bankData, setBankData] = useState<Array<Banks>>([]);
   const [filteredBankData, setFilteredBankData] = useState<Array<Banks>>([]);
-  const { data, isLoading } = useGetBanks(user.userId);
+  const { data, isLoading } = useGetBanks(user.userId, user.customerId);
   const [showBankList, setShowBankList] = useState(false);
   const [selectedBank, setSelectedBank] = useState<Banks | null>(null);
   const [accountNumber, setAccountNumber] = useState('');

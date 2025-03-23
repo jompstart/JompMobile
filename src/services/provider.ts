@@ -9,7 +9,7 @@ import {
 } from '../interface/provider';
 
 export class ProviderService {
-  constructor(private userId: string) {}
+  constructor(private userId: string, private customerId: string) {}
 
   async getBanks() {
     return await makeRequest<
@@ -92,7 +92,7 @@ export class ProviderService {
   async registerSchoolFeeForOthers(data: ChildSchoolFeeRequest) {
     let formData = new FormData();
 
-    formData.append(`CustomerId`, 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
+    formData.append(`CustomerId`, this.customerId);
     formData.append(`LoanAmount`, data.loanAmount);
 
     data.childDetails.forEach((child, index) => {
@@ -175,7 +175,7 @@ export class ProviderService {
   async registerSchoolFee(data: SelfSchoolFeeDetails) {
     const formData = new FormData();
 
-    formData.append('CustomerId', 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
+    formData.append('CustomerId', this.customerId);
     formData.append('UtilityBill', data.documentUploads.utilityBill as any);
     formData.append(
       'EducationDetailRequest.CourseOfStudy',
@@ -272,7 +272,7 @@ export class ProviderService {
   async requestHouseRentLoan(data: HouseRentLoanFormState) {
     console.log('====== got here ====');
     const formData = new FormData();
-    formData.append('CustomerId', 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
+    formData.append('CustomerId', this.customerId);
     formData.append('RentPrice', data.rentAmount);
     formData.append('RequestedAmount', data.requestedAmount);
     formData.append('BankStatement', data.bankStatement as any);
@@ -325,7 +325,7 @@ export class ProviderService {
 
   async transportloan(data: TransportRequest) {
     const formData = new FormData();
-    formData.append('CustomerId', 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
+    formData.append('CustomerId', this.customerId);
     formData.append(
       'TransporterOccupationRequest.EmploymentStatus',
       data.employmentStatus

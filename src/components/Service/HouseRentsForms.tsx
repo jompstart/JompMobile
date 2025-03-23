@@ -27,7 +27,7 @@ const HouseRentsForms = ({
 }) => {
   const user = useAppSelector(userSelector);
   const appDispatch = useAppDispatch();
-  const providerInstance = new ProviderService(user.userId);
+  const providerInstance = new ProviderService(user.userId, user.customerId);
   const { houseRentDetails, setHouseRentDetails } = useContext(
     CustomerServicesContext
   );
