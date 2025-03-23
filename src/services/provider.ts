@@ -87,6 +87,126 @@ export class ProviderService {
     }
     return phoneNumber;
   }
+
+  async registerSchoolFeeForOthers(data: {
+    loanAmount: string;
+    childDetails: {
+      childFirstName: string;
+      childLastName: string;
+      schoolEmail: string;
+      schoolFee: string;
+      schoolName: string;
+      schoolLocation: string;
+      childGrade: string;
+      invoice: MediaFile;
+      schoolAddress: string;
+      city: string;
+      postalCode: string;
+      country: string;
+    }[];
+    workDetails: {
+      occupation: string;
+      companyName: string;
+      location: string;
+      address: string;
+      city: string;
+      state: string;
+      postalCode: string;
+      country: string;
+      yearsInCompany: string;
+      monthsInCompany: string;
+      email: string;
+      phone: string;
+    };
+    documentUploads: {
+      utilityBill: MediaFile;
+      paySlip: MediaFile;
+      bankStatement: MediaFile;
+      bankStatement2?: MediaFile;
+    };
+  }) {
+    let formData = new FormData();
+
+    formData.append(`CustomerId`, 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
+    formData.append(`LoanAmount`, data.loanAmount);
+
+    data.childDetails.forEach((child, index) => {
+      formData.append(
+        `ChildDetails[${index}].ChildFirstName`,
+        child.childFirstName
+      );
+      formData.append(
+        `ChildDetails[${index}].ChildLastName`,
+        child.childLastName
+      );
+      formData.append(`ChildDetails[${index}].SchoolEmail`, child.schoolEmail);
+      formData.append(
+        `ChildDetails[${index}].SchoolFee`,
+        child.schoolFee.toString()
+      );
+      formData.append(`ChildDetails[${index}].SchoolName`, child.schoolName);
+
+      formData.append(
+        `ChildDetails[${index}].SchoolLocation`,
+        `${child.schoolAddress} ${child.city} ${child.schoolLocation} ${
+          child.postalCode || ''
+        } ${child.country}`
+      );
+      formData.append(`ChildDetails[${index}].ChildGrade`, child.childGrade);
+
+      formData.append(`ChildDetails[${index}].invoice`, child.invoice as any);
+    });
+    formData.append('ParentRecords.Occupaction', data.workDetails.occupation);
+    formData.append('ParentRecords.CompanyName', data.workDetails.companyName);
+    formData.append(
+      'ParentRecords.CompanyLocation',
+      `${data.workDetails.location}  ${data.workDetails.location} ${data.workDetails.state} ${data.workDetails.country}`
+    );
+    formData.append(
+      'ParentRecords.YearsOfWorkinWithThem',
+      `${data.workDetails.yearsInCompany}years ${data.workDetails.monthsInCompany}months`
+    );
+    formData.append('ParentRecords.CompanyEmail', data.workDetails.email);
+    formData.append(
+      'ParentRecords.CompanyPhoneNumber',
+      this.formatPhoneNumber(data.workDetails.phone)
+    );
+
+    formData.append(
+      'ParentRecords.UtilityBill',
+      data.documentUploads.utilityBill as any
+    );
+
+    formData.append(
+      'ParentRecords.PaySlip',
+      data.documentUploads.paySlip as any
+    );
+
+    formData.append(
+      'ParentRecords.BankStatement',
+      data.documentUploads.bankStatement as any
+    );
+    if (data.documentUploads.bankStatement2) {
+      formData.append(
+        'ParentRecords.BankStatement2',
+        data.documentUploads.bankStatement2 as any
+      );
+    }
+
+    return await makeRequest<{
+      message: string;
+      status: number;
+      success: boolean;
+    }>({
+      method: 'POST',
+      url: `/register-customer-schoolfee-service`,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      data: formData,
+    });
+  }
+
   async registerSchoolFee(data: SelfSchoolFeeDetails) {
     const formData = new FormData();
 

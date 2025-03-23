@@ -46,7 +46,7 @@ const Form1 = () => {
         value={childSchoolFeeDetails.guardianDetails.email}
       />
       <PhoneInput
-        placeholder="e.g. 80121212121"
+        placeholder="e.g. 080121212121"
         onChangeText={(text) =>
           setChildSchoolFeeDetails('guardianDetails', 'phoneNumber', text)
         }

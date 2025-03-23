@@ -26,6 +26,11 @@ type CustomerServices = {
       childFirstName?: string;
       childGrade?: string;
       childSchoolFees?: string;
+      schoolEmail?: string;
+      city?: string;
+      postalCode?: string;
+      country?: string;
+      schoolFeeInvoice?: MediaFile;
     }[];
     guardianEmploymentDetails: {
       nameOfCompany?: string;
@@ -34,12 +39,20 @@ type CustomerServices = {
       companyPhoneNumber?: string;
       yearsInCompany?: string;
       paymentSlip?: MediaFile;
+      month?: string;
+      companyCity?: string;
+      companyCountry?: string;
+      companyPostalCode?: string;
+      companyState?: string;
+      occupation?: string;
     };
     documentUploads: {
       bankStatement?: MediaFile;
       utilityBill?: MediaFile;
       schoolFeeInvoice?: MediaFile;
       schoolIdCard?: MediaFile;
+      paymentSlip?: MediaFile;
+      bankStatement2?: MediaFile;
     };
   };
   selfSchoolFeeDetails: SelfSchoolFeeDetails;
@@ -54,6 +67,8 @@ type CustomerServices = {
   };
   transportDetails: TransportDetails;
 
+
+  removeChildSchoolDetailsFromArray: (index: number) => void;
   setHouseRentDetails: (
     field: keyof CustomerServices['houseRentDetails'],
     value: string
@@ -118,6 +133,7 @@ export const CustomerServicesContext = createContext<CustomerServices>({
   setChildSchoolFeeDetails: () => {},
   setSelfSchoolFeeDetails: () => {},
   setTransportDetails: () => {},
+  removeChildSchoolDetailsFromArray: () => {},
 });
 
 const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
@@ -265,6 +281,16 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
     },
     []
   );
+  const removeChildSchoolDetailsFromArray = useCallback((index: number) => {
+    setChildSchoolFeeDetailsState((prevDetails) => {
+      const childSchoolDetails = [...prevDetails.childSchoolDetails];
+      childSchoolDetails.splice(index, 1);
+      return {
+        ...prevDetails,
+        childSchoolDetails,
+      };
+    });
+  }, []);
 
   // Function to update specific fields in selfSchoolFeeDetails
   const handleSetSelfSchoolFeeDetails = useCallback(
@@ -300,6 +326,7 @@ const ServicesContextProvider: React.FC<CustomerServiceProviderProps> = ({
         [field]: value,
       }));
     },
+    removeChildSchoolDetailsFromArray,
   };
 
   return (

@@ -11,8 +11,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Form2 from '../../ChildBills/Form2';
 import Form3 from '../../ChildBills/Form3';
 import Form4 from '../../ChildBills/Form4';
+import { useAppSelector } from '../../../controller/redux.controller';
+import { ProviderService } from '../../../services/provider';
 import { isAnyFieldEmpty } from '../../../utils/forms';
+import { userSelector } from '../../../features/user/user.selector';
 const GuardianDetailsForm = () => {
+  const user = useAppSelector(userSelector);
+  const providerInstance = new ProviderService(user.userId);
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
     CustomerServicesContext
@@ -56,6 +61,55 @@ const GuardianDetailsForm = () => {
       setProgress(progress + 100 / views.length);
     } else {
       console.log(childSchoolFeeDetails);
+      const d = providerInstance.registerSchoolFeeForOthers({
+        workDetails: {
+          address:
+            childSchoolFeeDetails.guardianEmploymentDetails.companyLocation!,
+          companyName:
+            childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany!,
+          email: childSchoolFeeDetails.guardianEmploymentDetails.companyEmail!,
+          phone:
+            childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber!,
+          yearsInCompany:
+            childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany!,
+          city: childSchoolFeeDetails.guardianEmploymentDetails.companyCity!,
+          country:
+            childSchoolFeeDetails.guardianEmploymentDetails.companyCountry!,
+          postalCode:
+            childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode!,
+          state: childSchoolFeeDetails.guardianEmploymentDetails.companyState!,
+          location:
+            childSchoolFeeDetails.guardianEmploymentDetails.companyLocation!,
+          monthsInCompany:
+            childSchoolFeeDetails.guardianEmploymentDetails.month!,
+
+          occupation:
+            childSchoolFeeDetails.guardianEmploymentDetails.occupation!,
+        },
+        documentUploads: {
+          bankStatement: childSchoolFeeDetails.documentUploads.bankStatement!,
+          utilityBill: childSchoolFeeDetails.documentUploads.utilityBill!,
+          paySlip: childSchoolFeeDetails.documentUploads.schoolFeeInvoice!,
+          bankStatement2: childSchoolFeeDetails.documentUploads.bankStatement2!,
+        },
+        loanAmount: childSchoolFeeDetails.guardianDetails.loanAmount!,
+        childDetails: childSchoolFeeDetails.childSchoolDetails.map((child) => {
+          return {
+            childFirstName: child.childFirstName!,
+            childLastName: child.childLastName!,
+            childGrade: child.childGrade!,
+            schoolName: child.nameOfSchool!,
+            schoolLocation: child.schoolAddress!,
+            city: child.city!,
+            country: child.country!,
+            postalCode: child.postalCode!,
+            invoice: child.schoolFeeInvoice!,
+            schoolAddress: child.schoolAddress!,
+            schoolEmail: child.schoolEmail!,
+            schoolFee: child.childSchoolFees!,
+          };
+        }),
+      });
     }
   };
 
@@ -70,6 +124,7 @@ const GuardianDetailsForm = () => {
         extraScrollHeight={size.getHeightSize(16)}
         contentContainerStyle={{
           paddingTop: size.getHeightSize(16),
+          paddingBottom: size.getHeightSize(30),
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -173,6 +228,18 @@ const GuardianDetailsForm = () => {
             snapToAlignment="center"
             showsHorizontalScrollIndicator={false}
             bounces={false}
+            onMomentumScrollEnd={(e) => {
+              // Calculate the new view index based on the scroll position
+              const newIndex = Math.round(
+                e.nativeEvent.contentOffset.x / Dimensions.get('window').width
+              );
+
+              // Update the view index and progress
+              if (newIndex !== viewIndex) {
+                setViewIndex(newIndex);
+                setProgress(((newIndex + 1) / views.length) * 100);
+              }
+            }}
             // onViewableItemsChanged={onViewChangeRef.current}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],

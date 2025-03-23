@@ -48,12 +48,25 @@ const Form4 = () => {
 
       <AttachmentView
         fileUri={''}
-        typeOfFileToPick={'image'}
         onPress={() => {}}
         description="School Id Card"
         type=".png, .jpeg (max. 1MB)"
         onFileSelected={(file) => {
           setChildSchoolFeeDetails('documentUploads', 'schoolIdCard', file);
+        }}
+      />
+
+      <AttachmentView
+        fileUri={''}
+        onPress={() => {}}
+        description=" "
+        type="3 Months Payment Slip."
+        onFileSelected={(file) => {
+          setChildSchoolFeeDetails(
+            'documentUploads',
+            'paymentSlip',
+            file
+          );
         }}
       />
     </View>

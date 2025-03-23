@@ -23,6 +23,17 @@ const Form3 = () => {
         onChangeText={(text) =>
           setChildSchoolFeeDetails(
             'guardianEmploymentDetails',
+            'occupation',
+            text
+          )
+        }
+        placeholder="Name of Company"
+      />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
             'nameOfCompany',
             text
           )
@@ -51,6 +62,54 @@ const Form3 = () => {
         }
         placeholder="Company’s Location"
       />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCity}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyCity',
+            text
+          )
+        }
+        placeholder="Company’s City"
+      />
+
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCountry}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyCountry',
+            text
+          )
+        }
+        placeholder="Company’s Country"
+      />
+
+      <PTextInput
+        value={
+          childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode
+        }
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyPostalCode',
+            text
+          )
+        }
+        placeholder="Postal Code"
+      />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyState}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyState',
+            text
+          )
+        }
+        placeholder="State"
+      />
       <PhoneInput
         value={
           childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber
@@ -76,6 +135,15 @@ const Form3 = () => {
         }
         keyboardType="number-pad"
         placeholder="Years of Working with them"
+      />
+
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.month}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails('guardianEmploymentDetails', 'month', text)
+        }
+        keyboardType="number-pad"
+        placeholder="Month"
       />
       {/* <View
         style={{
@@ -106,19 +174,6 @@ const Form3 = () => {
           </CText>
         </CText>
       </View> */}
-      <AttachmentView
-        fileUri={''}
-        onPress={() => {}}
-        description=" "
-        type="3 Months Payment Slip."
-        onFileSelected={(file) => {
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'paymentSlip',
-            file
-          );
-        }}
-      />
     </View>
   );
 };
