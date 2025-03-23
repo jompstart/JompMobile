@@ -67,7 +67,7 @@ const Form2 = () => {
           keyboardType="phone-pad"
           placeholder="Postal Code"
           value={
-            childSchoolFeeDetails.childSchoolDetails[0]?.schoolAddress || ''
+            childSchoolFeeDetails.childSchoolDetails[0]?.postalCode || ''
           }
           onChangeText={(text) =>
             setChildSchoolFeeDetails(
@@ -79,7 +79,7 @@ const Form2 = () => {
           }
         />
         <PTextInput
-          keyboardType="phone-pad"
+     
           placeholder="Country of School"
           value={childSchoolFeeDetails.childSchoolDetails[0]?.country || ''}
           onChangeText={(text) =>
@@ -87,7 +87,7 @@ const Form2 = () => {
           }
         />
         <PTextInput
-          keyboardType="phone-pad"
+        
           placeholder="City of School"
           value={childSchoolFeeDetails.childSchoolDetails[0]?.city || ''}
           onChangeText={(text) =>
@@ -244,7 +244,7 @@ const Form2 = () => {
               key={index + 4}
               keyboardType="phone-pad"
               placeholder="Postal Code"
-              value={child?.schoolAddress || ''}
+              value={child?.postalCode || ''}
               onChangeText={(text) =>
                 setChildSchoolFeeDetails(
                   'childSchoolDetails',
@@ -256,7 +256,7 @@ const Form2 = () => {
             />
             <PTextInput
               key={index + 5}
-              keyboardType="phone-pad"
+            
               placeholder="Country of School"
               value={child?.country || ''}
               onChangeText={(text) =>
@@ -270,7 +270,7 @@ const Form2 = () => {
             />
             <PTextInput
               key={index + 6}
-              keyboardType="phone-pad"
+         
               placeholder="City of School"
               value={child?.city || ''}
               onChangeText={(text) =>

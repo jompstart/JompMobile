@@ -18,7 +18,7 @@ const Form3 = () => {
         gap: size.getHeightSize(16),
       }}
     >
-      <PTextInput
+      {/* <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
         onChangeText={(text) =>
           setChildSchoolFeeDetails(
@@ -28,7 +28,7 @@ const Form3 = () => {
           )
         }
         placeholder="Name of Company"
-      />
+      /> */}
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
         onChangeText={(text) =>
@@ -87,6 +87,7 @@ const Form3 = () => {
       />
 
       <PTextInput
+           keyboardType="phone-pad"
         value={
           childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode
         }

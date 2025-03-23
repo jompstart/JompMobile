@@ -110,3 +110,41 @@ export interface TransportRequest {
   bankStatement: MediaFile;
   utility: MediaFile;
 }
+
+export interface ChildSchoolFeeRequest {
+  loanAmount: string;
+  childDetails: {
+    childFirstName: string;
+    childLastName: string;
+    schoolEmail: string;
+    schoolFee: string;
+    schoolName: string;
+    schoolLocation: string;
+    childGrade: string;
+    invoice: MediaFile;
+    schoolAddress: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  }[];
+  workDetails: {
+    occupation: string;
+    companyName: string;
+    location: string;
+    address: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+    yearsInCompany: string;
+    monthsInCompany: string;
+    email: string;
+    phone: string;
+  };
+  documentUploads: {
+    utilityBill: MediaFile;
+    paySlip: MediaFile;
+    bankStatement: MediaFile;
+    bankStatement2?: MediaFile;
+  };
+}

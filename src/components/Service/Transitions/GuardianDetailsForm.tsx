@@ -11,12 +11,20 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Form2 from '../../ChildBills/Form2';
 import Form3 from '../../ChildBills/Form3';
 import Form4 from '../../ChildBills/Form4';
-import { useAppSelector } from '../../../controller/redux.controller';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../../controller/redux.controller';
+import ShowLoader from '../../../shared/ShowLoader';
 import { ProviderService } from '../../../services/provider';
-import { isAnyFieldEmpty } from '../../../utils/forms';
 import { userSelector } from '../../../features/user/user.selector';
+import { ChildSchoolFeeRequest } from '../../../interface/provider';
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../../../types';
+import { updateToast } from '../../../features/ui/ui.slice';
 const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
   const providerInstance = new ProviderService(user.userId);
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
@@ -24,6 +32,37 @@ const GuardianDetailsForm = () => {
   );
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
+  const { mutate: requestLoan, isPending } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    ChildSchoolFeeRequest
+  >({
+    mutationFn: (payload) =>
+      providerInstance.registerSchoolFeeForOthers(payload),
+    onError: (error) => {
+      console.log('====== request child school fee error ======');
+      console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage:
+            error?.message || 'There was an error requesting school loan',
+          toastType: 'info',
+        })
+      );
+    },
+    onSuccess: (data) => {
+      console.log('====== request child school fee success ======');
+      console.log(data);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: data?.message,
+          toastType: 'success',
+        })
+      );
+    },
+  });
   const views = [
     {
       label: "Parent or Guardian's Details",
@@ -51,7 +90,7 @@ const GuardianDetailsForm = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
   const [progress, setProgress] = useState(25);
-  const handleNextView = () => {
+  const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
@@ -61,7 +100,7 @@ const GuardianDetailsForm = () => {
       setProgress(progress + 100 / views.length);
     } else {
       console.log(childSchoolFeeDetails);
-      const d = providerInstance.registerSchoolFeeForOthers({
+      requestLoan({
         workDetails: {
           address:
             childSchoolFeeDetails.guardianEmploymentDetails.companyLocation!,
@@ -219,7 +258,6 @@ const GuardianDetailsForm = () => {
           }}
         >
           <FlatList
-            scrollEnabled={false}
             ref={flatListRef}
             data={views}
             horizontal
@@ -277,6 +315,7 @@ const GuardianDetailsForm = () => {
         label="Procced"
         onPress={handleNextView}
       />
+      <ShowLoader isLoading={isPending} />
     </View>
   );
 };

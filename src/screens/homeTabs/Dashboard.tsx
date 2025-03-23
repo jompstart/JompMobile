@@ -306,7 +306,12 @@ const Dashboard = () => {
           </ScrollView>
         </View>
         <View style={styles.view2}>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('PayServices');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <SchoolIcon size={size.getHeightSize(26)} />
             </View>
@@ -318,7 +323,7 @@ const Dashboard = () => {
             >
               School Fees
             </CText>
-          </View>
+          </Pressable>
           <Pressable
             onPress={() => {
               navigate('HouseRentService');

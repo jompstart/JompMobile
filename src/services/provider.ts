@@ -1,6 +1,7 @@
 import { makeRequest } from '../config/api.config';
 import { HouseRentLoanFormState } from '../features/user/user.reducer';
 import {
+  ChildSchoolFeeRequest,
   MediaFile,
   SelfSchoolFeeDetails,
   TransportDetails,
@@ -88,43 +89,7 @@ export class ProviderService {
     return phoneNumber;
   }
 
-  async registerSchoolFeeForOthers(data: {
-    loanAmount: string;
-    childDetails: {
-      childFirstName: string;
-      childLastName: string;
-      schoolEmail: string;
-      schoolFee: string;
-      schoolName: string;
-      schoolLocation: string;
-      childGrade: string;
-      invoice: MediaFile;
-      schoolAddress: string;
-      city: string;
-      postalCode: string;
-      country: string;
-    }[];
-    workDetails: {
-      occupation: string;
-      companyName: string;
-      location: string;
-      address: string;
-      city: string;
-      state: string;
-      postalCode: string;
-      country: string;
-      yearsInCompany: string;
-      monthsInCompany: string;
-      email: string;
-      phone: string;
-    };
-    documentUploads: {
-      utilityBill: MediaFile;
-      paySlip: MediaFile;
-      bankStatement: MediaFile;
-      bankStatement2?: MediaFile;
-    };
-  }) {
+  async registerSchoolFeeForOthers(data: ChildSchoolFeeRequest) {
     let formData = new FormData();
 
     formData.append(`CustomerId`, 'ebb0940a-6674-42fd-888c-ed3ef024c1b4');
