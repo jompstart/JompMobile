@@ -113,9 +113,9 @@ export class ProviderService {
 
       formData.append(
         `ChildDetails[${index}].SchoolLocation`,
-        `${child.schoolAddress} ${child.city} ${child.schoolLocation} ${
-          child.postalCode || ''
-        } ${child.country}`
+        `${child.schoolAddress} ${child.schoolAddress2} ${
+          child.schoolLocation
+        } ${child.postalCode || ''} ${child.country}`
       );
       formData.append(`ChildDetails[${index}].ChildGrade`, child.childGrade);
 
@@ -125,7 +125,7 @@ export class ProviderService {
     formData.append('ParentRecords.CompanyName', data.workDetails.companyName);
     formData.append(
       'ParentRecords.CompanyLocation',
-      `${data.workDetails.location}  ${data.workDetails.location} ${data.workDetails.state} ${data.workDetails.country}`
+      `${data.workDetails.location}  ${data.workDetails.city} ${data.workDetails.state} ${data.workDetails.country}`
     );
     formData.append(
       'ParentRecords.YearsOfWorkinWithThem',
@@ -240,7 +240,7 @@ export class ProviderService {
     );
     formData.append(
       'EmploymentIncomeInformationRequest.EmployerContactAddress',
-      `${data.employmentDetails.employerAddress!} ${data.employmentDetails
+      `${data.employmentDetails.employerAddress!}  ${data.employmentDetails
         .employerCity!} ${data.employmentDetails.employerState!} ${data
         .employmentDetails.employerPostalCode!} ${data.employmentDetails
         .employerCountry!}`

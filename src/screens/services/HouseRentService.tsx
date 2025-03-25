@@ -32,7 +32,7 @@ const HouseRentService = () => {
       <ServicesContext>
         <KeyboardAwareScrollView
           extraScrollHeight={size.getHeightSize(16)}
-          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: size.getHeightSize(30),
           }}

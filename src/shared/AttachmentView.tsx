@@ -12,8 +12,9 @@ import {
   MediaType,
   launchCameraAsync,
   useCameraPermissions,
+  PermissionStatus,
 } from 'expo-image-picker';
-import { PermissionStatus } from 'expo-permissions';
+
 import { MediaFile } from '../interface/provider';
 interface Props {
   description: string;
@@ -24,6 +25,7 @@ interface Props {
   onFileSelected?: (file: MediaFile) => void;
   typeOfFileToPick?: 'pdf' | 'image' | null;
 }
+
 const AttachmentView = ({
   fileUri,
   description,
@@ -113,7 +115,7 @@ const AttachmentView = ({
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: '*/*', // You can specify other types like 'application/*' for all documents
+        type: 'application/pdf', // You can specify other types like 'application/*' for all documents
         copyToCacheDirectory: true,
       });
 
@@ -168,18 +170,38 @@ const AttachmentView = ({
               }}
             >
               <PdfIcon size={size.getHeightSize(84)} />
-              <CText
-                color={'secondaryBlack'}
-                fontSize={14}
-                lineHeight={19.6}
-                fontFamily="semibold"
+              <View
                 style={{
-                  textAlign: 'center',
+                  justifyContent: 'flex-end',
                   flex: 1,
+                  gap: size.getHeightSize(8),
                 }}
               >
-                {fileName}
-              </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={19.6}
+                  fontFamily="bold"
+                  style={{
+                    textAlign: 'left',
+                    // flex: 1,
+                  }}
+                >
+                  {description}
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={19.6}
+                  fontFamily="semibold"
+                  style={{
+                    textAlign: 'left',
+                    // flex: 1,
+                  }}
+                >
+                  {fileName}
+                </CText>
+              </View>
             </View>
             <AttachmentRemoveIcon
               style={{

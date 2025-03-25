@@ -74,27 +74,12 @@ const Form3 = () => {
         value={selfSchoolFeeDetails?.employmentDetails?.employerAddress}
       />
       <PTextInput
-        placeholder="Employer State of Residence"
-        onChangeText={(text) =>
-          setSelfSchoolFeeDetails('employmentDetails', 'employerState', text)
-        }
-        value={selfSchoolFeeDetails?.employmentDetails?.employerState}
-      />
-      <PTextInput
         placeholder="Employer city"
         onChangeText={(text) =>
           setSelfSchoolFeeDetails('employmentDetails', 'employerCity', text)
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerCity}
       />
-      <PTextInput
-        placeholder="Employer country"
-        onChangeText={(text) =>
-          setSelfSchoolFeeDetails('employmentDetails', 'employerCountry', text)
-        }
-        value={selfSchoolFeeDetails?.employmentDetails?.employerCountry}
-      />
-
       <PTextInput
         placeholder="Postal code"
         onChangeText={(text) =>
@@ -105,6 +90,21 @@ const Form3 = () => {
           )
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerPostalCode}
+      />
+      <PTextInput
+        placeholder="Employer State of Residence"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerState', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerState}
+      />
+
+      <PTextInput
+        placeholder="Employer country"
+        onChangeText={(text) =>
+          setSelfSchoolFeeDetails('employmentDetails', 'employerCountry', text)
+        }
+        value={selfSchoolFeeDetails?.employmentDetails?.employerCountry}
       />
 
       <PhoneInput

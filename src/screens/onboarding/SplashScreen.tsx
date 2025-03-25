@@ -21,10 +21,10 @@ const SplashScreen = () => {
     // }, 2000);
     (async () => {
       const token = await AsyncStorage.getItem('token');
-      console.log(token);
+
       if (token) {
         const decoded: any = jwtDecode(token);
-        console.log(decoded);
+
         dispatch(
           updateUserState({
             accountPreference: decoded.clientId,
@@ -37,8 +37,7 @@ const SplashScreen = () => {
         const userInstance = new UserService(decoded.customerId);
         try {
           const user = await userInstance.getCustomer();
-          console.log('====== user =======');
-          console.log(user);
+
           if (user.data) {
             dispatch(
               changeUserState({

@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
+import Feather from '@expo/vector-icons/build/Feather';
 import SecondaryButton from '../../shared/SecondaryButtonWithIcon';
 import GoogleIcon from '../../../assets/svgs/Onboarding/GoogleIcon';
 import SuccessModal from '../../shared/SuccessModal';
@@ -50,6 +51,8 @@ const SignUp = ({
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [userInfo, setUserInfo] = useState<any>();
   const [showVerifyEmailBottomsheet, setShowVerifyEmailBottomsheet] =
     useState(false);
@@ -269,7 +272,7 @@ const SignUp = ({
             />
             <CTextInput
               title="Password"
-              secureTextEntry
+              secureTextEntry={!showPassword}
               placeholder="Password"
               onChangeText={(text) => {
                 dispatch({
@@ -286,7 +289,16 @@ const SignUp = ({
                   number: /[0-9]/.test(text),
                 });
               }}
-              rightIcon={<LockIcon size={size.getHeightSize(24)} />}
+              rightIcon={
+                <Feather
+                  onPress={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                  name={showPassword ? 'eye' : 'eye-off'}
+                  color={colors.primary()}
+                  size={size.getHeightSize(24)}
+                />
+              }
             />
           </View>
           {password.length > 0 && (
@@ -397,11 +409,20 @@ const SignUp = ({
             }}
           >
             <CTextInput
-              secureTextEntry
+              secureTextEntry={!showConfirmPassword}
               onChangeText={(text) => setConfirmPassword(text)}
               title="Confirm password"
               placeholder="Password"
-              rightIcon={<LockIcon size={size.getHeightSize(24)} />}
+              rightIcon={
+                <Feather
+                  onPress={() => {
+                    setShowConfirmPassword(!showConfirmPassword);
+                  }}
+                  name={showConfirmPassword ? 'eye' : 'eye-off'}
+                  color={colors.primary()}
+                  size={size.getHeightSize(24)}
+                />
+              }
             />
 
             {confirmPassword.length > 0 && confirmPassword !== password && (

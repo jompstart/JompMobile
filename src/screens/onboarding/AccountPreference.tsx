@@ -116,7 +116,7 @@ const AccountPreference = () => {
             <Avatar1 size={size.getHeightSize(46)} />
           </View>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             setAccountPreference(UserAccount.Provider);
           }}
@@ -165,7 +165,7 @@ const AccountPreference = () => {
             </View>
             <Avatar2 size={size.getHeightSize(46)} />
           </View>
-        </Pressable>
+        </Pressable> */}
         <View
           style={{
             flex: 1,

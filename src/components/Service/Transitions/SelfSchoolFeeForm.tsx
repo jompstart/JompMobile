@@ -59,14 +59,7 @@ const SelfSchoolFeeForm = () => {
     },
     onSuccess: (d) => {
       console.log('======= service success =======');
-      dispatch(
-        updateToast({
-          toastMessage: d?.message,
-          displayToast: true,
-          toastType: d?.success === true ? 'success' : 'info',
-        })
-      );
-      navigation.goBack();
+      navigation.navigate('SuccessPage');
     },
   });
   let PADDING = size.getWidthSize(26);

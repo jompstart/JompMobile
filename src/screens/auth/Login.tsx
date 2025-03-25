@@ -9,6 +9,7 @@ import CText from '../../shared/CText';
 import { jwtDecode } from 'jwt-decode';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
+import Feather from '@expo/vector-icons/build/Feather';
 import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
@@ -51,6 +52,7 @@ const Login = () => {
     title: '',
   });
   const [otp, setOtp] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [request, response, prompAsync] = Google.useAuthRequest({
     androidClientId:
       '801607727056-tfa731fpcvcn45qjlbso5rutbffvi891.apps.googleusercontent.com',
@@ -64,43 +66,69 @@ const Login = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const getUserInfo = async (accessToken: string) => {
-    setIsLoading(true);
-    const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const userInfoResponse = await response.json();
+    try {
+      setIsLoading(true);
+      console.log('========= accessToken here ======');
+      const response = await fetch(
+        'https://www.googleapis.com/userinfo/v2/me',
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      const userInfoResponse = await response.json();
 
-    setUserInfo(userInfoResponse);
-    const loginResponse: any = await authInstance.login({
-      email: userInfoResponse.email,
-      password: userInfoResponse.id,
-    });
-    setEmail(userInfoResponse.email);
+      setUserInfo(userInfoResponse);
+      const loginResponse: any = await authInstance.login({
+        email: userInfoResponse.email,
+        password: userInfoResponse.id,
+      });
 
-    if (loginResponse.data.otp) {
-      setOtp(loginResponse.data.otp);
-      setShowVerifyEmailBottomsheet(true);
-    } else if (loginResponse.data.token) {
-      const decoded: any = jwtDecode(loginResponse.data?.token!);
+      if (loginResponse.statusCode == 400 && loginResponse.success == false) {
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: loginResponse.message,
+            toastType: 'info',
+          })
+        );
+        setIsLoading(false);
+      }
+      setEmail(userInfoResponse.email);
 
-      await AsyncStorage.setItem('token', loginResponse.data?.token!);
+      if (loginResponse.data.otp) {
+        setOtp(loginResponse.data.otp);
+        setShowVerifyEmailBottomsheet(true);
+      } else if (loginResponse.data.token) {
+        const decoded: any = jwtDecode(loginResponse.data?.token!);
+
+        await AsyncStorage.setItem('token', loginResponse.data?.token!);
+        dispatch(
+          updateUserState({
+            accountPreference: decoded.clientId,
+            token: loginResponse.data?.token!,
+            customerId: decoded.customerId,
+            userId: decoded.UserId,
+          })
+        );
+
+        const userInstance = new UserService(decoded.customerId);
+        const user = await userInstance.getCustomer();
+
+        console.log(user);
+
+        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+      }
+    } catch (error: any) {
       dispatch(
-        updateUserState({
-          accountPreference: decoded.clientId,
-          token: loginResponse.data?.token!,
-          customerId: decoded.customerId,
-          userId: decoded.UserId,
+        updateToast({
+          displayToast: true,
+          toastMessage: error?.message,
+          toastType: 'info',
         })
       );
-
-      const userInstance = new UserService(decoded.customerId);
-      const user = await userInstance.getCustomer();
-
-      console.log(user);
-
-      navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -279,11 +307,20 @@ const Login = () => {
               rightIcon={<MailIcon size={size.getHeightSize(24)} />}
             />
             <CTextInput
-              secureTextEntry
+              secureTextEntry={!showPassword}
               onChangeText={setPassword}
               title="Password"
               placeholder="Password"
-              rightIcon={<LockIcon size={size.getHeightSize(24)} />}
+              rightIcon={
+                <Feather
+                  onPress={() => {
+                    setShowPassword(!showPassword);
+                  }}
+                  name={showPassword ? 'eye' : 'eye-off'}
+                  color={colors.primary()}
+                  size={size.getHeightSize(24)}
+                />
+              }
             />
           </View>
           <Pressable

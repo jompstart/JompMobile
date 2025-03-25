@@ -10,8 +10,8 @@ import {
   MediaType,
   launchCameraAsync,
   useCameraPermissions,
+  PermissionStatus,
 } from 'expo-image-picker';
-import { PermissionStatus } from 'expo-permissions';
 
 interface Props {
   isVisible: boolean;

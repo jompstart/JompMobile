@@ -7,4 +7,5 @@ export const images = {
   onboaarding6: require('../../assets/images/pngs/onboarding6.png'),
   pfpImage: require('../../assets/images/pngs/pfpimage.png'),
   bankImage: require('../../assets/images/pngs/BankImage.png'),
+  succesGif: require('../../assets/images/pngs/success.gif'),
 };

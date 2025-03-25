@@ -17,6 +17,7 @@ import {
 } from '../../features/user/user.reducer';
 import { ProviderService } from '../../services/provider';
 import { userSelector } from '../../features/user/user.selector';
+import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../types';
 import { updateToast } from '../../features/ui/ui.slice';
@@ -26,6 +27,7 @@ const HouseRentsForms = ({
   shouldLoad: (state: boolean) => void;
 }) => {
   const user = useAppSelector(userSelector);
+  const navigation = useNavigation();
   const appDispatch = useAppDispatch();
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { houseRentDetails, setHouseRentDetails } = useContext(
@@ -55,13 +57,14 @@ const HouseRentsForms = ({
     onSuccess: (data) => {
       console.log('======= service success =======');
       console.log(data);
-      appDispatch(
-        updateToast({
-          toastMessage: data?.message,
-          displayToast: true,
-          toastType: data?.success === true ? 'success' : 'info',
-        })
-      );
+      navigation.navigate('SuccessPage');
+      // appDispatch(
+      //   updateToast({
+      //     toastMessage: data?.message,
+      //     displayToast: true,
+      //     toastType: data?.success === true ? 'success' : 'info',
+      //   })
+      // );
     },
   });
   useEffect(() => {

@@ -17,6 +17,7 @@ import {
 } from '../../../controller/redux.controller';
 import ShowLoader from '../../../shared/ShowLoader';
 import { ProviderService } from '../../../services/provider';
+import { useNavigation } from '@react-navigation/native';
 import { userSelector } from '../../../features/user/user.selector';
 import { ChildSchoolFeeRequest } from '../../../interface/provider';
 import { useMutation } from '@tanstack/react-query';
@@ -24,6 +25,7 @@ import { API_RESPONSE } from '../../../types';
 import { updateToast } from '../../../features/ui/ui.slice';
 const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
+  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { width, height } = Dimensions.get('window');
@@ -53,14 +55,7 @@ const GuardianDetailsForm = () => {
     },
     onSuccess: (data) => {
       console.log('====== request child school fee success ======');
-      console.log(data);
-      dispatch(
-        updateToast({
-          displayToast: true,
-          toastMessage: data?.message,
-          toastType: 'success',
-        })
-      );
+      navigation.navigate('SuccessPage');
     },
   });
   const views = [
@@ -146,6 +141,7 @@ const GuardianDetailsForm = () => {
             schoolAddress: child.schoolAddress!,
             schoolEmail: child.schoolEmail!,
             schoolFee: child.childSchoolFees!,
+            schoolAddress2: child.schoolAddress2!,
           };
         }),
       });

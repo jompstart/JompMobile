@@ -50,7 +50,7 @@ const Form2 = () => {
           keyboardType="email-address"
         />
         <PTextInput
-          placeholder="Location of School"
+          placeholder="Address line 1"
           value={
             childSchoolFeeDetails.childSchoolDetails[0]?.schoolAddress || ''
           }
@@ -64,11 +64,24 @@ const Form2 = () => {
           }
         />
         <PTextInput
+          placeholder="Address line 2"
+          value={
+            childSchoolFeeDetails.childSchoolDetails[0]?.schoolAddress2 || ''
+          }
+          onChangeText={(text) =>
+            setChildSchoolFeeDetails(
+              'childSchoolDetails',
+              'schoolAddress2',
+              text,
+              0
+            )
+          }
+        />
+
+        <PTextInput
           keyboardType="phone-pad"
           placeholder="Postal Code"
-          value={
-            childSchoolFeeDetails.childSchoolDetails[0]?.postalCode || ''
-          }
+          value={childSchoolFeeDetails.childSchoolDetails[0]?.postalCode || ''}
           onChangeText={(text) =>
             setChildSchoolFeeDetails(
               'childSchoolDetails',
@@ -79,21 +92,13 @@ const Form2 = () => {
           }
         />
         <PTextInput
-     
           placeholder="Country of School"
           value={childSchoolFeeDetails.childSchoolDetails[0]?.country || ''}
           onChangeText={(text) =>
             setChildSchoolFeeDetails('childSchoolDetails', 'country', text, 0)
           }
         />
-        <PTextInput
-        
-          placeholder="City of School"
-          value={childSchoolFeeDetails.childSchoolDetails[0]?.city || ''}
-          onChangeText={(text) =>
-            setChildSchoolFeeDetails('childSchoolDetails', 'city', text, 0)
-          }
-        />
+
         <PTextInput
           placeholder="Child's First Name"
           value={
@@ -228,12 +233,25 @@ const Form2 = () => {
             />
             <PTextInput
               key={index + 3}
-              placeholder="Location of School"
+              placeholder="Address line 1"
               value={child?.schoolAddress || ''}
               onChangeText={(text) =>
                 setChildSchoolFeeDetails(
                   'childSchoolDetails',
                   'schoolAddress',
+                  text,
+                  index + 1
+                )
+              }
+            />
+            <PTextInput
+              key={index + 33}
+              placeholder="Address line 2"
+              value={child?.schoolAddress2 || ''}
+              onChangeText={(text) =>
+                setChildSchoolFeeDetails(
+                  'childSchoolDetails',
+                  'schoolAddress2',
                   text,
                   index + 1
                 )
@@ -256,7 +274,6 @@ const Form2 = () => {
             />
             <PTextInput
               key={index + 5}
-            
               placeholder="Country of School"
               value={child?.country || ''}
               onChangeText={(text) =>
@@ -268,20 +285,7 @@ const Form2 = () => {
                 )
               }
             />
-            <PTextInput
-              key={index + 6}
-         
-              placeholder="City of School"
-              value={child?.city || ''}
-              onChangeText={(text) =>
-                setChildSchoolFeeDetails(
-                  'childSchoolDetails',
-                  'city',
-                  text,
-                  index + 1
-                )
-              }
-            />
+
             <PTextInput
               key={index + 7}
               placeholder="Child's First Name"

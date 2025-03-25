@@ -7,7 +7,7 @@ import PrimaryButton from './PrimaryButton';
 import { useAppSelector, useAppDispatch } from '../controller/redux.controller';
 import { RootStackParamList } from '../types/navigations.types';
 import { updateSuccessModalVisibility } from '../features/ui/ui.slice';
-
+import { images } from '../constants/images';
 interface Props {
   onContinue?: () => void;
   title: string;
@@ -39,7 +39,23 @@ const SuccessModal = ({
           style={{
             alignSelf: 'center',
           }}
-        ></View>
+        >
+          <View
+            style={{
+              height: size.getHeightSize(200),
+              width: size.getWidthSize(200),
+            }}
+          >
+            <Image
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+              resizeMode="contain"
+              source={images.succesGif}
+            />
+          </View>
+        </View>
         <CText
           fontFamily="bold"
           fontSize={24}

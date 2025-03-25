@@ -17,6 +17,7 @@ import {
 import { userSelector } from '../../../features/user/user.selector';
 import { ProviderService } from '../../../services/provider';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
 import { API_RESPONSE } from '../../../types';
 import { TransportRequest } from '../../../interface/provider';
 import { updateToast } from '../../../features/ui/ui.slice';
@@ -28,6 +29,7 @@ const TransportForm = () => {
     CustomerServicesContext
   );
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
   const { width, height } = Dimensions.get('window');
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
@@ -63,18 +65,12 @@ const TransportForm = () => {
           toastMessage:
             error?.message ||
             'An error requesting occured while requesting transport loan',
-          toastType: 'success',
+          toastType: 'info',
         })
       );
     },
     onSuccess: (data) => {
-      dispatch(
-        updateToast({
-          displayToast: true,
-          toastMessage: data?.message,
-          toastType: 'success',
-        })
-      );
+      navigation.navigate('SuccessPage');
     },
   });
 

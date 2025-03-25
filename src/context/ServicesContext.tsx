@@ -22,6 +22,7 @@ type CustomerServices = {
     childSchoolDetails: {
       nameOfSchool?: string;
       schoolAddress?: string;
+      schoolAddress2?: string;
       childLastName?: string;
       childFirstName?: string;
       childGrade?: string;

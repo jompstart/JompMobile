@@ -120,6 +120,7 @@ export interface ChildSchoolFeeRequest {
     schoolFee: string;
     schoolName: string;
     schoolLocation: string;
+    schoolAddress2: string;
     childGrade: string;
     invoice: MediaFile;
     schoolAddress: string;

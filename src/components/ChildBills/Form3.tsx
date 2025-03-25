@@ -60,7 +60,7 @@ const Form3 = () => {
             text
           )
         }
-        placeholder="Company’s Location"
+        placeholder="Address line 1"
       />
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.companyCity}
@@ -71,23 +71,11 @@ const Form3 = () => {
             text
           )
         }
-        placeholder="Company’s City"
+        placeholder="Address line 2"
       />
 
       <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCountry}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyCountry',
-            text
-          )
-        }
-        placeholder="Company’s Country"
-      />
-
-      <PTextInput
-           keyboardType="phone-pad"
+        keyboardType="phone-pad"
         value={
           childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode
         }
@@ -111,6 +99,18 @@ const Form3 = () => {
         }
         placeholder="State"
       />
+      <PTextInput
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCountry}
+        onChangeText={(text) =>
+          setChildSchoolFeeDetails(
+            'guardianEmploymentDetails',
+            'companyCountry',
+            text
+          )
+        }
+        placeholder="Company’s Country"
+      />
+
       <PhoneInput
         value={
           childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber
@@ -125,27 +125,41 @@ const Form3 = () => {
         keyboardType="number-pad"
         placeholder="Company’s Phone Number"
       />
-      <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'yearsInCompany',
-            text
-          )
-        }
-        keyboardType="number-pad"
-        placeholder="Years of Working with them"
-      />
+      <View
+        style={{
+          flexDirection: 'row',
 
-      <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.month}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails('guardianEmploymentDetails', 'month', text)
-        }
-        keyboardType="number-pad"
-        placeholder="Month"
-      />
+          gap: size.getWidthSize(16),
+        }}
+      >
+        <PTextInput
+          outerStyle={{
+            flex: 1,
+          }}
+          value={childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany}
+          onChangeText={(text) =>
+            setChildSchoolFeeDetails(
+              'guardianEmploymentDetails',
+              'yearsInCompany',
+              text
+            )
+          }
+          keyboardType="number-pad"
+          placeholder="Years of Working with them"
+        />
+
+        <PTextInput
+          outerStyle={{
+            flex: 1,
+          }}
+          value={childSchoolFeeDetails.guardianEmploymentDetails.month}
+          onChangeText={(text) =>
+            setChildSchoolFeeDetails('guardianEmploymentDetails', 'month', text)
+          }
+          keyboardType="number-pad"
+          placeholder="Month"
+        />
+      </View>
       {/* <View
         style={{
           paddingTop: size.getHeightSize(14),
