@@ -16,7 +16,8 @@ const initialState: UserState = {
   phoneNumber: '',
   bvn: '',
   niN: '',
-
+  balance: 0.0,
+  ledger: 0.0,
 };
 
 const userSlice = createSlice({

@@ -95,7 +95,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color="secondaryBlack"
+                color={focused ? 'primaryColor' : 'secondaryBlack'}
                 lineHeight={12.6}
               >
                 {'Home'}
@@ -110,7 +110,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color="secondaryBlack"
+                color={focused ? 'primaryColor' : 'secondaryBlack'}
                 lineHeight={12.6}
               >
                 {services}
@@ -125,7 +125,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color="secondaryBlack"
+                color={focused ? 'primaryColor' : 'secondaryBlack'}
                 lineHeight={12.6}
               >
                 {transactions}
@@ -140,7 +140,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color="secondaryBlack"
+                color={focused ? 'primaryColor' : 'secondaryBlack'}
                 lineHeight={12.6}
               >
                 {savings}
@@ -155,7 +155,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color="secondaryBlack"
+                color={focused ? 'primaryColor' : 'secondaryBlack'}
                 lineHeight={12.6}
               >
                 {more}
@@ -169,7 +169,7 @@ const BottomtabNavigation = () => {
           if (routeName === home) {
             image =
               focused === true ? (
-                <HomeIcon size={size.getHeightSize(24)} />
+                <HomeIcon isFocused size={size.getHeightSize(24)} />
               ) : (
                 <HomeIcon size={size.getHeightSize(24)} />
               );
@@ -177,7 +177,7 @@ const BottomtabNavigation = () => {
           if (routeName === services) {
             image =
               focused === true ? (
-                <ServicesIcon size={size.getHeightSize(24)} />
+                <ServicesIcon isFocused size={size.getHeightSize(24)} />
               ) : (
                 <ServicesIcon size={size.getHeightSize(24)} />
               );
@@ -185,7 +185,7 @@ const BottomtabNavigation = () => {
           if (routeName === transactions) {
             image =
               focused === true ? (
-                <TransactionsIcon size={size.getHeightSize(24)} />
+                <TransactionsIcon isFocused size={size.getHeightSize(24)} />
               ) : (
                 <TransactionsIcon size={size.getHeightSize(24)} />
               );
@@ -193,7 +193,7 @@ const BottomtabNavigation = () => {
           if (routeName === savings) {
             image =
               focused === true ? (
-                <SavingsIcon size={size.getHeightSize(24)} />
+                <SavingsIcon isFocused size={size.getHeightSize(24)} />
               ) : (
                 <SavingsIcon size={size.getHeightSize(24)} />
               );

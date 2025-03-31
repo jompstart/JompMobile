@@ -239,7 +239,7 @@ const TransportForm = () => {
           }}
         >
           <FlatList
-            scrollEnabled={true}
+            scrollEnabled={false}
             ref={flatListRef}
             data={views}
             horizontal

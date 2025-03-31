@@ -24,7 +24,7 @@ const SplashScreen = () => {
 
       if (token) {
         const decoded: any = jwtDecode(token);
-
+        console.log(decoded);
         dispatch(
           updateUserState({
             accountPreference: decoded.clientId,
@@ -34,10 +34,21 @@ const SplashScreen = () => {
           })
         );
 
-        const userInstance = new UserService(decoded.customerId);
+        const userInstance = new UserService(decoded.customerId, decoded.UserId);
         try {
           const user = await userInstance.getCustomer();
-
+          const wallet = await userInstance.getCustomerWallet();
+          if (wallet.data) {
+            dispatch(
+              changeUserState({ key: 'balance', value: wallet.data.balance })
+            );
+            dispatch(
+              changeUserState({
+                key: 'ledger',
+                value: wallet.data.ledgerBalance,
+              })
+            );
+          }
           if (user.data) {
             dispatch(
               changeUserState({
@@ -90,7 +101,6 @@ const SplashScreen = () => {
             );
             navigation.dispatch(StackActions.replace('BottomtabNavigation'));
           } else {
-            console.log('No user data');
             navigation.dispatch(StackActions.replace('Login'));
           }
         } catch (error) {

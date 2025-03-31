@@ -135,6 +135,10 @@ const SignUp = ({
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const userInfoResponse = await response.json();
+    dispatch({
+      type: 'SET_EMAIL',
+      payload: userInfoResponse.email,
+    });
     const createUserAccountResponse = await authInstance.signup(
       accountPreference,
       accountPreference == UserAccount.Customer

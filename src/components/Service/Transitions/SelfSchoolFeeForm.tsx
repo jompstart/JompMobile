@@ -336,7 +336,7 @@ const SelfSchoolFeeForm = () => {
           }}
         >
           <FlatList
-            scrollEnabled={true}
+        scrollEnabled={false}
             ref={flatListRef}
             data={views}
             horizontal

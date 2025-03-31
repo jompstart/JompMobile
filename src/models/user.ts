@@ -13,5 +13,7 @@ export interface UserModel {
   phoneNumber: string;
   bvn?: string;
   niN?: string;
+  balance: number;
+  ledger: number;
 }
 export type UserAccountPreference = UserAccount;

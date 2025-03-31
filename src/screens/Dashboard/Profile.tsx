@@ -19,19 +19,15 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { useGetUserBanks } from '../../hooks/api/auth';
+import CustomSafeArea from '../../shared/CustomSafeAreaView';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
-  const { navigate } = useNavigation();
+  const { navigate, goBack } = useNavigation();
   const user = useAppSelector(userSelector);
-  const { data: banks } = useGetUserBanks(user.userId, user.customerId);
+  const { data: banks } = useGetUserBanks(user?.userId, user?.customerId);
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <StatusBar translucent={false} />
-
+    <GradientSafeAreaView>
       <LinearGradient
         colors={['#EFA005', '#C5520A']}
         start={{ x: 1, y: 0 }}
@@ -45,7 +41,8 @@ const Profile = () => {
           paddingHorizontal: size.getWidthSize(16),
         }}
       >
-        <View
+        <Pressable
+          onPress={() => goBack()}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -65,7 +62,7 @@ const Profile = () => {
           >
             Go Back
           </CText>
-        </View>
+        </Pressable>
         <View
           style={{
             height: size.getHeightSize(146),
@@ -79,7 +76,7 @@ const Profile = () => {
             style={{
               height: '100%',
               width: '100%',
-              borderRadius: '100%',
+              borderRadius: size.getHeightSize(200),
             }}
             source={images.pfpImage}
           />
@@ -88,7 +85,7 @@ const Profile = () => {
               position: 'absolute',
               height: size.getHeightSize(45.31),
               width: size.getHeightSize(45.31),
-              borderRadius: '100%',
+              borderRadius: size.getHeightSize(200),
               backgroundColor: colors.white(),
               paddingVertical: size.getHeightSize(3.02),
               paddingHorizontal: size.getWidthSize(3.02),
@@ -100,7 +97,7 @@ const Profile = () => {
               style={{
                 height: '100%',
                 width: '100%',
-                borderRadius: '100%',
+                borderRadius: size.getHeightSize(200),
                 backgroundColor: colors.primary(),
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -120,7 +117,7 @@ const Profile = () => {
             marginTop: size.getHeightSize(16),
           }}
         >
-          {user.fullName}
+          {user?.fullName}
         </CText>
       </LinearGradient>
       <View
@@ -200,7 +197,7 @@ const Profile = () => {
                   textAlign: 'right',
                 }}
               >
-                {user.email}
+                {user?.email}
               </CText>
             </View>
             <View style={styles.view1}>
@@ -307,7 +304,7 @@ const Profile = () => {
           </View>
         </ScrollView>
       </View>
-    </View>
+    </GradientSafeAreaView>
   );
 };
 

@@ -111,10 +111,78 @@ const Login = () => {
           })
         );
 
-        const userInstance = new UserService(decoded.customerId);
+        const userInstance = new UserService(
+          decoded.customerId,
+          decoded.UserId
+        );
         const user = await userInstance.getCustomer();
+        const wallet = await userInstance.getCustomerWallet();
+        if (wallet?.data) {
+          dispatch(
+            changeUserState({
+              key: 'balance',
+              value: wallet.data.balance,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'ledger',
+              value: wallet.data.ledgerBalance,
+            })
+          );
+        }
 
-        console.log(user);
+        if (user.data) {
+          dispatch(
+            changeUserState({
+              key: 'ninStatus',
+              value: user.data.ninStatus,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'email',
+              value: user.data.email,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'fullName',
+              value: user.data.fullName,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'bvnStatus',
+              value: user.data.bvnStatus,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'complianceStatus',
+              value: user.data.complianceFlag,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'niN',
+              value: user.data.niN,
+            })
+          );
+
+          dispatch(
+            changeUserState({
+              key: 'bvn',
+              value: user.data.bvn,
+            })
+          );
+          dispatch(
+            changeUserState({
+              key: 'phoneNumber',
+              value: user.data.phoneNumber,
+            })
+          );
+        }
 
         navigation.dispatch(StackActions.replace('BottomtabNavigation'));
       }
@@ -159,11 +227,28 @@ const Login = () => {
             })
           );
 
-          const userInstance = new UserService(decoded.customerId);
+          const userInstance = new UserService(
+            decoded.customerId,
+            decoded.UserId
+          );
 
           const user = await userInstance.getCustomer();
-          console.log('====== user =======');
-          console.log(user);
+          const wallet = await userInstance.getCustomerWallet();
+          if (wallet?.data) {
+            dispatch(
+              changeUserState({
+                key: 'balance',
+                value: wallet.data.balance,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'ledger',
+                value: wallet.data.ledgerBalance,
+              })
+            );
+          }
+
           if (user.data) {
             dispatch(
               changeUserState({

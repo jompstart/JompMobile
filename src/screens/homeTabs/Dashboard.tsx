@@ -22,10 +22,13 @@ import OrderIcon from '../../../assets/svgs/Home/OrderIcon';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
 import TxnIcon from '../../../assets/svgs/Home/TxnIcon';
+import { useAppSelector } from '../../controller/redux.controller';
 import { useNavigation } from '@react-navigation/native';
 import WalletAccountDetails from '../../components/Dashboard/WalletAccountDetails';
+import { userSelector } from '../../features/user/user.selector';
 const Dashboard = () => {
   const { navigate } = useNavigation();
+  const user = useAppSelector(userSelector);
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -48,7 +51,7 @@ const Dashboard = () => {
             lineHeight={25.6}
             fontFamily="bold"
           >
-            Hello, Timmy
+            Hello, {user?.fullName.split(' ')[0]}
           </CText>
         </Pressable>
         <View style={styles.walletView}>
@@ -76,18 +79,18 @@ const Dashboard = () => {
             <CText
               color={'white'}
               fontSize={24}
-              lineHeight={38.4}
+              lineHeight={26.4}
               fontFamily="bold"
             >
               <CText
                 color={'white'}
-                fontSize={16}
+                fontSize={14}
                 lineHeight={25.6}
                 fontFamily="regular"
               >
                 ₦
               </CText>{' '}
-              0.00
+              {user?.balance === 0 ? '0.00' : user?.balance}
             </CText>
           </View>
           <View

@@ -254,6 +254,7 @@ const GuardianDetailsForm = () => {
           }}
         >
           <FlatList
+            scrollEnabled={false}
             ref={flatListRef}
             data={views}
             horizontal

@@ -159,7 +159,7 @@ const VerifyNin = () => {
               letterSpacing: size.getWidthSize(0.2),
             }}
           >
-            Confirming your BVN helps us verify your identity and keeps your
+            Confirming your NIN helps us verify your identity and keeps your
             account from fraud.
           </CText>
           {/* <View
