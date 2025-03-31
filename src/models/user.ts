@@ -15,5 +15,7 @@ export interface UserModel {
   niN?: string;
   balance: number;
   ledger: number;
+  totalTransactions: number;
+  totalOrders: number;
 }
 export type UserAccountPreference = UserAccount;

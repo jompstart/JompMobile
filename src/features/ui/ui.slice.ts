@@ -14,6 +14,9 @@ const initialState: UIState = {
     callBack: () => {},
     buttonText: '',
   },
+  accountDetailsBottomsheet: {
+    isVisible: false,
+  },
 };
 
 const uiSlice = createSlice({
@@ -41,6 +44,12 @@ const uiSlice = createSlice({
     resetSuccessModal(state) {
       state.successModal = initialState.successModal;
     },
+    updateAccountDetailsBottomsheetVisibility(
+      state,
+      action: PayloadAction<boolean>
+    ) {
+      state.accountDetailsBottomsheet.isVisible = action.payload;
+    },
   },
 });
 export const {
@@ -49,6 +58,7 @@ export const {
   updateCompliancePromptVisibility,
   updateSuccessModalVisibility,
   resetSuccessModal,
+  updateAccountDetailsBottomsheetVisibility,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

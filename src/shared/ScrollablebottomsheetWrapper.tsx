@@ -32,6 +32,7 @@ interface Props extends BottomSheetProps {
   backgroundColor?: string;
   topRadius?: number;
   disableBackdropPress?: boolean;
+  snapPoints?: string[];
 }
 const ScrollablebottomsheetWrapper = ({
   onClose,
@@ -48,6 +49,7 @@ const ScrollablebottomsheetWrapper = ({
   backgroundColor = colors.white(),
   topRadius = 32,
   disableBackdropPress = false,
+  snapPoints,
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -95,7 +97,7 @@ const ScrollablebottomsheetWrapper = ({
             onClose();
           }}
           ref={bottomSheetRef}
-          snapPoints={['80']}
+          snapPoints={snapPoints ? snapPoints : ['80']}
           enablePanDownToClose={enablePanDownToClose}
           animateOnMount={true}
           backgroundStyle={{

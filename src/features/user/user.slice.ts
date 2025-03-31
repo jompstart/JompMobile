@@ -18,6 +18,8 @@ const initialState: UserState = {
   niN: '',
   balance: 0.0,
   ledger: 0.0,
+  totalTransactions: 0,
+  totalOrders: 0,
 };
 
 const userSlice = createSlice({

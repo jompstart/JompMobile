@@ -1,5 +1,10 @@
 import { makeRequest } from '../config/api.config';
-import { GetCustomerDto, GetWalletResponseDto } from './dto/user.dto';
+import {
+  GetCustomerDto,
+  GetWalletResponseDto,
+  OrderResponseDto,
+  TransactionDto,
+} from './dto/user.dto';
 
 export class UserService {
   private userId = '';
@@ -21,6 +26,18 @@ export class UserService {
     return await makeRequest<GetWalletResponseDto>({
       method: 'GET',
       url: `/wallet-balance/${this.userId}`,
+    });
+  }
+  async getCustomerOrders(page: number, size: number) {
+    return await makeRequest<OrderResponseDto>({
+      method: 'GET',
+      url: `/essential-services?page=${page}&size=${size}`,
+    });
+  }
+  async getCustomerTransactions(page: number, size: number) {
+    return await makeRequest<TransactionDto>({
+      method: 'GET',
+      url: `/transactions?customerId=${this.customerId}&page=${page}&size=${size}`,
     });
   }
 }

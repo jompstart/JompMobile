@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
 import WalletIcon from '../../../assets/svgs/Home/WalletIcon';
@@ -22,13 +22,19 @@ import OrderIcon from '../../../assets/svgs/Home/OrderIcon';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
 import TxnIcon from '../../../assets/svgs/Home/TxnIcon';
-import { useAppSelector } from '../../controller/redux.controller';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../controller/redux.controller';
 import { useNavigation } from '@react-navigation/native';
-import WalletAccountDetails from '../../components/Dashboard/WalletAccountDetails';
 import { userSelector } from '../../features/user/user.selector';
+import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
+import useGetTransactionOrder from '../../hooks/api/dashboard/useGetTransactionOrder';
 const Dashboard = () => {
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
+  const { isLoading } = useGetTransactionOrder();
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -98,7 +104,7 @@ const Dashboard = () => {
               gap: size.getHeightSize(14),
             }}
           >
-            <View
+            {/* <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -119,8 +125,11 @@ const Dashboard = () => {
                 1234567890
               </CText>
               <CopyIcon size={size.getHeightSize(16)} />
-            </View>
-            <View
+            </View> */}
+            <Pressable
+              onPress={() => {
+                dispatch(updateAccountDetailsBottomsheetVisibility(true));
+              }}
               style={{
                 backgroundColor: colors.white(),
                 paddingHorizontal: size.getWidthSize(17),
@@ -139,7 +148,7 @@ const Dashboard = () => {
               >
                 Account Details
               </CText>
-            </View>
+            </Pressable>
           </View>
         </View>
         <View
@@ -157,7 +166,7 @@ const Dashboard = () => {
           >
             <Pressable
               onPress={() => {
-                navigate('PayServices');
+                navigate('UserCreated');
               }}
               style={styles.cardView}
             >
@@ -498,7 +507,7 @@ const Dashboard = () => {
                   lineHeight={27.2}
                   fontFamily="bold"
                 >
-                  ₦ 12,000,000.00
+                  ₦ {user.totalTransactions}
                 </CText>
                 <CText
                   color={'black'}
@@ -548,7 +557,7 @@ const Dashboard = () => {
                   lineHeight={27.2}
                   fontFamily="bold"
                 >
-                  42
+                  {user.totalOrders}
                 </CText>
                 <CText
                   color={'black'}

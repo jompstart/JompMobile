@@ -9,7 +9,6 @@ export interface ToastState {
 
 export interface UIState {
   toast: ToastState;
-
   isCompliancePromptVisible: boolean;
   successModal: {
     isVisble: boolean;
@@ -19,6 +18,9 @@ export interface UIState {
     pop?: number;
     callBack?: (() => void) | null;
     buttonText: string;
+  };
+  accountDetailsBottomsheet: {
+    isVisible: boolean;
   };
 }
 

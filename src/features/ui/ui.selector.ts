@@ -3,3 +3,5 @@ export const toastSelector = (state: RootState) => state.ui.toast;
 export const complianceModalSelector = (state: RootState) =>
   state.ui.isCompliancePromptVisible;
 export const successModalSelector = (state: RootState) => state.ui.successModal;
+export const accountDetailsBottomsheetSelector = (state: RootState) =>
+  state.ui.accountDetailsBottomsheet;
