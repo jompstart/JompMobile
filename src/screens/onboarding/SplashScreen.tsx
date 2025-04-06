@@ -21,7 +21,7 @@ const SplashScreen = () => {
     // }, 2000);
     (async () => {
       const token = await AsyncStorage.getItem('token');
-
+      console.log(token);
       if (token) {
         const decoded: any = jwtDecode(token);
         console.log(decoded);
@@ -34,7 +34,10 @@ const SplashScreen = () => {
           })
         );
 
-        const userInstance = new UserService(decoded.customerId, decoded.UserId);
+        const userInstance = new UserService(
+          decoded.customerId,
+          decoded.UserId
+        );
         try {
           const user = await userInstance.getCustomer();
           const wallet = await userInstance.getCustomerWallet();

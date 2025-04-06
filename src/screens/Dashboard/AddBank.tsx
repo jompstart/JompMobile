@@ -18,8 +18,8 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import { ProviderService } from '../../services/provider';
 import BanksBottomsheet from '../../components/Dashboard/BanksBottomsheet';
 import { useMutation } from '@tanstack/react-query';
-import { useGetBanks } from '../../hooks/api/auth';
-import { Banks } from '../../interface/provider';
+import { useGetBanks, useGetUserBanks } from '../../hooks/api/auth';
+import { AddBankDto, Banks } from '../../interface/provider';
 import { useNavigation } from '@react-navigation/native';
 import {
   useAppSelector,
@@ -28,18 +28,20 @@ import {
 import { userSelector } from '../../features/user/user.selector';
 import { updateToast } from '../../features/ui/ui.slice';
 import { searchArray } from '../../utils/stringManipulation';
+import { API_RESPONSE } from '../../types';
+import { UserService } from '../../services/user';
 const AddBank = () => {
   const user = useAppSelector(userSelector);
   const { goBack } = useNavigation();
   const dispatch = useAppDispatch();
   const serProviderInstance = new ProviderService(user.userId, user.customerId);
+  const userInstance = new UserService(user.customerId, user.userId);
   const [bankData, setBankData] = useState<Array<Banks>>([]);
   const [filteredBankData, setFilteredBankData] = useState<Array<Banks>>([]);
   const { data, isLoading } = useGetBanks(user.userId, user.customerId);
   const [showBankList, setShowBankList] = useState(false);
   const [selectedBank, setSelectedBank] = useState<Banks | null>(null);
   const [accountNumber, setAccountNumber] = useState('');
-  const [acctName, setAccountName] = useState('');
 
   const {
     mutate: validateBank,
@@ -55,15 +57,18 @@ const AddBank = () => {
       console.log(error);
     },
   });
-  const { mutate: addBank, isPending: isAddingBank } = useMutation({
-    mutationFn: serProviderInstance.addBank,
+
+  const { mutate: addBank, isPending: isAddingBank } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    AddBankDto
+  >({
+    mutationFn: (data) => userInstance.addBankAccount(data),
     onError: (error) => {
-      console.log('======= add bank error =======');
+      console.log('======= Error adding bank details =======');
       console.log(error);
     },
     onSuccess: (data) => {
-      console.log('======= add bank success =======');
-      console.log(data);
       dispatch(
         updateToast({
           toastMessage: 'Bank added successfully',
@@ -71,7 +76,6 @@ const AddBank = () => {
           toastType: 'success',
         })
       );
-      goBack();
     },
   });
   useEffect(() => {

@@ -20,21 +20,21 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-interface RequestConfig {
+interface RequestConfig<D> {
   url: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  data?: any;
+  data?: D;
   params?: any;
   headers?: Record<string, string>;
 }
 
-export const makeRequest = async <T>({
+export const makeRequest = async <T, D = any>({
   url,
   method,
   data,
   params,
   headers,
-}: RequestConfig) => {
+}: RequestConfig<D>) => {
   try {
     const response = await api<API_RESPONSE<T>>({
       url,
@@ -45,7 +45,6 @@ export const makeRequest = async <T>({
     });
     return response.data;
   } catch (error) {
-    console.log(error);
     if (axios.isAxiosError(error)) {
       // Handle Axios-specific errors
 

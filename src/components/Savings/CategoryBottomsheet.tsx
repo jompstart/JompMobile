@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
 import { size } from '../../config/size';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
@@ -7,18 +7,23 @@ import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import { useGetSavingsFundsSource } from '../../hooks/api/savings';
+import { useGetSavingsCategories } from '../../hooks/api/savings';
 interface Props {
   isVisible: boolean;
   onClose: () => void;
   onSelected: (item: { id: string; name: string }) => void;
 }
-const FundSourceBottomsheet = ({ isVisible, onClose, onSelected }: Props) => {
+const SavingsCategoryBottomsheet = ({
+  isVisible,
+  onClose,
+  onSelected,
+}: Props) => {
   const user = useAppSelector(userSelector);
-  const { data: fundsSource } = useGetSavingsFundsSource(
+  const { data: savingsCategory } = useGetSavingsCategories(
     user.userId,
     user.customerId
   );
+
   return (
     <BottomsheetWrapper
       topRadius={16}
@@ -26,7 +31,7 @@ const FundSourceBottomsheet = ({ isVisible, onClose, onSelected }: Props) => {
       backgroundColor="#F9F8FF"
       visibility={isVisible}
       onClose={() => {
-        onClose?.();
+        onClose();
       }}
     >
       <View
@@ -44,7 +49,7 @@ const FundSourceBottomsheet = ({ isVisible, onClose, onSelected }: Props) => {
           lineHeight={28.8}
           fontFamily="bold"
         >
-          Source of Funding
+          Select a category
         </CText>
         <CancelIcon
           style={{
@@ -58,11 +63,11 @@ const FundSourceBottomsheet = ({ isVisible, onClose, onSelected }: Props) => {
           gap: size.getHeightSize(8),
         }}
       >
-        {fundsSource?.data?.map((item, index) => (
+        {savingsCategory?.data?.map((item, index) => (
           <Pressable
             onPress={() => {
               onSelected(item);
-              onClose?.();
+              onClose();
             }}
             key={index}
             style={styles.view}
@@ -82,7 +87,7 @@ const FundSourceBottomsheet = ({ isVisible, onClose, onSelected }: Props) => {
   );
 };
 
-export default FundSourceBottomsheet;
+export default SavingsCategoryBottomsheet;
 
 const styles = StyleSheet.create({
   view: {

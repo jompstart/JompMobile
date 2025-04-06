@@ -1,16 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Platform, View } from 'react-native';
 import React, { useState, useReducer, useEffect } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
+
 import CheckIcon from '../../../assets/svgs/Onboarding/CheckIcon';
 import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
 import CTextInput from '../../shared/CTextInput';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import LockIcon from '../../../assets/svgs/Onboarding/LockIcon';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
 import Feather from '@expo/vector-icons/build/Feather';
@@ -34,6 +35,7 @@ import {
 import { UserAccount } from '../../enums/user.enums';
 import { updateToast } from '../../features/ui/ui.slice';
 import { useAppDispatch } from '../../controller/redux.controller';
+import { jwtDecode } from 'jwt-decode';
 const SignUp = ({
   route: {
     params: { accountPreference },
@@ -139,6 +141,9 @@ const SignUp = ({
       type: 'SET_EMAIL',
       payload: userInfoResponse.email,
     });
+    createUser(userInfoResponse);
+  };
+  const createUser = async (userInfoResponse: any) => {
     const createUserAccountResponse = await authInstance.signup(
       accountPreference,
       accountPreference == UserAccount.Customer
@@ -497,10 +502,25 @@ const SignUp = ({
               icon={<GoogleIcon size={size.getHeightSize(24)} />}
               label="Sign up with Google"
             />
-            <SecondaryButton
-              icon={<AppleIcon size={size.getHeightSize(24)} />}
-              label="Sign up with Apple"
-            />
+            {Platform.OS == 'ios' && (
+              <SecondaryButton
+                onPress={async () => {
+                  const credential = await AppleAuthentication.signInAsync({
+                    requestedScopes: [
+                      AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                      AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                    ],
+                  });
+
+                  if (credential?.identityToken) {
+                    const decoded = jwtDecode(credential.identityToken);
+                    console.log(decoded);
+                  }
+                }}
+                icon={<AppleIcon size={size.getHeightSize(24)} />}
+                label="Sign up with Apple"
+              />
+            )}
             <SecondaryButton
               icon={<FacebookIcon size={size.getHeightSize(24)} />}
               label="Sign up with Facebook"

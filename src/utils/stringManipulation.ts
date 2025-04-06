@@ -39,3 +39,9 @@ export const searchArray = <T>(
     return false; // Skip non-string values
   });
 };
+export const obfuscateString = (str: string): string => {
+  if (!str) return '';
+  if (str.length === 10) {
+    return str.slice(0, 3) + '*****' + str.slice(-2);
+  } else return str.slice(0, 3) + '*****' + str.slice(-3);
+};

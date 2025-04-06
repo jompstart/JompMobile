@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Pressable, View, Switch } from 'react-native';
 import GradientHeader from '../../shared/GradientHeader';
 import CText from '../../shared/CText';
-import InfoIcon from '../../../assets/svgs/Loan/InfoIcon';
+import { useReducer, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
@@ -9,8 +9,51 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Feather from '@expo/vector-icons/Feather';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { CreateSavingsScreenProps } from '../../types/navigations.types';
+import { useMutation } from '@tanstack/react-query';
+import { CreateSavingsFormState } from '../../features/Savings/savings.reducer';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import { SavingsService } from '../../services/savings/savings';
+import { API_RESPONSE } from '../../types';
+import { CreateSavingsRequestDto } from '../../services/savings/savings.dto';
+import { updateToast } from '../../features/ui/ui.slice';
+import { useNavigation } from '@react-navigation/native';
+const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
+  const [agreement1, setAgreement1] = useState(false);
+  const [agreement2, setAgreement2] = useState(false);
+  const navigation = useNavigation();
+  const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
+  const savingsService = new SavingsService(user.userId, user.customerId);
+  const { mutate: createService, isPending } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    CreateSavingsRequestDto
+  >({
+    mutationFn: (data) => savingsService.createSavings(data),
+    onError: (error) => {
+      console.log('====== Error creating service =======');
+      console.log(error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message,
+          toastType: 'info',
+        })
+      );
+    },
+    onSuccess: (data) => {
+      console.log('====== Success creating service =======');
+      console.log(data);
+      navigation.navigate('SuccessPage');
+    },
+  });
 
-const CreateSavings = () => {
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -56,8 +99,9 @@ const CreateSavings = () => {
               marginTop: size.getHeightSize(4),
             }}
           >
-            Set up a new savings goal and get paid every day (@ 12% interest
-            P.A) to reach your goals faster.
+            Set up a new savings goal and get paid every day (@{' '}
+            {params?.interestTagentSaving}% interest P.A) to reach your goals
+            faster.
           </CText>
         </View>
         <View
@@ -115,7 +159,7 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  My New Savings
+                  {params?.goalName}
                 </CText>
               </View>
               <View style={styles.view}>
@@ -135,7 +179,7 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  ₦400,000.00
+                  {params?.targetAmount}
                 </CText>
               </View>
             </View>
@@ -157,7 +201,7 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  3 Months
+                  {params?.duration?.toISOString()}
                 </CText>
               </View>
               <View style={styles.view}>
@@ -177,7 +221,8 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  Daily
+                  {params?.frequency.slice(0, 1).toUpperCase() +
+                    params.frequency.slice(1).toLowerCase()}
                 </CText>
               </View>
             </View>
@@ -199,7 +244,7 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  ₦5,000.00
+                  {params?.monthlyContribution}
                 </CText>
               </View>
               <View style={styles.view}>
@@ -219,7 +264,7 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  Yes
+                  {params?.autoSave ? 'Yes' : 'No'}
                 </CText>
               </View>
             </View>
@@ -241,7 +286,9 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  My Wallet
+                  My{' '}
+                  {params?.savingSource.slice(0, 1).toUpperCase() +
+                    params?.savingSource.slice(1)}
                 </CText>
               </View>
               <View style={styles.view}>
@@ -261,13 +308,16 @@ const CreateSavings = () => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  Yes
+                  {params?.autoWithdrawal ? 'Yes' : 'No'}
                 </CText>
               </View>
             </View>
           </View>
         </View>
-        <View
+        <Pressable
+          onPress={() => {
+            setAgreement1(!agreement1);
+          }}
           style={[
             styles.view2,
             {
@@ -275,7 +325,11 @@ const CreateSavings = () => {
             },
           ]}
         >
-          <View style={styles.view3} />
+          <MaterialCommunityIcons
+            name={agreement1 ? 'checkbox-marked' : 'checkbox-blank-outline'}
+            size={size.getHeightSize(30)}
+            color={colors.primary()}
+          />
           <CText
             color={colors.black('70') as any}
             fontSize={14}
@@ -286,12 +340,21 @@ const CreateSavings = () => {
             }}
           >
             I hereby agree that I will forfeit the interest accrued on this
-            savings if I fail to meet this target amount of (₦200,000.00) by the
-            end of the savings duration.
+            savings if I fail to meet this target amount of (₦
+            {params?.targetAmount}) by the end of the savings duration.
           </CText>
-        </View>
-        <View style={styles.view2}>
-          <View style={styles.view3} />
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            setAgreement2(!agreement2);
+          }}
+          style={styles.view2}
+        >
+          <MaterialCommunityIcons
+            name={agreement2 ? 'checkbox-marked' : 'checkbox-blank-outline'}
+            size={size.getHeightSize(30)}
+            color={colors.primary()}
+          />
           <CText
             color={colors.black('70') as any}
             fontSize={14}
@@ -304,14 +367,47 @@ const CreateSavings = () => {
             I hereby agree to this: "If I break this target before the end of
             the savings duration, I will lose all the interest accrued."
           </CText>
-        </View>
+        </Pressable>
         <View
           style={{
             marginHorizontal: size.getWidthSize(16),
             marginTop: size.getHeightSize(38),
           }}
         >
-          <PrimaryButton label="Create Savings" />
+          <PrimaryButton
+            onPress={() => {
+              if (agreement1 && agreement2) {
+                const data: CreateSavingsRequestDto = {
+                  goalName: params?.goalName,
+                  targetAmount: params?.targetAmount,
+                  savingsTime: params?.preferredTime,
+                  frequency: params?.frequency,
+                  monthlyContribution: params?.monthlyContribution,
+                  autoSave: params?.autoSave,
+                  savingSource: params?.savingSource,
+                  autoWithdrawal: params?.autoWithdrawal,
+                  cardDetails: {
+                    cardNumber: '',
+                    expiryMonth: '',
+                    expiry_year: '',
+                    cvv: '',
+                  },
+                  status: 'pending',
+                  savingCategory: params?.savingCategory,
+                  savingsType: 'jompVault',
+                  startDate: params?.startDate,
+                  endDate: params?.endDate,
+                  preferredTime: params?.preferredTime,
+                  targetBreakBeforeEndDate: true,
+                  interestTagentSaving: true,
+                  customerId: user.customerId,
+                };
+                createService(data);
+              }
+            }}
+            isLoading={isPending}
+            label="Create Savings"
+          />
         </View>
       </ScrollView>
     </GradientSafeAreaView>

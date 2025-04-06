@@ -19,3 +19,5 @@ export const useGetUserBanks = (userId: string, customerId: string) => {
     queryFn: () => providerInstance.getUserBanks(),
   });
 };
+
+

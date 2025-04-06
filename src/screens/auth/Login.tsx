@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
@@ -477,10 +477,12 @@ const Login = () => {
               icon={<GoogleIcon size={size.getHeightSize(24)} />}
               label="Login with Google"
             />
-            <SecondaryButton
-              icon={<AppleIcon size={size.getHeightSize(24)} />}
-              label="Login with Apple"
-            />
+            {Platform.OS === 'ios' && (
+              <SecondaryButton
+                icon={<AppleIcon size={size.getHeightSize(24)} />}
+                label="Login with Apple"
+              />
+            )}
             <SecondaryButton
               icon={<FacebookIcon size={size.getHeightSize(24)} />}
               label="Login with Facebook"

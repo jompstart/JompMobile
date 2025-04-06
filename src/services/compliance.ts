@@ -1,13 +1,11 @@
 import { makeRequest } from '../config/api.config';
 import { CustomerVerificationType } from '../types/verification.type';
 import { testData } from '../utils/test';
+import { UserService } from './user';
 
-export class ComplianceService {
-  private userId: string;
-  private customerId: string;
+export class ComplianceService extends UserService {
   constructor(userId: string, customerId: string) {
-    this.userId = userId;
-    this.customerId = customerId;
+    super(customerId, userId);
   }
   async validateCustomerCompliance(
     verificationType: CustomerVerificationType,
@@ -40,7 +38,6 @@ export class ComplianceService {
 
   async verifyCustomer(
     verificationType: CustomerVerificationType,
-
     VerificationStatus: string,
     IdentificationNumber: string,
     IdentificationType: string,
@@ -48,7 +45,7 @@ export class ComplianceService {
     file: any,
     PhoneNumber: string
   ) {
-    console.log(file)
+    console.log(file);
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
     formData.append('VerificationStatus', VerificationStatus);
@@ -58,7 +55,7 @@ export class ComplianceService {
     formData.append('PhoneNumber', PhoneNumber);
 
     formData.append('file', file);
-  
+
     return await makeRequest({
       method: 'POST',
       url: '/verify-customer',
@@ -67,5 +64,18 @@ export class ComplianceService {
       },
       data: formData,
     });
+  }
+  async createAccount() {
+    const complianceStatus = await this.getCustomer().then((res) => {
+      return res.data?.complianceFlag;
+    });
+    if (complianceStatus && complianceStatus === true) {
+      return;
+    } else {
+      return await makeRequest({
+        method: 'GET',
+        url: `/create-account?UserId=${this.userId}`,
+      });
+    }
   }
 }

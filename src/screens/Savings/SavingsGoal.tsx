@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Pressable, View, Switch, Platform } from 'react-native';
 import GradientHeader from '../../shared/GradientHeader';
 import CText from '../../shared/CText';
 import InfoIcon from '../../../assets/svgs/Loan/InfoIcon';
@@ -11,10 +11,95 @@ import PTextInput from '../../shared/PTextInput';
 import { ScrollView } from 'react-native-gesture-handler';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import FundSourceBottomsheet from '../../components/Savings/FundSourceBottomsheet';
 import { useNavigation } from '@react-navigation/native';
+import { useReducer, useState, useEffect } from 'react';
+import SavingsCategoryBottomsheet from '../../components/Savings/CategoryBottomsheet';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import {
+  savingsFormReducer,
+  createSavingsInitialState,
+} from '../../features/Savings/savings.reducer';
+import { useGetSavingsTypes } from '../../hooks/api/savings';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
 const SavingsGoal = () => {
+  const user = useAppSelector(userSelector);
   const { navigate } = useNavigation();
+  const [state, savingsInitialState] = useReducer(
+    savingsFormReducer,
+    createSavingsInitialState
+  );
+  const [endDate, setEndDate] = useState<
+    '1month' | '3months' | '6months' | '9months' | '1year' | 'customize' | null
+  >(null);
+  const [date, setDate] = useState<Date | null>(null);
+  const [showDate, setShowDate] = useState(false);
+  const [showTime, setShowTime] = useState(false);
+  const [showCategory, setShowCategory] = useState(false);
+  const [showSource, setShowSource] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const { data: savingsTypes } = useGetSavingsTypes(
+    user.userId,
+    user.customerId
+  );
+
+  const savingsType = savingsTypes?.data?.find(
+    (item) => item.name == 'jompVault'
+  );
+  useEffect(() => {
+    if (savingsType) {
+      savingsInitialState({
+        type: 'SET_INTEREST_RATE',
+        payload: savingsType.interestRate.toString(),
+      });
+    }
+  }, []);
+  const onChange = (event: any, selectedDate?: Date) => {
+    setShowDate(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+      savingsInitialState({
+        type: 'SET_START_DATE',
+        payload: selectedDate,
+      });
+    }
+  };
+
+  const onChangeTime = (event: any, selectedDate?: Date) => {
+    if (event.type === 'set' && selectedDate) {
+      setSelectedTime(selectedDate);
+      const time = selectedDate.toLocaleTimeString();
+      // Update the selected time
+      savingsInitialState({
+        type: 'SET_PREFERRED_TIME',
+        payload: time,
+      });
+      setShowTime(false); // Close the picker
+    } else if (event.type === 'dismissed') {
+      setShowTime(false); // Close the picker if dismissed
+    }
+  };
+
+  const showDatePicker = () => {
+    setShowDate(true);
+  };
+  useEffect(() => {
+    // set end date based on the start date and selected duration
+    if (state.startDate && state.duration) {
+      const startDate = new Date(state.startDate);
+      const duration = new Date(state.duration);
+      const endDate = new Date(startDate);
+      endDate.setFullYear(duration.getFullYear());
+      endDate.setMonth(duration.getMonth());
+      endDate.setDate(duration.getDate());
+      savingsInitialState({
+        type: 'SET_END_DATE',
+        payload: endDate,
+      });
+    }
+  }, [state.startDate, state.duration]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -32,7 +117,7 @@ const SavingsGoal = () => {
           Go Back
         </CText>
       </GradientHeader>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View
           style={{
             paddingHorizontal: size.getWidthSize(16),
@@ -60,7 +145,7 @@ const SavingsGoal = () => {
               marginTop: size.getHeightSize(4),
             }}
           >
-            Set up a new savings goal and get paid every day (@ 12% interest
+            Set up a new savings goal and get paid every day (@ {savingsType?.interestRate}% interest
             P.A) to reach your goals faster.
           </CText>
           <View
@@ -86,8 +171,9 @@ const SavingsGoal = () => {
                 flex: 1,
               }}
             >
-              Set up a new savings target and get paid every day (@ 12% interest
-              P.A) to reach your goals faster.
+              Set up a new savings target and get paid every day (@{' '}
+              {savingsType?.interestRate}% interest P.A) to reach your goals
+              faster.
             </CText>
           </View>
           <View
@@ -96,8 +182,27 @@ const SavingsGoal = () => {
               gap: size.getHeightSize(16),
             }}
           >
-            <PTextInput placeholder="Savings Title" />
-            <PTextInput placeholder="₦ Set savings goal" />
+            <PTextInput
+              placeholder="Savings Title"
+              onChangeText={(text) => {
+                savingsInitialState({
+                  type: 'SET_GOAL_NAME',
+                  payload: text,
+                });
+              }}
+              value={state.goalName}
+            />
+            <PTextInput
+              placeholder="₦ Set savings goal"
+              onChangeText={(text) => {
+                savingsInitialState({
+                  type: 'SET_TARGET_AMOUNT',
+                  payload: text,
+                });
+              }}
+              value={state.targetAmount}
+              keyboardType="number-pad"
+            />
             <View
               style={{
                 gap: size.getHeightSize(8),
@@ -115,56 +220,122 @@ const SavingsGoal = () => {
                 Set Savings Duration
               </CText>
               <View style={styles.wrap}>
-                <View style={styles.view}>
+                <Pressable
+                  onPress={() => {
+                    // set date of 1 month from now
+                    const date = new Date();
+                    date.setMonth(date.getMonth() + 1);
+                    savingsInitialState({
+                      type: 'SET_DURATION',
+                      payload: date,
+                    });
+                    setEndDate('1month');
+                  }}
+                  style={endDate === '1month' ? styles.isSelected : styles.view}
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === '1month' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     1 Month
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    // set date of 3 month from now
+                    const date = new Date();
+                    date.setMonth(date.getMonth() + 3);
+                    savingsInitialState({
+                      type: 'SET_DURATION',
+                      payload: date,
+                    });
+                    setEndDate('3months');
+                  }}
+                  style={
+                    endDate === '3months' ? styles.isSelected : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === '3months' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     3 Months
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    // set date of 6 month from now
+                    const date = new Date();
+                    date.setMonth(date.getMonth() + 6);
+                    savingsInitialState({
+                      type: 'SET_DURATION',
+                      payload: date,
+                    });
+                    setEndDate('6months');
+                  }}
+                  style={
+                    endDate === '6months' ? styles.isSelected : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === '6months' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     6 Months
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    // set date of 9 month from now
+                    const date = new Date();
+                    date.setMonth(date.getMonth() + 9);
+                    savingsInitialState({
+                      type: 'SET_DURATION',
+                      payload: date,
+                    });
+                    setEndDate('9months');
+                  }}
+                  style={
+                    endDate === '9months' ? styles.isSelected : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === '9months' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     9 Months
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    // set date of 1 year from now
+                    const date = new Date();
+                    date.setFullYear(date.getFullYear() + 1);
+                    savingsInitialState({
+                      type: 'SET_DURATION',
+                      payload: date,
+                    });
+                    setEndDate('1year');
+                  }}
+                  style={endDate === '1year' ? styles.isSelected : styles.view}
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === '1year' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     1 Year
                   </CText>
-                </View>
+                </Pressable>
                 <View style={styles.view}>
                   <CText
                     color={'primaryColor'}
@@ -194,46 +365,194 @@ const SavingsGoal = () => {
                 How will you like to save?
               </CText>
               <View style={styles.wrap}>
-                <View style={styles.view}>
+                <Pressable
+                  onPress={() => {
+                    savingsInitialState({
+                      type: 'SET_FREQUENCY',
+                      payload: 'daily',
+                    });
+                  }}
+                  style={
+                    state.frequency === 'daily'
+                      ? styles.isSelected
+                      : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={
+                      state.frequency === 'daily' ? 'white' : 'primaryColor'
+                    }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     Daily
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    savingsInitialState({
+                      type: 'SET_FREQUENCY',
+                      payload: 'weekly',
+                    });
+                  }}
+                  style={
+                    state.frequency === 'weekly'
+                      ? styles.isSelected
+                      : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={
+                      state.frequency === 'weekly' ? 'white' : 'primaryColor'
+                    }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     Weekly
                   </CText>
-                </View>
-                <View style={styles.view}>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    savingsInitialState({
+                      type: 'SET_FREQUENCY',
+                      payload: 'monthly',
+                    });
+                  }}
+                  style={
+                    state.frequency === 'monthly'
+                      ? styles.isSelected
+                      : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={
+                      state.frequency === 'monthly' ? 'white' : 'primaryColor'
+                    }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     Monthly
                   </CText>
-                </View>
+                </Pressable>
               </View>
             </View>
+            <View>
+              <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
+                Choose start date
+              </CText>
+              <Pressable
+                onPress={showDatePicker}
+                style={{
+                  backgroundColor: colors.white(),
+                  paddingHorizontal: size.getWidthSize(16),
+                  paddingVertical: size.getHeightSize(16),
+                  borderRadius: size.getHeightSize(8),
+                  marginTop: size.getHeightSize(8),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderColor: colors.black('30'),
+                  borderWidth: size.getHeightSize(1),
+                }}
+              >
+                <CText
+                  fontSize={14}
+                  lineHeight={22.4}
+                  color={'secondaryBlack'}
+                  fontFamily="regular"
+                >
+                  {date ? date.toLocaleDateString() : 'Select start date'}
+                </CText>
+              </Pressable>
+              {showDate && (
+                <DateTimePicker
+                  value={date || new Date()}
+                  minimumDate={new Date()}
+                  mode="date" // Can be "date", "time", or "datetime"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={onChange}
+                  style={{
+                    alignSelf: 'center',
+                  }}
+                />
+              )}
+            </View>
 
-            <View
+            <View>
+              <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
+                Set preferred time
+              </CText>
+              <Pressable
+                onPress={() => setShowTime(true)}
+                style={{
+                  backgroundColor: colors.white(),
+                  paddingHorizontal: size.getWidthSize(16),
+                  paddingVertical: size.getHeightSize(16),
+                  borderRadius: size.getHeightSize(8),
+                  marginTop: size.getHeightSize(8),
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderColor: colors.black('30'),
+                  borderWidth: size.getHeightSize(1),
+                }}
+              >
+                <CText
+                  fontSize={14}
+                  lineHeight={22.4}
+                  color={'secondaryBlack'}
+                  fontFamily="regular"
+                >
+                  {state.preferredTime
+                    ? state.preferredTime
+                    : 'Select preferred time'}
+                </CText>
+              </Pressable>
+              {showTime && (
+                <DateTimePicker
+                  value={selectedTime || new Date()}
+                  mode="time" // Can be "date", "time", or "datetime"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={onChangeTime}
+                  style={{
+                    alignSelf: 'center',
+                  }}
+                />
+              )}
+            </View>
+            <Pressable
+              onPress={() => {
+                setShowCategory(true);
+              }}
+              style={styles.view4}
+            >
+              <CText
+                color={
+                  state.savingCategory ? 'black' : (colors.black('70') as any)
+                }
+                fontSize={14}
+                lineHeight={19.2}
+                fontFamily="semibold"
+                style={{
+                  flex: 1,
+                }}
+              >
+                {state.savingCategory || 'Select category'}
+              </CText>
+              <AntDesign
+                name="caretdown"
+                size={size.getHeightSize(16)}
+                color={colors.primary()}
+              />
+            </Pressable>
+            {/* <View
               style={{
                 backgroundColor: '#DBD4FC',
                 paddingHorizontal: size.getWidthSize(16),
                 paddingVertical: size.getHeightSize(8),
                 borderRadius: size.getHeightSize(8),
-                marginTop: size.getHeightSize(16),
+
                 gap: size.getWidthSize(8),
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -252,10 +571,32 @@ const SavingsGoal = () => {
                 Based on your selection above, you can be saving ₦ 100,000.00
                 per month.
               </CText>
-            </View>
-            <PTextInput placeholder="₦ Preferred amount to save on a basis" />
+            </View> */}
+            <PTextInput
+              onChangeText={(text) => {
+                savingsInitialState({
+                  type: 'SET_MONTHLY_CONTRIBUTION',
+                  payload: text,
+                });
+              }}
+              value={state.monthlyContribution}
+              placeholder="₦ Preferred amount to save on a basis"
+              keyboardType="number-pad"
+            />
             <View style={styles.view3}>
-              <View style={styles.view2}>
+              <Pressable
+                onPress={() => {
+                  savingsInitialState({
+                    type: 'SET_MONTHLY_CONTRIBUTION',
+                    payload: '500',
+                  });
+                }}
+                style={
+                  state.monthlyContribution === '500'
+                    ? styles.amountSelected
+                    : styles.view2
+                }
+              >
                 <CText
                   color={'black'}
                   fontSize={12}
@@ -264,8 +605,20 @@ const SavingsGoal = () => {
                 >
                   ₦ 500
                 </CText>
-              </View>
-              <View style={styles.view2}>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  savingsInitialState({
+                    type: 'SET_MONTHLY_CONTRIBUTION',
+                    payload: '1000',
+                  });
+                }}
+                style={
+                  state.monthlyContribution === '1000'
+                    ? styles.amountSelected
+                    : styles.view2
+                }
+              >
                 <CText
                   color={'black'}
                   fontSize={12}
@@ -274,8 +627,20 @@ const SavingsGoal = () => {
                 >
                   ₦ 1,000
                 </CText>
-              </View>
-              <View style={styles.view2}>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  savingsInitialState({
+                    type: 'SET_MONTHLY_CONTRIBUTION',
+                    payload: '1500',
+                  });
+                }}
+                style={
+                  state.monthlyContribution === '1500'
+                    ? styles.amountSelected
+                    : styles.view2
+                }
+              >
                 <CText
                   color={'black'}
                   fontSize={12}
@@ -284,8 +649,20 @@ const SavingsGoal = () => {
                 >
                   ₦ 1,500
                 </CText>
-              </View>
-              <View style={styles.view2}>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  savingsInitialState({
+                    type: 'SET_MONTHLY_CONTRIBUTION',
+                    payload: '5000',
+                  });
+                }}
+                style={
+                  state.monthlyContribution == '5000'
+                    ? styles.amountSelected
+                    : styles.view2
+                }
+              >
                 <CText
                   color={'black'}
                   fontSize={12}
@@ -294,8 +671,20 @@ const SavingsGoal = () => {
                 >
                   ₦ 5000
                 </CText>
-              </View>
-              <View style={styles.view2}>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  savingsInitialState({
+                    type: 'SET_MONTHLY_CONTRIBUTION',
+                    payload: '10000',
+                  });
+                }}
+                style={
+                  state.monthlyContribution === '10000'
+                    ? styles.amountSelected
+                    : styles.view2
+                }
+              >
                 <CText
                   color={'black'}
                   fontSize={12}
@@ -304,7 +693,7 @@ const SavingsGoal = () => {
                 >
                   ₦ 10,000
                 </CText>
-              </View>
+              </Pressable>
             </View>
             <View style={styles.view4}>
               <CText
@@ -319,13 +708,26 @@ const SavingsGoal = () => {
                 Do you want to enable auto savings?
               </CText>
               <Switch
-              // trackColor={{ false: '#767577', true: '#81b0ff' }}
-              // thumbColor={true ? '#f5dd4b' : '#f4f3f4'}
+                value={state.autoSave}
+                onValueChange={(value) => {
+                  savingsInitialState({
+                    type: 'SET_AUTO_SAVE',
+                    payload: value,
+                  });
+                }}
+                trackColor={{ false: '#767577', true: colors.primary() }}
               />
             </View>
-            <View style={styles.view4}>
+            <Pressable
+              onPress={() => {
+                setShowSource(true);
+              }}
+              style={styles.view4}
+            >
               <CText
-                color={colors.black('70') as any}
+                color={
+                  state.savingSource ? 'black' : (colors.black('70') as any)
+                }
                 fontSize={12}
                 lineHeight={19.2}
                 fontFamily="semibold"
@@ -333,14 +735,14 @@ const SavingsGoal = () => {
                   flex: 1,
                 }}
               >
-                Select a source of funding
+                {state.savingSource || 'Select source of funding'}
               </CText>
               <AntDesign
                 name="caretdown"
                 size={size.getHeightSize(16)}
                 color={colors.primary()}
               />
-            </View>
+            </Pressable>
             <View style={styles.view4}>
               <CText
                 color={colors.black('70') as any}
@@ -355,8 +757,14 @@ const SavingsGoal = () => {
                 duration?
               </CText>
               <Switch
-              // trackColor={{ false: '#767577', true: '#81b0ff' }}
-              // thumbColor={true ? '#f5dd4b' : '#f4f3f4'}
+                value={state.autoWithdrawal}
+                onValueChange={(value) => {
+                  savingsInitialState({
+                    type: 'SET_AUTO_WITHDRAWAL',
+                    payload: value,
+                  });
+                }}
+                trackColor={{ false: '#767577', true: colors.primary() }}
               />
             </View>
           </View>
@@ -369,12 +777,35 @@ const SavingsGoal = () => {
           }}
         >
           <PrimaryButton
-            onPress={() => navigate('CreateSavings')}
+            onPress={() => navigate('CreateSavings', state)}
             label="Proceed"
           />
         </View>
       </ScrollView>
-      <FundSourceBottomsheet />
+      <FundSourceBottomsheet
+        onSelected={(source) => {
+          savingsInitialState({
+            type: 'SET_SAVING_SOURCE',
+            payload: source.name,
+          });
+        }}
+        isVisible={showSource}
+        onClose={() => {
+          setShowSource(false);
+        }}
+      />
+      <SavingsCategoryBottomsheet
+        isVisible={showCategory}
+        onClose={() => {
+          setShowCategory(false);
+        }}
+        onSelected={(category) => {
+          savingsInitialState({
+            type: 'SET_SAVING_CATEGORY',
+            payload: category.name,
+          });
+        }}
+      />
     </GradientSafeAreaView>
   );
 };
@@ -419,5 +850,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white(),
     borderRadius: size.getHeightSize(8),
     gap: size.getWidthSize(16),
+  },
+  isSelected: {
+    backgroundColor: colors.primary(),
+    borderWidth: size.getHeightSize(1),
+    width: size.getWidthSize(108),
+    paddingVertical: size.getHeightSize(10),
+    borderRadius: size.getHeightSize(24),
+    borderColor: colors.primary(),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  amountSelected: {
+    backgroundColor: colors.black('50'),
+    paddingVertical: size.getHeightSize(8),
+    paddingHorizontal: size.getWidthSize(11.5),
+    borderRadius: size.getHeightSize(8),
   },
 });

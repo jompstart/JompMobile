@@ -1,6 +1,5 @@
 import { StyleSheet, Image, View, Pressable } from 'react-native';
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
@@ -19,8 +18,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { useGetUserBanks } from '../../hooks/api/auth';
-import CustomSafeArea from '../../shared/CustomSafeAreaView';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import { obfuscateString } from '../../utils/stringManipulation';
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate, goBack } = useNavigation();
@@ -171,7 +170,7 @@ const Profile = () => {
               gap: size.getHeightSize(8),
             }}
           >
-            <View style={styles.view1}>
+            <View style={styles.view3}>
               <Opticons
                 name="mail"
                 color={colors.primary()}
@@ -200,7 +199,7 @@ const Profile = () => {
                 {user?.email}
               </CText>
             </View>
-            <View style={styles.view1}>
+            <View style={styles.view3}>
               <PhoneIcon size={size.getHeightSize(24)} />
               <CText
                 color={'secondaryBlack'}
@@ -225,7 +224,7 @@ const Profile = () => {
                 {user?.phoneNumber}
               </CText>
             </View>
-            <View style={styles.view1}>
+            <View style={styles.view3}>
               <IdIcon size={size.getHeightSize(24)} />
               <CText
                 color={'secondaryBlack'}
@@ -250,7 +249,7 @@ const Profile = () => {
                 {user?.bvn}
               </CText>
             </View>
-            <View style={styles.view1}>
+            <View style={styles.view3}>
               <IdIcon size={size.getHeightSize(24)} />
               <CText
                 color={'secondaryBlack'}
@@ -288,19 +287,50 @@ const Profile = () => {
             >
               Linked Bank Accounts
             </CText>
-            <Pressable
-              onPress={() => navigate('AddBank')}
-              style={{
-                height: size.getHeightSize(80),
-                backgroundColor: colors.white(),
-                width: size.getWidthSize(177),
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: size.getHeightSize(8),
-              }}
-            >
-              <AddBankIcon size={size.getHeightSize(80)} />
-            </Pressable>
+            <View style={styles.view4}>
+              {banks?.data?.map(
+                (bank, index) =>
+                  bank.accountName && (
+                    <View key={index} style={styles.view1}>
+                      <View style={styles.view2}>
+                        <CText
+                          color={colors.black('70') as any}
+                          fontSize={13}
+                          lineHeight={18.2}
+                          fontFamily="bold"
+                          style={styles.text}
+                        >
+                          {bank.bankName}
+                        </CText>
+                        <CText
+                          color={colors.black('70') as any}
+                          fontSize={12}
+                          lineHeight={16.8}
+                          fontFamily="semibold"
+                          style={styles.text}
+                        >
+                          {bank.accountName}
+                        </CText>
+                        <CText
+                          color={colors.black('70') as any}
+                          fontSize={12}
+                          lineHeight={16.8}
+                          fontFamily="semibold"
+                          style={styles.text}
+                        >
+                          {obfuscateString(bank.accountNumber)}
+                        </CText>
+                      </View>
+                    </View>
+                  )
+              )}
+              <Pressable
+                onPress={() => navigate('AddBank')}
+                style={styles.view5}
+              >
+                <AddBankIcon size={size.getHeightSize(80)} />
+              </Pressable>
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -311,12 +341,81 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
-  view1: {
+  view3: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: size.getWidthSize(16),
     paddingVertical: size.getHeightSize(19),
     borderBottomWidth: size.getHeightSize(1),
     borderColor: colors.primary('20'),
+  },
+  view1: {
+    justifyContent: 'center',
+    backgroundColor: colors.white(),
+    paddingHorizontal: size.getWidthSize(15),
+    paddingVertical: size.getHeightSize(10),
+    borderRadius: size.getHeightSize(8),
+    width: size.getWidthSize(177),
+  },
+  check1: {
+    position: 'absolute',
+    top: size.getHeightSize(10),
+    right: size.getWidthSize(10),
+  },
+  check2: {
+    height: size.getHeightSize(20),
+    width: size.getHeightSize(20),
+    backgroundColor: colors.primary(),
+    borderRadius: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  check3: {
+    height: size.getHeightSize(15),
+    width: size.getHeightSize(15),
+    borderRadius: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white(),
+  },
+  check4: {
+    backgroundColor: colors.primary(),
+    height: size.getHeightSize(10),
+    width: size.getHeightSize(10),
+    borderRadius: '100%',
+  },
+  imageView: {
+    height: size.getHeightSize(75),
+    width: size.getHeightSize(75),
+    alignSelf: 'center',
+  },
+  image: {
+    height: '100%',
+    width: '100%',
+  },
+  view2: {
+    gap: size.getHeightSize(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    textAlign: 'center',
+  },
+  view4: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    marginTop: size.getHeightSize(16),
+    rowGap: size.getHeightSize(16),
+    columnGap: size.getWidthSize(16),
+  },
+  view5: {
+    height: size.getHeightSize(80),
+    backgroundColor: colors.white(),
+    width: size.getWidthSize(177),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: size.getHeightSize(8),
+    borderRadius: size.getHeightSize(8),
   },
 });

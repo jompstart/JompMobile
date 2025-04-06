@@ -1,4 +1,5 @@
 import { makeRequest } from '../config/api.config';
+import { AddBankDto } from '../interface/provider';
 import {
   GetCustomerDto,
   GetWalletResponseDto,
@@ -7,8 +8,8 @@ import {
 } from './dto/user.dto';
 
 export class UserService {
-  private userId = '';
-  private customerId = '';
+  protected userId = '';
+  protected customerId = '';
   constructor(customerId: string, userId: string) {
     this.customerId = customerId;
     this.userId = userId;
@@ -22,7 +23,6 @@ export class UserService {
   }
 
   async getCustomerWallet() {
-    console.log(this.userId);
     return await makeRequest<GetWalletResponseDto>({
       method: 'GET',
       url: `/wallet-balance/${this.userId}`,
@@ -38,6 +38,22 @@ export class UserService {
     return await makeRequest<TransactionDto>({
       method: 'GET',
       url: `/transactions?customerId=${this.customerId}&page=${page}&size=${size}`,
+    });
+  }
+  async addBankAccount(data: AddBankDto) {
+    return await makeRequest({
+      method: 'POST',
+      url: `/add-bank`,
+      data: {
+        ...data,
+        userId: this.userId,
+      },
+    });
+  }
+  async getUserBanks() {
+    return await makeRequest({
+      method: 'GET',
+      url: `/get-banks?userId=${this.userId}`,
     });
   }
 }

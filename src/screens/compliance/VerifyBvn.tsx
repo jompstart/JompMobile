@@ -42,8 +42,6 @@ const VerifyBvn = () => {
     user.customerId
   );
 
-  
-
   const handleVerifyBvn = async () => {
     setVerificationLoadingState(true);
     try {
@@ -77,6 +75,12 @@ const VerifyBvn = () => {
         );
 
         if (verifyCustomer.statusCode == 201 && verifyCustomer.success) {
+          try {
+            await complianceInstance.createAccount();
+          } catch (error) {
+            console.log('====== create account error ======');
+            console.log(error);
+          }
           dispatch(
             updateToast({
               displayToast: true,

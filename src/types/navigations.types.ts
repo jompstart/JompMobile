@@ -4,6 +4,7 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import { UserAccountPreference } from '../models/user';
+import { CreateSavingsFormState } from '../features/Savings/savings.reducer';
 
 declare global {
   namespace ReactNavigation {
@@ -34,7 +35,7 @@ export type RootStackParamList = {
   UserCreated: undefined;
   PayServices: undefined;
   SavingsGoal: undefined;
-  CreateSavings: undefined;
+  CreateSavings: CreateSavingsFormState;
   SavingsTransactions: undefined;
   Receipt: undefined;
   TransportDetails: undefined;
@@ -53,23 +54,16 @@ type SignUpScreenParams = {
   };
 };
 
-type SignupWithWalletPageParams = {
-  [SignupWithWallet: string]: {
-    walletType: 'metamask' | 'phantom';
-    data?: string;
-    nonce?: string;
-    phantom_encryption_public_key?: string;
-  };
-};
-type EmailConfirmationPageParams = {
-  [EmailConfirmation: string]: {
-    email: string;
-    password: string;
-    otp: string;
-  };
+type CreateSavingsParams = {
+  [CreateSavings: string]: CreateSavingsFormState;
 };
 
-export type SignupScreenProps = {
+export type CreateSavingsScreenProps = {
+  navigation: NavigationProp<RootStackParamList, 'CreateSavings'>;
+  route: RouteProp<CreateSavingsParams, 'CreateSavings'>;
+};
+
+export type SignUpScreenProps = {
   navigation: NavigationProp<RootStackParamList, 'SignUp'>;
   route: RouteProp<SignUpScreenParams, 'SignUp'>;
 };

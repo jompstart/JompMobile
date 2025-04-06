@@ -149,3 +149,10 @@ export interface ChildSchoolFeeRequest {
     bankStatement2?: MediaFile;
   };
 }
+
+export interface AddBankDto {
+  accountNumber: string;
+  bankName: string;
+  accountName: string;
+  bankCode: string;
+}

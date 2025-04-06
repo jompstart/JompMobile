@@ -22,11 +22,36 @@ import { useNavigation } from '@react-navigation/native';
 import TargetIcon from '../../../assets/svgs/Savings/TargetIcon';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import {
+  useGetAccruedInterest,
+  useGetSavingsTypes,
+  useGetTotalSavings,
+} from '../../hooks/api/savings';
 const Savings = () => {
   const { navigate } = useNavigation();
+  const user = useAppSelector(userSelector);
+  const { data: totalSavings } = useGetTotalSavings(
+    user.userId,
+    user.customerId
+  );
+  const { data: accruedInterest } = useGetAccruedInterest(
+    user.userId,
+    user.customerId
+  );
+
+  const { data: savingsTypes } = useGetSavingsTypes(
+    user.userId,
+    user.customerId
+  );
+
+  const savingsType = savingsTypes?.data?.find(
+    (item) => item.name == 'jompVault'
+  );
   return (
     <GradientSafeAreaView>
-         <GradientHeader disable>
+      <GradientHeader disable>
         <MenuIcon size={size.getHeightSize(28)} />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
@@ -65,7 +90,7 @@ const Savings = () => {
               marginBottom: size.getHeightSize(24),
             }}
           >
-            View your savings and loan eligibility.
+            Save with JOMP.
           </CText>
         </View>
         <View
@@ -118,7 +143,7 @@ const Savings = () => {
                 lineHeight={38}
                 fontFamily="bold"
               >
-                ₦ 0.00
+                ₦ {totalSavings?.data == 0 ? '0.00' : totalSavings?.data}
               </CText>
               <AntDesign
                 name="eyeo"
@@ -160,7 +185,7 @@ const Savings = () => {
                 fontFamily="regular"
               >
                 Reach your unique individual saving goals for 45 days to 90 days
-                with 25% interest P.A
+                with {savingsType?.interestRate}% interest P.A
               </CText>
             </View>
           </Pressable>
@@ -196,7 +221,10 @@ const Savings = () => {
               lineHeight={38.4}
               fontFamily="bold"
             >
-              ₦2,250.86
+              ₦
+              {accruedInterest?.data == 0
+                ? '0.00'
+                : accruedInterest?.data || '0.00'}
             </CText>
           </LinearGradient>
           <Pressable
