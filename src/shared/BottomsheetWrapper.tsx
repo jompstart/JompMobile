@@ -10,7 +10,13 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { BackHandler, Dimensions, StyleSheet } from 'react-native';
+import {
+  BackHandler,
+  KeyboardAvoidingView,
+  Dimensions,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import { sizes } from '../utils/size';
 import { colors } from '../constants/colors';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -89,7 +95,7 @@ const BottomsheetWrapper = ({
         <></>
       ) : (
         <BottomSheet
-          keyboardBehavior="interactive"
+          keyboardBehavior={Platform.OS == 'ios' ? 'fillParent' : 'interactive'}
           keyboardBlurBehavior="restore"
           onClose={() => {
             onClose();

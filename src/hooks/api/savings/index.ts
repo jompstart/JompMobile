@@ -63,3 +63,31 @@ export const useGetAccruedInterest = (userId: string, customerId: string) => {
     queryFn: () => getAccruedInterest(),
   });
 };
+
+export const useGetUserSavings = (userId: string, customerId: string) => {
+  const savingsInstance = new SavingsService(userId, customerId);
+  const getUserSavings = async () => {
+    const response = await savingsInstance.getCustomerSavings();
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getUserSavings'],
+    queryFn: () => getUserSavings(),
+  });
+};
+
+export const useGetUserSavingsById = (
+  userId: string,
+  customerId: string,
+  goalId: string
+) => {
+  const savingsInstance = new SavingsService(userId, customerId);
+  const getUserSavingsById = async () => {
+    const response = await savingsInstance.getCustomerSavingsById(goalId);
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getUserSavingsById', goalId],
+    queryFn: () => getUserSavingsById(),
+  });
+};

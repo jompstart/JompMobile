@@ -28,7 +28,12 @@ import {
   useGetAccruedInterest,
   useGetSavingsTypes,
   useGetTotalSavings,
+  useGetUserSavings,
 } from '../../hooks/api/savings';
+import {
+  formatToAmount,
+  getTimeDifference,
+} from '../../utils/stringManipulation';
 const Savings = () => {
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
@@ -45,6 +50,8 @@ const Savings = () => {
     user.userId,
     user.customerId
   );
+
+  const { data: userSavings } = useGetUserSavings(user.userId, user.customerId);
 
   const savingsType = savingsTypes?.data?.find(
     (item) => item.name == 'jompVault'
@@ -361,6 +368,7 @@ const Savings = () => {
               justifyContent: 'center',
               paddingHorizontal: size.getWidthSize(8),
               paddingVertical: size.getHeightSize(8),
+              gap: size.getHeightSize(8),
               // alignItems: 'center',
             }}
           >
@@ -370,107 +378,117 @@ const Savings = () => {
               }}
               size={size.getHeightSize(103)}
             /> */}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: size.getWidthSize(8),
-                backgroundColor: colors.appBackground(),
-                paddingVertical: size.getHeightSize(8),
-                paddingHorizontal: size.getWidthSize(8),
-                borderRadius: size.getHeightSize(8),
-              }}
-            >
-              <View
-                style={{
-                  height: size.getHeightSize(57),
-                  width: size.getHeightSize(57),
-                  borderRadius: '100%',
-                  backgroundColor: '#53AF9226',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <TargetIcon size={size.getHeightSize(40)} />
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                }}
-              >
-                <CText
-                  color={'secondaryBlack'}
-                  fontSize={14}
-                  lineHeight={22}
-                  fontFamily="bold"
-                >
-                  My Savings
-                </CText>
-                <CText
-                  color={'secondaryBlack'}
-                  fontSize={14}
-                  lineHeight={22}
-                  fontFamily="bold"
-                >
-                  ₦150,000.00
-                </CText>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: size.getWidthSize(3.18),
+            {userSavings?.data &&
+              userSavings?.data?.length > 0 &&
+              userSavings?.data?.map((savings, index) => (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    navigate('SavingsDetails', {
+                      goalId: savings.id,
+                    });
                   }}
+                  style={styles.view3}
                 >
-                  <Fontisto
-                    name="locked"
-                    color={'#876DFF'}
-                    size={size.getHeightSize(9)}
-                  />
-                  <CText
-                    color={colors.black('70') as any}
-                    fontSize={14}
-                    lineHeight={22}
-                    fontFamily="regular"
+                  <View style={styles.view4}>
+                    <TargetIcon size={size.getHeightSize(40)} />
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                    }}
                   >
-                    Maturity Time:{' '}
                     <CText
                       color={'secondaryBlack'}
                       fontSize={14}
                       lineHeight={22}
-                      fontFamily="regular"
+                      fontFamily="bold"
                     >
-                      4 Weeks
+                      {savings.goalName}
                     </CText>
-                  </CText>
-                </View>
-              </View>
-              <AnimatedCircularProgress
-                fill={25}
-                size={size.getHeightSize(61)}
-                width={size.getHeightSize(6)}
-                tintColor="#F75555"
-                backgroundColor={'#F7555526'}
-                backgroundWidth={size.getHeightSize(6)}
-                rotation={0}
-                lineCap="round"
-                style={
-                  {
-                    // flex: 1,
-                  }
-                }
-              >
-                {(fill) => (
-                  <CText
-                    color={'#F75555' as any}
-                    fontSize={12}
-                    lineHeight={16.8}
-                    fontFamily="bold"
+                    <CText
+                      color={'secondaryBlack'}
+                      fontSize={14}
+                      lineHeight={22}
+                      fontFamily="bold"
+                    >
+                      ₦{formatToAmount(savings.targetAmount)}
+                    </CText>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: size.getWidthSize(3.18),
+                      }}
+                    >
+                      <Fontisto
+                        name="locked"
+                        color={'#876DFF'}
+                        size={size.getHeightSize(9)}
+                      />
+                      <CText
+                        color={colors.black('70') as any}
+                        fontSize={14}
+                        lineHeight={22}
+                        fontFamily="regular"
+                      >
+                        Maturity Time:{' '}
+                        <CText
+                          color={'secondaryBlack'}
+                          fontSize={14}
+                          lineHeight={22}
+                          fontFamily="regular"
+                        >
+                          {getTimeDifference(savings.endDate.toString())}
+                        </CText>
+                      </CText>
+                    </View>
+                  </View>
+                  <AnimatedCircularProgress
+                    fill={Math.ceil(
+                      (savings.savedAmount / savings.targetAmount) * 100
+                    )}
+                    size={size.getHeightSize(61)}
+                    width={size.getHeightSize(6)}
+                    tintColor={
+                      Math.ceil(
+                        (savings.savedAmount / savings.targetAmount) * 100
+                      ) > 40
+                        ? '#31005C'
+                        : '#F75555'
+                    }
+                    backgroundColor={
+                      Math.ceil(
+                        (savings.savedAmount / savings.targetAmount) * 100
+                      ) > 40
+                        ? '#31005C26'
+                        : '#F7555526'
+                    }
+                    backgroundWidth={size.getHeightSize(6)}
+                    rotation={0}
+                    lineCap="round"
+                    style={
+                      {
+                        // flex: 1,
+                      }
+                    }
                   >
-                    25%
-                  </CText>
-                )}
-              </AnimatedCircularProgress>
-            </View>
+                    {(fill) => (
+                      <CText
+                        color={'#F75555' as any}
+                        fontSize={12}
+                        lineHeight={16.8}
+                        fontFamily="bold"
+                      >
+                        {Math.ceil(
+                          (savings.savedAmount / savings.targetAmount) * 100
+                        )}
+                        %
+                      </CText>
+                    )}
+                  </AnimatedCircularProgress>
+                </Pressable>
+              ))}
           </View>
         </View>
       </ScrollView>
@@ -496,5 +514,22 @@ const styles = StyleSheet.create({
     paddingVertical: size.getHeightSize(11),
     paddingHorizontal: size.getHeightSize(11),
     borderRadius: '100%',
+  },
+  view3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: size.getWidthSize(8),
+    backgroundColor: colors.appBackground(),
+    paddingVertical: size.getHeightSize(8),
+    paddingHorizontal: size.getWidthSize(8),
+    borderRadius: size.getHeightSize(8),
+  },
+  view4: {
+    height: size.getHeightSize(57),
+    width: size.getHeightSize(57),
+    borderRadius: '100%',
+    backgroundColor: '#53AF9226',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

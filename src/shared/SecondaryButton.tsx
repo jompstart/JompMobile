@@ -67,7 +67,7 @@ export default SecondaryButton;
 
 const styles = StyleSheet.create({
   pressable: {
-    paddingVertical: size.getHeightSize(13),
+    paddingVertical: size.getHeightSize(16),
     borderRadius: size.getHeightSize(24),
     justifyContent: 'center',
     alignItems: 'center',

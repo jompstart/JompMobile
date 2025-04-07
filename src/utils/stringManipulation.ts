@@ -45,3 +45,45 @@ export const obfuscateString = (str: string): string => {
     return str.slice(0, 3) + '*****' + str.slice(-2);
   } else return str.slice(0, 3) + '*****' + str.slice(-3);
 };
+
+export const getTimeDifference = (targetDate: string): string => {
+  const now = new Date();
+  const futureDate = new Date(targetDate);
+
+  if (isNaN(futureDate.getTime())) {
+    return 'Invalid date';
+  }
+
+  const diffInMs = futureDate.getTime() - now.getTime();
+  const diffInWeeks = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInWeeks > 0) {
+    return `${diffInWeeks} Week${diffInWeeks > 1 ? 's' : ''}`;
+  } else if (diffInWeeks < 0) {
+    return `${Math.abs(diffInWeeks)} Week${
+      Math.abs(diffInWeeks) > 1 ? 's' : ''
+    } ago`;
+  } else {
+    if (diffInDays > 0) {
+      return `${diffInDays} Day${diffInDays > 1 ? 's' : ''}`;
+    } else if (diffInDays < 0) {
+      return `${Math.abs(diffInDays)} Day${
+        Math.abs(diffInDays) > 1 ? 's' : ''
+      } ago`;
+    } else {
+      return 'Today';
+    }
+  }
+};
+
+export const formatToAmount = (value: string | number): string => {
+  const number = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(number)) {
+    return '0.00'; // Handle invalid input
+  }
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
+};

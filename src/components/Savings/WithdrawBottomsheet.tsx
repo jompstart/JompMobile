@@ -8,14 +8,21 @@ import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
 import InfoIcon from '../../../assets/svgs/Savings/InfoIcon';
-const WithdrawBottomsheet = () => {
+interface Props {
+  onClose: () => void;
+  visibility: boolean;
+  goalId: string;
+}
+const WithdrawBottomsheet = ({ goalId, onClose, visibility }: Props) => {
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
       backgroundColor="#F9F8FF"
-      visibility={true}
-      onClose={() => {}}
+      visibility={visibility}
+      onClose={() => {
+        onClose();
+      }}
     >
       <View
         style={{
@@ -43,6 +50,9 @@ const WithdrawBottomsheet = () => {
         fontSize={14}
         lineHeight={22.4}
         fontFamily="regular"
+        style={{
+          flex: 1,
+        }}
       >
         You are attempting to make a withdrawal before the end of your savings
         duration.
@@ -134,6 +144,7 @@ const WithdrawBottomsheet = () => {
           fontFamily="regular"
           style={{
             textAlign: 'left',
+            flex: 1,
           }}
         >
           This action cannot be reversed. if you proceed, you will lose all the

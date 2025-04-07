@@ -1,5 +1,5 @@
 import { StyleSheet, Text, ScrollView, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import { size } from '../../config/size';
@@ -7,8 +7,27 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import WithdrawBottomsheet from '../../components/Savings/WithdrawBottomsheet';
-const Receipt = () => {
-  
+import { SavingsDetailsScreenProps } from '../../types/navigations.types';
+import { useGetUserSavingsById } from '../../hooks/api/savings';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import {
+  formatToAmount,
+  getTimeDifference,
+} from '../../utils/stringManipulation';
+import PrimaryButton from '../../shared/PrimaryButton';
+import SecondaryButton from '../../shared/SecondaryButton';
+import TopUpBottomsheet from '../../components/Savings/TopUpBottomsheet';
+
+const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
+  const user = useAppSelector(userSelector);
+  const [showWithdrawal, setShowWithdrawal] = useState(false);
+  const [showTopUp, setShowTopUp] = useState(false);
+  const { data: savings } = useGetUserSavingsById(
+    user.userId,
+    user.customerId,
+    params?.goalId
+  );
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -39,6 +58,7 @@ const Receipt = () => {
           fontFamily="bold"
           style={{
             opacity: 0.75,
+            marginBottom: size.getHeightSize(16),
           }}
         >
           Ongoing Savings
@@ -50,7 +70,7 @@ const Receipt = () => {
             lineHeight={48}
             fontFamily="bold"
           >
-            ₦150,000.00
+            ₦{formatToAmount(savings?.data?.targetAmount || '')}
           </CText>
           <View
             style={{
@@ -88,7 +108,7 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              My New Savings
+              {savings?.data?.goalName}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -109,7 +129,7 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              ₦150,000.00
+              ₦{formatToAmount(savings?.data?.targetAmount || '')}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -130,7 +150,8 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              10 Weeks
+              {savings?.data?.endDate &&
+                getTimeDifference(savings?.data?.endDate.toString())}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -151,7 +172,9 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              Weekly
+              {savings?.data?.savingType &&
+                savings?.data?.savingType.slice(0, 1).toUpperCase() +
+                  savings?.data?.savingType.slice(1)}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -172,7 +195,7 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              ₦15,000.00
+              ₦{formatToAmount(savings?.data?.preferedSavingAmount || '')}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -214,7 +237,12 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              29/02/2025
+              {savings?.data?.endDate &&
+                new Date(savings?.data?.endDate)?.toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                })}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -235,7 +263,9 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              My Wallet
+              {savings?.data?.savingMethod &&
+                savings?.data?.savingMethod.slice(0, 1).toUpperCase() +
+                  savings?.data?.savingMethod.slice(1)}
             </CText>
           </View>
           <View style={styles.view2}>
@@ -256,10 +286,10 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              No
+              {savings?.data?.autoWithDraw ? 'Yes' : 'No'}
             </CText>
           </View>
-          <View style={styles.view2}>
+          {/* <View style={styles.view2}>
             <CText
               color={'secondaryBlack'}
               fontSize={12}
@@ -277,9 +307,12 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="bold"
             >
-              25%
+              {Math.ceil(
+                (savings?.data?.savedAmount / savings.targetAmount) * 100
+              )}
+              %
             </CText>
-          </View>
+          </View> */}
           <View style={styles.view2}>
             <CText
               color={'secondaryBlack'}
@@ -298,17 +331,55 @@ const Receipt = () => {
               lineHeight={18.2}
               fontFamily="bold"
             >
-              ₦1,047.23
+              ₦{formatToAmount(savings?.data?.interest || '')}
             </CText>
           </View>
         </View>
       </View>
-      <WithdrawBottomsheet />
+      <View
+        style={{
+          flex: 1,
+        }}
+      />
+      <View
+        style={{
+          marginHorizontal: size.getWidthSize(16),
+          gap: size.getHeightSize(16),
+          marginBottom: size.getHeightSize(40),
+        }}
+      >
+        <PrimaryButton
+          onPress={() => {
+            setShowTopUp(true);
+          }}
+          label="Top Up"
+        />
+        <SecondaryButton
+          label="Withdraw"
+          onPress={() => {
+            setShowWithdrawal(true);
+          }}
+        />
+      </View>
+      <WithdrawBottomsheet
+        goalId={params?.goalId}
+        onClose={() => {
+          setShowWithdrawal(false);
+        }}
+        visibility={showWithdrawal}
+      />
+      <TopUpBottomsheet
+        visibility={showTopUp}
+        goalId={params?.goalId}
+        onClose={() => {
+          setShowTopUp(false);
+        }}
+      />
     </GradientSafeAreaView>
   );
 };
 
-export default Receipt;
+export default SavingsDetails;
 
 const styles = StyleSheet.create({
   view1: {

@@ -42,3 +42,32 @@ export interface SavingsTypeDto {
 export interface ReInvestSavingsRequestDto {
   goalName: string;
 }
+
+export interface SavingsResponseDto {
+  id: string;
+  goalName: string;
+  targetAmount: number;
+  savedAmount: number;
+  startDate: Date;
+  endDate: Date;
+  duration: number;
+  isAchieved: boolean;
+  createdAt: Date;
+  status: string;
+}
+
+export interface SingleSavingsResponseDto {
+  goalName: string;
+  targetAmount: number;
+  preferedSavingAmount: number;
+  startDate: Date;
+  endDate: Date;
+  nextSavingDate: string;
+  status: string;
+  duration: number;
+  savingsFrequency: string;
+  savingType: string;
+  interest: number;
+  savingMethod: string;
+  autoWithDraw: boolean;
+}

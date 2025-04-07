@@ -28,7 +28,7 @@ import PreviewRequest from '../shared/PreviewRequest';
 import SavingsGoal from '../screens/Savings/SavingsGoal';
 import CreateSavings from '../screens/Savings/CreateSavings';
 import SavingsTransactions from '../screens/Savings/SavingsTransactions';
-import Receipt from '../screens/Savings/Receipt';
+import SavingsDetails from '../screens/Savings/SavingsDetails';
 import TransportDetails from '../screens/TransportCredit/TransportDetails';
 import OtherServices from '../screens/services/OtherServices';
 import AddCard from '../screens/Cards/AddCard';
@@ -149,8 +149,8 @@ const MainNavigator = () => {
       component: SavingsTransactions,
     },
     {
-      name: 'Receipt',
-      component: Receipt,
+      name: 'SavingsDetails',
+      component: SavingsDetails,
     },
     {
       name: 'TransportDetails',

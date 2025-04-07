@@ -3,7 +3,9 @@ import {
   CreateSavingsRequestDto,
   GetSavingsCategoryResponseDto,
   GetSavingsSourceResponseDto,
+  SavingsResponseDto,
   SavingsTypeDto,
+  SingleSavingsResponseDto,
 } from './savings.dto';
 
 export class SavingsService {
@@ -50,6 +52,27 @@ export class SavingsService {
     return await makeRequest<number>({
       method: 'GET',
       url: '/get-accrued-interest?customerId=' + this.customerId,
+    });
+  }
+
+  async getCustomerSavings() {
+    return await makeRequest<SavingsResponseDto[]>({
+      method: 'GET',
+      url: '/get-customer-savings?customerId=' + this.customerId,
+    });
+  }
+
+  async getCustomerSavingsById(id: string) {
+    return await makeRequest<SingleSavingsResponseDto>({
+      method: 'GET',
+      url: `/get-single-customer-savings?goalId=${id}`,
+    });
+  }
+
+  async topUpContribution(id: string, amount: string) {
+    return await makeRequest<SingleSavingsResponseDto>({
+      method: 'POST',
+      url: `/add-contribution?goalId=${id}&amount=${amount}`,
     });
   }
 }

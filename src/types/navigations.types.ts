@@ -37,7 +37,9 @@ export type RootStackParamList = {
   SavingsGoal: undefined;
   CreateSavings: CreateSavingsFormState;
   SavingsTransactions: undefined;
-  Receipt: undefined;
+  SavingsDetails: {
+    goalId: string;
+  };
   TransportDetails: undefined;
   PreviewRequest: undefined;
   OtherServices: undefined;
@@ -54,6 +56,12 @@ type SignUpScreenParams = {
   };
 };
 
+type SavingsDetailsParams = {
+  [SavingsDetails: string]: {
+    goalId: string;
+  };
+};
+
 type CreateSavingsParams = {
   [CreateSavings: string]: CreateSavingsFormState;
 };
@@ -66,4 +74,9 @@ export type CreateSavingsScreenProps = {
 export type SignUpScreenProps = {
   navigation: NavigationProp<RootStackParamList, 'SignUp'>;
   route: RouteProp<SignUpScreenParams, 'SignUp'>;
+};
+
+export type SavingsDetailsScreenProps = {
+  navigation: NavigationProp<RootStackParamList, 'SavingsDetails'>;
+  route: RouteProp<SavingsDetailsParams, 'SavingsDetails'>;
 };
