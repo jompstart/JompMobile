@@ -3,7 +3,6 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import React, { useState } from 'react';
@@ -14,9 +13,7 @@ import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
-import InfoIcon from '../../../assets/svgs/Savings/InfoIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
-import { formatToAmount } from '../../utils/stringManipulation';
 import {
   useAppDispatch,
   useAppSelector,
@@ -98,7 +95,7 @@ const TopUpBottomsheet = ({ goalId, onClose, visibility }: Props) => {
             paddingHorizontal: size.getWidthSize(8),
           }}
         >
-          Top up from your jomp wallet
+          Top up from your Jomp wallet
         </CText>
         <BottomSheetTextInput
           placeholder="Enter Top Up Amount"
@@ -216,6 +213,7 @@ const TopUpBottomsheet = ({ goalId, onClose, visibility }: Props) => {
                 selectedAmount,
               });
             }}
+            disabled={!selectedAmount}
             label="Add Savings"
           />
           <SecondaryButton

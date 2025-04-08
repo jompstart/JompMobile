@@ -214,14 +214,14 @@ const AddBank = () => {
               </CText>
             )}
           </View>
-          <PTextInput title="" placeholder="BVN" />
+          {/* <PTextInput title="" placeholder="BVN" /> */}
         </View>
         <View
           style={{
             paddingHorizontal: size.getWidthSize(16),
           }}
         >
-          <View
+          {/* <View
             style={{
               paddingVertical: size.getHeightSize(8),
               paddingHorizontal: size.getWidthSize(8),
@@ -323,7 +323,12 @@ const AddBank = () => {
                 share your BVN with anyone.
               </CText>
             </View>
-          </View>
+          </View> */}
+          <View
+            style={{
+              height: size.getHeightSize(400),
+            }}
+          />
           <PrimaryButton
             onPress={() => {
               addBank({

@@ -229,7 +229,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
                 flex: 1,
               }}
             >
-              Mature Date
+              Maturity Date
             </CText>
             <CText
               color={'black'}

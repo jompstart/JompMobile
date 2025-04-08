@@ -24,6 +24,7 @@ import {
 import { useGetSavingsTypes } from '../../hooks/api/savings';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
+import { calculateSavingsPerPeriod } from '../../helpers/savings';
 const SavingsGoal = () => {
   const user = useAppSelector(userSelector);
   const { navigate } = useNavigation();
@@ -145,8 +146,9 @@ const SavingsGoal = () => {
               marginTop: size.getHeightSize(4),
             }}
           >
-            Set up a new savings goal and get paid every day (@ {savingsType?.interestRate}% interest
-            P.A) to reach your goals faster.
+            Set up a new savings goal and get paid every day (@{' '}
+            {savingsType?.interestRate}% interest P.A) to reach your goals
+            faster.
           </CText>
           <View
             style={{
@@ -443,27 +445,14 @@ const SavingsGoal = () => {
               <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
                 Choose start date
               </CText>
-              <Pressable
-                onPress={showDatePicker}
-                style={{
-                  backgroundColor: colors.white(),
-                  paddingHorizontal: size.getWidthSize(16),
-                  paddingVertical: size.getHeightSize(16),
-                  borderRadius: size.getHeightSize(8),
-                  marginTop: size.getHeightSize(8),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  borderColor: colors.black('30'),
-                  borderWidth: size.getHeightSize(1),
-                }}
-              >
+              <Pressable onPress={showDatePicker} style={styles.view5}>
                 <CText
                   fontSize={14}
                   lineHeight={22.4}
                   color={'secondaryBlack'}
                   fontFamily="regular"
                 >
-                  {date ? date.toLocaleDateString() : 'Select start date'}
+                  {state.startDate.toLocaleDateString()}
                 </CText>
               </Pressable>
               {showDate && (
@@ -480,47 +469,6 @@ const SavingsGoal = () => {
               )}
             </View>
 
-            <View>
-              <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
-                Set preferred time
-              </CText>
-              <Pressable
-                onPress={() => setShowTime(true)}
-                style={{
-                  backgroundColor: colors.white(),
-                  paddingHorizontal: size.getWidthSize(16),
-                  paddingVertical: size.getHeightSize(16),
-                  borderRadius: size.getHeightSize(8),
-                  marginTop: size.getHeightSize(8),
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  borderColor: colors.black('30'),
-                  borderWidth: size.getHeightSize(1),
-                }}
-              >
-                <CText
-                  fontSize={14}
-                  lineHeight={22.4}
-                  color={'secondaryBlack'}
-                  fontFamily="regular"
-                >
-                  {state.preferredTime
-                    ? state.preferredTime
-                    : 'Select preferred time'}
-                </CText>
-              </Pressable>
-              {showTime && (
-                <DateTimePicker
-                  value={selectedTime || new Date()}
-                  mode="time" // Can be "date", "time", or "datetime"
-                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                  onChange={onChangeTime}
-                  style={{
-                    alignSelf: 'center',
-                  }}
-                />
-              )}
-            </View>
             <Pressable
               onPress={() => {
                 setShowCategory(true);
@@ -546,32 +494,45 @@ const SavingsGoal = () => {
                 color={colors.primary()}
               />
             </Pressable>
-            {/* <View
-              style={{
-                backgroundColor: '#DBD4FC',
-                paddingHorizontal: size.getWidthSize(16),
-                paddingVertical: size.getHeightSize(8),
-                borderRadius: size.getHeightSize(8),
+            {state.targetAmount &&
+              state.endDate &&
+              state.frequency &&
+              state.startDate && (
+                <View
+                  style={{
+                    backgroundColor: '#DBD4FC',
+                    paddingHorizontal: size.getWidthSize(16),
+                    paddingVertical: size.getHeightSize(8),
+                    borderRadius: size.getHeightSize(8),
 
-                gap: size.getWidthSize(8),
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <CText
-                color="secondary"
-                fontSize={12}
-                lineHeight={16.8}
-                fontFamily="regular"
-                style={{
-                  textAlign: 'left',
-                  flex: 1,
-                }}
-              >
-                Based on your selection above, you can be saving ₦ 100,000.00
-                per month.
-              </CText>
-            </View> */}
+                    gap: size.getWidthSize(8),
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <CText
+                    color="secondary"
+                    fontSize={12}
+                    lineHeight={16.8}
+                    fontFamily="regular"
+                    style={{
+                      textAlign: 'left',
+                      flex: 1,
+                    }}
+                  >
+                    Based on your selection above, you can be saving ₦{''}
+                    {calculateSavingsPerPeriod(
+                      +state.targetAmount,
+                      state.startDate.toISOString(),
+                      state.endDate.toISOString(),
+                      state.frequency as any
+                    )?.toFixed(2)}{' '}
+                    {state.frequency.slice(0, 1).toLowerCase() +
+                      state.frequency.slice(1).toLowerCase()}
+                    .
+                  </CText>
+                </View>
+              )}
             <PTextInput
               onChangeText={(text) => {
                 savingsInitialState({
@@ -583,6 +544,7 @@ const SavingsGoal = () => {
               placeholder="₦ Preferred amount to save on a basis"
               keyboardType="number-pad"
             />
+
             <View style={styles.view3}>
               <Pressable
                 onPress={() => {
@@ -695,6 +657,7 @@ const SavingsGoal = () => {
                 </CText>
               </Pressable>
             </View>
+
             <View style={styles.view4}>
               <CText
                 color={colors.black('70') as any}
@@ -718,6 +681,39 @@ const SavingsGoal = () => {
                 trackColor={{ false: '#767577', true: colors.primary() }}
               />
             </View>
+            {state.autoSave && (
+              <View>
+                <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
+                  Set preferred time
+                </CText>
+                <Pressable
+                  onPress={() => setShowTime(true)}
+                  style={styles.view5}
+                >
+                  <CText
+                    fontSize={14}
+                    lineHeight={22.4}
+                    color={'secondaryBlack'}
+                    fontFamily="regular"
+                  >
+                    {state.preferredTime
+                      ? state.preferredTime
+                      : 'Select preferred time'}
+                  </CText>
+                </Pressable>
+                {showTime && (
+                  <DateTimePicker
+                    value={selectedTime || new Date()}
+                    mode="time" // Can be "date", "time", or "datetime"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={onChangeTime}
+                    style={{
+                      alignSelf: 'center',
+                    }}
+                  />
+                )}
+              </View>
+            )}
             <Pressable
               onPress={() => {
                 setShowSource(true);
@@ -866,5 +862,16 @@ const styles = StyleSheet.create({
     paddingVertical: size.getHeightSize(8),
     paddingHorizontal: size.getWidthSize(11.5),
     borderRadius: size.getHeightSize(8),
+  },
+  view5: {
+    backgroundColor: colors.white(),
+    paddingHorizontal: size.getWidthSize(16),
+    paddingVertical: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(8),
+    marginTop: size.getHeightSize(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: colors.black('30'),
+    borderWidth: size.getHeightSize(1),
   },
 });

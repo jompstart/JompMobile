@@ -191,8 +191,9 @@ const Savings = () => {
                 lineHeight={16.8}
                 fontFamily="regular"
               >
-                Reach your unique individual saving goals for 45 days to 90 days
-                with {savingsType?.interestRate}% interest P.A
+                Reach your unique individual saving goals with{' '}
+                {savingsType?.interestRate}% interest per annum (interest paid
+                daily).
               </CText>
             </View>
           </Pressable>
