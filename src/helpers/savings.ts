@@ -64,3 +64,12 @@ export const calculateSavingsPerPeriod = (
 
   return parseFloat((targetAmount / periodCount).toFixed(2));
 };
+
+export const generateSuggestions = (baseAmount: number): number[] => {
+  return [
+    Math.ceil(baseAmount * 0.5), // 50% of the base amount
+    Math.ceil(baseAmount), // 100% of the base amount
+    Math.ceil(baseAmount * 1.5), // 150% of the base amount
+    Math.ceil(baseAmount * 2), // 200% of the base amount
+  ];
+};

@@ -6,6 +6,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
+import { Paystack } from 'react-native-paystack-webview';
 import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
 import PTextInput from '../../shared/PTextInput';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -22,11 +23,20 @@ import {
   createSavingsInitialState,
 } from '../../features/Savings/savings.reducer';
 import { useGetSavingsTypes } from '../../hooks/api/savings';
-import { useAppSelector } from '../../controller/redux.controller';
+import {
+  useAppSelector,
+  useAppDispatch,
+} from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import { calculateSavingsPerPeriod } from '../../helpers/savings';
+import {
+  calculateSavingsPerPeriod,
+  generateSuggestions,
+} from '../../helpers/savings';
+import { updateToast } from '../../features/ui/ui.slice';
+import { formatToAmount } from '../../utils/stringManipulation';
 const SavingsGoal = () => {
   const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
   const { navigate } = useNavigation();
   const [state, savingsInitialState] = useReducer(
     savingsFormReducer,
@@ -37,6 +47,7 @@ const SavingsGoal = () => {
   >(null);
   const [date, setDate] = useState<Date | null>(null);
   const [showDate, setShowDate] = useState(false);
+  const [pay, setPay] = useState(false);
   const [showTime, setShowTime] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   const [showSource, setShowSource] = useState(false);
@@ -545,118 +556,46 @@ const SavingsGoal = () => {
               keyboardType="number-pad"
             />
 
-            <View style={styles.view3}>
-              <Pressable
-                onPress={() => {
-                  savingsInitialState({
-                    type: 'SET_MONTHLY_CONTRIBUTION',
-                    payload: '500',
-                  });
-                }}
-                style={
-                  state.monthlyContribution === '500'
-                    ? styles.amountSelected
-                    : styles.view2
-                }
-              >
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  ₦ 500
-                </CText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  savingsInitialState({
-                    type: 'SET_MONTHLY_CONTRIBUTION',
-                    payload: '1000',
-                  });
-                }}
-                style={
-                  state.monthlyContribution === '1000'
-                    ? styles.amountSelected
-                    : styles.view2
-                }
-              >
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  ₦ 1,000
-                </CText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  savingsInitialState({
-                    type: 'SET_MONTHLY_CONTRIBUTION',
-                    payload: '1500',
-                  });
-                }}
-                style={
-                  state.monthlyContribution === '1500'
-                    ? styles.amountSelected
-                    : styles.view2
-                }
-              >
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  ₦ 1,500
-                </CText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  savingsInitialState({
-                    type: 'SET_MONTHLY_CONTRIBUTION',
-                    payload: '5000',
-                  });
-                }}
-                style={
-                  state.monthlyContribution == '5000'
-                    ? styles.amountSelected
-                    : styles.view2
-                }
-              >
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  ₦ 5000
-                </CText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  savingsInitialState({
-                    type: 'SET_MONTHLY_CONTRIBUTION',
-                    payload: '10000',
-                  });
-                }}
-                style={
-                  state.monthlyContribution === '10000'
-                    ? styles.amountSelected
-                    : styles.view2
-                }
-              >
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  ₦ 10,000
-                </CText>
-              </Pressable>
-            </View>
+            {state.targetAmount &&
+              state.endDate &&
+              state.frequency &&
+              state.startDate && (
+                <View style={styles.view3}>
+                  {generateSuggestions(
+                    calculateSavingsPerPeriod(
+                      +state.targetAmount,
+                      state.startDate.toISOString(),
+                      state.endDate.toISOString(),
+                      state.frequency as any
+                    )
+                  ).map((suggestedAmount) => (
+                    <Pressable
+                      key={suggestedAmount}
+                      onPress={() => {
+                        savingsInitialState({
+                          type: 'SET_MONTHLY_CONTRIBUTION',
+                          payload: suggestedAmount.toString(),
+                        });
+                      }}
+                      style={
+                        state.monthlyContribution === suggestedAmount.toString()
+                          ? styles.amountSelected
+                          : styles.view2
+                      }
+                    >
+                      <CText
+                        color={'black'}
+                        fontSize={12}
+                        lineHeight={19.2}
+                        fontFamily="semibold"
+                      >
+                        ₦ {suggestedAmount.toLocaleString()}{' '}
+                        {/* Format with commas */}
+                      </CText>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
 
             <View style={styles.view4}>
               <CText
@@ -716,6 +655,16 @@ const SavingsGoal = () => {
             )}
             <Pressable
               onPress={() => {
+                if (!state.targetAmount) {
+                  dispatch(
+                    updateToast({
+                      displayToast: true,
+                      toastMessage: 'Please set your target amount',
+                      toastType: 'info',
+                    })
+                  );
+                  return;
+                }
                 setShowSource(true);
               }}
               style={styles.view4}
@@ -784,6 +733,9 @@ const SavingsGoal = () => {
             type: 'SET_SAVING_SOURCE',
             payload: source.name,
           });
+          if (source.name === 'Card') {
+            setPay(true);
+          }
         }}
         isVisible={showSource}
         onClose={() => {
@@ -802,6 +754,36 @@ const SavingsGoal = () => {
           });
         }}
       />
+      {pay && (
+        <View style={{ flex: 1 }}>
+          <Paystack
+            paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
+            amount={state.targetAmount}
+            billingEmail={user.email}
+            phone={user?.phoneNumber}
+            activityIndicatorColor={colors.primary()}
+            onCancel={(e) => {
+              console.log(e);
+              setPay(false);
+            }}
+            onSuccess={(response) => {
+              if (response.data.event == 'successful') {
+                setPay(false);
+                dispatch(
+                  updateToast({
+                    displayToast: true,
+                    toastMessage:
+                      'You have successfully funded your wallet with ₦' +
+                      formatToAmount(state.targetAmount),
+                    toastType: 'success',
+                  })
+                );
+              }
+            }}
+            autoStart={pay}
+          />
+        </View>
+      )}
     </GradientSafeAreaView>
   );
 };
@@ -836,6 +818,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: size.getWidthSize(16),
     flexWrap: 'wrap',
+    alignSelf: 'center',
   },
   view4: {
     flexDirection: 'row',

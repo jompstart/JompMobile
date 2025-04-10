@@ -18,16 +18,18 @@ import {
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
 import TopUpBottomsheet from '../../components/Savings/TopUpBottomsheet';
-
+import SuccessModal from '../../shared/SuccessModal';
 const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
   const user = useAppSelector(userSelector);
   const [showWithdrawal, setShowWithdrawal] = useState(false);
   const [showTopUp, setShowTopUp] = useState(false);
+  const [showSuccessModal, setShowSucessModal] = useState(false);
   const { data: savings } = useGetUserSavingsById(
     user.userId,
     user.customerId,
     params?.goalId
   );
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -74,18 +76,28 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
           </CText>
           <View
             style={{
-              backgroundColor: colors.primaryWarning('15'),
+              backgroundColor:
+                savings?.data?.status === 'Active' ||
+                savings?.data?.status === 'Completed'
+                  ? colors.primarySuccess('15')
+                  : colors.primaryWarning('15'),
               paddingVertical: size.getHeightSize(4),
               paddingHorizontal: size.getWidthSize(21.5),
+              borderRadius: size.getHeightSize(4),
             }}
           >
             <CText
-              color={'warning'}
+              color={
+                savings?.data?.status === 'Active' ||
+                savings?.data?.status === 'Completed'
+                  ? 'success'
+                  : 'warning'
+              }
               fontSize={10}
               lineHeight={14}
               fontFamily="semibold"
             >
-              Ongoing
+              {savings?.data?.status}
             </CText>
           </View>
         </View>
@@ -374,6 +386,22 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
         onClose={() => {
           setShowTopUp(false);
         }}
+        onSuccess={() => {
+          setShowTopUp(false);
+          setShowSucessModal(true);
+        }}
+      />
+      <SuccessModal
+        buttonText="Done"
+        description="Your savings top up is successful"
+        onClose={() => {
+          setShowSucessModal(false);
+        }}
+        onContinue={() => {
+          setShowSucessModal(false);
+        }}
+        title="Congratulations!"
+        visibility={showSuccessModal}
       />
     </GradientSafeAreaView>
   );

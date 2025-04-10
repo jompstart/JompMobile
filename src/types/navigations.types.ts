@@ -47,7 +47,7 @@ export type RootStackParamList = {
   FundWallet: undefined;
   Verification: undefined;
   HouseRentService: undefined;
-  SuccessPage: {
+  SuccessPage?: {
     title?: string;
     message?: string;
   };

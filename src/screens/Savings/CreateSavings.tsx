@@ -50,7 +50,10 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
     onSuccess: (data) => {
       console.log('====== Success creating service =======');
       console.log(data);
-      navigation.navigate('SuccessPage');
+      navigation.navigate('SuccessPage', {
+        message:
+          'You have successfully submitted your service form, Jomp Admin will verify and approve.',
+      });
     },
   });
 
@@ -339,12 +342,18 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
               flex: 1,
             }}
           >
-            I hereby agree that I will forfeit the interest accrued on this
+            I hereby agree that I will be charged 20% of the interest I have
+            earned so far:
+            {'\n'}
+            1. Whenever I withdraw any amount before my maturity date.
+            {'\n'}
+            2. If I do not meet my savings target at maturity date.
+            {/* I hereby agree that I will forfeit the interest accrued on this
             savings if I fail to meet this target amount of (₦
-            {params?.targetAmount}) by the end of the savings duration.
+            {params?.targetAmount}) by the end of the savings duration. */}
           </CText>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             setAgreement2(!agreement2);
           }}
@@ -367,16 +376,16 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
             I hereby agree to this: "If I break this target before the end of
             the savings duration, I will lose all the interest accrued."
           </CText>
-        </Pressable>
+        </Pressable> */}
         <View
           style={{
             marginHorizontal: size.getWidthSize(16),
-            marginTop: size.getHeightSize(38),
+            marginTop: size.getHeightSize(40),
           }}
         >
           <PrimaryButton
             onPress={() => {
-              if (agreement1 && agreement2) {
+              if (agreement1) {
                 const data: CreateSavingsRequestDto = {
                   goalName: params?.goalName,
                   targetAmount: params?.targetAmount,

@@ -278,7 +278,8 @@ const AddCard = () => {
               paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
               amount={amount}
               billingEmail={user.email}
-              activityIndicatorColor="green"
+              activityIndicatorColor={colors.primary()}
+              phone={user?.phoneNumber}
               onCancel={(e) => {
                 // handle response here
               }}

@@ -27,8 +27,15 @@ interface Props {
   onClose: () => void;
   visibility: boolean;
   goalId: string;
+  onSuccess?: () => void;
 }
-const TopUpBottomsheet = ({ goalId, onClose, visibility }: Props) => {
+
+const TopUpBottomsheet = ({
+  goalId,
+  onClose,
+  visibility,
+  onSuccess,
+}: Props) => {
   const [selectedAmount, setSelectedAmount] = useState('');
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -48,6 +55,10 @@ const TopUpBottomsheet = ({ goalId, onClose, visibility }: Props) => {
           toastType: 'info',
         })
       ),
+    onSuccess: (data) => {
+      console.log(data);
+      onSuccess?.();
+    },
   });
   return (
     <BottomsheetWrapper
