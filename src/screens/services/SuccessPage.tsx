@@ -7,7 +7,8 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { size } from '../../config/size';
 import { images } from '../../constants/images';
-const SuccessPage = () => {
+import { SuccessPageScreenProps } from '../../types/navigations.types';
+const SuccessPage = ({ route: { params } }: SuccessPageScreenProps) => {
   const { top, bottom } = useSafeAreaInsets();
   const navigation = useNavigation();
   return (
@@ -62,8 +63,8 @@ const SuccessPage = () => {
           lineHeight={22}
           fontFamily="regular"
         >
-          You have successfully submitted your service form, Jomp Admin will
-          verify and approve.
+          {params?.message ||
+            'You have successfully submitted your service form, Jomp Admin will verify and approve'}
         </CText>
       </View>
       <PrimaryButton

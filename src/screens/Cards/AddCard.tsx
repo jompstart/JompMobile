@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import GradientHeader from '../../shared/GradientHeader';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { size } from '../../config/size';
@@ -8,13 +8,23 @@ import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Paystack } from 'react-native-paystack-webview';
 import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { colors } from '../../constants/colors';
 import VisaIcon from '../../../assets/svgs/Cards/VisaIcon';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useAppSelector } from '../../controller/redux.controller';
 import MastercardIcon from '../../../assets/svgs/Cards/MastercardIcon';
 import StrikePath from '../../../assets/svgs/Cards/Strike';
+import { userSelector } from '../../features/user/user.selector';
+import { useNavigation } from '@react-navigation/native';
 import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
+import { formatToAmount } from '../../utils/stringManipulation';
 const AddCard = () => {
+  const [pay, setPay] = useState(false);
+  const [amount, setAmount] = useState('');
+  const user = useAppSelector(userSelector);
+  const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -32,24 +42,25 @@ const AddCard = () => {
           Go Back
         </CText>
       </GradientHeader>
-      <View
-        style={{
-          paddingHorizontal: size.getWidthSize(16),
-          paddingTop: size.getHeightSize(16),
-        }}
-      >
-        <CText
-          color={'black'}
-          fontSize={18}
-          lineHeight={28.8}
-          fontFamily="bold"
+      <KeyboardAwareScrollView>
+        <View
           style={{
-            opacity: 0.75,
+            paddingHorizontal: size.getWidthSize(16),
+            paddingTop: size.getHeightSize(16),
           }}
         >
-          Card
-        </CText>
-        <CText
+          <CText
+            color={'black'}
+            fontSize={18}
+            lineHeight={28.8}
+            fontFamily="bold"
+            style={{
+              opacity: 0.75,
+            }}
+          >
+            Fund wallet via card
+          </CText>
+          {/* <CText
           color={'secondaryBlack'}
           fontSize={16}
           lineHeight={22.4}
@@ -60,9 +71,9 @@ const AddCard = () => {
           }}
         >
           Add new card to fund your wallet
-        </CText>
-      </View>
-      <View
+        </CText> */}
+        </View>
+        {/* <View
         style={{
           paddingHorizontal: size.getWidthSize(16),
           marginTop: size.getHeightSize(24),
@@ -195,15 +206,15 @@ const AddCard = () => {
             </View>
           </View>
         </ScrollView>
-      </View>
-      <View
-        style={{
-          paddingHorizontal: size.getWidthSize(16),
-          paddingTop: size.getHeightSize(16),
-          marginTop: size.getHeightSize(32),
-        }}
-      >
-        <CText
+      </View> */}
+        <View
+          style={{
+            paddingHorizontal: size.getWidthSize(16),
+            // paddingTop: size.getHeightSize(16),
+            // marginTop: size.getHeightSize(32),
+          }}
+        >
+          {/* <CText
           color={'black'}
           fontSize={18}
           lineHeight={28.8}
@@ -213,34 +224,82 @@ const AddCard = () => {
           }}
         >
           Default Card Selected
-        </CText>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={16}
-          lineHeight={22.4}
-          fontFamily="regular"
+        </CText> */}
+          <CText
+            color={'secondaryBlack'}
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="regular"
+            style={{
+              opacity: 0.75,
+              marginTop: size.getHeightSize(4),
+            }}
+          >
+            Enter the amount you want to add to your account
+          </CText>
+        </View>
+        <View
           style={{
-            opacity: 0.75,
-            marginTop: size.getHeightSize(4),
+            paddingHorizontal: size.getWidthSize(16),
+            marginTop: size.getHeightSize(24),
           }}
         >
-          Enter the amount you want to add to your account
-        </CText>
-      </View>
-      <View
-        style={{
-          paddingHorizontal: size.getWidthSize(16),
-          marginTop: size.getHeightSize(24),
-        }}
-      >
-        <PTextInput placeholder="₦ Amount" />
-        <PrimaryButton
-          label="Fund Wallet"
+          <PTextInput
+            keyboardType="numeric"
+            placeholder="₦ Amount"
+            onChangeText={(text) => setAmount(text)}
+          />
+        </View>
+        <View
           style={{
-            marginTop: size.getHeightSize(32),
+            height: size.getHeightSize(500),
           }}
         />
-      </View>
+        <View
+          style={{
+            marginHorizontal: size.getWidthSize(16),
+            marginBottom: size.getHeightSize(30),
+          }}
+        >
+          <PrimaryButton
+            disabled={!amount}
+            label="Fund Wallet"
+            style={{
+              marginTop: size.getHeightSize(32),
+            }}
+            onPress={() => {
+              setPay(true);
+            }}
+          />
+        </View>
+        {pay && (
+          <View style={{ flex: 1 }}>
+            <Paystack
+              paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
+              amount={amount}
+              billingEmail={user.email}
+              activityIndicatorColor="green"
+              onCancel={(e) => {
+                // handle response here
+              }}
+              onSuccess={(response) => {
+                // handle response here
+                console.log(response);
+                if (response.data.event == 'successful') {
+                  setPay(false);
+                  navigate('SuccessPage', {
+                    title: 'Fund Wallet',
+                    message: `You have successfully funded your wallet with #${formatToAmount(
+                      amount
+                    )}`,
+                  });
+                }
+              }}
+              autoStart={pay}
+            />
+          </View>
+        )}
+      </KeyboardAwareScrollView>
     </GradientSafeAreaView>
   );
 };

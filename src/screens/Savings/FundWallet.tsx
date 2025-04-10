@@ -1,5 +1,5 @@
 import { StyleSheet, Pressable, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
@@ -9,8 +9,17 @@ import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { useNavigation } from '@react-navigation/native';
 import BankIcon from '../../../assets/svgs/Home/BankIcon';
 import CardIcon from '../../../assets/svgs/Cards/CardIcon';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
+import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
+import { userSelector } from '../../features/user/user.selector';
+
 const FundWallet = () => {
   const { navigate } = useNavigation();
+  const dispatch = useAppDispatch();
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -65,7 +74,7 @@ const FundWallet = () => {
         >
           <Pressable
             onPress={() => {
-              navigate('AddCard');
+              dispatch(updateAccountDetailsBottomsheetVisibility(true));
             }}
             style={[
               styles.view,
@@ -113,60 +122,68 @@ const FundWallet = () => {
               color={colors.primary()}
             />
           </Pressable>
+          <View
+            style={{
+              backgroundColor: '#ED9F0526',
+              gap: size.getWidthSize(8),
 
-          <Pressable
-            onPress={() => {
-              navigate('AddCard');
+              borderRadius: size.getHeightSize(8),
             }}
-            style={[
-              styles.view,
-              {
-                backgroundColor: '#ED9F0526',
-              },
-            ]}
           >
-            <View
-              style={[
-                styles.view2,
-                {
-                  backgroundColor: '#ED9F064D',
-                },
-              ]}
-            >
-              <CardIcon size={size.getHeightSize(26)} />
-            </View>
             <Pressable
               onPress={() => {
                 navigate('AddCard');
               }}
-              style={{
-                flex: 1,
-                gap: size.getHeightSize(6),
-              }}
+              style={[
+                styles.view,
+                {
+                  backgroundColor: 'transparent',
+                },
+              ]}
             >
-              <CText
-                color={'black'}
-                fontSize={16}
-                lineHeight={22.4}
-                fontFamily="bold"
+              <View
+                style={[
+                  styles.view2,
+                  {
+                    backgroundColor: '#ED9F064D',
+                  },
+                ]}
               >
-                Card
-              </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={13}
-                lineHeight={18.2}
-                fontFamily="regular"
+                <CardIcon size={size.getHeightSize(26)} />
+              </View>
+              <Pressable
+                onPress={() => {
+                  navigate('AddCard');
+                }}
+                style={{
+                  flex: 1,
+                  gap: size.getHeightSize(6),
+                }}
               >
-                Top up with saved card or add a new card
-              </CText>
+                <CText
+                  color={'black'}
+                  fontSize={16}
+                  lineHeight={22.4}
+                  fontFamily="bold"
+                >
+                  Card
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={13}
+                  lineHeight={18.2}
+                  fontFamily="regular"
+                >
+                  Top up with saved card or add a new card
+                </CText>
+              </Pressable>
+              <MaterialIcons
+                name="keyboard-arrow-right"
+                size={size.getHeightSize(20)}
+                color={colors.primary()}
+              />
             </Pressable>
-            <MaterialIcons
-              name="keyboard-arrow-right"
-              size={size.getHeightSize(20)}
-              color={colors.primary()}
-            />
-          </Pressable>
+          </View>
         </View>
       </View>
     </GradientSafeAreaView>

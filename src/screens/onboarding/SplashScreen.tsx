@@ -41,6 +41,24 @@ const SplashScreen = () => {
         try {
           const user = await userInstance.getCustomer();
           const wallet = await userInstance.getCustomerWallet();
+          const userBanks = await userInstance.getUserBankDetails();
+          if (userBanks?.data) {
+            if (Array.isArray(userBanks.data)) {
+              dispatch(
+                changeUserState({
+                  key: 'bankDetails',
+                  value: userBanks.data,
+                })
+              );
+            } else {
+              dispatch(
+                changeUserState({
+                  key: 'bankDetails',
+                  value: [userBanks.data],
+                })
+              );
+            }
+          }
           if (wallet.data) {
             dispatch(
               changeUserState({ key: 'balance', value: wallet.data.balance })

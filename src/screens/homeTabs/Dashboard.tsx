@@ -30,6 +30,7 @@ import { useNavigation } from '@react-navigation/native';
 import { userSelector } from '../../features/user/user.selector';
 import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
 import useGetTransactionOrder from '../../hooks/api/dashboard/useGetTransactionOrder';
+import { formatToAmount } from '../../utils/stringManipulation';
 const Dashboard = () => {
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
@@ -96,7 +97,7 @@ const Dashboard = () => {
               >
                 ₦
               </CText>{' '}
-              {user?.balance === 0 ? '0.00' : user?.balance}
+              {user?.balance === 0 ? '0.00' : formatToAmount(user?.balance)}
             </CText>
           </View>
           <View

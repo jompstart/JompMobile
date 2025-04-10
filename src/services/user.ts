@@ -1,5 +1,6 @@
 import { makeRequest } from '../config/api.config';
 import { AddBankDto } from '../interface/provider';
+import { BankDetails } from '../models/user';
 import {
   GetCustomerDto,
   GetWalletResponseDto,
@@ -54,6 +55,13 @@ export class UserService {
     return await makeRequest({
       method: 'GET',
       url: `/get-banks?userId=${this.userId}`,
+    });
+  }
+
+  async getUserBankDetails() {
+    return await makeRequest<BankDetails>({
+      method: 'GET',
+      url: `/get-bank-details?userId=${this.userId}`,
     });
   }
 }

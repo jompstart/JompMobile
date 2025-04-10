@@ -66,16 +66,18 @@ export class ComplianceService extends UserService {
     });
   }
   async createAccount() {
-    const complianceStatus = await this.getCustomer().then((res) => {
-      return res.data?.complianceFlag;
+    return await makeRequest({
+      method: 'GET',
+      url: `/create-account?UserId=${this.userId}`,
     });
-    if (complianceStatus && complianceStatus === true) {
-      return;
-    } else {
-      return await makeRequest({
-        method: 'GET',
-        url: `/create-account?UserId=${this.userId}`,
-      });
-    }
+
+    // if (complianceStatus && complianceStatus === true) {
+    //   return;
+    // } else {
+    //   return await makeRequest({
+    //     method: 'GET',
+    //     url: `/create-account?UserId=${this.userId}`,
+    //   });
+    // }
   }
 }

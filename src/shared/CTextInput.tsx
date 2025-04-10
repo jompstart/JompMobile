@@ -58,9 +58,11 @@ const CTextInput: React.FC<CTextInputProps> = ({
       )}
       <View
         style={{
-          borderColor: '#21212130',
+          borderColor: style?.borderColor ? style.borderColor : '#21212130',
           borderWidth: size.getHeightSize(1),
-          backgroundColor: colors.white(),
+          backgroundColor: style?.backgroundColor
+            ? style.backgroundColor
+            : colors.white(),
           borderRadius: size.getHeightSize(8),
           flexDirection: 'row',
           alignItems: 'center',
@@ -75,9 +77,10 @@ const CTextInput: React.FC<CTextInputProps> = ({
           placeholderTextColor={'#61616150'}
           style={[
             styles.input,
-            style,
 
             {
+              ...style,
+              backgroundColor: undefined,
               paddingVertical:
                 Platform.OS === 'ios'
                   ? size.getHeightSize(14.5)

@@ -16,15 +16,18 @@ import CopyIcon from '../../assets/svgs/Home/CopyIcon';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import CancelIcon from '../../assets/svgs/Home/CancelIcon';
 import ProviderIcon from '../../assets/svgs/Services/ProviderIcon';
+import { useAppSelector } from '../controller/redux.controller';
+import { userSelector } from '../features/user/user.selector';
 interface Props {
   isVisible: boolean;
 }
 const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(userSelector);
   const data = [{}, {}];
   return (
     <ScrollablebottomsheetWrapper
-      snapPoints={['40%']}
+      // snapPoints={['40%']}
       topRadius={16}
       enableBackdrop
       visibility={isVisible}
@@ -82,7 +85,7 @@ const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
               marginTop: size.getHeightSize(8),
             }}
           >
-            {data.map((item, index) => (
+            {user.bankDetails.map((item, index) => (
               <View key={index} style={styles.view1}>
                 <View style={styles.view2}>
                   <View style={styles.view3}>
@@ -103,7 +106,7 @@ const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
                       lineHeight={18}
                       fontFamily="bold"
                     >
-                      First City Monument Bank
+                      {item.bankName}
                     </CText>
                   </View>
                 </View>
@@ -126,7 +129,7 @@ const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
                       lineHeight={18}
                       fontFamily="bold"
                     >
-                      Timmy Ajanlekoko
+                      {item.accountName}
                     </CText>
                   </View>
                 </View>
@@ -150,7 +153,7 @@ const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
                       lineHeight={18}
                       fontFamily="bold"
                     >
-                      1234567890
+                      {item.accountNumber}
                     </CText>
                   </View>
                   <View

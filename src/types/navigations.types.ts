@@ -47,7 +47,10 @@ export type RootStackParamList = {
   FundWallet: undefined;
   Verification: undefined;
   HouseRentService: undefined;
-  SuccessPage: undefined;
+  SuccessPage: {
+    title?: string;
+    message?: string;
+  };
 };
 
 type SignUpScreenParams = {
@@ -59,6 +62,13 @@ type SignUpScreenParams = {
 type SavingsDetailsParams = {
   [SavingsDetails: string]: {
     goalId: string;
+  };
+};
+
+type SuccessPageParams = {
+  [SuccessPage: string]: {
+    title?: string;
+    message?: string;
   };
 };
 
@@ -79,4 +89,9 @@ export type SignUpScreenProps = {
 export type SavingsDetailsScreenProps = {
   navigation: NavigationProp<RootStackParamList, 'SavingsDetails'>;
   route: RouteProp<SavingsDetailsParams, 'SavingsDetails'>;
+};
+
+export type SuccessPageScreenProps = {
+  navigation: NavigationProp<RootStackParamList, 'SuccessPage'>;
+  route: RouteProp<SuccessPageParams, 'SuccessPage'>;
 };

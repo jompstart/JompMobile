@@ -17,5 +17,12 @@ export interface UserModel {
   ledger: number;
   totalTransactions: number;
   totalOrders: number;
+  bankDetails: BankDetails[];
+}
+
+export interface BankDetails {
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
 }
 export type UserAccountPreference = UserAccount;
