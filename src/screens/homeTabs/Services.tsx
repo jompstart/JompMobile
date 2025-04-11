@@ -12,12 +12,13 @@ import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
 import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
+
 import { colors } from '../../constants/colors';
 const Services = () => {
   const { navigate } = useNavigation();
   return (
     <GradientSafeAreaView>
-       <GradientHeader disable>
+      <GradientHeader disable>
         <MenuIcon size={size.getHeightSize(28)} />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
@@ -93,7 +94,10 @@ const Services = () => {
               height={size.getHeightSize(24)}
             />
           </Pressable>
-          <View
+          <Pressable
+            onPress={() => {
+              navigate('CreatedServices');
+            }}
             style={[
               styles.view,
               {
@@ -114,7 +118,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                Providers Created
+                User Created
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -122,14 +126,14 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                Access endless services created just for you
+                View the services you created
               </CText>
             </View>
             <ArrowRightIcon
               width={size.getWidthSize(12)}
               height={size.getHeightSize(24)}
             />
-          </View>
+          </Pressable>
           <View
             style={[
               styles.view,

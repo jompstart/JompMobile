@@ -15,7 +15,7 @@ import {
   useAppDispatch,
 } from '../../../controller/redux.controller';
 import { userSelector } from '../../../features/user/user.selector';
-import { ProviderService } from '../../../services/provider';
+import { ProviderService } from '../../../services/providers/provider';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import { API_RESPONSE } from '../../../types';

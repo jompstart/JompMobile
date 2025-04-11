@@ -16,7 +16,7 @@ import {
   useAppDispatch,
 } from '../../../controller/redux.controller';
 import ShowLoader from '../../../shared/ShowLoader';
-import { ProviderService } from '../../../services/provider';
+import { ProviderService } from '../../../services/providers/provider';
 import { useNavigation } from '@react-navigation/native';
 import { userSelector } from '../../../features/user/user.selector';
 import { ChildSchoolFeeRequest } from '../../../interface/provider';

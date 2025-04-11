@@ -51,6 +51,7 @@ export type RootStackParamList = {
     title?: string;
     message?: string;
   };
+  CreatedServices: undefined;
 };
 
 type SignUpScreenParams = {

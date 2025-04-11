@@ -15,7 +15,7 @@ import ShowLoader from '../../../shared/ShowLoader';
 import { isAnyFieldEmpty } from '../../../utils/forms';
 import { useMutation } from '@tanstack/react-query';
 import StatesBottomsheet from '../../../shared/StateBottomsheet';
-import { ProviderService } from '../../../services/provider';
+import { ProviderService } from '../../../services/providers/provider';
 import {
   useAppSelector,
   useAppDispatch,
@@ -336,7 +336,7 @@ const SelfSchoolFeeForm = () => {
           }}
         >
           <FlatList
-        scrollEnabled={false}
+            scrollEnabled={false}
             ref={flatListRef}
             data={views}
             horizontal

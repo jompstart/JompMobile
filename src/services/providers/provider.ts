@@ -1,12 +1,13 @@
-import { makeRequest } from '../config/api.config';
-import { HouseRentLoanFormState } from '../features/user/user.reducer';
+import { makeRequest } from '../../config/api.config';
+import { HouseRentLoanFormState } from '../../features/user/user.reducer';
 import {
   ChildSchoolFeeRequest,
   MediaFile,
   SelfSchoolFeeDetails,
   TransportDetails,
   TransportRequest,
-} from '../interface/provider';
+} from '../../interface/provider';
+import { CustomerServiceDetails } from './provider.dto';
 
 export class ProviderService {
   constructor(private userId: string, private customerId: string) {}
@@ -382,6 +383,13 @@ export class ProviderService {
         'Content-Type': 'multipart/form-data',
       },
       data: formData,
+    });
+  }
+
+  async getUserServices() {
+    return await makeRequest<CustomerServiceDetails[]>({
+      method: 'GET',
+      url: `get-customerServices/${this.customerId}?1&pageSize=10`,
     });
   }
 }

@@ -15,7 +15,7 @@ import {
   rentLoanFormReducer,
   rentLoanInitailState,
 } from '../../features/user/user.reducer';
-import { ProviderService } from '../../services/provider';
+import { ProviderService } from '../../services/providers/provider';
 import { userSelector } from '../../features/user/user.selector';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';

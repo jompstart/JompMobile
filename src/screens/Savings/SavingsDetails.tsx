@@ -29,7 +29,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
     user.customerId,
     params?.goalId
   );
-  console.log(savings);
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>

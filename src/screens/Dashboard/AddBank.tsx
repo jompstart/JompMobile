@@ -15,7 +15,7 @@ import CheckCircle from '../../../assets/svgs/Onboarding/CheckCircle';
 import { colors } from '../../constants/colors';
 import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
-import { ProviderService } from '../../services/provider';
+import { ProviderService } from '../../services/providers/provider';
 import BanksBottomsheet from '../../components/Dashboard/BanksBottomsheet';
 import { useMutation } from '@tanstack/react-query';
 import { useGetBanks, useGetUserBanks } from '../../hooks/api/auth';

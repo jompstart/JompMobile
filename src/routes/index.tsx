@@ -36,6 +36,7 @@ import FundWallet from '../screens/Savings/FundWallet';
 import Verification from '../screens/compliance/Verification';
 import HouseRentService from '../screens/services/HouseRentService';
 import SuccessPage from '../screens/services/SuccessPage';
+import CreatedServices from '../screens/services/CreatedServices';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -184,7 +185,11 @@ const MainNavigator = () => {
     {
       name: 'SuccessPage',
       component: SuccessPage,
-    }
+    },
+    {
+      name: 'CreatedServices',
+      component: CreatedServices,
+    },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ProviderService } from '../../../services/provider';
+import { ProviderService } from '../../../services/providers/provider';
 export const useGetBanks = (userId: string, customerId: string) => {
   const providerInstance = new ProviderService(userId, customerId);
   const getBanks = async () => {
@@ -19,5 +19,3 @@ export const useGetUserBanks = (userId: string, customerId: string) => {
     queryFn: () => providerInstance.getUserBanks(),
   });
 };
-
-
