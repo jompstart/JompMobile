@@ -241,6 +241,35 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
                 flex: 1,
               }}
             >
+              Start Date
+            </CText>
+            <CText
+              color={'black'}
+              fontSize={13}
+              lineHeight={18.2}
+              fontFamily="semibold"
+            >
+              {savings?.data?.startDate &&
+                new Date(savings?.data?.startDate)?.toLocaleDateString(
+                  'en-GB',
+                  {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  }
+                )}
+            </CText>
+          </View>
+          <View style={styles.view2}>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+              style={{
+                flex: 1,
+              }}
+            >
               Maturity Date
             </CText>
             <CText
@@ -366,12 +395,12 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
           }}
           label="Top Up"
         />
-        <SecondaryButton
+        {/* <SecondaryButton
           label="Withdraw"
           onPress={() => {
             setShowWithdrawal(true);
           }}
-        />
+        /> */}
       </View>
       <WithdrawBottomsheet
         goalId={params?.goalId}

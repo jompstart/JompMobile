@@ -81,7 +81,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
           <TextInput
             numberOfLines={1}
             {...props}
-            cursorColor={'#F5F7FF'}
+            cursorColor={colors.primary()}
             placeholderTextColor={'#21212180'}
             style={[
               styles.input,

@@ -150,7 +150,10 @@ const Savings = () => {
                 lineHeight={38}
                 fontFamily="bold"
               >
-                ₦ {totalSavings?.data == 0 ? '0.00' : totalSavings?.data}
+                ₦{' '}
+                {totalSavings?.data == 0
+                  ? '0.00'
+                  : formatToAmount(totalSavings?.data!) || '0.00'}
               </CText>
               <AntDesign
                 name="eyeo"
@@ -232,7 +235,7 @@ const Savings = () => {
               ₦
               {accruedInterest?.data == 0
                 ? '0.00'
-                : accruedInterest?.data || '0.00'}
+                : formatToAmount(accruedInterest?.data!) || '0.00'}
             </CText>
           </LinearGradient>
           <Pressable
