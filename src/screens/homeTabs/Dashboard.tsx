@@ -530,7 +530,7 @@ const Dashboard = () => {
             </View>
           </View>
 
-          <View
+          {/* <View
             style={{
               flex: 1,
             }}
@@ -578,7 +578,7 @@ const Dashboard = () => {
                 </CText>
               </View>
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
     </GradientSafeAreaView>

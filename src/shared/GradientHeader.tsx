@@ -22,10 +22,11 @@ const GradientHeader = ({
           height: size.getHeightSize(60),
           width: '100%',
           flexDirection: 'row',
-          alignItems: 'flex-end',
+          alignItems: 'center',
           paddingHorizontal: size.getWidthSize(16),
           gap: size.getWidthSize(16),
           paddingBottom: size.getHeightSize(8),
+          paddingTop:size.getHeightSize(24)
         }}
       >
         {children}

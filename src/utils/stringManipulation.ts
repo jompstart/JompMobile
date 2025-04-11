@@ -78,6 +78,7 @@ export const getTimeDifference = (targetDate: string): string => {
 };
 
 export const formatToAmount = (value: string | number): string => {
+  
   const number = typeof value === 'string' ? parseFloat(value) : value;
   if (isNaN(number)) {
     return '0.00'; // Handle invalid input

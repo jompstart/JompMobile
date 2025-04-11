@@ -29,11 +29,13 @@ import {
 } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import {
+  calculateGoalAmount,
   calculateSavingsPerPeriod,
   generateSuggestions,
 } from '../../helpers/savings';
 import { updateToast } from '../../features/ui/ui.slice';
 import { formatToAmount } from '../../utils/stringManipulation';
+import GoalBottomsheet from '../../components/Savings/GoalBottomsheet';
 const SavingsGoal = () => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -52,6 +54,9 @@ const SavingsGoal = () => {
   const [showCategory, setShowCategory] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+  const [showGoalSheet, setShowGoalSheet] = useState(false);
+  const [estimatedAmount, setEstimatedAmount] = useState(0);
+  const [newGoal, setNewGoal] = useState(0);
   const { data: savingsTypes } = useGetSavingsTypes(
     user.userId,
     user.customerId
@@ -112,6 +117,47 @@ const SavingsGoal = () => {
       });
     }
   }, [state.startDate, state.duration]);
+
+  useEffect(() => {
+    if (
+      state.targetAmount &&
+      state.endDate &&
+      state.frequency &&
+      state.startDate
+    ) {
+      const savingsPerPeriod = calculateSavingsPerPeriod(
+        +state.targetAmount,
+        state.startDate.toISOString(),
+        state.endDate.toISOString(),
+        state.frequency as any
+      );
+
+      setEstimatedAmount(+savingsPerPeriod);
+    }
+    if (
+      state.targetAmount &&
+      state.endDate &&
+      state.frequency &&
+      state.startDate &&
+      state.monthlyContribution
+    ) {
+      const savingsPerPeriod = calculateGoalAmount(
+        +state.monthlyContribution,
+        state.startDate.toISOString(),
+        state.endDate.toISOString(),
+        state.frequency as any
+      ).toFixed(2);
+
+      console.log(savingsPerPeriod);
+      setNewGoal(+savingsPerPeriod);
+    }
+  }, [
+    state.targetAmount,
+    state.endDate,
+    state.frequency,
+    state.startDate,
+    state.monthlyContribution,
+  ]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -574,11 +620,12 @@ const SavingsGoal = () => {
                       onPress={() => {
                         savingsInitialState({
                           type: 'SET_MONTHLY_CONTRIBUTION',
-                          payload: suggestedAmount.toString(),
+                          payload: suggestedAmount.toFixed(2).toString(),
                         });
                       }}
                       style={
-                        state.monthlyContribution === suggestedAmount.toString()
+                        state.monthlyContribution ===
+                        suggestedAmount.toFixed(2).toString()
                           ? styles.amountSelected
                           : styles.view2
                       }
@@ -589,8 +636,7 @@ const SavingsGoal = () => {
                         lineHeight={19.2}
                         fontFamily="semibold"
                       >
-                        ₦ {suggestedAmount.toLocaleString()}{' '}
-                        {/* Format with commas */}
+                        ₦ {suggestedAmount.toFixed(2).toString()}{' '}
                       </CText>
                     </Pressable>
                   ))}
@@ -722,7 +768,17 @@ const SavingsGoal = () => {
           }}
         >
           <PrimaryButton
-            onPress={() => navigate('CreateSavings', state)}
+            onPress={() => {
+              if (+(+state.monthlyContribution).toFixed(2) != estimatedAmount) {
+                setShowGoalSheet(true);
+                return;
+              } else {
+                navigate('CreateSavings', {
+                  ...state,
+                  targetAmount: state.targetAmount,
+                });
+              }
+            }}
             label="Proceed"
           />
         </View>
@@ -784,6 +840,23 @@ const SavingsGoal = () => {
           />
         </View>
       )}
+      <GoalBottomsheet
+        visibility={showGoalSheet}
+        amount={newGoal?.toString()}
+        onClose={() => {
+          setShowGoalSheet(false);
+        }}
+        onContinue={() => {
+          savingsInitialState({
+            type: 'SET_TARGET_AMOUNT',
+            payload: newGoal.toString(),
+          });
+          navigate('CreateSavings', {
+            ...state,
+            targetAmount: newGoal.toString(),
+          });
+        }}
+      />
     </GradientSafeAreaView>
   );
 };

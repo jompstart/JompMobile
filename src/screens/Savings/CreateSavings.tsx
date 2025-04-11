@@ -52,7 +52,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
       console.log(data);
       navigation.navigate('SuccessPage', {
         message:
-          'You have successfully submitted your service form, Jomp Admin will verify and approve.',
+          'You have successfully created your savings goal 🎉. We will be cheering you on as you save towards your goal.',
       });
     },
   });
