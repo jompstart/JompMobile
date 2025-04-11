@@ -1,12 +1,18 @@
-import { StyleSheet, Pressable, View } from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  RefreshControl,
+  View,
+} from 'react-native';
+import React, { useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
 import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
 import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import CText from '../../shared/CText';
 import BalanceCard from '../../shared/BalanceCard';
 import WalletIcon from '../../../assets/svgs/Savings/WalletIcon';
@@ -37,25 +43,39 @@ import {
 const Savings = () => {
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
-  const { data: totalSavings } = useGetTotalSavings(
-    user.userId,
-    user.customerId
-  );
-  const { data: accruedInterest } = useGetAccruedInterest(
-    user.userId,
-    user.customerId
-  );
+  const { data: totalSavings, refetch: refetchTotalSavings } =
+    useGetTotalSavings(user.userId, user.customerId);
+  const { data: accruedInterest, refetch: refetchInterest } =
+    useGetAccruedInterest(user.userId, user.customerId);
 
   const { data: savingsTypes } = useGetSavingsTypes(
     user.userId,
     user.customerId
   );
 
-  const { data: userSavings } = useGetUserSavings(user.userId, user.customerId);
+  const { data: userSavings, refetch: refetchSavings } = useGetUserSavings(
+    user.userId,
+    user.customerId
+  );
 
   const savingsType = savingsTypes?.data?.find(
     (item) => item.name == 'jompVault'
   );
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true); // Start the refreshing indicator
+    try {
+      await Promise.all([
+        refetchTotalSavings(),
+        refetchInterest(),
+        refetchSavings(),
+      ]);
+    } catch (error) {
+      console.error('Error refreshing services:', error);
+    } finally {
+      setRefreshing(false); // Stop the refreshing indicator
+    }
+  };
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -65,6 +85,13 @@ const Savings = () => {
         <NotificationBell size={size.getHeightSize(28)} />
       </GradientHeader>
       <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => onRefresh()}
+          />
+        }
         contentContainerStyle={{
           paddingBottom: size.getHeightSize(27),
         }}

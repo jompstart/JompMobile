@@ -202,7 +202,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: size.getWidthSize(16),
     borderRadius: size.getHeightSize(16),
     width: size.getWidthSize(175),
-    height: size.getHeightSize(250),
+    height: size.getHeightSize(300),
+    justifyContent: 'space-between',
   },
   view5: {
     flex: 1,

@@ -39,6 +39,7 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { updateToast } from '../../features/ui/ui.slice';
 import VerifyEmailBottomsheet from '../../components/auth/VerifyEmailBottomsheet';
+import { ComplianceService } from '../../services/compliance';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -118,6 +119,33 @@ const Login = () => {
         const user = await userInstance.getCustomer();
         const wallet = await userInstance.getCustomerWallet();
         const userBanks = await userInstance.getUserBankDetails();
+        if (!userBanks.data && user.data?.complianceFlag == true) {
+          const complianceInstance = new ComplianceService(
+            decoded.UserId,
+            decoded.customerId
+          );
+          const createAccount = await complianceInstance.createAccount();
+          if (createAccount.success == true) {
+            const userBanksDetails = await userInstance.getUserBankDetails();
+            if (userBanksDetails?.data) {
+              if (Array.isArray(userBanksDetails.data)) {
+                dispatch(
+                  changeUserState({
+                    key: 'bankDetails',
+                    value: userBanksDetails.data,
+                  })
+                );
+              } else {
+                dispatch(
+                  changeUserState({
+                    key: 'bankDetails',
+                    value: [userBanksDetails.data],
+                  })
+                );
+              }
+            }
+          }
+        }
         if (userBanks?.data) {
           if (Array.isArray(userBanks.data)) {
             dispatch(

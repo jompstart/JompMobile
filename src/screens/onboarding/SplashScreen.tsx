@@ -12,6 +12,7 @@ import {
   updateUserState,
 } from '../../features/user/user.slice';
 import { UserService } from '../../services/user';
+import { ComplianceService } from '../../services/compliance';
 const SplashScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -42,6 +43,33 @@ const SplashScreen = () => {
           const user = await userInstance.getCustomer();
           const wallet = await userInstance.getCustomerWallet();
           const userBanks = await userInstance.getUserBankDetails();
+          if (!userBanks.data && user.data?.complianceFlag == true) {
+            const complianceInstance = new ComplianceService(
+              decoded.UserId,
+              decoded.customerId
+            );
+            const createAccount = await complianceInstance.createAccount();
+            if (createAccount.success == true) {
+              const userBanksDetails = await userInstance.getUserBankDetails();
+              if (userBanksDetails?.data) {
+                if (Array.isArray(userBanksDetails.data)) {
+                  dispatch(
+                    changeUserState({
+                      key: 'bankDetails',
+                      value: userBanksDetails.data,
+                    })
+                  );
+                } else {
+                  dispatch(
+                    changeUserState({
+                      key: 'bankDetails',
+                      value: [userBanksDetails.data],
+                    })
+                  );
+                }
+              }
+            }
+          }
           if (userBanks?.data) {
             if (Array.isArray(userBanks.data)) {
               dispatch(
