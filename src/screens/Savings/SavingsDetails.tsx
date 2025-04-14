@@ -13,7 +13,7 @@ import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import {
   formatToAmount,
-  getTimeDifference,
+  getTimeDifferenceBetweenDates,
 } from '../../utils/stringManipulation';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
@@ -29,7 +29,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
     user.customerId,
     params?.goalId
   );
-
+  console.log('savings', savings);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -163,7 +163,10 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
               fontFamily="semibold"
             >
               {savings?.data?.endDate &&
-                getTimeDifference(savings?.data?.endDate.toString())}
+                getTimeDifferenceBetweenDates(
+                  savings?.data.startDate.toString(),
+                  savings?.data?.endDate.toString()
+                )}
             </CText>
           </View>
           <View style={styles.view2}>

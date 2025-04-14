@@ -9,6 +9,7 @@ interface CTextProps extends TextProps {
   color?: keyof typeof fontColorMap;
   fontSize?: number;
   lineHeight?: number;
+  obscureText?: boolean;
 }
 
 // Map font family names to actual font files
@@ -41,6 +42,7 @@ const CText: React.FC<CTextProps> = ({
   children,
   lineHeight,
   fontSize,
+  obscureText,
   ...props
 }) => {
   const fontFamilyStyle = fontFamily
@@ -73,7 +75,7 @@ const CText: React.FC<CTextProps> = ({
         lineHeightStyle,
       ]}
     >
-      {children}
+      {obscureText ? '******' : children}
     </Text>
   );
 };

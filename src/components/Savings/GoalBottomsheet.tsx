@@ -70,7 +70,7 @@ const GoalBottomsheet = ({
         }}
       >
         The combination of your savings duration, your savings frequency and
-        your preferred amount to save wll not meet up with your initial savings
+        your preferred amount to save will not meet up with your initial savings
         goal.
       </CText>
       <CText

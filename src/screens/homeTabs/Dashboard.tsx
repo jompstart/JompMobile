@@ -295,7 +295,12 @@ const Dashboard = () => {
                     You can now save towards all your bills on JOMP and pay when
                     you’re ready.
                   </CText>
-                  <View style={styles.cardButton}>
+                  <Pressable
+                    onPress={() => {
+                      navigate('Savings' as any);
+                    }}
+                    style={styles.cardButton}
+                  >
                     <CText
                       color={'white'}
                       fontSize={12}
@@ -307,7 +312,7 @@ const Dashboard = () => {
                     >
                       Start Saving
                     </CText>
-                  </View>
+                  </Pressable>
                 </View>
                 <BillImage
                   width={size.getWidthSize(110)}
@@ -376,7 +381,12 @@ const Dashboard = () => {
               Transport Credit
             </CText>
           </Pressable>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('Savings' as any);
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <PiggyIcon size={size.getHeightSize(26)} />
             </View>
@@ -391,7 +401,7 @@ const Dashboard = () => {
             >
               Savings
             </CText>
-          </View>
+          </Pressable>
           <Pressable
             onPress={() => {
               navigate('FundWallet');

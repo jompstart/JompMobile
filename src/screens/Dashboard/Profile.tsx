@@ -328,7 +328,18 @@ const Profile = () => {
                 onPress={() => navigate('AddBank')}
                 style={styles.view5}
               >
-                <AddBankIcon size={size.getHeightSize(80)} />
+                <MaterialIcons
+                  color={colors.black('95') as any}
+                  name="add"
+                  size={size.getHeightSize(40)}
+                />
+                <CText
+                  color={colors.black('70') as any}
+                  fontSize={12}
+                  lineHeight={16.8}
+                >
+                  Add more banks
+                </CText>
               </Pressable>
             </View>
           </View>

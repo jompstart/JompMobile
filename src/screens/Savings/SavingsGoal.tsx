@@ -148,7 +148,6 @@ const SavingsGoal = () => {
         state.frequency as any
       ).toFixed(2);
 
-      console.log(savingsPerPeriod);
       setNewGoal(+savingsPerPeriod);
     }
   }, [
@@ -288,6 +287,10 @@ const SavingsGoal = () => {
                       type: 'SET_DURATION',
                       payload: date,
                     });
+                    savingsInitialState({
+                      type: 'SET_DURATION_STRING',
+                      payload: '1 month',
+                    });
                     setEndDate('1month');
                   }}
                   style={endDate === '1month' ? styles.isSelected : styles.view}
@@ -309,6 +312,10 @@ const SavingsGoal = () => {
                     savingsInitialState({
                       type: 'SET_DURATION',
                       payload: date,
+                    });
+                    savingsInitialState({
+                      type: 'SET_DURATION_STRING',
+                      payload: '3 months',
                     });
                     setEndDate('3months');
                   }}
@@ -334,6 +341,10 @@ const SavingsGoal = () => {
                       type: 'SET_DURATION',
                       payload: date,
                     });
+                    savingsInitialState({
+                      type: 'SET_DURATION_STRING',
+                      payload: '6 months',
+                    });
                     setEndDate('6months');
                   }}
                   style={
@@ -358,6 +369,11 @@ const SavingsGoal = () => {
                       type: 'SET_DURATION',
                       payload: date,
                     });
+
+                    savingsInitialState({
+                      type: 'SET_DURATION_STRING',
+                      payload: '9 months',
+                    });
                     setEndDate('9months');
                   }}
                   style={
@@ -381,6 +397,10 @@ const SavingsGoal = () => {
                     savingsInitialState({
                       type: 'SET_DURATION',
                       payload: date,
+                    });
+                    savingsInitialState({
+                      type: 'SET_DURATION_STRING',
+                      payload: '1 year',
                     });
                     setEndDate('1year');
                   }}
@@ -509,7 +529,11 @@ const SavingsGoal = () => {
                   color={'secondaryBlack'}
                   fontFamily="regular"
                 >
-                  {state.startDate.toLocaleDateString()}
+                  {new Intl.DateTimeFormat('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  }).format(new Date(state.startDate))}
                 </CText>
               </Pressable>
               {showDate && (
@@ -734,6 +758,19 @@ const SavingsGoal = () => {
                 color={colors.primary()}
               />
             </Pressable>
+            {state.savingSource === 'Wallet' && (
+              <CText
+                color="secondaryBlack"
+                fontSize={12}
+                lineHeight={14}
+                fontFamily="bold"
+                style={{
+                  textAlign: 'right',
+                }}
+              >
+                Waallet Bal: ₦{formatToAmount(user.balance)}
+              </CText>
+            )}
             <View style={styles.view4}>
               <CText
                 color={colors.black('70') as any}
@@ -769,8 +806,26 @@ const SavingsGoal = () => {
         >
           <PrimaryButton
             onPress={() => {
+              if (
+                state.startDate.toDateString() === new Date().toDateString() &&
+                +state.monthlyContribution > user.balance
+              ) {
+                dispatch(
+                  updateToast({
+                    displayToast: true,
+                    toastMessage:
+                      'You do not have enough balance to fund your savings',
+                    toastType: 'info',
+                  })
+                );
+                return;
+              }
               if (+(+state.monthlyContribution).toFixed(2) != estimatedAmount) {
                 setShowGoalSheet(true);
+                savingsInitialState({
+                  type: 'SET_TARGET_AMOUNT',
+                  payload: newGoal.toString(),
+                });
                 return;
               } else {
                 navigate('CreateSavings', {

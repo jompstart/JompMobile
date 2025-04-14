@@ -12,8 +12,9 @@ import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
 import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
 import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
-
+import Feather from '@expo/vector-icons/build/Feather';
 import CText from '../../shared/CText';
+
 import BalanceCard from '../../shared/BalanceCard';
 import WalletIcon from '../../../assets/svgs/Savings/WalletIcon';
 import { colors } from '../../constants/colors';
@@ -39,6 +40,7 @@ import {
 import {
   formatToAmount,
   getTimeDifference,
+  getTimeDifferenceBetweenDates,
 } from '../../utils/stringManipulation';
 const Savings = () => {
   const { navigate } = useNavigation();
@@ -62,6 +64,7 @@ const Savings = () => {
     (item) => item.name == 'jompVault'
   );
   const [refreshing, setRefreshing] = useState(false);
+  const [showAmount, setShowAmount] = useState(false);
   const onRefresh = async () => {
     setRefreshing(true); // Start the refreshing indicator
     try {
@@ -172,6 +175,7 @@ const Savings = () => {
               }}
             >
               <CText
+                obscureText={showAmount}
                 color={'white'}
                 fontSize={24}
                 lineHeight={38}
@@ -182,8 +186,11 @@ const Savings = () => {
                   ? '0.00'
                   : formatToAmount(totalSavings?.data!) || '0.00'}
               </CText>
-              <AntDesign
-                name="eyeo"
+              <Feather
+                onPress={() => {
+                  setShowAmount(!showAmount);
+                }}
+                name={showAmount ? 'eye-off' : 'eye'}
                 size={size.getHeightSize(24)}
                 color={colors.white()}
               />
@@ -193,14 +200,6 @@ const Savings = () => {
             onPress={() => navigate('SavingsGoal')}
             style={styles.view}
           >
-            <AddIcon
-              style={{
-                position: 'absolute',
-                right: size.getWidthSize(8),
-                top: size.getHeightSize(8),
-              }}
-              size={size.getHeightSize(28)}
-            />
             <FluentIcon size={size.getHeightSize(56)} />
             <View
               style={{
@@ -226,6 +225,11 @@ const Savings = () => {
                 daily).
               </CText>
             </View>
+            <MaterialIcons
+              name="add"
+              color={'#31005C'}
+              size={size.getHeightSize(28)}
+            />
           </Pressable>
           <LinearGradient
             colors={['#EFA005', '#C5520A']}
@@ -470,7 +474,10 @@ const Savings = () => {
                           lineHeight={22}
                           fontFamily="regular"
                         >
-                          {getTimeDifference(savings.endDate.toString())}
+                          {getTimeDifferenceBetweenDates(
+                            savings.startDate.toString(),
+                            savings.endDate.toString()
+                          )}
                         </CText>
                       </CText>
                     </View>

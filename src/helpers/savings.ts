@@ -23,46 +23,41 @@ export const calculateSavingsPerPeriod = (
 
   switch (frequency) {
     case 'daily': {
-      totalPeriods = diffInMs / msInDay;
+      totalPeriods = Math.floor(diffInMs / msInDay);
       break;
     }
-    case 'weekly': {
-      totalPeriods = diffInMs / (msInDay * 7);
 
+    case 'weekly': {
+      totalPeriods = Math.floor(diffInMs / (msInDay * 7));
       break;
     }
+
     case 'monthly': {
       const startYear = start.getFullYear();
       const startMonth = start.getMonth();
       const endYear = end.getFullYear();
       const endMonth = end.getMonth();
 
-      totalPeriods = (endYear - startYear) * 12 + (endMonth - startMonth);
+      let months = (endYear - startYear) * 12 + (endMonth - startMonth);
 
-      // Adjust for partial months
-      const sameDay = end.getDate() >= start.getDate();
-      if (sameDay) totalPeriods += 1;
-      else {
-        // If it's less than full month but still spans two months, add fractional part
-        const daysInStartMonth = new Date(
-          startYear,
-          startMonth + 1,
-          0
-        ).getDate();
-        const remainingDays =
-          daysInStartMonth - start.getDate() + end.getDate();
-        totalPeriods += remainingDays / daysInStartMonth;
+      // Only count the final month if the end date is after the start day
+      if (end.getDate() > start.getDate()) {
+        months += 1;
       }
+
+      totalPeriods = months;
       break;
     }
+
     default:
       return 0;
   }
 
-  // Round periods to a reasonable precision to avoid tiny floating errors
-  const periodCount = parseFloat(totalPeriods.toFixed(4));
+  if (totalPeriods === 0) {
+    return targetAmount; // fallback — could mean a 1-period goal
+  }
 
-  return parseFloat((targetAmount / periodCount).toFixed(2));
+  return parseFloat((targetAmount / totalPeriods).toFixed(2));
 };
 
 export const generateSuggestions = (baseAmount: number): number[] => {
@@ -75,7 +70,7 @@ export const generateSuggestions = (baseAmount: number): number[] => {
 };
 
 export const calculateGoalAmount = (
-  preferredAmount: number,
+  contribution: number,
   startDate: string, // ISO date string
   endDate: string, // ISO date string
   frequency: 'monthly' | 'weekly' | 'daily'
@@ -95,32 +90,102 @@ export const calculateGoalAmount = (
 
   switch (frequency) {
     case 'monthly': {
-      const startYear = start.getFullYear();
-      const startMonth = start.getMonth();
-      const endYear = end.getFullYear();
-      const endMonth = end.getMonth();
+      const yearDiff = end.getFullYear() - start.getFullYear();
+      const monthDiff = end.getMonth() - start.getMonth();
+      totalPeriods = yearDiff * 12 + monthDiff;
 
-      totalPeriods = (endYear - startYear) * 12 + (endMonth - startMonth);
-
-      // Include the current month if the end date is later in the month
-      if (end.getDate() >= start.getDate()) {
+      // Only count the final month if a full period has passed
+      if (end.getDate() > start.getDate()) {
         totalPeriods += 1;
       }
       break;
     }
+
     case 'weekly': {
       const diffInMs = end.getTime() - start.getTime();
-      totalPeriods = Math.ceil(diffInMs / (7 * 24 * 60 * 60 * 1000)); // Weeks
+      const fullWeeks = diffInMs / (7 * 24 * 60 * 60 * 1000);
+      totalPeriods = Math.floor(fullWeeks); // Only count full weeks
       break;
     }
+
     case 'daily': {
       const diffInMs = end.getTime() - start.getTime();
-      totalPeriods = Math.ceil(diffInMs / (24 * 60 * 60 * 1000)); // Days
+      const fullDays = diffInMs / (24 * 60 * 60 * 1000);
+      totalPeriods = Math.floor(fullDays); // Only count full days
       break;
     }
+
     default:
       throw new Error('Invalid frequency');
   }
 
-  return preferredAmount * totalPeriods;
+  return contribution * totalPeriods;
+};
+
+export const formatDuration = (startDate: string, endDate: string): string => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    console.error('Invalid start or end date');
+    return '';
+  }
+
+  const diffInMs = end.getTime() - start.getTime();
+
+  if (diffInMs <= 0) {
+    console.error('End date must be after start date');
+    return '';
+  }
+
+  // Convert the difference to days, weeks, months, and years
+  const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+  const diffInWeeks = Math.ceil(diffInDays / 7);
+  const diffInMonths = Math.ceil(diffInDays / 30); // Approximate months
+  const diffInYears = Math.ceil(diffInDays / 365); // Approximate years
+
+  // Determine the appropriate unit
+  if (diffInYears >= 1) {
+    return `${diffInYears}year${diffInYears > 1 ? 's' : ''}`;
+  } else if (diffInMonths >= 1) {
+    return `${diffInMonths}month${diffInMonths > 1 ? 's' : ''}`;
+  } else if (diffInWeeks >= 1) {
+    return `${diffInWeeks}week${diffInWeeks > 1 ? 's' : ''}`;
+  } else {
+    return `${diffInDays}day${diffInDays > 1 ? 's' : ''}`;
+  }
+};
+
+export const formatSavingsDuration = (durationDate: Date): string => {
+  const now = new Date();
+  const duration = new Date(durationDate);
+
+  if (isNaN(duration.getTime())) {
+    console.error('Invalid duration date');
+    return '';
+  }
+
+  const diffInMs = duration.getTime() - now.getTime();
+
+  if (diffInMs <= 0) {
+    console.error('Duration date must be in the future');
+    return '';
+  }
+
+  // Convert the difference to days, weeks, months, and years
+  const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+  const diffInWeeks = Math.ceil(diffInDays / 7);
+  const diffInMonths = Math.ceil(diffInDays / 30); // Approximate months
+  const diffInYears = Math.ceil(diffInDays / 365); // Approximate years
+
+  // Determine the appropriate unit
+  if (diffInYears >= 1) {
+    return `${diffInYears}year${diffInYears > 1 ? 's' : ''}`;
+  } else if (diffInMonths >= 1) {
+    return `${diffInMonths}month${diffInMonths > 1 ? 's' : ''}`;
+  } else if (diffInWeeks >= 1) {
+    return `${diffInWeeks}week${diffInWeeks > 1 ? 's' : ''}`;
+  } else {
+    return `${diffInDays}day${diffInDays > 1 ? 's' : ''}`;
+  }
 };

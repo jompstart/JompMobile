@@ -23,6 +23,7 @@ import { API_RESPONSE } from '../../types';
 import { CreateSavingsRequestDto } from '../../services/savings/savings.dto';
 import { updateToast } from '../../features/ui/ui.slice';
 import { useNavigation } from '@react-navigation/native';
+import { formatDuration, formatSavingsDuration } from '../../helpers/savings';
 const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
   const [agreement1, setAgreement1] = useState(false);
   const [agreement2, setAgreement2] = useState(false);
@@ -133,6 +134,9 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
               Create Savings Goal
             </CText>
             <Feather
+              onPress={() => {
+                navigation.goBack();
+              }}
               name="edit"
               size={size.getHeightSize(16)}
               color={colors.primary()}
@@ -204,7 +208,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  {params?.duration?.toISOString()}
+                  {params?.durationString}
                 </CText>
               </View>
               <View style={styles.view}>

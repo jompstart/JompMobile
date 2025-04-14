@@ -70,56 +70,6 @@ const HouseRentsForms = ({
   useEffect(() => {
     shouldLoad(isPending);
   }, [isPending]);
-  const d = {
-    bankStatement: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/C19CC0A6-B6AC-4056-B150-FDFF4CE69AF7.pdf',
-    },
-    bankStatement2: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/299A8FB6-57B7-429F-8748-1BDCBC56A7CF.pdf',
-    },
-    bankStatement3: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/F8592568-15BA-4CC9-9340-82EC71381E99.pdf',
-    },
-    companyAddress: 'Lagos',
-    companyEmail: 'Jomp@gmail.com',
-    companyName: 'Jomp',
-    companyPhone: '09070903614',
-    id: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/FE4C232A-4AB6-4BE5-AE3C-6ACDE192F2C7.pdf',
-    },
-    landlordAccountName: 'Ayomide',
-    landlordAccountNumber: '123344',
-    landlordBankName: 'Wema ',
-    landlordContactNumber: '09070903614',
-    landlordName: 'Ayomide',
-    occupation: 'Developer',
-    payMentSlip: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/FE4C232A-4AB6-4BE5-AE3C-6ACDE192F2C7.pdf',
-    },
-    rentAmount: '1000',
-    requestedAmount: '1000',
-    tenancyAgreement: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/CCF1E138-C41D-4057-A849-600AC601580E.pdf',
-    },
-    utilityBill: {
-      name: 'ELG3336Microprocessor.pdf',
-      type: 'application/pdf',
-      uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/12C7E01F-6095-44E1-8BA9-711C3D178913.pdf',
-    },
-    yearsInCompany: '2',
-  } as HouseRentLoanFormState;
 
   return (
     <View
@@ -264,7 +214,7 @@ const HouseRentsForms = ({
         />
         <AttachmentView
           description="Utility Bill."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf (max. 1MB)"
           onFileSelected={(file) => {
             dispatch({ type: 'SET_UTILITY_BILL', payload: file });
           }}
@@ -274,14 +224,14 @@ const HouseRentsForms = ({
             dispatch({ type: 'SET_BANK_STATEMENT', payload: file });
           }}
           description="6 Months Bank Statement."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf, (max. 1MB)"
         />
         <AttachmentView
           onFileSelected={(file) => {
             dispatch({ type: 'SET_TENANCY_AGREEMENT', payload: file });
           }}
           description="Tenancy Agreement."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf, (max. 1MB)"
         />
 
         <AttachmentView
@@ -289,21 +239,21 @@ const HouseRentsForms = ({
             dispatch({ type: 'SET_PAYMENT_SLIP', payload: file });
           }}
           description="Payment Slip."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf, (max. 1MB)"
         />
         <AttachmentView
           onFileSelected={(file) => {
             dispatch({ type: 'SET_BANK_STATEMENT2', payload: file });
           }}
           description="Bank Statement 2."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf, (max. 1MB)"
         />
         <AttachmentView
           onFileSelected={(file) => {
             dispatch({ type: 'SET_BANK_STATEMENT3', payload: file });
           }}
           description="Bank Statement 3."
-          type=".pdf, .Jpeg (max. 1MB)"
+          type=".pdf, (max. 1MB)"
         />
       </View>
       <View

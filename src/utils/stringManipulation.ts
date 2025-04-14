@@ -77,8 +77,31 @@ export const getTimeDifference = (targetDate: string): string => {
   }
 };
 
+export const getTimeDifferenceBetweenDates = (
+  startDate: string,
+  endDate: string
+): string => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    return 'Invalid date';
+  }
+
+  const diffInMs = Math.abs(end.getTime() - start.getTime());
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  const diffInWeeks = Math.floor(diffInDays / 7);
+
+  if (diffInWeeks > 0) {
+    return `${diffInWeeks} Week${diffInWeeks > 1 ? 's' : ''}`;
+  } else if (diffInDays > 0) {
+    return `${diffInDays} Day${diffInDays > 1 ? 's' : ''}`;
+  } else {
+    return 'Today';
+  }
+};
+
 export const formatToAmount = (value: string | number): string => {
-  
   const number = typeof value === 'string' ? parseFloat(value) : value;
   if (isNaN(number)) {
     return '0.00'; // Handle invalid input

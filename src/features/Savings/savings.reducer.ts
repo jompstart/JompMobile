@@ -19,6 +19,7 @@ export interface CreateSavingsFormState {
   interestTagentSaving: boolean;
   cardDetails: CardDetails;
   duration: Date | null;
+  durationString: string;
   interestRate: string | null;
 }
 export interface CardDetails {
@@ -52,6 +53,7 @@ export const createSavingsInitialState: CreateSavingsFormState = {
     cvv: '',
   },
   duration: null,
+  durationString: '',
   interestRate: null,
 };
 
@@ -74,7 +76,8 @@ export type FormAction =
   | { type: 'SET_INTEREST_TAGENT_SAVING'; payload: boolean }
   | { type: 'SET_CARD_DETAILS'; payload: CardDetails }
   | { type: 'SET_DURATION'; payload: Date }
-  | { type: 'SET_INTEREST_RATE'; payload: string };
+  | { type: 'SET_INTEREST_RATE'; payload: string }
+  | { type: 'SET_DURATION_STRING'; payload: string };
 
 export const savingsFormReducer = (
   state: CreateSavingsFormState,
@@ -121,6 +124,8 @@ export const savingsFormReducer = (
 
     case 'SET_DURATION':
       return { ...state, duration: action.payload };
+    case 'SET_DURATION_STRING':
+      return { ...state, durationString: action.payload };
     case 'SET_INTEREST_RATE':
       return { ...state, interestRate: action.payload };
     default:
