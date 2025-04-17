@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Linking, Pressable } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
@@ -11,6 +11,28 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../constants/colors';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 const CustomerSupport = () => {
+  const phoneNumber = '+2347037915152';
+  const email = 'support@jompstart.com';
+  const handleCall = () => {
+    const url = `tel:${phoneNumber}`;
+    Linking.openURL(url).catch((e) => {
+      console.log('Error', 'Unable to open the phone dialer.', e);
+    });
+  };
+
+  const handleWhatsApp = () => {
+    const url = `https://wa.me/${phoneNumber}`;
+    Linking.openURL(url).catch((e) => {
+      console.log('Error', 'Unable to open WhatsApp.', e);
+    });
+  };
+
+  const handleEmail = () => {
+    const url = `mailto:${email}`;
+    Linking.openURL(url).catch((e) => {
+      console.log('Error', 'Unable to open the email client.', e);
+    });
+  };
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -42,7 +64,7 @@ const CustomerSupport = () => {
           Contact Support Via Chat, Email, or Phone
         </CText>
         <View style={styles.view1}>
-          <View style={styles.view2}>
+          <Pressable onPress={handleCall} style={styles.view2}>
             <PhoneIcon size={size.getHeightSize(24)} color={colors.primary()} />
             <View
               style={{
@@ -50,7 +72,7 @@ const CustomerSupport = () => {
               }}
             >
               <CText fontSize={14} fontFamily="semibold">
-                +2348010101010
+                {phoneNumber}
               </CText>
               <CText fontSize={14} color="secondaryBlack" fontFamily="regular">
                 Call
@@ -61,8 +83,8 @@ const CustomerSupport = () => {
               color={colors.primary()}
               size={size.getHeightSize(20)}
             />
-          </View>
-          <View style={styles.view2}>
+          </Pressable>
+          <Pressable onPress={handleWhatsApp} style={styles.view2}>
             <FontAwesome
               name="whatsapp"
               color={colors.primary()}
@@ -74,7 +96,7 @@ const CustomerSupport = () => {
               }}
             >
               <CText fontSize={14} fontFamily="semibold">
-                +2348010101010
+                {phoneNumber}
               </CText>
               <CText fontSize={14} color="secondaryBlack" fontFamily="regular">
                 Whatsapp
@@ -85,8 +107,8 @@ const CustomerSupport = () => {
               color={colors.primary()}
               size={size.getHeightSize(20)}
             />
-          </View>
-          <View style={styles.view2}>
+          </Pressable>
+          <Pressable onPress={handleEmail} style={styles.view2}>
             <MaterialCommunityIcons
               name="email-outline"
               size={size.getHeightSize(24)}
@@ -109,7 +131,7 @@ const CustomerSupport = () => {
               color={colors.primary()}
               size={size.getHeightSize(20)}
             />
-          </View>
+          </Pressable>
         </View>
       </View>
     </GradientSafeAreaView>
