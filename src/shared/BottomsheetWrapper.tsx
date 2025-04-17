@@ -57,9 +57,13 @@ const BottomsheetWrapper = ({
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  visibility === false
-    ? bottomSheetRef.current?.close()
-    : bottomSheetRef.current?.expand();
+  useEffect(() => {
+    if (visibility) {
+      bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
+    }
+  }, [visibility]);
   useEffect(() => {
     onMount?.();
     const handleBackButton = () => {
@@ -86,7 +90,7 @@ const BottomsheetWrapper = ({
         opacity={backdropOpacity ? backdropOpacity : 0.8}
       />
     ),
-    []
+    [disableBackdropPress, backdropOpacity]
   );
 
   return (
@@ -95,7 +99,9 @@ const BottomsheetWrapper = ({
         <></>
       ) : (
         <BottomSheet
-          keyboardBehavior={Platform.OS == 'ios' ? 'fillParent' : 'interactive'}
+          keyboardBehavior={
+            Platform.OS == 'ios' ? 'interactive' : 'interactive'
+          }
           keyboardBlurBehavior="restore"
           onClose={() => {
             onClose();

@@ -33,6 +33,7 @@ export const fontColorMap = {
   aappBackground: '#F9F8FF',
   blue: '#175CD3',
   black3: '#475467',
+  purple: '#31005C',
 };
 
 const CText: React.FC<CTextProps> = ({

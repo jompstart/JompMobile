@@ -92,7 +92,11 @@ export const getTimeDifferenceBetweenDates = (
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
   const diffInWeeks = Math.floor(diffInDays / 7);
 
-  if (diffInWeeks > 0) {
+  // If weeks is a multiple of 4, convert to months
+  if (diffInWeeks > 0 && diffInWeeks % 4 === 0) {
+    const months = diffInWeeks / 4;
+    return `${months} Month${months > 1 ? 's' : ''}`;
+  } else if (diffInWeeks > 0) {
     return `${diffInWeeks} Week${diffInWeeks > 1 ? 's' : ''}`;
   } else if (diffInDays > 0) {
     return `${diffInDays} Day${diffInDays > 1 ? 's' : ''}`;

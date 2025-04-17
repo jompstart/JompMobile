@@ -6,7 +6,7 @@ import {
   TextInputProps,
   ViewStyle,
 } from 'react-native';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import { TextStyle } from 'react-native';
@@ -20,6 +20,7 @@ interface CTextInputProps extends TextInputProps {
   title?: string;
   required?: boolean;
   outerStyle?: ViewStyle;
+  isAmount?: boolean;
 }
 const PTextInput: React.FC<CTextInputProps> = ({
   style,
@@ -28,8 +29,32 @@ const PTextInput: React.FC<CTextInputProps> = ({
   title,
   required,
   outerStyle,
+  isAmount,
   ...props
 }) => {
+  const [formattedValue, setFormattedValue] = useState<string>(
+    isAmount && props.value
+      ? formatAmount(String(props.value))
+      : String(props.value ?? '')
+  );
+
+  useEffect(() => {
+    if (isAmount && props.value !== undefined) {
+      setFormattedValue(formatAmount(String(props.value)));
+    }
+  }, [props.value]);
+
+  const handleAmountChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9]/g, ''); // Remove commas or non-digit
+    setFormattedValue(formatAmount(numericValue));
+    props.onChangeText?.(numericValue); // Return raw numeric value to the parent
+  };
+
+  function formatAmount(value: string) {
+    const number = parseInt(value.replace(/[^0-9]/g, ''), 10);
+    if (isNaN(number)) return '';
+    return number.toLocaleString();
+  }
   return (
     <View
       style={{
@@ -83,14 +108,15 @@ const PTextInput: React.FC<CTextInputProps> = ({
             {...props}
             cursorColor={colors.primary()}
             placeholderTextColor={'#21212180'}
+            value={isAmount ? formattedValue : props.value}
+            onChangeText={isAmount ? handleAmountChange : props.onChangeText}
+            keyboardType={isAmount ? 'numeric' : props.keyboardType}
             style={[
               styles.input,
               style,
-
               {
                 color: style?.color ? style?.color : colors.black(),
               },
-              // showWarning && {borderColor: colors.warningColor(), borderWidth: 1},
             ]}
           />
           {rightIcon}

@@ -37,6 +37,9 @@ import Verification from '../screens/compliance/Verification';
 import HouseRentService from '../screens/services/HouseRentService';
 import SuccessPage from '../screens/services/SuccessPage';
 import CreatedServices from '../screens/services/CreatedServices';
+import Support from '../screens/Support/Support';
+import CustomerSupport from '../screens/Support/CustomerSupport';
+import Faqs from '../screens/Support/Faqs';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -189,6 +192,18 @@ const MainNavigator = () => {
     {
       name: 'CreatedServices',
       component: CreatedServices,
+    },
+    {
+      name: 'Support',
+      component: Support,
+    },
+    {
+      name: 'CustomerSupport',
+      component: CustomerSupport,
+    },
+    {
+      name: 'Faqs',
+      component: Faqs,
     },
   ];
 

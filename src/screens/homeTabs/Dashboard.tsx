@@ -465,7 +465,12 @@ const Dashboard = () => {
               Link Bank Account
             </CText>
           </Pressable>
-          <View style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigate('Support');
+            }}
+            style={styles.view1}
+          >
             <View style={styles.view}>
               <SupportIcon size={size.getHeightSize(26)} />
             </View>
@@ -480,7 +485,7 @@ const Dashboard = () => {
             >
               Chat With Support
             </CText>
-          </View>
+          </Pressable>
         </View>
         <View
           style={{

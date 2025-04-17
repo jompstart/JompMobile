@@ -29,7 +29,6 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
     user.customerId,
     params?.goalId
   );
-  console.log('savings', savings);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -167,6 +166,29 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
                   savings?.data.startDate.toString(),
                   savings?.data?.endDate.toString()
                 )}
+            </CText>
+          </View>
+          <View style={styles.view2}>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+              style={{
+                flex: 1,
+              }}
+            >
+              Savings Frequency
+            </CText>
+            <CText
+              color={'black'}
+              fontSize={13}
+              lineHeight={18.2}
+              fontFamily="semibold"
+            >
+              {savings?.data?.savingsFrequency &&
+                savings?.data?.savingsFrequency?.slice(0, 1).toUpperCase() +
+                  savings?.data?.savingsFrequency?.slice(1)}
             </CText>
           </View>
           <View style={styles.view2}>

@@ -141,6 +141,7 @@ const Form2 = () => {
         />
         <PTextInput
           placeholder="₦ Child's School Fees"
+          isAmount
           keyboardType="decimal-pad"
           value={
             childSchoolFeeDetails.childSchoolDetails[0]?.childSchoolFees || ''
@@ -326,6 +327,7 @@ const Form2 = () => {
               }
             />
             <PTextInput
+              isAmount
               key={index + 10}
               placeholder="₦ Child's School Fees"
               keyboardType="decimal-pad"

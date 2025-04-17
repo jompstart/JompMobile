@@ -363,6 +363,7 @@ const Form1 = () => {
         />
 
         <PTextInput
+          isAmount
           keyboardType="phone-pad"
           placeholder="Requested Credit Amount"
           onChangeText={(text) => {

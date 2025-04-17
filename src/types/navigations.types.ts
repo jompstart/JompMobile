@@ -52,6 +52,9 @@ export type RootStackParamList = {
     message?: string;
   };
   CreatedServices: undefined;
+  Support: undefined;
+  CustomerSupport: undefined;
+  Faqs: undefined;
 };
 
 type SignUpScreenParams = {

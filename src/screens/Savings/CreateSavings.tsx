@@ -1,7 +1,7 @@
-import { StyleSheet, Pressable, View, Switch } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import GradientHeader from '../../shared/GradientHeader';
 import CText from '../../shared/CText';
-import { useReducer, useState } from 'react';
+import { useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
@@ -12,7 +12,7 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { CreateSavingsScreenProps } from '../../types/navigations.types';
 import { useMutation } from '@tanstack/react-query';
-import { CreateSavingsFormState } from '../../features/Savings/savings.reducer';
+
 import {
   useAppDispatch,
   useAppSelector,
@@ -23,10 +23,10 @@ import { API_RESPONSE } from '../../types';
 import { CreateSavingsRequestDto } from '../../services/savings/savings.dto';
 import { updateToast } from '../../features/ui/ui.slice';
 import { useNavigation } from '@react-navigation/native';
-import { formatDuration, formatSavingsDuration } from '../../helpers/savings';
+import { formatToAmount } from '../../utils/stringManipulation';
 const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
   const [agreement1, setAgreement1] = useState(false);
-  const [agreement2, setAgreement2] = useState(false);
+
   const navigation = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -49,8 +49,6 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
       );
     },
     onSuccess: (data) => {
-      console.log('====== Success creating service =======');
-      console.log(data);
       navigation.navigate('SuccessPage', {
         message:
           'You have successfully created your savings goal 🎉. We will be cheering you on as you save towards your goal.',
@@ -91,7 +89,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
               opacity: 0.75,
             }}
           >
-            Create a Savings Goal
+            Summary of your new savings goal
           </CText>
           <CText
             color={'secondaryBlack'}
@@ -103,9 +101,11 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
               marginTop: size.getHeightSize(4),
             }}
           >
-            Set up a new savings goal and get paid every day (@{' '}
+            You are about to create a new savings goal. You will earn your
+            interest every day at a rate of {params?.interestRate}% per annum.
+            {/* Set up a new savings goal and get paid every day (@{' '}
             {params?.interestTagentSaving}% interest P.A) to reach your goals
-            faster.
+            faster. */}
           </CText>
         </View>
         <View
@@ -186,7 +186,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  {params?.targetAmount}
+                  ₦{formatToAmount(params?.targetAmount)}
                 </CText>
               </View>
             </View>
@@ -251,7 +251,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
                   fontFamily="bold"
                   style={styles.text}
                 >
-                  {params?.monthlyContribution}
+                  ₦{formatToAmount(params?.monthlyContribution)}
                 </CText>
               </View>
               <View style={styles.view}>

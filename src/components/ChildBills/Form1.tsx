@@ -54,6 +54,7 @@ const Form1 = () => {
         value={childSchoolFeeDetails.guardianDetails.phoneNumber}
       />
       <PTextInput
+        isAmount
         placeholder="₦ Loan Amount"
         onChangeText={(text) =>
           setChildSchoolFeeDetails('guardianDetails', 'loanAmount', text)

@@ -64,6 +64,7 @@ const Form2 = ({ onSelectState }: { onSelectState: () => void }) => {
         value={selfSchoolFeeDetails?.educationnDetails?.locationOfSchool2}
       />
       <PTextInput
+      isAmount
         placeholder="₦ Tuition Fee"
         keyboardType="number-pad"
         onChangeText={(text) =>
@@ -72,6 +73,7 @@ const Form2 = ({ onSelectState }: { onSelectState: () => void }) => {
         value={selfSchoolFeeDetails?.educationnDetails?.tuitionFee}
       />
       <PTextInput
+      isAmount
         placeholder="₦ Loan Amount"
         keyboardType="number-pad"
         onChangeText={(text) =>

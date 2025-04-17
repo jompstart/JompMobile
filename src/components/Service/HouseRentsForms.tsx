@@ -108,6 +108,7 @@ const HouseRentsForms = ({
         }}
       >
         <PTextInput
+          isAmount
           value={state.rentAmount}
           onChangeText={(text) => {
             dispatch({ type: 'SET_RENT_AMOUNT', payload: text });
@@ -115,6 +116,7 @@ const HouseRentsForms = ({
           placeholder="Rent Amount"
         />
         <PTextInput
+        isAmount
           value={state.requestedAmount}
           onChangeText={(text) => {
             dispatch({ type: 'SET_REQUESTED_AMOUNT', payload: text });

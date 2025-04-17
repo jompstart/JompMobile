@@ -204,6 +204,7 @@ const Savings = () => {
             <View
               style={{
                 width: size.getWidthSize(236),
+                flex: 1,
               }}
             >
               <CText
@@ -227,8 +228,8 @@ const Savings = () => {
             </View>
             <MaterialIcons
               name="add"
-              color={'#31005C'}
-              size={size.getHeightSize(28)}
+              color={colors.primary()}
+              size={size.getHeightSize(70)}
             />
           </Pressable>
           <LinearGradient

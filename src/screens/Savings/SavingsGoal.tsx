@@ -1,7 +1,6 @@
 import { StyleSheet, Pressable, View, Switch, Platform } from 'react-native';
 import GradientHeader from '../../shared/GradientHeader';
 import CText from '../../shared/CText';
-import InfoIcon from '../../../assets/svgs/Loan/InfoIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
@@ -17,7 +16,7 @@ import FundSourceBottomsheet from '../../components/Savings/FundSourceBottomshee
 import { useNavigation } from '@react-navigation/native';
 import { useReducer, useState, useEffect } from 'react';
 import SavingsCategoryBottomsheet from '../../components/Savings/CategoryBottomsheet';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 import {
   savingsFormReducer,
   createSavingsInitialState,
@@ -36,6 +35,8 @@ import {
 import { updateToast } from '../../features/ui/ui.slice';
 import { formatToAmount } from '../../utils/stringManipulation';
 import GoalBottomsheet from '../../components/Savings/GoalBottomsheet';
+import CustomizedDuration from '../../components/Savings/CustomizedDuration';
+import SetDuration from '../../components/Savings/SetDuration';
 const SavingsGoal = () => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -61,10 +62,20 @@ const SavingsGoal = () => {
     user.userId,
     user.customerId
   );
+  const [showPreferredSavingsWarning, setShowPreferredSavingsWarning] =
+    useState(false);
+  const [showCustomizeDuration, setShowCustomizeDuration] = useState(false);
+  const [hideCustomizedDuration, setHideCustomizedDuration] = useState(true);
+  const [showDuration, setShowDuration] = useState(false);
+  const [selectedDuration, setSelectedDuration] = useState<
+    'day' | 'week' | 'month' | 'year' | null
+  >(null);
+  const [customizedDuration, setCustomizedDuration] = useState('');
 
   const savingsType = savingsTypes?.data?.find(
     (item) => item.name == 'jompVault'
   );
+
   useEffect(() => {
     if (savingsType) {
       savingsInitialState({
@@ -157,6 +168,14 @@ const SavingsGoal = () => {
     state.startDate,
     state.monthlyContribution,
   ]);
+
+  useEffect(() => {
+    if (+state.monthlyContribution > +state.targetAmount) {
+      setShowPreferredSavingsWarning(true);
+    } else {
+      setShowPreferredSavingsWarning(false);
+    }
+  }, [state.targetAmount, state.monthlyContribution]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -252,6 +271,7 @@ const SavingsGoal = () => {
             />
             <PTextInput
               placeholder="₦ Set savings goal"
+              isAmount
               onChangeText={(text) => {
                 savingsInitialState({
                   type: 'SET_TARGET_AMOUNT',
@@ -281,6 +301,7 @@ const SavingsGoal = () => {
                 <Pressable
                   onPress={() => {
                     // set date of 1 month from now
+                    setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 1);
                     savingsInitialState({
@@ -306,6 +327,7 @@ const SavingsGoal = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
+                    setHideCustomizedDuration(true);
                     // set date of 3 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 3);
@@ -334,6 +356,7 @@ const SavingsGoal = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
+                    setHideCustomizedDuration(true);
                     // set date of 6 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 6);
@@ -362,6 +385,7 @@ const SavingsGoal = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
+                    setHideCustomizedDuration(true);
                     // set date of 9 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 9);
@@ -391,6 +415,7 @@ const SavingsGoal = () => {
                 </Pressable>
                 <Pressable
                   onPress={() => {
+                    setHideCustomizedDuration(true);
                     // set date of 1 year from now
                     const date = new Date();
                     date.setFullYear(date.getFullYear() + 1);
@@ -415,17 +440,58 @@ const SavingsGoal = () => {
                     1 Year
                   </CText>
                 </Pressable>
-                <View style={styles.view}>
+                <Pressable
+                  onPress={() => {
+                    setShowCustomizeDuration(true);
+                  }}
+                  style={
+                    endDate === 'customize' ? styles.isSelected : styles.view
+                  }
+                >
                   <CText
-                    color={'primaryColor'}
+                    color={endDate === 'customize' ? 'white' : 'primaryColor'}
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
                   >
                     Customize
                   </CText>
-                </View>
+                </Pressable>
               </View>
+              {!hideCustomizedDuration && (
+                <>
+                  <CText
+                    color="secondaryBlack"
+                    fontSize={16}
+                    lineHeight={22.4}
+                    fontFamily="regular"
+                  >
+                    Customized duration
+                  </CText>
+                  <Pressable
+                    onPress={() => {
+                      setShowDuration(true);
+                    }}
+                    style={{
+                      backgroundColor: colors.black('07'),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingVertical: size.getHeightSize(12),
+                      borderRadius: size.getHeightSize(8),
+                      borderWidth: size.getHeightSize(1),
+                      borderColor: colors.black('17'),
+                    }}
+                  >
+                    <CText
+                      fontSize={16}
+                      lineHeight={22.4}
+                      fontFamily="semibold"
+                    >
+                      {customizedDuration}
+                    </CText>
+                  </Pressable>
+                </>
+              )}
             </View>
             <View
               style={{
@@ -601,7 +667,7 @@ const SavingsGoal = () => {
                       flex: 1,
                     }}
                   >
-                    Based on your selection above, you can be saving ₦{''}
+                    Based on your selection above, you should be saving ₦{''}
                     {calculateSavingsPerPeriod(
                       +state.targetAmount,
                       state.startDate.toISOString(),
@@ -615,6 +681,7 @@ const SavingsGoal = () => {
                 </View>
               )}
             <PTextInput
+              isAmount
               onChangeText={(text) => {
                 savingsInitialState({
                   type: 'SET_MONTHLY_CONTRIBUTION',
@@ -625,6 +692,25 @@ const SavingsGoal = () => {
               placeholder="₦ Preferred amount to save on a basis"
               keyboardType="number-pad"
             />
+
+            {showPreferredSavingsWarning && (
+              <View style={styles.view6}>
+                <AntDesign
+                  name="infocirlce"
+                  color={colors.primaryWarning()}
+                  size={size.getHeightSize(16)}
+                />
+                <CText
+                  fontSize={14}
+                  lineHeight={16}
+                  style={{ flex: 1 }}
+                  color="warning"
+                >
+                  Your preferred amount to save cannot be more than your savings
+                  goal
+                </CText>
+              </View>
+            )}
 
             {state.targetAmount &&
               state.endDate &&
@@ -768,7 +854,7 @@ const SavingsGoal = () => {
                   textAlign: 'right',
                 }}
               >
-                Waallet Bal: ₦{formatToAmount(user.balance)}
+                Wallet Bal: ₦{formatToAmount(user.balance)}
               </CText>
             )}
             <View style={styles.view4}>
@@ -874,7 +960,7 @@ const SavingsGoal = () => {
             phone={user?.phoneNumber}
             activityIndicatorColor={colors.primary()}
             onCancel={(e) => {
-              console.log(e);
+              // console.log(e);
               setPay(false);
             }}
             onSuccess={(response) => {
@@ -910,6 +996,38 @@ const SavingsGoal = () => {
             ...state,
             targetAmount: newGoal.toString(),
           });
+        }}
+      />
+      <CustomizedDuration
+        isVisible={showCustomizeDuration}
+        onSelected={(value) => {
+          setSelectedDuration(value);
+          setShowDuration(true);
+        }}
+        onClose={() => {
+          setShowCustomizeDuration(false);
+        }}
+      />
+      <SetDuration
+        duration={selectedDuration}
+        onClose={() => {
+          setShowDuration(false);
+        }}
+        isVisible={showDuration}
+        onSelected={(value, duration) => {
+          setCustomizedDuration(duration);
+          savingsInitialState({
+            type: 'SET_DURATION',
+            payload: value,
+          });
+          savingsInitialState({
+            type: 'SET_DURATION_STRING',
+            payload: duration,
+          });
+          setShowDuration(false);
+          setShowCustomizeDuration(false);
+          setEndDate('customize');
+          setHideCustomizedDuration(false);
         }}
       />
     </GradientSafeAreaView>
@@ -984,5 +1102,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: colors.black('30'),
     borderWidth: size.getHeightSize(1),
+  },
+  view6: {
+    borderWidth: size.getHeightSize(1),
+    borderColor: colors.primaryWarning('62'),
+    paddingVertical: size.getHeightSize(8),
+    flexDirection: 'row',
+    gap: size.getWidthSize(16),
+    alignItems: 'center',
+    paddingHorizontal: size.getWidthSize(16),
+    backgroundColor: colors.primaryWarning('40'),
+    borderRadius: size.getHeightSize(8),
   },
 });
