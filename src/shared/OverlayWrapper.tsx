@@ -13,9 +13,6 @@ import { updateSuccessModalVisibility } from '../features/ui/ui.slice';
 const OverlayWrapper = () => {
   const toast = useAppSelector(toastSelector);
   const successModal = useAppSelector(successModalSelector);
-  const accountDetailsBottomsheet = useAppSelector(
-    accountDetailsBottomsheetSelector
-  );
 
   const dispatch = useAppDispatch();
   return (
@@ -43,11 +40,8 @@ const OverlayWrapper = () => {
           }}
         />
       )}
-      {accountDetailsBottomsheet.isVisible && (
-        <AccountDetailsBottomsheet
-          isVisible={accountDetailsBottomsheet.isVisible}
-        />
-      )}
+
+      <AccountDetailsBottomsheet />
     </>
   );
 };

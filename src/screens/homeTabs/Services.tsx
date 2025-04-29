@@ -86,7 +86,7 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                Pay for services you have already received or not listed.
+                Select from our wide range of offerings.
               </CText>
             </View>
             <ArrowRightIcon
@@ -118,7 +118,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                User Created
+                User Curated
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -126,7 +126,7 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                View the services you created
+                Pay later with Jomp for everyday services you already use
               </CText>
             </View>
             <ArrowRightIcon
@@ -155,7 +155,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                Jomp Curated
+                Jomp Curated (Coming Soon)
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -163,7 +163,7 @@ const Services = () => {
                 lineHeight={18.2}
                 fontFamily="regular"
               >
-                Coming soon
+                Access Jomp-specially curated services at great discounts.
               </CText>
             </View>
             <ArrowRightIcon

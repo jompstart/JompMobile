@@ -92,7 +92,12 @@ const Support = () => {
               size={size.getHeightSize(20)}
             />
           </Pressable>
-          <View style={styles.view2}>
+          <Pressable
+            onPress={() => {
+              navigate('Request');
+            }}
+            style={styles.view2}
+          >
             <InfoIcon size={size.getHeightSize(24)} />
             <CText
               fontSize={14}
@@ -108,7 +113,7 @@ const Support = () => {
               color={colors.primary()}
               size={size.getHeightSize(20)}
             />
-          </View>
+          </Pressable>
         </View>
       </View>
     </GradientSafeAreaView>

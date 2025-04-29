@@ -1,0 +1,167 @@
+import { StyleSheet, Pressable, View } from 'react-native';
+import React from 'react';
+import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
+import GradientHeader from '../../shared/GradientHeader';
+import { size } from '../../config/size';
+import CText from '../../shared/CText';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import PrimaryButton from '../../shared/PrimaryButton';
+import { colors } from '../../constants/colors';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import PTextInput from '../../shared/PTextInput';
+import ReasonBotttomsheet from '../../components/Support/ReasonBotttomsheet';
+const Request = () => {
+  const [reasonBottomSheetVisible, setShowReasonBottomSheet] =
+    React.useState(false);
+  const [selectedReason, setSelectedReason] = React.useState<{
+    text: string;
+    id: number | null;
+  }>({
+    text: '',
+    id: null,
+  });
+  const [details, setDetails] = React.useState('');
+  return (
+    <GradientSafeAreaView>
+      <GradientHeader>
+        <MaterialIcons
+          name="arrow-back-ios"
+          size={size.getHeightSize(18)}
+          color="white"
+        />
+        <CText
+          color={'white'}
+          fontSize={16}
+          lineHeight={25.6}
+          fontFamily="bold"
+        >
+          Go Back
+        </CText>
+      </GradientHeader>
+      <View
+        style={{
+          paddingHorizontal: size.getWidthSize(16),
+          paddingTop: size.getHeightSize(16),
+          flex: 1,
+        }}
+      >
+        <KeyboardAwareScrollView>
+          <CText
+            color={'black'}
+            fontSize={18}
+            lineHeight={28.8}
+            fontFamily="bold"
+          >
+            Request to Remove Account
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="regular"
+            style={{
+              opacity: 0.75,
+              marginTop: size.getHeightSize(4),
+            }}
+          >
+            Please specify reason
+          </CText>
+          <Pressable
+            onPress={() => {
+              setShowReasonBottomSheet(true);
+            }}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: size.getWidthSize(16),
+              borderWidth: size.getHeightSize(1),
+              paddingVertical: size.getHeightSize(16),
+              borderRadius: size.getHeightSize(8),
+              borderColor: colors.black('30'),
+              paddingHorizontal: size.getWidthSize(16),
+              marginTop: size.getHeightSize(24),
+            }}
+          >
+            <CText
+              color={'secondaryBlack'}
+              fontSize={14}
+              lineHeight={18.6}
+              fontFamily="semibold"
+              style={{
+                flex: 1,
+              }}
+            >
+              {selectedReason.text ? selectedReason.text : 'Select'}
+            </CText>
+            <AntDesign
+              name="caretdown"
+              color={colors.black('30')}
+              size={size.getHeightSize(16)}
+            />
+          </Pressable>
+          <PTextInput
+            onChangeText={(text) => {
+              setDetails(text);
+            }}
+            fixedHeight
+            height={120}
+            multiline
+            textAlignVertical="top"
+            style={{
+              height: size.getHeightSize(120),
+            }}
+            placeholder="Type here..."
+            outerStyle={{
+              marginTop: size.getHeightSize(16),
+              paddingVertical: size.getHeightSize(16),
+              height: size.getHeightSize(120),
+            }}
+          />
+          <View
+            style={{
+              marginTop: size.getHeightSize(100),
+            }}
+          />
+          <PrimaryButton
+            disabled={!details || !selectedReason.id}
+            label="Send Request"
+          />
+        </KeyboardAwareScrollView>
+      </View>
+      <ReasonBotttomsheet
+        onChangeText={(r) => {
+          setSelectedReason({
+            text: r.text,
+            id: r.index,
+          });
+        }}
+        selectedTextId={selectedReason.id}
+        onClose={() => {
+          setShowReasonBottomSheet(false);
+        }}
+        isVisible={reasonBottomSheetVisible}
+      />
+    </GradientSafeAreaView>
+  );
+};
+
+export default Request;
+const styles = StyleSheet.create({
+  view1: {
+    paddingHorizontal: size.getWidthSize(16),
+    paddingVertical: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(8),
+    backgroundColor: colors.white(),
+    gap: size.getHeightSize(24),
+    marginHorizontal: size.getWidthSize(16),
+    marginTop: size.getHeightSize(16),
+  },
+  view2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: size.getWidthSize(16),
+  },
+});

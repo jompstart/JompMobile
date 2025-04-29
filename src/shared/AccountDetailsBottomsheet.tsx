@@ -7,30 +7,32 @@ import { useAppDispatch } from '../controller/redux.controller';
 import { updateAccountDetailsBottomsheetVisibility } from '../features/ui/ui.slice';
 import CText from './CText';
 import { size } from '../config/size';
-import BottomsheetWrapper from './BottomsheetWrapper';
 import BankIcon from '../../assets/svgs/Home/BankIcon';
 import PersonIcon from '../../assets/svgs/Dashboard/PersonIcon';
-import OrderIcon from '../../assets/svgs/Home/OrderIcon';
-import TransactionsIcon from '../../assets/svgs/Home/TransactionsIcon';
-import CopyIcon from '../../assets/svgs/Home/CopyIcon';
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import CancelIcon from '../../assets/svgs/Home/CancelIcon';
 import ProviderIcon from '../../assets/svgs/Services/ProviderIcon';
 import { useAppSelector } from '../controller/redux.controller';
 import { userSelector } from '../features/user/user.selector';
+import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
 interface Props {
   isVisible: boolean;
 }
-const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
+const AccountDetailsBottomsheet = () => {
   const dispatch = useAppDispatch();
+  const accountDetailsBottomsheet = useAppSelector(
+    accountDetailsBottomsheetSelector
+  );
+  const [isReady, setIsReady] = React.useState(false);
   const user = useAppSelector(userSelector);
   const data = [{}, {}];
+
   return (
     <ScrollablebottomsheetWrapper
-      // snapPoints={['40%']}
+      isReady={isReady}
       topRadius={16}
       enableBackdrop
-      visibility={isVisible}
+      visibility={accountDetailsBottomsheet.isVisible}
       onClose={() => dispatch(updateAccountDetailsBottomsheetVisibility(false))}
       backgroundColor={colors.appBackground()}
     >
@@ -70,118 +72,122 @@ const AccountDetailsBottomsheet = ({ isVisible }: Props) => {
         >
           View your account number and details
         </CText>
-        <BottomSheetScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingBottom: size.getHeightSize(60),
-          }}
+      </View>
+      <BottomSheetScrollView
+        onLayout={() => {
+          setIsReady(true);
+        }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: size.getHeightSize(60),
+        }}
+        style={{
+          marginBottom: size.getHeightSize(16),
+          paddingHorizontal: size.getWidthSize(16),
+        }}
+      >
+        <View
           style={{
-            marginBottom: size.getHeightSize(16),
+            gap: size.getHeightSize(16),
+            marginTop: size.getHeightSize(8),
           }}
         >
-          <View
-            style={{
-              gap: size.getHeightSize(16),
-              marginTop: size.getHeightSize(8),
-            }}
-          >
-            {user.bankDetails.map((item, index) => (
-              <View key={index} style={styles.view1}>
-                <View style={styles.view2}>
-                  <View style={styles.view3}>
-                    <BankIcon size={size.getHeightSize(27)} />
-                  </View>
-                  <View style={styles.view4}>
-                    <CText
-                      color="secondaryBlack"
-                      fontSize={13}
-                      lineHeight={16}
-                      fontFamily="semibold"
-                    >
-                      Bank Name
-                    </CText>
-                    <CText
-                      color="black"
-                      fontSize={14}
-                      lineHeight={18}
-                      fontFamily="bold"
-                    >
-                      {item.bankName}
-                    </CText>
-                  </View>
+          {user.bankDetails.map((item, index) => (
+            <View key={index} style={styles.view1}>
+              <View style={styles.view2}>
+                <View style={styles.view3}>
+                  <BankIcon size={size.getHeightSize(27)} />
                 </View>
-                <View style={styles.view2}>
-                  <View style={styles.view3}>
-                    <PersonIcon size={size.getHeightSize(27)} />
-                  </View>
-                  <View style={styles.view4}>
-                    <CText
-                      color="secondaryBlack"
-                      fontSize={13}
-                      lineHeight={16}
-                      fontFamily="semibold"
-                    >
-                      Account Name
-                    </CText>
-                    <CText
-                      color="black"
-                      fontSize={14}
-                      lineHeight={18}
-                      fontFamily="bold"
-                    >
-                      {item.accountName}
-                    </CText>
-                  </View>
-                </View>
-                <View style={styles.view2}>
-                  {/* <View style={styles.view3}>
-                   
-                  </View> */}
-                  <ProviderIcon size={size.getHeightSize(49)} />
-                  <View style={styles.view4}>
-                    <CText
-                      color="secondaryBlack"
-                      fontSize={13}
-                      lineHeight={16}
-                      fontFamily="semibold"
-                    >
-                      Bank Account Number
-                    </CText>
-                    <CText
-                      color="black"
-                      fontSize={14}
-                      lineHeight={18}
-                      fontFamily="bold"
-                    >
-                      {item.accountNumber}
-                    </CText>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      gap: size.getWidthSize(4),
-                    }}
+                <View style={styles.view4}>
+                  <CText
+                    color="secondaryBlack"
+                    fontSize={13}
+                    lineHeight={16}
+                    fontFamily="semibold"
                   >
-                    <Feather
-                      color={colors.primary()}
-                      name="copy"
-                      size={size.getHeightSize(16)}
-                    />
-                    <CText
-                      color="primaryColor"
-                      fontSize={13}
-                      lineHeight={18}
-                      fontFamily="bold"
-                    >
-                      Copy
-                    </CText>
-                  </View>
+                    Bank Name
+                  </CText>
+                  <CText
+                    color="black"
+                    fontSize={14}
+                    lineHeight={18}
+                    fontFamily="bold"
+                  >
+                    {item.bankName}
+                  </CText>
                 </View>
               </View>
-            ))}
-          </View>
-        </BottomSheetScrollView>
-      </View>
+              <View style={styles.view2}>
+                <View style={styles.view3}>
+                  <PersonIcon size={size.getHeightSize(27)} />
+                </View>
+                <View style={styles.view4}>
+                  <CText
+                    color="secondaryBlack"
+                    fontSize={13}
+                    lineHeight={16}
+                    fontFamily="semibold"
+                  >
+                    Account Name
+                  </CText>
+                  <CText
+                    color="black"
+                    fontSize={14}
+                    lineHeight={18}
+                    fontFamily="bold"
+                  >
+                    {item.accountName}
+                  </CText>
+                </View>
+              </View>
+              <View style={styles.view2}>
+                {/* <View style={styles.view3}>
+                   
+                  </View> */}
+                <ProviderIcon size={size.getHeightSize(49)} />
+                <View style={styles.view4}>
+                  <CText
+                    color="secondaryBlack"
+                    fontSize={13}
+                    lineHeight={16}
+                    fontFamily="semibold"
+                  >
+                    Bank Account Number
+                  </CText>
+                  <CText
+                    color="black"
+                    fontSize={14}
+                    lineHeight={18}
+                    fontFamily="bold"
+                  >
+                    {item.accountNumber}
+                  </CText>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: size.getWidthSize(4),
+                  }}
+                >
+                  <Feather
+                    color={colors.primary()}
+                    name="copy"
+                    size={size.getHeightSize(16)}
+                  />
+                  <CText
+                    color="primaryColor"
+                    fontSize={13}
+                    lineHeight={18}
+                    fontFamily="bold"
+                  >
+                    Copy
+                  </CText>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+      </BottomSheetScrollView>
     </ScrollablebottomsheetWrapper>
   );
 };

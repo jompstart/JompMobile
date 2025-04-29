@@ -21,6 +21,8 @@ interface CTextInputProps extends TextInputProps {
   required?: boolean;
   outerStyle?: ViewStyle;
   isAmount?: boolean;
+  fixedHeight?: boolean;
+  height?: number;
 }
 const PTextInput: React.FC<CTextInputProps> = ({
   style,
@@ -30,6 +32,8 @@ const PTextInput: React.FC<CTextInputProps> = ({
   required,
   outerStyle,
   isAmount,
+  fixedHeight = false,
+  height,
   ...props
 }) => {
   const [formattedValue, setFormattedValue] = useState<string>(
@@ -72,6 +76,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
           paddingVertical: size.getHeightSize(8),
           minHeight: size.getHeightSize(52),
           justifyContent: 'center',
+          height: fixedHeight ? size.getHeightSize(height!) : undefined,
         }}
       >
         {props.value && (
@@ -101,10 +106,11 @@ const PTextInput: React.FC<CTextInputProps> = ({
             flexDirection: 'row',
             alignItems: 'center',
             gap: size.getWidthSize(8),
+            height: fixedHeight ? size.getHeightSize(height!) : undefined,
           }}
         >
           <TextInput
-            numberOfLines={1}
+            // numberOfLines={1}
             {...props}
             cursorColor={colors.primary()}
             placeholderTextColor={'#21212180'}
@@ -116,6 +122,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
               style,
               {
                 color: style?.color ? style?.color : colors.black(),
+                height: fixedHeight ? size.getHeightSize(height!) : undefined,
               },
             ]}
           />

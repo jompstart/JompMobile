@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { BackHandler, Dimensions, StyleSheet } from 'react-native';
 import { sizes } from '../utils/size';
@@ -33,6 +34,7 @@ interface Props extends BottomSheetProps {
   topRadius?: number;
   disableBackdropPress?: boolean;
   snapPoints?: string[];
+  isReady?: boolean;
 }
 const ScrollablebottomsheetWrapper = ({
   onClose,
@@ -50,27 +52,38 @@ const ScrollablebottomsheetWrapper = ({
   topRadius = 32,
   disableBackdropPress = false,
   snapPoints,
+  isReady = false,
 }: Props) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  visibility === false
-    ? bottomSheetRef.current?.close()
-    : bottomSheetRef.current?.expand();
-  useEffect(() => {
-    onMount?.();
-    const handleBackButton = () => {
-      if (visibility === true) {
-        onClose();
-        return true;
-      } else {
-        return false;
-      }
-    };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-    };
-  }, [visibility]);
+  const sheetSnapPoints = useMemo(
+    () => (snapPoints ? snapPoints : ['60%', '85%', '100%']),
+    []
+  );
+
+  // useEffect(() => {
+  //   if (visibility) {
+  //     bottomSheetRef.current?.snapToIndex(0); // Expands to the second snap point ('50%')
+  //   } else {
+  //     bottomSheetRef.current?.close();
+  //   }
+  // }, [visibility]);
+
+  // useEffect(() => {
+  //   onMount?.();
+  //   const handleBackButton = () => {
+  //     if (visibility === true) {
+  //       onClose();
+  //       return true;
+  //     } else {
+  //       return false;
+  //     }
+  //   };
+  //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+  //   return () => {
+  //     BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+  //   };
+  // }, [visibility]);
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -82,7 +95,7 @@ const ScrollablebottomsheetWrapper = ({
         opacity={backdropOpacity ? backdropOpacity : 0.8}
       />
     ),
-    []
+    [disableBackdropPress, backdropOpacity]
   );
 
   return (
@@ -91,13 +104,12 @@ const ScrollablebottomsheetWrapper = ({
         <></>
       ) : (
         <BottomSheet
-          keyboardBehavior="interactive"
-          keyboardBlurBehavior="restore"
           onClose={() => {
             onClose();
           }}
+          enableDynamicSizing={false}
           ref={bottomSheetRef}
-          snapPoints={snapPoints ? snapPoints : ['80']}
+          snapPoints={sheetSnapPoints}
           enablePanDownToClose={enablePanDownToClose}
           animateOnMount={true}
           backgroundStyle={{

@@ -245,6 +245,8 @@ const AddCard = () => {
           }}
         >
           <PTextInput
+            isAmount
+            value={amount}
             keyboardType="numeric"
             placeholder="₦ Amount"
             onChangeText={(text) => setAmount(text)}
