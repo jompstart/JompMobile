@@ -2,6 +2,7 @@ import { makeRequest } from '../config/api.config';
 import { AddBankDto } from '../interface/provider';
 import { BankDetails } from '../models/user';
 import {
+  DeleteAccountDto,
   GetCustomerDto,
   GetWalletResponseDto,
   OrderResponseDto,
@@ -62,6 +63,22 @@ export class UserService {
     return await makeRequest<BankDetails>({
       method: 'GET',
       url: `/get-bank-details?userId=${this.userId}`,
+    });
+  }
+
+  async deleteAccount(data: DeleteAccountDto) {
+    let formData = new FormData();
+    formData.append('CustomerId', this.customerId);
+    formData.append('Reason', data.reason);
+    formData.append('Description', data.description);
+
+    return await makeRequest({
+      method: 'POST',
+      url: `/delete-account`,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      data: formData,
     });
   }
 }

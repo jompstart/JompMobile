@@ -17,9 +17,7 @@ import { userSelector } from '../features/user/user.selector';
 import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
 import { UserService } from '../services/user';
 import { changeUserState } from '../features/user/user.slice';
-interface Props {
-  isVisible: boolean;
-}
+
 const AccountDetailsBottomsheet = () => {
   const dispatch = useAppDispatch();
   const accountDetailsBottomsheet = useAppSelector(
@@ -28,7 +26,7 @@ const AccountDetailsBottomsheet = () => {
   const [isReady, setIsReady] = React.useState(false);
   const user = useAppSelector(userSelector);
   const userInstance = new UserService(user.customerId, user.userId);
-  const data = [{}, {}];
+
   useEffect(() => {
     if (!user.bankDetails.length) {
       userInstance.getUserBankDetails().then((res) => {

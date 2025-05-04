@@ -49,15 +49,28 @@ const PTextInput: React.FC<CTextInputProps> = ({
   }, [props.value]);
 
   const handleAmountChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9]/g, ''); // Remove commas or non-digit
+    const numericValue = text.replace(/[^0-9.]/g, ''); // Preserve the decimal point
     setFormattedValue(formatAmount(numericValue));
     props.onChangeText?.(numericValue); // Return raw numeric value to the parent
   };
-
+  
   function formatAmount(value: string) {
-    const number = parseInt(value.replace(/[^0-9]/g, ''), 10);
-    if (isNaN(number)) return '';
-    return number.toLocaleString();
+    // Return an empty string if the input is empty
+    if (!value) return '';
+  
+    // Remove all non-numeric characters except the decimal point
+    const numericValue = value.replace(/[^0-9.]/g, '');
+  
+    // Split the value into integer and decimal parts
+    const [integerPart, decimalPart] = numericValue.split('.');
+  
+    // Format the integer part with commas
+    const formattedInteger = parseInt(integerPart || '0', 10).toLocaleString();
+  
+    // Return the formatted value with the decimal part (if it exists)
+    return decimalPart !== undefined
+      ? `${formattedInteger}.${decimalPart}`
+      : formattedInteger;
   }
   return (
     <View

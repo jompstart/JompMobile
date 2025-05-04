@@ -54,6 +54,7 @@ const SavingsGoal = () => {
   const [showTime, setShowTime] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   const [showSource, setShowSource] = useState(false);
+  const [isProceedButtonDisabled, setProceedButtonDisabled] = useState(false);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [estimatedAmount, setEstimatedAmount] = useState(0);
@@ -176,6 +177,25 @@ const SavingsGoal = () => {
       setShowPreferredSavingsWarning(false);
     }
   }, [state.targetAmount, state.monthlyContribution]);
+  useEffect(() => {
+    // diabled proceed button if any of the fields except auto save, prefered time, auto withdrawal are empty
+    if (
+      !state.targetAmount ||
+      !state.goalName ||
+      !state.frequency ||
+      !state.startDate ||
+      !state.duration ||
+      !state.savingCategory ||
+      !state.savingSource ||
+      !state.monthlyContribution
+    ) {
+      setProceedButtonDisabled(true);
+    } else if (state.autoSave && !state.preferredTime) {
+      setProceedButtonDisabled(true);
+    } else {
+      setProceedButtonDisabled(false);
+    }
+  }, [state]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -724,9 +744,9 @@ const SavingsGoal = () => {
                       state.endDate.toISOString(),
                       state.frequency as any
                     )
-                  ).map((suggestedAmount) => (
+                  ).map((suggestedAmount, index) => (
                     <Pressable
-                      key={suggestedAmount}
+                      key={index}
                       onPress={() => {
                         savingsInitialState({
                           type: 'SET_MONTHLY_CONTRIBUTION',
@@ -891,6 +911,7 @@ const SavingsGoal = () => {
           }}
         >
           <PrimaryButton
+            disabled={isProceedButtonDisabled}
             onPress={() => {
               if (
                 state.startDate.toDateString() === new Date().toDateString() &&

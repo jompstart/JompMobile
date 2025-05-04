@@ -9,9 +9,20 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
+import RequestErrorBottomsheet from '../../components/Support/RequestErrorBottomsheet';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PTextInput from '../../shared/PTextInput';
 import ReasonBotttomsheet from '../../components/Support/ReasonBotttomsheet';
+import { useMutation } from '@tanstack/react-query';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import { UserService } from '../../services/user';
+import { API_RESPONSE } from '../../types';
+import { useNavigation } from '@react-navigation/native';
+import {
+  DeleteAccountDto,
+  DeleteAccountErrorResponseDto,
+} from '../../services/dto/user.dto';
 const Request = () => {
   const [reasonBottomSheetVisible, setShowReasonBottomSheet] =
     React.useState(false);
@@ -22,7 +33,37 @@ const Request = () => {
     text: '',
     id: null,
   });
+  const user = useAppSelector(userSelector);
   const [details, setDetails] = React.useState('');
+
+  const navigation = useNavigation();
+  const userInstance = new UserService(user.customerId, user.userId);
+  const {
+    mutate: deleteAccount,
+    isPending,
+    error,
+    isError,
+    reset,
+  } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    // DeleteAccountErrorResponseDto,
+    DeleteAccountDto
+  >({
+    mutationFn: (data) => userInstance.deleteAccount(data),
+    onSuccess: (res) => {
+      if (res.success) {
+        navigation.navigate('SuccessPage', {
+          message: 'Account Deleted Successfully',
+          title: 'Your account has been deleted successfully.',
+        });
+      }
+    },
+    onError: (err) => {
+      console.log('======= error deleting account =======');
+      console.log(err);
+    },
+  });
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -126,8 +167,15 @@ const Request = () => {
             }}
           />
           <PrimaryButton
+            isLoading={isPending}
             disabled={!details || !selectedReason.id}
             label="Send Request"
+            onPress={() => {
+              deleteAccount({
+                description: details,
+                reason: selectedReason.text,
+              });
+            }}
           />
         </KeyboardAwareScrollView>
       </View>
@@ -143,6 +191,15 @@ const Request = () => {
           setShowReasonBottomSheet(false);
         }}
         isVisible={reasonBottomSheetVisible}
+      />
+      <RequestErrorBottomsheet
+        onClose={() => {
+          reset();
+        }}
+        visibility={isError}
+        onContinue={() => {}}
+        errorDescription={error?.message || ''}
+        errorMessage="You Cannot Delete Your Account"
       />
     </GradientSafeAreaView>
   );
