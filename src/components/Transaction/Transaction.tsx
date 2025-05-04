@@ -4,8 +4,13 @@ import { size } from '../../config/size';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
+import {
+  TransactionDto,
+  TransactionResponseDto,
+} from '../../services/dto/user.dto';
+import { formatDate, formatDateTime } from '../../utils/stringManipulation';
 
-const Transaction = () => {
+const Transaction = (item: TransactionResponseDto) => {
   return (
     <View
       style={{
@@ -22,7 +27,7 @@ const Transaction = () => {
         lineHeight={22.4}
         fontFamily="regular"
       >
-        January
+        {formatDate(item.dateInitiated)}
       </CText>
       <View
         style={{
@@ -48,7 +53,7 @@ const Transaction = () => {
             lineHeight={19.6}
             fontFamily="semibold"
           >
-            Transactions
+            {item.serviceName}
           </CText>
           <View
             style={{
@@ -63,18 +68,20 @@ const Transaction = () => {
               lineHeight={16.8}
               fontFamily="regular"
             >
-              12 Jan, 2025 10:22 AM
+              {formatDateTime(item.dateCompleted)}
             </CText>
             <View
               style={{
                 paddingHorizontal: size.getWidthSize(10),
                 paddingVertical: size.getHeightSize(3),
-                backgroundColor: '#F0756E15',
+                backgroundColor: item.isCompleted
+                  ? colors.primarySuccess('10')
+                  : '#F0756E',
                 borderRadius: size.getHeightSize(9),
               }}
             >
               <CText
-                color={'#F0756E' as any}
+                color={item.isCompleted ? 'success' : ('#F0756E' as any)}
                 fontSize={8}
                 lineHeight={11.2}
                 fontFamily="semibold"
@@ -82,12 +89,12 @@ const Transaction = () => {
                   opacity: 0.75,
                 }}
               >
-                Unpaid
+                {item.currentPaymentStatus}
               </CText>
             </View>
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             paddingHorizontal: size.getWidthSize(20.5),
             paddingVertical: size.getHeightSize(8),
@@ -103,7 +110,7 @@ const Transaction = () => {
           >
             Pay
           </CText>
-        </View>
+        </View> */}
       </View>
     </View>
   );

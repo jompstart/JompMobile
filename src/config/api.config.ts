@@ -48,7 +48,10 @@ export const makeRequest = async <T, D = any>({
     if (axios.isAxiosError(error)) {
       // Handle Axios-specific errors
 
-      console.log('Axios error:', error.response?.data || error.message);
+      console.log(
+        `Axios error: ${url} ===>>`,
+        error.response?.data || error.message
+      );
       throw error.response?.data || error.message;
     } else {
       // Handle non-Axios errors

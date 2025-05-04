@@ -31,11 +31,18 @@ import { userSelector } from '../../features/user/user.selector';
 import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
 import useGetTransactionOrder from '../../hooks/api/dashboard/useGetTransactionOrder';
 import { formatToAmount } from '../../utils/stringManipulation';
+import { useGetRecentTransactions } from '../../hooks/api/user';
+import Transactions from './Transactions';
+import Transaction from '../../components/Transaction/Transaction';
+import RecentTransaction from '../../components/Transaction/RecentTransaction';
 const Dashboard = () => {
   const { navigate } = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const { isLoading } = useGetTransactionOrder();
+  const { data: recenTransactions } = useGetRecentTransactions(
+    user.customerId,
+    user.userId
+  );
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -489,62 +496,30 @@ const Dashboard = () => {
         </View>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: size.getWidthSize(16),
             marginHorizontal: size.getWidthSize(16),
           }}
         >
+          <CText
+            color={'black'}
+            fontSize={14}
+            lineHeight={22.4}
+            fontFamily="semibold"
+          >
+            Recent Transactions
+          </CText>
           <View
             style={{
               flex: 1,
+              backgroundColor: colors.white(),
+              paddingVertical: size.getHeightSize(16),
+              paddingHorizontal: size.getWidthSize(4),
+              borderRadius: size.getHeightSize(8),
             }}
           >
-            <CText
-              color={'black'}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="semibold"
-            >
-              Total Transactions
-            </CText>
-            <View style={styles.view4}>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: size.getHeightSize(8),
-                }}
-              >
-                <TxnIcon size={size.getHeightSize(41)} />
-                <CText
-                  color={'black'}
-                  fontSize={17}
-                  lineHeight={27.2}
-                  fontFamily="bold"
-                >
-                  ₦ {user.totalTransactions}
-                </CText>
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  <CText
-                    color={'success'}
-                    fontSize={12}
-                    lineHeight={19.2}
-                    fontFamily="semibold"
-                  >
-                    +1.42%
-                  </CText>{' '}
-                  From last month
-                </CText>
-              </View>
-            </View>
+            {recenTransactions?.data?.map((item, index) => {
+              return <RecentTransaction data={item} key={index} />;
+            })}
           </View>
-
           {/* <View
             style={{
               flex: 1,

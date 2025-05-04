@@ -23,7 +23,7 @@ export interface OrderResponseDto {
 }
 
 export interface TransactionDto {
-  data: string[];
+  data: TransactionResponseDto[];
   pageIndex: number;
   totalPages: number;
   totalItems: number;
@@ -41,4 +41,23 @@ export interface DeleteAccountErrorResponseDto {
   status: number;
   detail: string;
   instance: string;
+}
+
+export interface TransactionResponseDto {
+  id: string;
+  serviceName: string;
+  currentPaymentStatus: 'success' | 'pending' | 'failed';
+  totalAmount: number;
+  customerId: string;
+  dateInitiated: string;
+  isCompleted: boolean;
+  dateCompleted: string;
+}
+export interface RecentTransactionDto {
+  id: string;
+  serviceName: string;
+  transactionStatus: string;
+  amount: number;
+  createdAt: string;
+  description: string;
 }

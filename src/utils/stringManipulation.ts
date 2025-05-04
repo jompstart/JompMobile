@@ -115,3 +115,32 @@ export const formatToAmount = (value: string | number): string => {
     maximumFractionDigits: 2,
   }).format(number);
 };
+export const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+};
+
+export const formatDateTime = (dateString: string): string => {
+  const date = new Date(dateString);
+
+  // Extract date components
+  const day = date.getDate(); // Day of the month
+  const month = date.toLocaleString('en-US', { month: 'long' }); // Full month name
+  const year = date.getFullYear(); // Year
+
+  // Extract time components
+  let hours = date.getHours(); // Hours (24-hour format)
+  const minutes = String(date.getMinutes()).padStart(2, '0'); // Minutes with leading zero
+  const ampm = hours >= 12 ? 'PM' : 'AM'; // Determine AM/PM
+  hours = hours % 12 || 12; // Convert to 12-hour format
+
+  return `${day} ${month}, ${year} ${hours}:${minutes} ${ampm}`;
+};
+
+// Example usage
+const formattedDateTime = formatDateTime('2025-04-23T22:29:54.987789Z');
+console.log(formattedDateTime); // Output: "23 April, 2025 10:29 PM"

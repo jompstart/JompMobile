@@ -6,7 +6,9 @@ import {
   GetCustomerDto,
   GetWalletResponseDto,
   OrderResponseDto,
+  RecentTransactionDto,
   TransactionDto,
+  TransactionResponseDto,
 } from './dto/user.dto';
 
 export class UserService {
@@ -39,7 +41,7 @@ export class UserService {
   async getCustomerTransactions(page: number, size: number) {
     return await makeRequest<TransactionDto>({
       method: 'GET',
-      url: `/transactions?customerId=${this.customerId}&page=${page}&size=${size}`,
+      url: `/transactions?customerId=${this.userId}&page=${page}&pageSize=${size}`,
     });
   }
   async addBankAccount(data: AddBankDto) {
@@ -79,6 +81,19 @@ export class UserService {
         'Content-Type': 'multipart/form-data',
       },
       data: formData,
+    });
+  }
+
+  async getTransactions() {
+    return await makeRequest({
+      method: 'GET',
+      url: `/transactions?customerId=${this.customerId}`,
+    });
+  }
+  async getRecentTransactions() {
+    return await makeRequest<RecentTransactionDto[]>({
+      method: 'POST',
+      url: `/customer-transaction-recent/${this.customerId}?page=1&pageSize=5`,
     });
   }
 }
