@@ -153,6 +153,7 @@ const Request = () => {
             textAlignVertical="top"
             style={{
               height: size.getHeightSize(120),
+              paddingVertical:size.getHeightSize(16)
             }}
             placeholder="Type here..."
             outerStyle={{

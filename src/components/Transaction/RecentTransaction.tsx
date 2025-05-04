@@ -6,8 +6,6 @@ import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import { RecentTransactionDto } from '../../services/dto/user.dto';
 import {
-  formatDate,
-  formatDateTime,
   formatToAmount,
 } from '../../utils/stringManipulation';
 
@@ -15,7 +13,7 @@ interface Props {
   data: RecentTransactionDto;
 }
 const RecentTransaction = (txn: Props) => {
-  console.log('txn', txn);
+
   return (
     <View
       style={{
