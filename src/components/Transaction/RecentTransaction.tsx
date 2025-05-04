@@ -5,15 +5,12 @@ import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import { RecentTransactionDto } from '../../services/dto/user.dto';
-import {
-  formatToAmount,
-} from '../../utils/stringManipulation';
+import { formatToAmount } from '../../utils/stringManipulation';
 
 interface Props {
   data: RecentTransactionDto;
 }
 const RecentTransaction = (txn: Props) => {
-
   return (
     <View
       style={{
@@ -86,15 +83,15 @@ const RecentTransaction = (txn: Props) => {
 
       <View style={{}}>
         <CText
-          color={'secondaryBlack'}
+          color={'black'}
           fontSize={12}
           lineHeight={22.4}
-          fontFamily="regular"
+          fontFamily="semibold"
           style={{
             textAlign: 'right',
           }}
         >
-          {formatToAmount(txn.data.amount)}
+          ₦{formatToAmount(txn.data.amount)}
         </CText>
         <CText
           color={'secondaryBlack'}
@@ -108,23 +105,6 @@ const RecentTransaction = (txn: Props) => {
           {txn.data.createdAt}
         </CText>
       </View>
-      {/* <View
-        style={{
-          paddingHorizontal: size.getWidthSize(20.5),
-          paddingVertical: size.getHeightSize(8),
-          backgroundColor: colors.primary(),
-          borderRadius: size.getHeightSize(24),
-        }}
-      >
-        <CText
-          color={'white'}
-          fontSize={12}
-          lineHeight={14.4}
-          fontFamily="semibold"
-        >
-          Pay
-        </CText>
-      </View> */}
     </View>
   );
 };
