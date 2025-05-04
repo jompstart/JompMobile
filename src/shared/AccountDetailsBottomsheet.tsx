@@ -1,5 +1,5 @@
 import { StyleSheet, Pressable, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ScrollablebottomsheetWrapper from './ScrollablebottomsheetWrapper';
 import { colors } from '../constants/colors';
 import Feather from '@expo/vector-icons/Feather';
@@ -15,6 +15,8 @@ import ProviderIcon from '../../assets/svgs/Services/ProviderIcon';
 import { useAppSelector } from '../controller/redux.controller';
 import { userSelector } from '../features/user/user.selector';
 import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
+import { UserService } from '../services/user';
+import { changeUserState } from '../features/user/user.slice';
 interface Props {
   isVisible: boolean;
 }
@@ -25,7 +27,31 @@ const AccountDetailsBottomsheet = () => {
   );
   const [isReady, setIsReady] = React.useState(false);
   const user = useAppSelector(userSelector);
+  const userInstance = new UserService(user.customerId, user.userId);
   const data = [{}, {}];
+  useEffect(() => {
+    if (!user.bankDetails.length) {
+      userInstance.getUserBankDetails().then((res) => {
+        if (res.data) {
+          if (Array.isArray(res.data)) {
+            dispatch(
+              changeUserState({
+                key: 'bankDetails',
+                value: res.data,
+              })
+            );
+          } else {
+            dispatch(
+              changeUserState({
+                key: 'bankDetails',
+                value: [res.data],
+              })
+            );
+          }
+        }
+      });
+    }
+  }, []);
 
   return (
     <ScrollablebottomsheetWrapper
