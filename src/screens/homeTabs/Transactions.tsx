@@ -69,7 +69,7 @@ const Transactions = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={transactions?.data?.data}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <Transaction
             totalAmount={item.totalAmount}
             dateInitiated={item.dateInitiated}
@@ -77,7 +77,7 @@ const Transactions = () => {
             serviceName={item.serviceName}
             currentPaymentStatus={item.currentPaymentStatus}
             dateCompleted={item.dateCompleted}
-            key={item.id}
+            key={index}
             customerId={item.customerId}
             isCompleted={item.isCompleted}
           />

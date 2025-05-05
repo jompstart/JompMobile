@@ -4,10 +4,7 @@ import { size } from '../../config/size';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
-import {
-  TransactionDto,
-  TransactionResponseDto,
-} from '../../services/dto/user.dto';
+import { TransactionResponseDto } from '../../services/dto/user.dto';
 import { formatDate, formatDateTime } from '../../utils/stringManipulation';
 
 const Transaction = (item: TransactionResponseDto) => {

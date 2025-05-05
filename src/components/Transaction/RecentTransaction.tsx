@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { size } from '../../config/size';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';

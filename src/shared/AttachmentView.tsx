@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, View, Alert, Image } from 'react-native';
+import { StyleSheet, Pressable, View, Alert, Image, Modal } from 'react-native';
 import React, { useState } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
@@ -14,7 +14,8 @@ import {
   useCameraPermissions,
   PermissionStatus,
 } from 'expo-image-picker';
-
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
 import { MediaFile } from '../interface/provider';
 interface Props {
   description: string;
@@ -40,6 +41,7 @@ const AttachmentView = ({
   const [fileName, setFileName] = useState('');
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
+  const [showModal, setShowModal] = useState(false);
 
   async function verifyPermission() {
     if (cameraPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
@@ -115,7 +117,7 @@ const AttachmentView = ({
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf', // You can specify other types like 'application/*' for all documents
+        type: 'application/pdf',
         copyToCacheDirectory: true,
       });
 
@@ -139,7 +141,7 @@ const AttachmentView = ({
   return (
     <Pressable
       onPress={() => {
-        typeOfFileToPick == 'image' ? takePhoto() : pickDocument();
+        typeOfFileToPick == 'pdf' ? pickDocument() : setShowModal(true);
       }}
       style={{
         paddingVertical: size.getHeightSize(14),
@@ -251,6 +253,15 @@ const AttachmentView = ({
               }}
               width={size.getWidthSize(50)}
               height={size.getHeightSize(116)}
+
+              onPress={() => {
+                setFile('');
+                onFileSelected?.({
+                  name: '',
+                  uri: '',
+                  type: '',
+                });
+              }}
             />
           </>
         )
@@ -298,10 +309,122 @@ const AttachmentView = ({
           </CText>
         </View>
       )}
+      <Modal
+        transparent
+        visible={showModal}
+        animationType="fade"
+        onRequestClose={() => {
+          setShowModal(false);
+        }}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.modalContainer}>
+            <CText fontSize={14} fontFamily="semibold" style={styles.title}>
+              Upload from
+            </CText>
+            <Pressable
+              style={styles.optionButton}
+              onPress={() => {
+                setShowModal(false);
+                takePhoto();
+              }}
+            >
+              <Feather name="camera" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Camera
+              </CText>
+            </Pressable>
+            <Pressable
+              style={styles.optionButton}
+              onPress={() => {
+                setShowModal(false);
+                pickImage();
+              }}
+            >
+              <MaterialIcons name="perm-media" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Gallery
+              </CText>
+            </Pressable>
+
+            <Pressable
+              style={styles.optionButton}
+              onPress={() => {
+                setShowModal(false);
+                pickDocument();
+              }}
+            >
+              <Feather name="file" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Files
+              </CText>
+            </Pressable>
+            <Pressable style={styles.closeButton} onPress={() => {
+              setShowModal(false);
+            }}>
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.closeText}
+              >
+                Cancel
+              </CText>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </Pressable>
   );
 };
 
 export default AttachmentView;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: size.getWidthSize(300),
+    backgroundColor: colors.appBackground(),
+    borderRadius: size.getHeightSize(16),
+    padding: size.getHeightSize(16),
+  },
+  title: {
+    marginBottom: size.getHeightSize(8),
+    color: colors.black(),
+    textAlign: 'left',
+  },
+  optionButton: {
+    width: '100%',
+    paddingVertical: size.getHeightSize(12),
+    borderRadius: size.getHeightSize(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: size.getWidthSize(16),
+  },
+  optionText: {},
+  closeButton: {
+    marginTop: size.getHeightSize(8),
+    alignItems: 'center',
+  },
+  closeText: {
+    fontSize: size.getHeightSize(14),
+    color: colors.primary(),
+    fontWeight: '600',
+  },
+});
