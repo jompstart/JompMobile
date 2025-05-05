@@ -28,7 +28,7 @@ const AccountDetailsBottomsheet = () => {
   const userInstance = new UserService(user.customerId, user.userId);
 
   useEffect(() => {
-    if (!user.bankDetails.length) {
+    if (!user.bankDetails.length && accountDetailsBottomsheet.isVisible) {
       userInstance.getUserBankDetails().then((res) => {
         if (res.data) {
           if (Array.isArray(res.data)) {
@@ -49,7 +49,7 @@ const AccountDetailsBottomsheet = () => {
         }
       });
     }
-  }, []);
+  }, [accountDetailsBottomsheet]);
 
   return (
     <ScrollablebottomsheetWrapper
