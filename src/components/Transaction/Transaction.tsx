@@ -79,7 +79,7 @@ const Transaction = (item: TransactionResponseDto) => {
             >
               <CText
                 color={item.isCompleted ? 'success' : ('#F0756E' as any)}
-                fontSize={8}
+                fontSize={12}
                 lineHeight={11.2}
                 fontFamily="semibold"
                 style={{

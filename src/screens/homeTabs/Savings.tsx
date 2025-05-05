@@ -49,6 +49,9 @@ const Savings = () => {
     useGetTotalSavings(user.userId, user.customerId);
   const { data: accruedInterest, refetch: refetchInterest } =
     useGetAccruedInterest(user.userId, user.customerId);
+  const [tab, setTab] = useState<'ongoing' | 'rollover' | 'completed'>(
+    'ongoing'
+  );
 
   const { data: savingsTypes } = useGetSavingsTypes(
     user.userId,
@@ -366,34 +369,66 @@ const Savings = () => {
               marginTop: size.getHeightSize(24),
             }}
           >
-            <CText
-              color={colors.black('70') as any}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="bold"
+            <Pressable
               style={{
-                borderBottomWidth: size.getHeightSize(3),
+                borderBottomWidth: tab == 'ongoing' ? size.getHeightSize(3) : 0,
                 borderColor: '#31005CB2',
+                paddingHorizontal: size.getWidthSize(4),
+              }}
+              onPress={() => {
+                setTab('ongoing');
               }}
             >
-              Ongoing
-            </CText>
-            <CText
-              color={colors.black('40') as any}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="bold"
+              <CText
+                color={colors.black(tab == 'ongoing' ? '' : '40') as any}
+                fontSize={14}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                Ongoing
+              </CText>
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                setTab('rollover');
+              }}
+              style={{
+                borderBottomWidth:
+                  tab == 'rollover' ? size.getHeightSize(3) : 0,
+                borderColor: '#31005CB2',
+                paddingHorizontal: size.getWidthSize(4),
+              }}
             >
-              Rollover
-            </CText>
-            <CText
-              color={colors.black('40') as any}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="bold"
+              <CText
+                color={colors.black(tab == 'rollover' ? '' : '40') as any}
+                fontSize={14}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                Rollover
+              </CText>
+            </Pressable>
+            <Pressable
+              style={{
+                borderBottomWidth:
+                  tab == 'completed' ? size.getHeightSize(3) : 0,
+                borderColor: '#31005CB2',
+                paddingHorizontal: size.getWidthSize(4),
+              }}
+              onPress={() => {
+                setTab('completed');
+              }}
             >
-              Completed
-            </CText>
+              <CText
+                color={colors.black(tab == 'completed' ? '' : '40') as any}
+                fontSize={14}
+                lineHeight={22.4}
+                fontFamily="bold"
+              >
+                Completed
+              </CText>
+            </Pressable>
           </View>
           <View
             style={{
@@ -401,7 +436,7 @@ const Savings = () => {
               backgroundColor: colors.white(),
               borderRadius: size.getHeightSize(8),
               marginTop: size.getHeightSize(28),
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               paddingHorizontal: size.getWidthSize(8),
               paddingVertical: size.getHeightSize(8),
               gap: size.getHeightSize(8),
@@ -416,118 +451,128 @@ const Savings = () => {
             /> */}
             {userSavings?.data &&
               userSavings?.data?.length > 0 &&
-              userSavings?.data?.map((savings, index) => (
-                <Pressable
-                  key={index}
-                  onPress={() => {
-                    navigate('SavingsDetails', {
-                      goalId: savings.id,
-                    });
-                  }}
-                  style={styles.view3}
-                >
-                  <View style={styles.view4}>
-                    <TargetIcon size={size.getHeightSize(40)} />
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
+              userSavings?.data
+                ?.filter((savings) => {
+                  if (tab == 'ongoing') {
+                    return savings.status == 'Active';
+                  } else if (tab == 'rollover') {
+                    return savings.status == 'RolledOver';
+                  } else {
+                    return savings.status == 'Completed';
+                  }
+                })
+                .map((savings, index) => (
+                  <Pressable
+                    key={index}
+                    onPress={() => {
+                      navigate('SavingsDetails', {
+                        goalId: savings.id,
+                      });
                     }}
+                    style={styles.view3}
                   >
-                    <CText
-                      color={'secondaryBlack'}
-                      fontSize={14}
-                      lineHeight={22}
-                      fontFamily="bold"
-                    >
-                      {savings.goalName}
-                    </CText>
-                    <CText
-                      color={'secondaryBlack'}
-                      fontSize={14}
-                      lineHeight={22}
-                      fontFamily="bold"
-                    >
-                      ₦{formatToAmount(savings.targetAmount)}
-                    </CText>
+                    <View style={styles.view4}>
+                      <TargetIcon size={size.getHeightSize(40)} />
+                    </View>
                     <View
                       style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: size.getWidthSize(3.18),
+                        flex: 1,
                       }}
                     >
-                      <Fontisto
-                        name="locked"
-                        color={'#876DFF'}
-                        size={size.getHeightSize(9)}
-                      />
                       <CText
-                        color={colors.black('70') as any}
+                        color={'secondaryBlack'}
                         fontSize={14}
                         lineHeight={22}
-                        fontFamily="regular"
+                        fontFamily="bold"
                       >
-                        Maturity Time:{' '}
+                        {savings.goalName}
+                      </CText>
+                      <CText
+                        color={'secondaryBlack'}
+                        fontSize={14}
+                        lineHeight={22}
+                        fontFamily="bold"
+                      >
+                        ₦{formatToAmount(savings.targetAmount)}
+                      </CText>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: size.getWidthSize(3.18),
+                        }}
+                      >
+                        <Fontisto
+                          name="locked"
+                          color={'#876DFF'}
+                          size={size.getHeightSize(9)}
+                        />
                         <CText
-                          color={'secondaryBlack'}
+                          color={colors.black('70') as any}
                           fontSize={14}
                           lineHeight={22}
                           fontFamily="regular"
                         >
-                          {getTimeDifferenceBetweenDates(
-                            savings.startDate.toString(),
-                            savings.endDate.toString()
-                          )}
+                          Maturity Time:{' '}
+                          <CText
+                            color={'secondaryBlack'}
+                            fontSize={14}
+                            lineHeight={22}
+                            fontFamily="regular"
+                          >
+                            {getTimeDifferenceBetweenDates(
+                              savings.startDate.toString(),
+                              savings.endDate.toString()
+                            )}
+                          </CText>
                         </CText>
-                      </CText>
+                      </View>
                     </View>
-                  </View>
-                  <AnimatedCircularProgress
-                    fill={Math.ceil(
-                      (savings.savedAmount / savings.targetAmount) * 100
-                    )}
-                    size={size.getHeightSize(61)}
-                    width={size.getHeightSize(6)}
-                    tintColor={
-                      Math.ceil(
+                    <AnimatedCircularProgress
+                      fill={Math.ceil(
                         (savings.savedAmount / savings.targetAmount) * 100
-                      ) > 40
-                        ? '#31005C'
-                        : '#F75555'
-                    }
-                    backgroundColor={
-                      Math.ceil(
-                        (savings.savedAmount / savings.targetAmount) * 100
-                      ) > 40
-                        ? '#31005C26'
-                        : '#F7555526'
-                    }
-                    backgroundWidth={size.getHeightSize(6)}
-                    rotation={0}
-                    lineCap="round"
-                    style={
-                      {
-                        // flex: 1,
-                      }
-                    }
-                  >
-                    {(fill) => (
-                      <CText
-                        color={'#F75555' as any}
-                        fontSize={12}
-                        lineHeight={16.8}
-                        fontFamily="bold"
-                      >
-                        {Math.ceil(
+                      )}
+                      size={size.getHeightSize(61)}
+                      width={size.getHeightSize(6)}
+                      tintColor={
+                        Math.ceil(
                           (savings.savedAmount / savings.targetAmount) * 100
-                        )}
-                        %
-                      </CText>
-                    )}
-                  </AnimatedCircularProgress>
-                </Pressable>
-              ))}
+                        ) > 40
+                          ? '#31005C'
+                          : '#F75555'
+                      }
+                      backgroundColor={
+                        Math.ceil(
+                          (savings.savedAmount / savings.targetAmount) * 100
+                        ) > 40
+                          ? '#31005C26'
+                          : '#F7555526'
+                      }
+                      backgroundWidth={size.getHeightSize(6)}
+                      rotation={0}
+                      lineCap="round"
+                      style={
+                        {
+                          // flex: 1,
+                        }
+                      }
+                    >
+                      {(fill) => (
+                        <CText
+                          color={'#F75555' as any}
+                          fontSize={12}
+                          lineHeight={16.8}
+                          fontFamily="bold"
+                        >
+                          {Math.ceil(
+                            (savings.savedAmount / savings.targetAmount) * 100
+                          )}
+                          %
+                        </CText>
+                      )}
+                    </AnimatedCircularProgress>
+                  </Pressable>
+                ))}
           </View>
         </View>
       </ScrollView>
