@@ -61,3 +61,26 @@ export interface RecentTransactionDto {
   createdAt: string;
   description: string;
 }
+
+export interface CreateRecipientDto {
+  accountNumber: string;
+  bankName: string;
+  bankCode: string;
+}
+
+export interface CreateRecipientResponseDto {
+  recipientId: string;
+}
+
+export interface RequestPayoutDto {
+  amountInKobo: string;
+  reason: string;
+  recipientCode: string;
+}
+
+export interface InitiateTransferDto {
+  amountInKobo: string;
+  reason: string;
+  recipientCode: string;
+  otp: string;
+}

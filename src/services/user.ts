@@ -2,11 +2,15 @@ import { makeRequest } from '../config/api.config';
 import { AddBankDto } from '../interface/provider';
 import { BankDetails } from '../models/user';
 import {
+  CreateRecipientDto,
+  CreateRecipientResponseDto,
   DeleteAccountDto,
   GetCustomerDto,
   GetWalletResponseDto,
+  InitiateTransferDto,
   OrderResponseDto,
   RecentTransactionDto,
+  RequestPayoutDto,
   TransactionDto,
   TransactionResponseDto,
 } from './dto/user.dto';
@@ -94,6 +98,35 @@ export class UserService {
     return await makeRequest<RecentTransactionDto[]>({
       method: 'POST',
       url: `/customer-transaction-recent/${this.customerId}?page=1&pageSize=5`,
+    });
+  }
+
+  async createRecipient(data: CreateRecipientDto) {
+    return await makeRequest<string>({
+      method: 'POST',
+      url: `/create-recipient?name=${data.bankName}&accountNumber=${data.accountNumber}&bankCodel=${data.bankCode}`,
+    });
+  }
+
+  async requestPayout(data: RequestPayoutDto) {
+    return await makeRequest<string>({
+      method: 'POST',
+      url: `/request-payout`,
+      data: {
+        ...data,
+        userId: this.userId,
+      },
+    });
+  }
+
+  async initiateTransfer(data: InitiateTransferDto) {
+    return await makeRequest<string>({
+      method: 'POST',
+      url: `/initiate-transfer`,
+      data: {
+        userId: this.userId,
+        ...data,
+      },
     });
   }
 }

@@ -25,6 +25,7 @@ const Profile = () => {
   const { navigate, goBack } = useNavigation();
   const user = useAppSelector(userSelector);
   const { data: banks } = useGetUserBanks(user?.userId, user?.customerId);
+ 
   return (
     <GradientSafeAreaView>
       <LinearGradient
@@ -290,7 +291,7 @@ const Profile = () => {
             <View style={styles.view4}>
               {banks?.data?.map(
                 (bank, index) =>
-                  bank.accountName && (
+                  bank.accountNumber && (
                     <View key={index} style={styles.view1}>
                       <View style={styles.view2}>
                         <CText

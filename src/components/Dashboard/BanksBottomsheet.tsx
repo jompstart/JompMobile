@@ -12,7 +12,6 @@ import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import ScrollablebottomsheetWrapper from '../../shared/ScrollablebottomsheetWrapper';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
-import { searchArray } from '../../utils/stringManipulation';
 interface Props {
   isVisible: boolean;
   onClose?: () => void;

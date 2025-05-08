@@ -7,31 +7,68 @@ import VerifyMailIcon from '../../../assets/svgs/Onboarding/VerifyMailIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
-import { AuthService } from '../../services/auth';
-import { obfuscateEmail } from '../../utils/stringManipulation';
-import { useAppDispatch } from '../../controller/redux.controller';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
 import { updateToast } from '../../features/ui/ui.slice';
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../../types';
+import { InitiateTransferDto } from '../../services/dto/user.dto';
+import { UserService } from '../../services/user';
+import { userSelector } from '../../features/user/user.selector';
+
 interface Props {
   isVisible: boolean;
-  email?: string;
+  amount: string;
   onSuccess?: () => void;
-  otp: string;
   onClose: () => void;
+  recipientCode: string;
+  reason?: string;
 }
-const VerifyEmailBottomsheet = ({
+const WithdrawalOtp = ({
   isVisible,
-  email,
+  amount,
   onSuccess,
-  otp,
+  recipientCode,
+  reason,
   onClose,
 }: Props) => {
-  const authInstance = new AuthService();
   const inputRefs = useRef<TextInput[]>([]);
-  const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
-  const [newOtp, setNewOtp] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
- 
+  const [userInput, setUserInput] = useState<string[]>(Array(4).fill(''));
+
   const dispatch = useAppDispatch();
+  const user = useAppSelector(userSelector);
+  const userInstance = new UserService(user.customerId, user.userId);
+
+  const {
+    data,
+    isPending,
+    mutate: initiateTransfer,
+  } = useMutation<API_RESPONSE<string>, Error, InitiateTransferDto>({
+    mutationFn: (data) => userInstance.initiateTransfer(data),
+    onSuccess: (res) => {
+      if (res.success) {
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: 'Transaction successful',
+            toastType: 'success',
+          })
+        );
+        onSuccess?.();
+      }
+    },
+    onError: (err) => {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: err.message,
+          toastType: 'info',
+        })
+      );
+    },
+  });
 
   const handleTextChange = (text: string, index: number) => {
     const newUserInput = [...userInput];
@@ -82,43 +119,10 @@ const VerifyEmailBottomsheet = ({
       });
     }
   };
-
-  const handleVerify = async () => {
-    const userOtpInput = userInput.join('');
-
-    if (userInput.length < 4) {
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const response = await authInstance.verifyOTP(
-        email!,
-        `${newOtp ? newOtp : otp}-${userOtpInput}`
-      );
-      console.log('========= otp verification response =========');
-      console.log(response);
-
-      if (response.success) {
-        onSuccess?.();
-      }
-    } catch (error: any) {
-      console.log('========= otp verification error =========');
-      console.log(error);
-      dispatch(
-        updateToast({
-          displayToast: true,
-          toastMessage: error?.message,
-          toastType: 'info',
-        })
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
   return (
     <BottomsheetWrapper
       disableBackdropPress
-      enablePanDownToClose={false}
+      enablePanDownToClose={true}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="none"
       enableBackdrop
@@ -144,7 +148,7 @@ const VerifyEmailBottomsheet = ({
             marginTop: size.getHeightSize(16),
           }}
         >
-          Email Verification
+          Confirm Transaction
         </CText>
         <CText
           color="secondaryBlack"
@@ -156,7 +160,7 @@ const VerifyEmailBottomsheet = ({
             marginTop: size.getHeightSize(16),
           }}
         >
-          Please enter the code sent to {obfuscateEmail(email || '')}
+          Please enter the code sent to {user.email || ''}
         </CText>
         <View
           style={{
@@ -184,42 +188,29 @@ const VerifyEmailBottomsheet = ({
             ))}
         </View>
         <PrimaryButton
-          isLoading={isLoading}
-          onPress={handleVerify}
+          isLoading={isPending}
+          onPress={() => {
+            const userOtpInput = userInput.join('');
+
+            initiateTransfer({
+              amountInKobo: amount,
+              reason: reason!,
+              recipientCode: recipientCode,
+              otp: userOtpInput,
+            });
+          }}
           style={{
             marginTop: size.getHeightSize(32),
           }}
           label="Verify"
+          disabled={isPending || userInput.join('').length < 4}
         />
-        <CText
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          Didn't receive the email?{' '}
-          <CText
-            onPress={async () => {
-              setIsLoading(true);
-              const response = await authInstance.resendOTP(email!);
-              if (response.success) {
-                setNewOtp(response.data?.otp || '');
-              }
-              setIsLoading(false);
-            }}
-            color="secondary"
-            fontFamily="semibold"
-          >
-            Click to Resend
-          </CText>
-        </CText>
       </View>
     </BottomsheetWrapper>
   );
 };
 
-export default VerifyEmailBottomsheet;
+export default WithdrawalOtp;
 
 const styles = StyleSheet.create({
   otpInput: {
