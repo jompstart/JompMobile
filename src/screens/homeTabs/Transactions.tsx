@@ -1,48 +1,69 @@
-import { StyleSheet, Text, FlatList, View } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  FlatList,
+  View,
+  Pressable,
+  ActivityIndicator,
+} from 'react-native';
 import React, { useEffect } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
 import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
 import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
 import { colors } from '../../constants/colors';
 import Transaction from '../../components/Transaction/Transaction';
-import { useAppSelector } from '../../controller/redux.controller';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import { useGetUserTransactions } from '../../hooks/api/user';
-import { TransactionResponseDto } from '../../services/dto/user.dto';
+import {
+  useGetUnifiedTransactions,
+  useGetUserTransactions,
+} from '../../hooks/api/user';
+import {
+  TransactionResponseDto,
+  UnifiedTransactionDto,
+  UnifiedTransactionResponseDto,
+} from '../../services/dto/user.dto';
 import { UserService } from '../../services/user';
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../../types';
+import { updateToast } from '../../features/ui/ui.slice';
 const Transactions = () => {
   const user = useAppSelector(userSelector);
+  const { dispatch } = useNavigation();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useGetUnifiedTransactions(
+      '2025-01-08T11:50:25.729Z',
+      new Date().toISOString(),
+      user.customerId,
+      user.userId
+    );
 
-  const { data: transactions } = useGetUserTransactions(
-    user.customerId,
-    user.userId
-  );
-  const userServiceInstance = new UserService(user.customerId, user.userId);
-
-  useEffect(() => {
-    (async () => {
-      const res = await userServiceInstance.getUnifiedTransactions({
-        endDate: new Date() as any,
-        startDate: '2025-01-08T11:50:25.729Z',
-        page: 1,
-        size: 100,
-      });
-      console.log(res);
-    })();
-  }, []);
+  const transactions = data?.pages.flatMap((page) => page.data) || [];
+  console.log('txn22', transactions);
+  const stateDispatch = useAppDispatch();
 
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
-        <MenuIcon size={size.getHeightSize(28)} />
+        <MenuIcon
+          onPress={() => {
+            dispatch(DrawerActions.openDrawer());
+          }}
+          size={size.getHeightSize(28)}
+        />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
         <NotificationBell size={size.getHeightSize(28)} />
@@ -79,20 +100,53 @@ const Transactions = () => {
           View all your transactions here
         </CText>
       </View>
+      <Pressable
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: size.getWidthSize(4),
+          marginHorizontal: size.getWidthSize(16),
+          marginBottom: size.getHeightSize(16),
+          backgroundColor: colors.idle('10'),
+          width: size.getWidthSize(90),
+          paddingHorizontal: size.getWidthSize(8),
+          paddingVertical: size.getHeightSize(8),
+          borderRadius: size.getHeightSize(8),
+        }}
+      >
+        <CText fontFamily="semibold" fontSize={14} color="secondaryBlack">
+          Filter By
+        </CText>
+        <MaterialIcons
+          color={colors.primary()}
+          name="arrow-drop-down"
+          size={size.getHeightSize(20)}
+        />
+      </Pressable>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={transactions?.data?.data}
+        data={transactions}
+        onEndReachedThreshold={0.5} // Trigger when 50% away from the bottom
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <ActivityIndicator color={colors.primary()} size="small" />
+          ) : null
+        }
+        onEndReached={() => hasNextPage && fetchNextPage()}
+        ListEmptyComponent={() => {
+          return <></>;
+        }}
         renderItem={({ item, index }) => (
           <Transaction
-            totalAmount={item.totalAmount}
-            dateInitiated={item.dateInitiated}
-            id={item.id}
-            serviceName={item.serviceName}
-            currentPaymentStatus={item.currentPaymentStatus}
-            dateCompleted={item.dateCompleted}
+            totalAmount={item?.amount!}
+            dateInitiated={item?.createdAt!}
+            id={item?.id!}
+            serviceName={item?.description!}
+            currentPaymentStatus={item?.status! as any}
+            dateCompleted={item?.createdAt!}
             key={index}
-            customerId={item.customerId}
-            isCompleted={item.isCompleted}
+            customerId={user.customerId}
+            isCompleted={true}
           />
         )}
         keyExtractor={(item, index) => index.toString()}

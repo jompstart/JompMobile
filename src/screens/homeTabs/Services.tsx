@@ -7,7 +7,7 @@ import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
 import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
 import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
@@ -15,12 +15,17 @@ import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
 
 import { colors } from '../../constants/colors';
 const Services = () => {
-  const { navigate } = useNavigation();
+  const { navigate, dispatch } = useNavigation();
 
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
-        <MenuIcon size={size.getHeightSize(28)} />
+        <MenuIcon
+          onPress={() => {
+            dispatch(DrawerActions.openDrawer());
+          }}
+          size={size.getHeightSize(28)}
+        />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
         <NotificationBell size={size.getHeightSize(28)} />

@@ -25,7 +25,7 @@ import VectorIcon from '../../../assets/svgs/Savings/VectorIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SaveMoneyIcon from '../../../assets/svgs/Savings/SaveMoneyIcon';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import TargetIcon from '../../../assets/svgs/Savings/TargetIcon';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -43,7 +43,7 @@ import {
   getTimeDifferenceBetweenDates,
 } from '../../utils/stringManipulation';
 const Savings = () => {
-  const { navigate } = useNavigation();
+  const { navigate, dispatch } = useNavigation();
   const user = useAppSelector(userSelector);
   const { data: totalSavings, refetch: refetchTotalSavings } =
     useGetTotalSavings(user.userId, user.customerId);
@@ -85,7 +85,12 @@ const Savings = () => {
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
-        <MenuIcon size={size.getHeightSize(28)} />
+        <MenuIcon
+          onPress={() => {
+            dispatch(DrawerActions.openDrawer());
+          }}
+          size={size.getHeightSize(28)}
+        />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
         <NotificationBell size={size.getHeightSize(28)} />

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { UserService } from '../../../services/user';
 
 export const useGetUserTransactions = (customerId: string, userId: string) => {
@@ -25,5 +25,42 @@ export const useGetRecentTransactions = (
   return useQuery({
     queryKey: ['getRecentTransactions'],
     queryFn: () => getRecentTransactions(),
+  });
+};
+
+export const useGetUnifiedTransactions = (
+  startDate: string,
+  endDate: string,
+  customerId: string,
+  userId: string
+) => {
+  const userInstance = new UserService(customerId, userId);
+  const getRecentTransactions = async ({
+    pageParam = 1,
+  }: {
+    pageParam: number;
+  }) => {
+    const response = await userInstance.getUnifiedTransactions({
+      page: pageParam,
+      size: 10,
+      startDate,
+      endDate,
+    });
+    return {
+      data: response.data,
+      currentPage: pageParam,
+    };
+  };
+  return useInfiniteQuery({
+    queryKey: ['transactions'],
+    queryFn: ({ pageParam = 1 }) => getRecentTransactions({ pageParam }),
+    getNextPageParam: (lastPage) => {
+      const pageSize = 10;
+      const hasMore = lastPage.data?.length === pageSize;
+      return hasMore ? lastPage.currentPage + 1 : undefined;
+    },
+    initialPageParam: 1,
+    // enabled: Boolean(customerId && userId && startDate && endDate),
+    staleTime: 1000 * 60 * 5,
   });
 };

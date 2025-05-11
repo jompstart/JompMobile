@@ -93,3 +93,12 @@ export interface UnifiedTransactionDto {
   startDate?: string;
   endDate?: string;
 }
+
+export interface UnifiedTransactionResponseDto {
+  amount: number;
+  createdAt: string;
+  description: string;
+  id: string;
+  status: string;
+  type: string;
+}

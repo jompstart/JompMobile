@@ -14,6 +14,7 @@ import {
   TransactionDto,
   TransactionResponseDto,
   UnifiedTransactionDto,
+  UnifiedTransactionResponseDto,
 } from './dto/user.dto';
 
 export class UserService {
@@ -131,14 +132,15 @@ export class UserService {
     });
   }
 
-  async getUnifiedTransactions(data:UnifiedTransactionDto) {
-    return await makeRequest({
+  async getUnifiedTransactions(data: UnifiedTransactionDto) {
+   
+    return await makeRequest<UnifiedTransactionResponseDto[]>({
       method: 'POST',
       url: `/get-unified-transaction-history`,
-      data:{
+      data: {
         customerId: this.customerId,
         ...data,
-      }
+      },
     });
   }
 }

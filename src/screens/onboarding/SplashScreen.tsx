@@ -13,6 +13,7 @@ import {
 } from '../../features/user/user.slice';
 import { UserService } from '../../services/user';
 import { ComplianceService } from '../../services/compliance';
+
 const SplashScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -146,6 +147,8 @@ const SplashScreen = () => {
                 value: user.data.phoneNumber,
               })
             );
+
+            // Damilola4you@  adjayegidolas@gmail.com
             // navigation.dispatch(StackActions.replace('Login'));
             navigation.dispatch(StackActions.replace('NavigationDrawer'));
           } else {
