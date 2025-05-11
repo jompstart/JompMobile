@@ -17,12 +17,8 @@ const SplashScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   React.useEffect(() => {
-    // setTimeout(() => {
-    //   navigation.dispatch(StackActions.replace('Login'));
-    // }, 2000);
     (async () => {
       const token = await AsyncStorage.getItem('token');
-
       if (token) {
         const decoded: any = jwtDecode(token);
         console.log(decoded);
@@ -34,21 +30,15 @@ const SplashScreen = () => {
             userId: decoded.UserId,
           })
         );
-
         const userInstance = new UserService(
           decoded.customerId,
           decoded.UserId
         );
         try {
-
-          
           const user = await userInstance.getCustomer();
-          
-         
+
           const wallet = await userInstance.getCustomerWallet();
 
-
-        
           const userBanks = await userInstance.getUserBankDetails();
 
           if (!userBanks.data && user.data?.complianceFlag == true) {
@@ -156,7 +146,8 @@ const SplashScreen = () => {
                 value: user.data.phoneNumber,
               })
             );
-            navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+            // navigation.dispatch(StackActions.replace('Login'));
+            navigation.dispatch(StackActions.replace('NavigationDrawer'));
           } else {
             navigation.dispatch(StackActions.replace('Login'));
           }

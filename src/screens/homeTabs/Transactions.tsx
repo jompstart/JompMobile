@@ -1,5 +1,5 @@
 import { StyleSheet, Text, FlatList, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
@@ -17,6 +17,7 @@ import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { useGetUserTransactions } from '../../hooks/api/user';
 import { TransactionResponseDto } from '../../services/dto/user.dto';
+import { UserService } from '../../services/user';
 const Transactions = () => {
   const user = useAppSelector(userSelector);
 
@@ -24,8 +25,20 @@ const Transactions = () => {
     user.customerId,
     user.userId
   );
+  const userServiceInstance = new UserService(user.customerId, user.userId);
 
-  console.log('transactions', transactions?.data?.data);
+  useEffect(() => {
+    (async () => {
+      const res = await userServiceInstance.getUnifiedTransactions({
+        endDate: new Date() as any,
+        startDate: '2025-01-08T11:50:25.729Z',
+        page: 1,
+        size: 100,
+      });
+      console.log(res);
+    })();
+  }, []);
+
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -82,7 +95,7 @@ const Transactions = () => {
             isCompleted={item.isCompleted}
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={{
           gap: size.getHeightSize(16),
           paddingHorizontal: size.getWidthSize(16),

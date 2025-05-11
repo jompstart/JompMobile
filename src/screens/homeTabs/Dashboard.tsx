@@ -1,5 +1,5 @@
 import { StyleSheet, View, Pressable } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
 import WalletIcon from '../../../assets/svgs/Home/WalletIcon';
@@ -18,15 +18,14 @@ import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import BillImage from '../../../assets/svgs/Home/BillImage';
-import OrderIcon from '../../../assets/svgs/Home/OrderIcon';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
-import TxnIcon from '../../../assets/svgs/Home/TxnIcon';
 import {
   useAppSelector,
   useAppDispatch,
 } from '../../controller/redux.controller';
-import { useNavigation } from '@react-navigation/native';
+
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { userSelector } from '../../features/user/user.selector';
 import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
 import useGetTransactionOrder from '../../hooks/api/dashboard/useGetTransactionOrder';
@@ -36,7 +35,7 @@ import Transactions from './Transactions';
 import Transaction from '../../components/Transaction/Transaction';
 import RecentTransaction from '../../components/Transaction/RecentTransaction';
 const Dashboard = () => {
-  const { navigate } = useNavigation();
+  const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
   const { data: recenTransactions } = useGetRecentTransactions(
@@ -46,7 +45,12 @@ const Dashboard = () => {
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
-        <MenuIcon size={size.getHeightSize(28)} />
+        <MenuIcon
+          onPress={() => {
+            navigationDispatch(DrawerActions.openDrawer());
+          }}
+          size={size.getHeightSize(28)}
+        />
         <View style={{ flex: 1 }} />
         <SearchIcon size={size.getHeightSize(28)} />
         <NotificationBell size={size.getHeightSize(28)} />

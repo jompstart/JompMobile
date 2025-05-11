@@ -84,3 +84,12 @@ export interface InitiateTransferDto {
   recipientCode: string;
   otp: string;
 }
+
+export interface UnifiedTransactionDto {
+  page: number;
+  size: number;
+  serviceName?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}

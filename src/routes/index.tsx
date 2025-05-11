@@ -3,6 +3,7 @@ import {
   createStackNavigator,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
+import NavigationDrawer from './NavigationDrawer';
 import { Easing, Animated, Platform } from 'react-native';
 import { RootStackParamList } from '../types/navigations.types';
 import SplashScreen from '../screens/onboarding/SplashScreen';
@@ -209,6 +210,10 @@ const MainNavigator = () => {
     {
       name: 'Request',
       component: Request,
+    },
+    {
+      name: 'NavigationDrawer',
+      component: NavigationDrawer,
     },
   ];
 

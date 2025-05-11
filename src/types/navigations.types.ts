@@ -40,6 +40,7 @@ export type RootStackParamList = {
   SavingsDetails: {
     goalId: string;
   };
+  NavigationDrawer: undefined;
   TransportDetails: undefined;
   PreviewRequest: undefined;
   OtherServices: undefined;

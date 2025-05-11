@@ -13,6 +13,7 @@ import {
   RequestPayoutDto,
   TransactionDto,
   TransactionResponseDto,
+  UnifiedTransactionDto,
 } from './dto/user.dto';
 
 export class UserService {
@@ -127,6 +128,17 @@ export class UserService {
         userId: this.userId,
         ...data,
       },
+    });
+  }
+
+  async getUnifiedTransactions(data:UnifiedTransactionDto) {
+    return await makeRequest({
+      method: 'POST',
+      url: `/get-unified-transaction-history`,
+      data:{
+        customerId: this.customerId,
+        ...data,
+      }
     });
   }
 }

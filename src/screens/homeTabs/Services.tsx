@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
@@ -16,6 +16,7 @@ import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
 import { colors } from '../../constants/colors';
 const Services = () => {
   const { navigate } = useNavigation();
+
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
