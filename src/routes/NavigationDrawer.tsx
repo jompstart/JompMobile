@@ -31,7 +31,7 @@ const NavigationDrawer = () => {
         // }
       }}
     >
-      <Drawer.Screen name="Home" component={BottomtabNavigation} />
+      <Drawer.Screen name="HomePage" component={BottomtabNavigation} />
       {/* <Drawer.Screen name="HouseRent" component={HouseRentService} />
       <Drawer.Screen name="Transport" component={TransportForm} />
       <Drawer.Screen name="Savings" component={Savings} /> */}

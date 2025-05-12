@@ -230,7 +230,7 @@ const Login = () => {
           );
         }
 
-        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+        navigation.dispatch(StackActions.replace('NavigationDrawer'));
       }
     } catch (error: any) {
       dispatch(
@@ -347,7 +347,7 @@ const Login = () => {
             );
           }
         }
-        navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+        navigation.dispatch(StackActions.replace('NavigationDrawer'));
       } catch (error: any) {
         dispatch(
           updateToast({

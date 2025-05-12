@@ -5,7 +5,11 @@ import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import { TransactionResponseDto } from '../../services/dto/user.dto';
-import { formatDate, formatDateTime } from '../../utils/stringManipulation';
+import {
+  formatDate,
+  formatDateTime,
+  formatToAmount,
+} from '../../utils/stringManipulation';
 
 const Transaction = (item: TransactionResponseDto) => {
   return (
@@ -91,6 +95,16 @@ const Transaction = (item: TransactionResponseDto) => {
             </View>
           </View>
         </View>
+        <CText
+          style={{
+            paddingRight: size.getHeightSize(4),
+          }}
+          fontSize={14}
+          fontFamily="semibold"
+          color="secondaryBlack"
+        >
+          ₦{formatToAmount(item.totalAmount)}
+        </CText>
         {/* <View
           style={{
             paddingHorizontal: size.getWidthSize(20.5),
