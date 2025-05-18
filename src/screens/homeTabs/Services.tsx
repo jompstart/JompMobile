@@ -27,8 +27,8 @@ const Services = () => {
           size={size.getHeightSize(28)}
         />
         <View style={{ flex: 1 }} />
-        <SearchIcon size={size.getHeightSize(28)} />
-        <NotificationBell size={size.getHeightSize(28)} />
+        {/* <SearchIcon size={size.getHeightSize(28)} />
+        <NotificationBell size={size.getHeightSize(28)} /> */}
       </GradientHeader>
       <View
         style={{

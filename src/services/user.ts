@@ -133,7 +133,6 @@ export class UserService {
   }
 
   async getUnifiedTransactions(data: UnifiedTransactionDto) {
-   
     return await makeRequest<UnifiedTransactionResponseDto[]>({
       method: 'POST',
       url: `/get-unified-transaction-history`,

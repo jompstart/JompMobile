@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   FlatList,
   View,
   Pressable,
@@ -19,10 +18,7 @@ import { useNavigation, DrawerActions } from '@react-navigation/native';
 import FilterTransactionBottomsheet from '../../components/Transaction/FilterTransactionBottomsheet';
 import { colors } from '../../constants/colors';
 import Transaction from '../../components/Transaction/Transaction';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../controller/redux.controller';
+import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import {
   useGetUnifiedTransactions,
@@ -34,25 +30,38 @@ const Transactions = () => {
   const { dispatch } = useNavigation();
   const [showFilter, setShowFilter] = useState(false);
   const [selectedfilter, setSelectedFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useGetUnifiedTransactions(
       '2025-01-08T11:50:25.729Z',
       new Date().toISOString(),
       user.customerId,
-      user.userId
+      user.userId,
+      searchQuery == 'All' ? undefined : searchQuery
     );
 
   const transactions = data?.pages.flatMap((page) => page.data) || [];
-  const filters = [
-    'All',
-    'Loan',
-    'Savings',
-    'Transport Credit',
-    'School Fees',
-    'House Rent',
-    'Others',
+
+  const categories = [
+    {
+      name: 'All',
+      serachQuery: 'All',
+    },
+    {
+      name: 'Fund Wallet',
+      serachQuery: 'Fund wallet',
+    },
+    {
+      name: 'Savings',
+      serachQuery: 'Savings',
+    },
+    {
+      name: 'Accrued Interest',
+      serachQuery: 'AccruedInterest',
+    },
   ];
+
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -63,8 +72,8 @@ const Transactions = () => {
           size={size.getHeightSize(28)}
         />
         <View style={{ flex: 1 }} />
-        <SearchIcon size={size.getHeightSize(28)} />
-        <NotificationBell size={size.getHeightSize(28)} />
+        {/* <SearchIcon size={size.getHeightSize(28)} />
+        <NotificationBell size={size.getHeightSize(28)} /> */}
       </GradientHeader>
 
       <View
@@ -145,9 +154,15 @@ const Transactions = () => {
       <FilterTransactionBottomsheet
         visibility={showFilter}
         onClose={() => setShowFilter(false)}
-        categories={filters}
+        categories={categories.map((category) => category.name)}
         selectedCategory={selectedfilter}
-        onSelect={(f) => setSelectedFilter(f)}
+        onSelect={(f) => {
+          const selectedCategory = categories.find(
+            (category) => category.name === f
+          );
+          setSearchQuery(selectedCategory?.serachQuery!);
+          setSelectedFilter(f);
+        }}
       />
     </GradientSafeAreaView>
   );

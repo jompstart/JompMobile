@@ -32,7 +32,8 @@ export const useGetUnifiedTransactions = (
   startDate: string,
   endDate: string,
   customerId: string,
-  userId: string
+  userId: string,
+  filter?: string
 ) => {
   const userInstance = new UserService(customerId, userId);
   const getRecentTransactions = async ({
@@ -45,6 +46,7 @@ export const useGetUnifiedTransactions = (
       size: 10,
       startDate,
       endDate,
+      serviceName: filter,
     });
     return {
       data: response.data,
@@ -52,7 +54,7 @@ export const useGetUnifiedTransactions = (
     };
   };
   return useInfiniteQuery({
-    queryKey: ['transactions'],
+    queryKey: ['transactions', filter],
     queryFn: ({ pageParam = 1 }) => getRecentTransactions({ pageParam }),
     getNextPageParam: (lastPage) => {
       const pageSize = 10;

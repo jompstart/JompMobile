@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import LogOutIcon from '../../../assets/svgs/Drawer/LogoutIcon';
 import SettingsIcon from '../../../assets/svgs/Drawer/SettingsIcon';
@@ -83,7 +84,7 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('HouseRent');
+              navigation.navigate('HouseRentService');
             }}
             style={styles.view1}
           >
@@ -119,7 +120,7 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('Home', {
+              navigation.navigate('HomePage', {
                 screen: 'Savings',
               });
             }}
@@ -139,7 +140,7 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('Home', {
+              navigation.navigate('HomePage', {
                 screen: 'Transactions',
               });
             }}
@@ -157,12 +158,7 @@ const Drawer = (props: Props) => {
               Transactions
             </CText>
           </Pressable>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('PayServices');
-            }}
-            style={styles.view1}
-          >
+          <Pressable style={styles.view1}>
             <LoanCalculatorIcon size={size.getWidthSize(40)} />
             <CText
               fontFamily="semibold"
@@ -200,6 +196,13 @@ const Drawer = (props: Props) => {
             style={{
               ...styles.view1,
               paddingTop: size.getHeightSize(32),
+            }}
+            onPress={() => {
+              AsyncStorage.removeItem('token');
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
             }}
           >
             <LogOutIcon size={size.getWidthSize(40)} />

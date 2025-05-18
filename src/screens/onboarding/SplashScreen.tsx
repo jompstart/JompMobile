@@ -148,7 +148,7 @@ const SplashScreen = () => {
               })
             );
 
-            // Damilola4you@  adjayegidolas@gmail.com
+            // Damilola4you@  ajayegidolas@gmail.com
             // navigation.dispatch(StackActions.replace('Login'));
             navigation.dispatch(StackActions.replace('NavigationDrawer'));
           } else {
