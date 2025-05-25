@@ -4,14 +4,13 @@ import {
   View,
   Pressable,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
-import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
@@ -20,10 +19,7 @@ import { colors } from '../../constants/colors';
 import Transaction from '../../components/Transaction/Transaction';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import {
-  useGetUnifiedTransactions,
-  useGetUserTransactions,
-} from '../../hooks/api/user';
+import { useGetUnifiedTransactions } from '../../hooks/api/user';
 
 const Transactions = () => {
   const user = useAppSelector(userSelector);
@@ -31,16 +27,32 @@ const Transactions = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [selectedfilter, setSelectedFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useGetUnifiedTransactions(
-      '2025-01-08T11:50:25.729Z',
-      new Date().toISOString(),
-      user.customerId,
-      user.userId,
-      searchQuery == 'All' ? undefined : searchQuery
-    );
-
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useGetUnifiedTransactions(
+    '2025-01-08T11:50:25.729Z',
+    new Date().toISOString(),
+    user.customerId,
+    user.userId,
+    searchQuery == 'All' ? undefined : searchQuery
+  );
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Error refreshing services:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
   const transactions = data?.pages.flatMap((page) => page.data) || [];
 
   const categories = [
@@ -120,7 +132,10 @@ const Transactions = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         data={transactions}
-        onEndReachedThreshold={0.5} // Trigger when 50% away from the bottom
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onEndReachedThreshold={0.5}
         ListFooterComponent={
           isFetchingNextPage ? (
             <ActivityIndicator color={colors.primary()} size="small" />

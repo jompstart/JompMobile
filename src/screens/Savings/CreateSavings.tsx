@@ -38,8 +38,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
   >({
     mutationFn: (data) => savingsService.createSavings(data),
     onError: (error) => {
-      console.log('====== Error creating service =======');
-      console.log(error);
+     
       dispatch(
         updateToast({
           displayToast: true,

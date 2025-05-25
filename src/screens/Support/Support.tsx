@@ -94,7 +94,7 @@ const Support = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('Request');
+              navigate('Report');
             }}
             style={styles.view2}
           >

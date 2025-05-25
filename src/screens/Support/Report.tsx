@@ -23,7 +23,7 @@ import {
   DeleteAccountDto,
   DeleteAccountErrorResponseDto,
 } from '../../services/dto/user.dto';
-const Request = () => {
+const Report = () => {
   const [reasonBottomSheetVisible, setShowReasonBottomSheet] =
     React.useState(false);
   const [selectedReason, setSelectedReason] = React.useState<{
@@ -67,19 +67,27 @@ const Request = () => {
   const reasons = [
     {
       index: 1,
-      text: 'No Longer Using the Service',
+      text: 'Transaction',
     },
     {
       index: 2,
-      text: 'Unfavorable Terms or High Fees',
+      text: 'Repayment',
     },
     {
       index: 3,
-      text: 'Privacy and Data Concerns',
+      text: 'Savings',
     },
     {
       index: 4,
-      text: 'Poor User Experience or Technical Issues',
+      text: 'Loan',
+    },
+    {
+      index: 5,
+      text: 'Profile',
+    },
+    {
+      index: 6,
+      text: 'Bank/Card',
     },
   ];
   return (
@@ -219,13 +227,13 @@ const Request = () => {
         visibility={isError}
         onContinue={() => {}}
         errorDescription={error?.message || ''}
-        errorMessage="You Cannot Delete Your Account"
+        errorMessage="Something went wrong, please try again later."
       />
     </GradientSafeAreaView>
   );
 };
 
-export default Request;
+export default Report;
 const styles = StyleSheet.create({
   view1: {
     paddingHorizontal: size.getWidthSize(16),

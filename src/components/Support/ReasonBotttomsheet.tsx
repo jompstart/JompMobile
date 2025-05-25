@@ -8,6 +8,7 @@ import PTextInput from '../../shared/PTextInput';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 interface Props {
+  reasons: { text: string; index: number }[];
   isVisible: boolean;
   onClose: () => void;
   selectedTextId: number | null;
@@ -18,25 +19,8 @@ const ReasonBotttomsheet = ({
   selectedTextId,
   onClose,
   onChangeText,
+  reasons,
 }: Props) => {
-  const reasons = [
-    {
-      index: 1,
-      text: 'No Longer Using the Service',
-    },
-    {
-      index: 2,
-      text: 'Unfavorable Terms or High Fees',
-    },
-    {
-      index: 3,
-      text: 'Privacy and Data Concerns',
-    },
-    {
-      index: 4,
-      text: 'Poor User Experience or Technical Issues',
-    },
-  ];
   return (
     <BottomsheetWrapper visibility={isVisible} onClose={onClose}>
       <View
@@ -95,7 +79,7 @@ const ReasonBotttomsheet = ({
       </View>
       <BottomSheetTextInput
         onChangeText={(text) => {
-          onChangeText({ text, index: 5 });
+          onChangeText({ text, index: reasons.length + 1 });
         }}
         cursorColor={colors.primary()}
         style={{

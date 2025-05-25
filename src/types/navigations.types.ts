@@ -15,6 +15,7 @@ declare global {
 
 export type RootStackParamList = {
   SplashScreen: undefined;
+  Report: undefined;
   OnboardingScreen: undefined;
   SignUp: {
     accountPreference: UserAccountPreference;

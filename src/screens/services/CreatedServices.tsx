@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Pressable,
   RefreshControl,
   Image,
   View,
@@ -13,29 +12,54 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { useGetUserServices } from '../../hooks/api/providers';
-import { useNavigation } from '@react-navigation/native';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { FlatList } from 'react-native-gesture-handler';
 import { formatToAmount } from '../../utils/stringManipulation';
 const CreatedServices = () => {
   const user = useAppSelector(userSelector);
-  const { navigate } = useNavigation();
+
   const { data: services, refetch } = useGetUserServices(
     user.userId,
     user.customerId
   );
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
-    setRefreshing(true); // Start the refreshing indicator
+    setRefreshing(true);
     try {
-      await refetch(); // Trigger data refetch
+      await refetch();
     } catch (error) {
       console.error('Error refreshing services:', error);
     } finally {
-      setRefreshing(false); // Stop the refreshing indicator
+      setRefreshing(false);
     }
   };
+  const mappedStatus = {
+    Online: {
+      label: 'Online',
+      color: '#1DAB52', // Green
+    },
+    Completed: {
+      label: 'Completed',
+      color: '#1DAB52', // Green
+    },
+    Pending: {
+      label: 'Pending',
+      color: '#FFA500', // Orange
+    },
+    Accept: {
+      label: 'Accepted',
+      color: '#5A00E0', // Electric violet (cool and vibrant)
+    },
+    'Payment Made': {
+      label: 'Paid',
+      color: '#4B0082', // Indigo / Dark purple
+    },
+    Processing: {
+      label: 'Processing',
+      color: '#17A2B8', // Teal / Cyan
+    },
+  } as any;
 
   return (
     <GradientSafeAreaView>
@@ -143,17 +167,34 @@ const CreatedServices = () => {
                   >
                     ₦ {formatToAmount(item.price)}
                   </CText>
-                  <CText
+                  <View
                     style={{
                       marginTop: size.getHeightSize(4),
+                      backgroundColor:
+                        item.status in mappedStatus
+                          ? `${mappedStatus[item.status].color + '20'}`
+                          : 'black',
+                      paddingVertical: size.getHeightSize(4),
+                      paddingHorizontal: size.getWidthSize(8),
+                      borderRadius: size.getHeightSize(8),
+                      alignSelf: 'flex-start',
                     }}
-                    color={'primaryColor'}
-                    fontSize={16}
-                    lineHeight={22.4}
-                    fontFamily="regular"
                   >
-                    {item.status}
-                  </CText>
+                    <CText
+                      color={
+                        item.status in mappedStatus
+                          ? mappedStatus[item.status].color
+                          : 'black'
+                      }
+                      fontSize={12}
+                      lineHeight={16.4}
+                      fontFamily="regular"
+                    >
+                      {item.status in mappedStatus
+                        ? mappedStatus[item.status].label
+                        : item.status}
+                    </CText>
+                  </View>
                 </View>
               )}
             />

@@ -1,4 +1,4 @@
-import { StyleSheet, View, Pressable } from 'react-native';
+import { StyleSheet, View, Pressable, RefreshControl } from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
@@ -28,11 +28,11 @@ import {
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { userSelector } from '../../features/user/user.selector';
 import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
-import useGetTransactionOrder from '../../hooks/api/dashboard/useGetTransactionOrder';
 import { formatToAmount } from '../../utils/stringManipulation';
-import { useGetRecentTransactions } from '../../hooks/api/user';
-import Transactions from './Transactions';
-import Transaction from '../../components/Transaction/Transaction';
+import {
+  useGetRecentTransactions,
+  useRefreschUserData,
+} from '../../hooks/api/user';
 import RecentTransaction from '../../components/Transaction/RecentTransaction';
 const Dashboard = () => {
   const { navigate, dispatch: navigationDispatch } = useNavigation();
@@ -42,6 +42,8 @@ const Dashboard = () => {
     user.customerId,
     user.userId
   );
+  const { isPending, refetch } = useRefreschUserData();
+
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
@@ -55,7 +57,12 @@ const Dashboard = () => {
         {/* <SearchIcon size={size.getHeightSize(28)} /> */}
         <NotificationBell size={size.getHeightSize(28)} />
       </GradientHeader>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={isPending} onRefresh={refetch} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
         <Pressable
           onPress={() => {
             navigate('Profile');

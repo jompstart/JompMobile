@@ -278,7 +278,7 @@ const Savings = () => {
                 : formatToAmount(accruedInterest?.data!) || '0.00'}
             </CText>
           </LinearGradient>
-          <Pressable
+          {/* <Pressable
             onPress={() => {
               navigate('SavingsTransactions');
             }}
@@ -363,7 +363,7 @@ const Savings = () => {
                 size={size.getHeightSize(25)}
               />
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               borderBottomWidth: size.getHeightSize(1),
