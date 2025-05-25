@@ -133,9 +133,12 @@ export class UserService {
   }
 
   async getUnifiedTransactions(data: UnifiedTransactionDto) {
+    const url = data.serviceName
+      ? `/get-unified-transaction-history?CustomerId=${this.customerId}&page=${data.page}&pageSize=${data.size}&serviceName=${data.serviceName}`
+      : `/get-unified-transaction-history?CustomerId=${this.customerId}&page=${data.page}&pageSize=${data.size}`;
     return await makeRequest<UnifiedTransactionResponseDto[]>({
       method: 'POST',
-      url: `/get-unified-transaction-history`,
+      url: url,
       data: {
         customerId: this.customerId,
         ...data,

@@ -22,6 +22,7 @@ export interface UIState {
   accountDetailsBottomsheet: {
     isVisible: boolean;
   };
+  showLogoutBottomSheet: boolean;
 }
 
 export interface Toast {

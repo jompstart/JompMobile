@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native';
 import { UserAccountPreference } from '../models/user';
 import { CreateSavingsFormState } from '../features/Savings/savings.reducer';
+import { loanType } from './loanCalculator';
 
 declare global {
   namespace ReactNavigation {
@@ -31,7 +32,9 @@ export type RootStackParamList = {
   LoanPage: undefined;
   SchoolFees: undefined;
   Transport: undefined;
-  HouseRent: undefined;
+  LoanCalculatorForm: {
+    loanType: loanType;
+  };
   UserCreated: undefined;
   PayServices: undefined;
   SavingsGoal: undefined;
@@ -77,7 +80,11 @@ type SuccessPageParams = {
     message?: string;
   };
 };
-
+type LoanCalculatorFormParams = {
+  [LoanCalculatorForm: string]: {
+    loanType: loanType;
+  };
+};
 type CreateSavingsParams = {
   [CreateSavings: string]: CreateSavingsFormState;
 };
@@ -85,6 +92,11 @@ type CreateSavingsParams = {
 export type CreateSavingsScreenProps = {
   navigation: NavigationProp<RootStackParamList, 'CreateSavings'>;
   route: RouteProp<CreateSavingsParams, 'CreateSavings'>;
+};
+
+export type LoanCalculatorFormProps = {
+  navigation: NavigationProp<RootStackParamList, 'LoanCalculatorForm'>;
+  route: RouteProp<LoanCalculatorFormParams, 'LoanCalculatorForm'>;
 };
 
 export type SignUpScreenProps = {

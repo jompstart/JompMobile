@@ -11,6 +11,7 @@ import SchoolPreference from './src/components/Dashboard/SchoolPreference';
 import FilterBottomsheet from './src/components/Savings/FilterBottomsheet';
 import { Provider } from 'react-redux';
 import { store } from './src/app/redux.store';
+import LogoutAccountModal from './src/shared/LogoutAccountModal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CompliancePromptModal from './src/components/compliance/CompliancePromptModal';
 import OverlayWrapper from './src/shared/OverlayWrapper';
@@ -43,6 +44,7 @@ export default function App() {
             <SchoolPreference />
             <FilterBottomsheet />
             <CompliancePromptModal />
+            <LogoutAccountModal />
           </NavigationContainer>
           <OverlayWrapper />
         </Provider>

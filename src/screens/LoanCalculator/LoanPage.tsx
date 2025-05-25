@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Pressable, View } from 'react-native';
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
@@ -6,10 +6,12 @@ import { size } from '../../config/size';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
 import { colors } from '../../constants/colors';
+import { useNavigation } from '@react-navigation/native';
 import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
 import CarIcon from '../../../assets/svgs/Home/CarIcon';
 import HouseIcon from '../../../assets/svgs/Loan/HouseIcon';
 const LoanPage = () => {
+  const navigation = useNavigation();
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -67,7 +69,7 @@ const LoanPage = () => {
         <View
           style={{
             backgroundColor: '#876DFF',
-            paddingVertical: size.getHeightSize(16),
+            paddingVertical: size.getHeightSize(12),
             borderRadius: size.getHeightSize(8),
             gap: size.getHeightSize(8),
             marginTop: size.getHeightSize(16),
@@ -83,7 +85,7 @@ const LoanPage = () => {
               marginTop: size.getHeightSize(16),
             }}
           >
-            Loan Calculator
+            Get access in 5 minutes to a loan up to
           </CText>
           <CText
             color="white"
@@ -98,7 +100,12 @@ const LoanPage = () => {
             ₦ 500,000.00
           </CText>
         </View>
-        <View
+        <Pressable
+          onPress={() => {
+            navigation.navigate('LoanCalculatorForm', {
+              loanType: 'school fee',
+            });
+          }}
           style={[
             styles.view,
             {
@@ -145,84 +152,113 @@ const LoanPage = () => {
             size={size.getHeightSize(20)}
             color={colors.primary()}
           />
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            rowGap: size.getHeightSize(16),
-            columnGap: size.getWidthSize(16),
-            marginTop: size.getHeightSize(16),
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('LoanCalculatorForm', {
+              loanType: 'transport',
+            });
           }}
+          style={[
+            styles.view,
+            {
+              backgroundColor: colors.white(),
+              marginTop: size.getHeightSize(16),
+            },
+          ]}
         >
-          <View style={styles.view1}>
-            <View
-              style={[
-                styles.view4,
-                {
-                  backgroundColor: '#F055424D',
-                },
-              ]}
-            >
-              <CarIcon size={size.getHeightSize(27)} />
-            </View>
-            <View style={styles.view3}>
-              <CText
-                color={colors.black('70') as any}
-                fontSize={14}
-                lineHeight={22.4}
-                fontFamily="bold"
-                style={styles.text}
-              >
-                Transport Credit
-              </CText>
-
-              <CText
-                color={colors.black('70') as any}
-                fontSize={12}
-                lineHeight={16.8}
-                fontFamily="regular"
-                style={styles.text}
-              >
-                Estimate loan for transportation
-              </CText>
-            </View>
+          <View
+            style={[
+              styles.view2,
+              {
+                backgroundColor: '#424E9B30',
+              },
+            ]}
+          >
+            <CarIcon size={size.getHeightSize(27)} />
           </View>
-          <View style={styles.view1}>
-            <View
-              style={[
-                styles.view4,
-                {
-                  backgroundColor: '#0066FF4D',
-                },
-              ]}
+          <View
+            style={{
+              flex: 1,
+              gap: size.getHeightSize(4),
+            }}
+          >
+            <CText
+              color={colors.black('70') as any}
+              fontSize={14}
+              lineHeight={22.4}
+              fontFamily="bold"
             >
-              <HouseIcon size={size.getHeightSize(27)} />
-            </View>
-            <View style={styles.view3}>
-              <CText
-                color={colors.black('70') as any}
-                fontSize={14}
-                lineHeight={22.4}
-                fontFamily="bold"
-                style={styles.text}
-              >
-                House Rent
-              </CText>
-
-              <CText
-                color={colors.black('70') as any}
-                fontSize={12}
-                lineHeight={16.8}
-                fontFamily="regular"
-                style={styles.text}
-              >
-                Estimate loan for house rent
-              </CText>
-            </View>
+              Transport Credit
+            </CText>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+            >
+              Estimate loan for transportation
+            </CText>
           </View>
-        </View>
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={size.getHeightSize(20)}
+            color={colors.primary()}
+          />
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('LoanCalculatorForm', {
+              loanType: 'rent',
+            });
+          }}
+          style={[
+            styles.view,
+            {
+              backgroundColor: colors.white(),
+              marginTop: size.getHeightSize(16),
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.view2,
+              {
+                backgroundColor: '#424E9B30',
+              },
+            ]}
+          >
+            <HouseIcon size={size.getHeightSize(27)} />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              gap: size.getHeightSize(4),
+            }}
+          >
+            <CText
+              color={colors.black('70') as any}
+              fontSize={14}
+              lineHeight={22.4}
+              fontFamily="bold"
+            >
+              House Rent
+            </CText>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+            >
+              Estimate loan for house rent
+            </CText>
+          </View>
+          <MaterialIcons
+            name="keyboard-arrow-right"
+            size={size.getHeightSize(20)}
+            color={colors.primary()}
+          />
+        </Pressable>
       </View>
     </GradientSafeAreaView>
   );

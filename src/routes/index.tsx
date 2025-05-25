@@ -20,9 +20,7 @@ import WithdrawFunds from '../screens/Dashboard/WithdrawFunds';
 import GuardianDetails from '../screens/ChildBills/GuardianDetails';
 import SelfDetails from '../screens/ChildBills/SelfDetails';
 import LoanPage from '../screens/LoanCalculator/LoanPage';
-import SchoolFees from '../screens/LoanCalculator/SchoolFees';
-import Transport from '../screens/LoanCalculator/Transport';
-import HouseRent from '../screens/LoanCalculator/HouseRent';
+import LoanCalculatorForm from '../screens/LoanCalculator/LoanCalculatorForm';
 import UserCreated from '../screens/services/UserCreated';
 import PayServices from '../screens/services/PayServices';
 import PreviewRequest from '../shared/PreviewRequest';
@@ -122,17 +120,10 @@ const MainNavigator = () => {
       name: 'LoanPage',
       component: LoanPage,
     },
+
     {
-      name: 'SchoolFees',
-      component: SchoolFees,
-    },
-    {
-      name: 'Transport',
-      component: Transport,
-    },
-    {
-      name: 'HouseRent',
-      component: HouseRent,
+      name: 'LoanCalculatorForm',
+      component: LoanCalculatorForm,
     },
     {
       name: 'UserCreated',

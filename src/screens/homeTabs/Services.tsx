@@ -84,7 +84,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                Services
+                User Created
               </CText>
               <CText
                 color={'secondaryBlack'}
@@ -124,7 +124,7 @@ const Services = () => {
                 lineHeight={22.4}
                 fontFamily="bold"
               >
-                User Curated
+                Provider Created (Coming soon)
               </CText>
               <CText
                 color={'secondaryBlack'}

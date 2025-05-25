@@ -70,7 +70,7 @@ const CreatedServices = () => {
             opacity: 0.75,
           }}
         >
-          User Created Services
+          Service History
         </CText>
         <CText
           color={'secondaryBlack'}
@@ -82,7 +82,7 @@ const CreatedServices = () => {
             marginTop: size.getHeightSize(4),
           }}
         >
-          View the services you ordered
+          View the services you have requested
         </CText>
         <View style={styles.view5}>
           {services?.data && (

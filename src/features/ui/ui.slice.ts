@@ -17,6 +17,7 @@ const initialState: UIState = {
   accountDetailsBottomsheet: {
     isVisible: false,
   },
+  showLogoutBottomSheet: false,
 };
 
 const uiSlice = createSlice({
@@ -50,6 +51,9 @@ const uiSlice = createSlice({
     ) {
       state.accountDetailsBottomsheet.isVisible = action.payload;
     },
+    updateLogoutBottomsheetVisibility(state, action: PayloadAction<boolean>) {
+      state.showLogoutBottomSheet = action.payload;
+    },
   },
 });
 export const {
@@ -59,6 +63,7 @@ export const {
   updateSuccessModalVisibility,
   resetSuccessModal,
   updateAccountDetailsBottomsheetVisibility,
+  updateLogoutBottomsheetVisibility,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

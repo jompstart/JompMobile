@@ -7,7 +7,11 @@ import {
   TransportDetails,
   TransportRequest,
 } from '../../interface/provider';
-import { CustomerServiceDetails } from './provider.dto';
+import {
+  CalculateLoanDto,
+  CalculateLoanResponse,
+  CustomerServiceDetails,
+} from './provider.dto';
 
 export class ProviderService {
   constructor(private userId: string, private customerId: string) {}
@@ -390,6 +394,14 @@ export class ProviderService {
     return await makeRequest<CustomerServiceDetails[]>({
       method: 'GET',
       url: `get-customerServices/${this.customerId}?1&pageSize=10`,
+    });
+  }
+
+  async calculateLoan(data: CalculateLoanDto) {
+    return await makeRequest<CalculateLoanResponse>({
+      method: 'POST',
+      url: `/loan-calculator`,
+      data,
     });
   }
 }

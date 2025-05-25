@@ -5,18 +5,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
 import LogOutIcon from '../../../assets/svgs/Drawer/LogoutIcon';
-import SettingsIcon from '../../../assets/svgs/Drawer/SettingsIcon';
 import LoanCalculatorIcon from '../../../assets/svgs/Drawer/LoanCalculatorIcon';
 import TransactionIcon from '../../../assets/svgs/Drawer/TransactionIcon';
 import SavingsIcon from '../../../assets/svgs/Drawer/SavingsIcon';
 import SchoolFeeIcon from '../../../assets/svgs/Drawer/SchoolFee';
 import HouseRentIcon from '../../../assets/svgs/Drawer/HouseRentIcon';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import TransportCreditIcon from '../../../assets/svgs/Drawer/TransportCreditIcon';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
+import { useAppDispatch } from '../../controller/redux.controller';
+import { updateLogoutBottomsheetVisibility } from '../../features/ui/ui.slice';
 interface Props {
   props: DrawerContentComponentProps;
 }
@@ -25,6 +25,7 @@ const Drawer = (props: Props) => {
     props: { navigation },
   } = props;
   const { top } = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
   // const { navigate, dispatch: navigationDispatch } = useNavigation();
   return (
     <View
@@ -158,7 +159,12 @@ const Drawer = (props: Props) => {
               Transactions
             </CText>
           </Pressable>
-          <Pressable style={styles.view1}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('LoanPage');
+            }}
+            style={styles.view1}
+          >
             <LoanCalculatorIcon size={size.getWidthSize(40)} />
             <CText
               fontFamily="semibold"
@@ -169,9 +175,24 @@ const Drawer = (props: Props) => {
               }}
             >
               Loan Calculator{' '}
-              <CText color={colors.black('70') as any} fontSize={12}>
-                (Coming soon)
-              </CText>
+            </CText>
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('CreatedServices');
+            }}
+            style={styles.view1}
+          >
+            <SavingsIcon size={size.getWidthSize(40)} />
+            <CText
+              fontFamily="semibold"
+              fontSize={16}
+              color={colors.black('70') as any}
+              style={{
+                flex: 1,
+              }}
+            >
+              Service History
             </CText>
           </Pressable>
           {/* <Pressable
@@ -198,11 +219,7 @@ const Drawer = (props: Props) => {
               paddingTop: size.getHeightSize(32),
             }}
             onPress={() => {
-              AsyncStorage.removeItem('token');
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Login' }],
-              });
+              dispatch(updateLogoutBottomsheetVisibility(true));
             }}
           >
             <LogOutIcon size={size.getWidthSize(40)} />
@@ -215,6 +232,42 @@ const Drawer = (props: Props) => {
               }}
             >
               Logout
+            </CText>
+          </Pressable>
+          <Pressable
+            style={{
+              ...styles.view1,
+              paddingTop: size.getHeightSize(20),
+            }}
+            onPress={() => {
+              navigation.navigate('Request');
+            }}
+          >
+            <View
+              style={{
+                width: size.getHeightSize(40),
+                height: size.getHeightSize(40),
+                borderRadius: size.getHeightSize(8),
+                backgroundColor: colors.primaryWarning('40'),
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <AntDesign
+                size={size.getHeightSize(20)}
+                name="delete"
+                color={colors.primaryWarning()}
+              />
+            </View>
+            <CText
+              fontFamily="semibold"
+              fontSize={16}
+              color={'#DD2025' as any}
+              style={{
+                flex: 1,
+              }}
+            >
+              Delete Account
             </CText>
           </Pressable>
         </View>

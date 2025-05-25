@@ -12,16 +12,32 @@ import HeartIcon from '../../../assets/svgs/Dashboard/HeartIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
 import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
-const LoanDescriptionsheet = () => {
+import { CalculateLoanResponse } from '../../services/providers/provider.dto';
+interface Props {
+  onClose: () => void;
+  isVisible: boolean;
+  data?: CalculateLoanResponse;
+}
+const LoanDescriptionsheet = ({ isVisible, onClose, data }: Props) => {
+  const {
+    approvedLoanAmount,
+    durationInMonths,
+    isApproved,
+    message,
+    monthlyRepayment,
+  } = data ? data : {};
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
       backgroundColor="#F9F8FF"
-      visibility={false}
-      onClose={() => {}}
+      visibility={isVisible}
+      onClose={() => {
+        onClose();
+      }}
     >
       <CancelIcon
+        onPress={onClose}
         style={{
           alignSelf: 'flex-end',
           marginTop: size.getHeightSize(12),
@@ -47,27 +63,41 @@ const LoanDescriptionsheet = () => {
           }}
         >
           Based on your monthly income and selected loan type, we can offer you
-          a loan range of{' '}
+          a loan of{' '}
           <CText
             color={'#31005C' as any}
             fontSize={16}
             lineHeight={22.4}
             fontFamily="bold"
           >
-            ₦100,000.00
+            ₦{approvedLoanAmount?.toLocaleString()}
           </CText>{' '}
-          to{' '}
+          to be repaid over{' '}
           <CText
             color={'#31005C' as any}
             fontSize={16}
             lineHeight={22.4}
             fontFamily="bold"
           >
-            ₦120,000.00
+            {durationInMonths} months
           </CText>{' '}
-          to be repaid in 3 months.
+          with a monthly repayment of{' '}
+          <CText
+            color={'#31005C' as any}
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="bold"
+          >
+            ₦
+            {monthlyRepayment?.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+          </CText>
+          .
         </CText>
       </View>
+
       <View
         style={{
           backgroundColor: '#F0EDFF',
@@ -91,18 +121,19 @@ const LoanDescriptionsheet = () => {
             flex: 1,
           }}
         >
-          The maximum amount you can get for transport loan is{' '}
+          The maximum amount you can get for this loan type is{' '}
           <CText
             color={'#31005C' as any}
             fontSize={16}
             lineHeight={22.4}
             fontFamily="bold"
           >
-            ₦100,000.00
+            ₦{approvedLoanAmount?.toLocaleString()}
           </CText>
+          .
         </CText>
       </View>
-      <CText
+      {/* <CText
         color="secondaryBlack"
         fontSize={16}
         lineHeight={22.4}
@@ -122,15 +153,15 @@ const LoanDescriptionsheet = () => {
         >
           timmyagbaakin@gmail.com
         </CText>
-      </CText>
+      </CText> */}
       <View
         style={{
           gap: size.getHeightSize(16),
           marginTop: size.getHeightSize(54),
         }}
       >
-        <PrimaryButton label="Apply for Loan" />
-        <SecondaryButton label="Close" />
+        {/* <PrimaryButton label="Apply for Loan" /> */}
+        <SecondaryButton label="Close" onPress={onClose} />
       </View>
     </BottomsheetWrapper>
   );

@@ -5,3 +5,6 @@ export const complianceModalSelector = (state: RootState) =>
 export const successModalSelector = (state: RootState) => state.ui.successModal;
 export const accountDetailsBottomsheetSelector = (state: RootState) =>
   state.ui.accountDetailsBottomsheet;
+
+export const logoutBottomsheetSelector = (state: RootState) =>
+  state.ui.showLogoutBottomSheet;
