@@ -15,6 +15,15 @@ declare global {
 
 export type RootStackParamList = {
   SplashScreen: undefined;
+  Notification: {
+    token: string;
+    CustomerRequest: string;
+    ApprovedAmount: string;
+    DisbursedAmount: string;
+    ServiceCategory: string;
+    UserContribution: string;
+    ServiceId: string;
+  };
   Report: undefined;
   OnboardingScreen: undefined;
   SignUp: {
@@ -90,9 +99,26 @@ type CreateSavingsParams = {
   [CreateSavings: string]: CreateSavingsFormState;
 };
 
+type NotificationParams = {
+  [Notification: string]: {
+    token: string;
+    CustomerRequest: string;
+    ApprovedAmount: string;
+    DisbursedAmount: string;
+    ServiceCategory: string;
+    UserContribution: string;
+    ServiceId: string;
+  };
+};
+
 export type CreateSavingsScreenProps = {
   navigation: NavigationProp<RootStackParamList, 'CreateSavings'>;
   route: RouteProp<CreateSavingsParams, 'CreateSavings'>;
+};
+
+export type NotificationScreenProps = {
+  navigation: NavigationProp<RootStackParamList, 'Notification'>;
+  route: RouteProp<NotificationParams, 'Notification'>;
 };
 
 export type LoanCalculatorFormProps = {

@@ -7,27 +7,26 @@ import CText from '../../shared/CText';
 import OptionBox from '../../shared/OptionBox';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { colors } from '../../constants/colors';
-import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import { useGetServiceCategories } from '../../hooks/api/providers';
-import { ServicesCategories } from '../../services/providers/provider.dto';
+import { useGetPaymentMethods } from '../../hooks/api/providers';
+import { PaymentOptionResponse } from '../../services/providers/provider.dto';
 
 interface Props {
   onClose: () => void;
   visibility: boolean;
-  onSelect: (category: ServicesCategories) => void;
-  selectedCategory?: string;
+  onSelect: (category: PaymentOptionResponse) => void;
+  selectedPaymentMethod?: string;
 }
-const ServiceCategory = ({
+const RepaymentPlan = ({
   onClose,
   onSelect,
   visibility,
-  selectedCategory,
+  selectedPaymentMethod,
 }: Props) => {
   const user = useAppSelector(userSelector);
-  const { data: servicesCategories } = useGetServiceCategories(
+  const { data: paymentMethods } = useGetPaymentMethods(
     user.userId,
     user.customerId
   );
@@ -55,7 +54,7 @@ const ServiceCategory = ({
           lineHeight={28.8}
           fontFamily="bold"
         >
-          Service Category
+          Repayment plan
         </CText>
         <CancelIcon
           onPress={onClose}
@@ -70,12 +69,12 @@ const ServiceCategory = ({
           gap: size.getHeightSize(16),
         }}
       >
-        {servicesCategories?.data?.map((service) => (
+        {paymentMethods?.data?.map((method) => (
           <OptionBox
-            selected={service.id === selectedCategory}
-            key={service.id}
+            selected={method.id === selectedPaymentMethod}
+            key={method.id}
             onSelect={() => {
-              onSelect(service);
+              onSelect(method);
               onClose();
             }}
             flex={false}
@@ -93,10 +92,9 @@ const ServiceCategory = ({
                 color={colors.primary()}
               />
             }
-            description={service.name}
+            description={method.name}
           />
         ))}
-        <PTextInput placeholder="Others?, Please specify" />
       </View>
       <PrimaryButton
         style={{
@@ -108,6 +106,6 @@ const ServiceCategory = ({
   );
 };
 
-export default ServiceCategory;
+export default RepaymentPlan;
 
 const styles = StyleSheet.create({});

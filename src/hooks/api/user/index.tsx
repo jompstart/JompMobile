@@ -16,6 +16,7 @@ export const useGetUserTransactions = (customerId: string, userId: string) => {
   return useQuery({
     queryKey: ['getUserTransactions'],
     queryFn: () => getUserTransactions(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -31,6 +32,7 @@ export const useGetRecentTransactions = (
   return useQuery({
     queryKey: ['getRecentTransactions'],
     queryFn: () => getRecentTransactions(),
+    refetchOnWindowFocus: false,
   });
 };
 

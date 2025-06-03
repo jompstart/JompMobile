@@ -10,6 +10,7 @@ export const useGetSavingsCategories = (userId: string, customerId: string) => {
   return useQuery({
     queryKey: ['getSavingsCategories'],
     queryFn: () => getSavingsCategories(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -25,6 +26,7 @@ export const useGetSavingsFundsSource = (
   return useQuery({
     queryKey: ['getSourceFunds'],
     queryFn: () => getSourceFunds(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -37,6 +39,7 @@ export const useGetSavingsTypes = (userId: string, customerId: string) => {
   return useQuery({
     queryKey: ['getSavingsTypes'],
     queryFn: () => getSavingsTypes(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -49,6 +52,7 @@ export const useGetTotalSavings = (userId: string, customerId: string) => {
   return useQuery({
     queryKey: ['getTotalSavings'],
     queryFn: () => getTotalSavings(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -61,6 +65,7 @@ export const useGetAccruedInterest = (userId: string, customerId: string) => {
   return useQuery({
     queryKey: ['getAccruedInterest'],
     queryFn: () => getAccruedInterest(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -73,6 +78,7 @@ export const useGetUserSavings = (userId: string, customerId: string) => {
   return useQuery({
     queryKey: ['getUserSavings'],
     queryFn: () => getUserSavings(),
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -89,5 +95,6 @@ export const useGetUserSavingsById = (
   return useQuery({
     queryKey: ['getUserSavingsById', goalId],
     queryFn: () => getUserSavingsById(),
+    refetchOnWindowFocus: false,
   });
 };

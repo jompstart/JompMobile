@@ -109,6 +109,7 @@ const AttachmentView = ({
       setFile(uri);
     }
   };
+
   const createFile = async (uri: string, name: string, type: string) => {
     const response = await fetch(uri);
     const blob = await response.blob();
@@ -253,7 +254,6 @@ const AttachmentView = ({
               }}
               width={size.getWidthSize(50)}
               height={size.getHeightSize(116)}
-
               onPress={() => {
                 setFile('');
                 onFileSelected?.({
@@ -322,58 +322,70 @@ const AttachmentView = ({
             <CText fontSize={14} fontFamily="semibold" style={styles.title}>
               Upload from
             </CText>
-            <Pressable
-              style={styles.optionButton}
-              onPress={() => {
-                setShowModal(false);
-                takePhoto();
-              }}
-            >
-              <Feather name="camera" size={size.getHeightSize(16)} />
-              <CText
-                fontSize={13}
-                color="secondaryBlack"
-                style={styles.optionText}
-              >
-                Camera
-              </CText>
-            </Pressable>
-            <Pressable
-              style={styles.optionButton}
-              onPress={() => {
-                setShowModal(false);
-                pickImage();
-              }}
-            >
-              <MaterialIcons name="perm-media" size={size.getHeightSize(16)} />
-              <CText
-                fontSize={13}
-                color="secondaryBlack"
-                style={styles.optionText}
-              >
-                Gallery
-              </CText>
-            </Pressable>
+            {typeOfFileToPick !== 'pdf' && (
+              <>
+                <Pressable
+                  style={styles.optionButton}
+                  onPress={() => {
+                    setShowModal(false);
+                    takePhoto();
+                  }}
+                >
+                  <Feather name="camera" size={size.getHeightSize(16)} />
+                  <CText
+                    fontSize={13}
+                    color="secondaryBlack"
+                    style={styles.optionText}
+                  >
+                    Camera
+                  </CText>
+                </Pressable>
+                <Pressable
+                  style={styles.optionButton}
+                  onPress={() => {
+                    setShowModal(false);
+                    pickImage();
+                  }}
+                >
+                  <MaterialIcons
+                    name="perm-media"
+                    size={size.getHeightSize(16)}
+                  />
+                  <CText
+                    fontSize={13}
+                    color="secondaryBlack"
+                    style={styles.optionText}
+                  >
+                    Gallery
+                  </CText>
+                </Pressable>
+              </>
+            )}
 
+            {typeOfFileToPick !== 'image' && (
+              <Pressable
+                style={styles.optionButton}
+                onPress={() => {
+                  setShowModal(false);
+                  pickDocument();
+                }}
+              >
+                <Feather name="file" size={size.getHeightSize(16)} />
+                <CText
+                  fontSize={13}
+                  color="secondaryBlack"
+                  style={styles.optionText}
+                >
+                  Files
+                </CText>
+              </Pressable>
+            )}
             <Pressable
-              style={styles.optionButton}
+              style={styles.closeButton}
               onPress={() => {
                 setShowModal(false);
-                pickDocument();
               }}
             >
-              <Feather name="file" size={size.getHeightSize(16)} />
-              <CText
-                fontSize={13}
-                color="secondaryBlack"
-                style={styles.optionText}
-              >
-                Files
-              </CText>
-            </Pressable>
-            <Pressable style={styles.closeButton} onPress={() => {
-              setShowModal(false);
-            }}>
               <CText
                 fontSize={13}
                 color="secondaryBlack"

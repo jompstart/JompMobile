@@ -1,5 +1,5 @@
 import { makeRequest } from '../../config/api.config';
-import { HouseRentLoanFormState } from '../../features/user/user.reducer';
+import { HouseRentLoanFormState } from '../../reducers/services.reducer';
 import {
   ChildSchoolFeeRequest,
   MediaFile,
@@ -11,6 +11,8 @@ import {
   CalculateLoanDto,
   CalculateLoanResponse,
   CustomerServiceDetails,
+  PaymentOptionResponse,
+  ServicesCategories,
 } from './provider.dto';
 
 export class ProviderService {
@@ -393,7 +395,7 @@ export class ProviderService {
   async getUserServices() {
     return await makeRequest<CustomerServiceDetails[]>({
       method: 'GET',
-      url: `get-customerServices/${this.customerId}?1&pageSize=10`,
+      url: `/get-customerServices/${this.customerId}?1&pageSize=10`,
     });
   }
 
@@ -402,6 +404,18 @@ export class ProviderService {
       method: 'POST',
       url: `/loan-calculator`,
       data,
+    });
+  }
+  async getServiceCategories() {
+    return await makeRequest<ServicesCategories[]>({
+      method: 'GET',
+      url: `/service-categories`,
+    });
+  }
+  async getPaymentMethods() {
+    return await makeRequest<PaymentOptionResponse[]>({
+      method: 'GET',
+      url: `/payment-options`,
     });
   }
 }

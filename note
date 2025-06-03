@@ -1,43 +1,57 @@
-this should be your search "Transfer From Bank"
-"Transfer From Bank"
-"Fund wallet"
-"Fund Savings Wallet"
-"Fund Savings Wallet"
-"Fund wallet"
-"Fund Savings Wallet"
-"Fund Savings Wallet"
-"Fund Savings Wallet"
-"Fund wallet"
-"Fund wallet"
-"Fund Savings Wallet"
-"Savings"
-"Savings"
-"Savings"
+“jompstart://Notifications/${acceptLoanBaseUrl}?token={customer.Id}&CustomerRequest={selectedService.LoanAmount}&ApprovedAmount={request.JompstartApporoveAmount}&DisbursedAmount={request.DisbursedAmount}&ServiceCategory={selectedService.Description}&UserContribution={request.UserContribution}&ServiceId={request.ServiceId}”
 
-"Fund Wallet"
-"Fund Wallet"
-"Savings"
-"Fund Wallet"
-"Fund Wallet"
-"AccruedInterest"
-"AccruedInterest"
-"AccruedInterest"
-"Fund Wallet"
-"AccruedInterest"
 
-"Wallet Funding"
-"Wallet Debited"
-"Wallet Debited"
-"Wallet Funding"
-"Wallet Debited"
-"Wallet Debited"
-"Wallet Debited"
-"Wallet Funding"
-"Wallet Funding"
-"Wallet Debited"
-"Wallet Transfer"
-"Wallet Transfer"
-"Wallet Transfer"
-"Wallet Transfer"
-"Wallet Transfer"
-"Wallet Transfer"
+
+ServiceName
+ServiceCompletionStatus
+ServiceDate
+LoanAmountRequested
+ServiceProvider
+GuarantorAddress
+GuarantorPhoneNumber
+CostOfService
+ServiceCategory
+ReasonForLoan
+GuarantorName
+RecurringPaymentOptionId
+CustomerId
+45140ec8-7c29-4103-b579-7bd04dbe0f62
+ServiceProviderContact
+PaymentTypeId
+RepaymentPlan
+
+
+ServiceName
+Test
+ServiceProvider
+Solana motors
+ServiceProviderContact
+09070903614
+ProofOfService
+(binary)
+CostOfService
+50000
+ServiceCategory
+759e8404-a7c9-45e9-b9a3-efd651d6776d
+PaymentTypeId
+46ec1baa-3c82-4989-9645-47dc0cda86e1
+LoanAmountRequested
+3000
+RepaymentPlan
+Pay later with Jomp
+RecurringPaymentOptionId
+46ec1baa-3c82-4989-9645-47dc0cda86e1
+ServiceCompletionStatus
+ongoing
+ReasonForLoan
+To test app
+ServiceDate
+2025-06-01T23:00:00.000Z
+UtilityBill
+(binary)
+GuarantorName
+Mr Ola
+GuarantorAddress
+Obi Street
+GuarantorPhoneNumber
+09070903614

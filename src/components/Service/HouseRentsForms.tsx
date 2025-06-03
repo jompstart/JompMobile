@@ -14,7 +14,7 @@ import {
   HouseRentLoanFormState,
   rentLoanFormReducer,
   rentLoanInitailState,
-} from '../../features/user/user.reducer';
+} from '../../reducers/services.reducer';
 import { ProviderService } from '../../services/providers/provider';
 import { userSelector } from '../../features/user/user.selector';
 import { useNavigation } from '@react-navigation/native';
@@ -116,7 +116,7 @@ const HouseRentsForms = ({
           placeholder="Rent Amount"
         />
         <PTextInput
-        isAmount
+          isAmount
           value={state.requestedAmount}
           onChangeText={(text) => {
             dispatch({ type: 'SET_REQUESTED_AMOUNT', payload: text });

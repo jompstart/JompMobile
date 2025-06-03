@@ -15,19 +15,32 @@ import LogoutAccountModal from './src/shared/LogoutAccountModal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CompliancePromptModal from './src/components/compliance/CompliancePromptModal';
 import OverlayWrapper from './src/shared/OverlayWrapper';
+import { LinkingOptions } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
+import { RootStackParamList } from './src/types/navigations.types';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const queryClient = new QueryClient();
-  // Load the fonts
+
   const loadFonts = async () => {
     await loadAppFonts();
     setFontsLoaded(true);
   };
 
-  // Load the fonts on app mount
   useEffect(() => {
     loadFonts();
   }, []);
+  const linking: LinkingOptions<RootStackParamList> = {
+    prefixes: [Linking.createURL('/')],
+    config: {
+      screens: {
+        Notification:
+          'Notifications/:token/:CustomerRequest/:ApprovedAmount/:DisbursedAmount/:ServiceCategory/:UserContribution/:ServiceId',
+
+        SplashScreen: '*',
+      },
+    },
+  };
 
   if (!fontsLoaded) {
     return null;
