@@ -11,6 +11,7 @@ import {
   CalculateLoanDto,
   CalculateLoanResponse,
   CustomerServiceDetails,
+  OtherBillsDto,
   PaymentOptionResponse,
   ServicesCategories,
 } from './provider.dto';
@@ -277,7 +278,6 @@ export class ProviderService {
     });
   }
   async requestHouseRentLoan(data: HouseRentLoanFormState) {
-    console.log('====== got here ====');
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
     formData.append('RentPrice', data.rentAmount);
@@ -416,6 +416,44 @@ export class ProviderService {
     return await makeRequest<PaymentOptionResponse[]>({
       method: 'GET',
       url: `/payment-options`,
+    });
+  }
+
+  async requestOtherService(data: Omit<OtherBillsDto, 'CustomerId'>) {
+    let formData = new FormData();
+
+    formData.append('CustomerId', this.customerId);
+    formData.append('ServiceName', data.ServiceName);
+    formData.append('ServiceCompletionStatus', data.ServiceCompletionStatus);
+    formData.append('ServiceDate', data.ServiceDate);
+    formData.append('LoanAmountRequested', data.LoanAmountRequested);
+    formData.append('ServiceProvider', data.ServiceProvider);
+    formData.append('GuarantorAddress', data.GuarantorAddress);
+    formData.append(
+      'GuarantorPhoneNumber',
+      this.formatPhoneNumber(data.GuarantorPhoneNumber)
+    );
+    formData.append('CostOfService', data.CostOfService);
+    formData.append('ServiceCategory', data.ServiceCategory);
+    formData.append('ReasonForLoan', data.ReasonForLoan);
+    formData.append('GuarantorName', data.GuarantorName);
+    formData.append('RecurringPaymentOptionId', data.RecurringPaymentOptionId);
+    formData.append('ServiceProviderContact', data.ServiceProviderContact);
+    formData.append('PaymentTypeId', data.PaymentTypeId);
+    formData.append('RepaymentPlan', data.RepaymentPlan);
+    formData.append('ProofOfService', data.ProofOfService as any);
+    formData.append('ValidateId', data.ValidateId as any);
+    formData.append('BankStatement', data.BankStatement as any);
+    formData.append('UtilityBill', data.UtilityBill as any);
+    console.log('Form Data for Other Bills Request:');
+    console.log(formData);
+    return await makeRequest({
+      method: 'POST',
+      url: `/bills-payment-request`,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      data: formData,
     });
   }
 }

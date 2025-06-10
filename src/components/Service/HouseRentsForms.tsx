@@ -55,8 +55,6 @@ const HouseRentsForms = ({
       );
     },
     onSuccess: (data) => {
-      console.log('======= service success =======');
-      console.log(data);
       navigation.navigate('SuccessPage');
       // appDispatch(
       //   updateToast({

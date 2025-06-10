@@ -13,12 +13,14 @@ import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
 import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
 import { CalculateLoanResponse } from '../../services/providers/provider.dto';
+import { useNavigation } from '@react-navigation/native';
 interface Props {
   onClose: () => void;
   isVisible: boolean;
   data?: CalculateLoanResponse;
+  label: string;
 }
-const LoanDescriptionsheet = ({ isVisible, onClose, data }: Props) => {
+const LoanDescriptionsheet = ({ isVisible, onClose, data, label }: Props) => {
   const {
     approvedLoanAmount,
     durationInMonths,
@@ -161,7 +163,7 @@ const LoanDescriptionsheet = ({ isVisible, onClose, data }: Props) => {
         }}
       >
         {/* <PrimaryButton label="Apply for Loan" /> */}
-        <SecondaryButton label="Close" onPress={onClose} />
+        <PrimaryButton label={label} onPress={onClose} />
       </View>
     </BottomsheetWrapper>
   );

@@ -20,6 +20,7 @@ const SplashScreen = () => {
   React.useEffect(() => {
     (async () => {
       const token = await AsyncStorage.getItem('token');
+      console.log('Token:', token);
       if (token) {
         const decoded: any = jwtDecode(token);
         console.log(decoded);
@@ -186,7 +187,7 @@ const SplashScreen = () => {
     </View>
   );
 };
-//visajej863@calmpros.com
+
 export default SplashScreen;
 
 const styles = StyleSheet.create({});

@@ -66,6 +66,7 @@ const BottomsheetWrapper = ({
   }, [visibility]);
   useEffect(() => {
     onMount?.();
+
     const handleBackButton = () => {
       if (visibility === true) {
         onClose();
@@ -74,9 +75,14 @@ const BottomsheetWrapper = ({
         return false;
       }
     };
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+
     return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+      backHandler.remove(); // <- This is the correct modern way to remove the listener
     };
   }, [visibility]);
 

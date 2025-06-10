@@ -8,4 +8,5 @@ export const images = {
   pfpImage: require('../../assets/images/pngs/pfpimage.png'),
   bankImage: require('../../assets/images/pngs/BankImage.png'),
   succesGif: require('../../assets/images/pngs/success.gif'),
+  successGif2: require('../../assets/images/gifs/success.gif'),
 };

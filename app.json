@@ -38,7 +38,9 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      ["expo-apple-authentication"],
+      [
+        "expo-apple-authentication"
+      ],
       [
         "expo-font",
         {
@@ -84,7 +86,9 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": "true"
         }
-      ]
+      ],
+      "expo-build-properties",
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

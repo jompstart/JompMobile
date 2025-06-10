@@ -11,7 +11,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../constants/colors';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
 const CustomerSupport = () => {
-  const phoneNumber = '+2347037915152';
+  const phoneNumber = '+2348131301273';
   const email = 'support@jompstart.com';
   const handleCall = () => {
     const url = `tel:${phoneNumber}`;

@@ -1,5 +1,11 @@
-import { StyleSheet, Pressable, View, ScrollView } from 'react-native';
-import React, { useReducer } from 'react';
+import {
+  StyleSheet,
+  Pressable,
+  Platform,
+  View,
+  ScrollView,
+} from 'react-native';
+import React, { useReducer, useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
@@ -19,17 +25,81 @@ import {
 } from '../../reducers/services.reducer';
 import RepaymentPlan from '../../components/Service/RepaymentPlan';
 import OtherServiceStatus from '../../components/Service/OtherServiceStatus';
+import ShowLoader from '../../shared/ShowLoader';
+import { useMutation } from '@tanstack/react-query';
+import { OtherBillsDto } from '../../services/providers/provider.dto';
+import { API_RESPONSE } from '../../types';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+import { ProviderService } from '../../services/providers/provider';
+import { useNavigation } from '@react-navigation/native';
+import { updateToast } from '../../features/ui/ui.slice';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 const OtherServices = () => {
   const [state, dispatch] = useReducer(
     otherBillsFormReducer,
     otherBillsInitialState
   );
+  const user = useAppSelector(userSelector);
+  const appDispatch = useAppDispatch();
+  const { navigate } = useNavigation();
+  const providerInstance = new ProviderService(user.userId, user.customerId);
+  const [showCategory, setShowCategory] = useState(false);
+  const [showRepaymentPlan, setShowRepaymentPlan] = useState(false);
+  const [paymentMethod, setPaymentMethhod] = useState('');
+  const [category, setCategory] = useState('');
+  const [showStatus, setShowStatus] = useState(false);
+  const [date, setDate] = useState<Date | null>(null);
+  const [showDate, setShowDate] = useState(false);
+  const onChange = (event: any, selectedDate?: Date) => {
+    setShowDate(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+      dispatch({
+        type: 'SET_SERVICE_DATE',
+        payload: selectedDate.toISOString(),
+      });
+    }
+  };
 
-  const [showCategory, setShowCategory] = React.useState(false);
-  const [showRepaymentPlan, setShowRepaymentPlan] = React.useState(false);
-  const [paymentMethod, setPaymentMethhod] = React.useState('');
-  const [category, setCategory] = React.useState('');
-  const [showStatus, setShowStatus] = React.useState(false);
+  const showDatePicker = () => {
+    setShowDate(true);
+  };
+  const { mutate: requestOtherService, isPending } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    Omit<OtherBillsDto, 'CustomerId'>
+  >({
+    mutationFn: (data) => providerInstance.requestOtherService(data),
+    onSuccess: (response) => {
+      if (response.success === true) {
+        appDispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: response.message,
+            toastType: 'success',
+          })
+        );
+        navigate('SuccessPage', {
+          title: 'Other Services',
+          message:
+            'Your request for other services has been successfully submitted.',
+        });
+      }
+    },
+    onError: (error) => {
+      appDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message,
+          toastType: 'info',
+        })
+      );
+    },
+  });
 
   return (
     <GradientSafeAreaView>
@@ -48,7 +118,8 @@ const OtherServices = () => {
           Go Back
         </CText>
       </GradientHeader>
-      <ScrollView
+      <KeyboardAwareScrollView
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           paddingBottom: size.getHeightSize(30),
         }}
@@ -122,6 +193,7 @@ const OtherServices = () => {
               required
               value={category}
               onPress={() => {
+                console.log('pressed');
                 setShowCategory(true);
               }}
             />
@@ -164,18 +236,53 @@ const OtherServices = () => {
               placeholder="Service Status"
               required
             />
-            <PTextInput placeholder="Reason for Loan" required />
             <PTextInput
-              placeholder="Select Service Date"
+              value={state.ReasonForLoan}
+              onChangeText={(text) => {
+                dispatch({ type: 'SET_REASON_FOR_LOAN', payload: text });
+              }}
+              multiline
+              numberOfLines={4}
+              style={{
+                textAlignVertical: 'top',
+                height: size.getHeightSize(80),
+              }}
+              placeholder="Reason for Loan"
               required
-              rightIcon={
-                <Feather
-                  name="calendar"
-                  size={size.getHeightSize(24)}
-                  color={colors.primary()}
-                />
-              }
             />
+            <View>
+              <CText fontSize={16} lineHeight={22.4} fontFamily="regular">
+                Choose start date
+              </CText>
+              <Pressable onPress={showDatePicker} style={styles.view5}>
+                <CText
+                  fontSize={14}
+                  lineHeight={22.4}
+                  color={'secondaryBlack'}
+                  fontFamily="regular"
+                >
+                  {state.ServiceDate
+                    ? new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }).format(new Date(state.ServiceDate))
+                    : 'DD/MM/YYYY'}
+                </CText>
+              </Pressable>
+              {showDate && (
+                <DateTimePicker
+                  value={date || new Date()}
+                  minimumDate={new Date()}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={onChange}
+                  style={{
+                    alignSelf: 'center',
+                  }}
+                />
+              )}
+            </View>
 
             <PTextInput
               value={state.GuarantorName}
@@ -244,15 +351,17 @@ const OtherServices = () => {
             />
           </View>
         </View>
-      </ScrollView>
-      <PrimaryButton
-        label="Proceed"
-        style={{
-          marginBottom: size.getHeightSize(32),
-          marginHorizontal: size.getWidthSize(16),
-          marginTop: size.getHeightSize(16),
-        }}
-      />
+        <PrimaryButton
+          onPress={() => requestOtherService(state)}
+          label="Proceed"
+          style={{
+            marginBottom: size.getHeightSize(32),
+            marginHorizontal: size.getWidthSize(16),
+            marginTop: size.getHeightSize(16),
+          }}
+        />
+      </KeyboardAwareScrollView>
+
       <ServiceCategory
         visibility={showCategory}
         onClose={() => {
@@ -274,6 +383,10 @@ const OtherServices = () => {
           setPaymentMethhod(method.id);
           dispatch({ type: 'SET_REPAYMENT_PLAN', payload: method.name });
           dispatch({ type: 'SET_PAYMENT_TYPE_ID', payload: method.id });
+          dispatch({
+            type: 'SET_RECURRING_PAYMENT_OPTION_ID',
+            payload: method.id,
+          });
         }}
       />
       <OtherServiceStatus
@@ -287,10 +400,23 @@ const OtherServices = () => {
         }}
         selectedStatus={state.ServiceCompletionStatus}
       />
+      <ShowLoader isLoading={isPending} />
     </GradientSafeAreaView>
   );
 };
 
 export default OtherServices;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  view5: {
+    backgroundColor: colors.white(),
+    paddingHorizontal: size.getWidthSize(16),
+    paddingVertical: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(8),
+    marginTop: size.getHeightSize(8),
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: colors.black('30'),
+    borderWidth: size.getHeightSize(1),
+  },
+});

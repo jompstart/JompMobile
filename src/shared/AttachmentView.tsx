@@ -1,5 +1,13 @@
-import { StyleSheet, Pressable, View, Alert, Image, Modal } from 'react-native';
-import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Pressable,
+  View,
+  Alert,
+  Image,
+  Modal,
+  Platform,
+} from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import CText from './CText';
@@ -9,7 +17,6 @@ import AAttachmentIcon from '../../assets/svgs/Dashboard/AttachmentIcon';
 import AttachmentRemoveIcon from '../../assets/svgs/shared/AttachmentRemoveIcon';
 import {
   launchImageLibraryAsync,
-  MediaType,
   launchCameraAsync,
   useCameraPermissions,
   PermissionStatus,
@@ -17,6 +24,7 @@ import {
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Feather from '@expo/vector-icons/Feather';
 import { MediaFile } from '../interface/provider';
+
 interface Props {
   description: string;
   type: string;
@@ -32,125 +40,146 @@ const AttachmentView = ({
   description,
   type,
   required,
-  onPress,
   onFileSelected,
   typeOfFileToPick,
 }: Props) => {
   const [file, setFile] = useState('');
   const [fileType, setFileType] = useState<'pdf' | 'image' | null>(null);
   const [fileName, setFileName] = useState('');
+
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   const [showModal, setShowModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<
+    (() => Promise<void>) | null
+  >(null);
+
+  useEffect(() => {
+    if (!showModal && pendingAction) {
+      pendingAction().finally(() => setPendingAction(null));
+    }
+  }, [showModal]);
 
   async function verifyPermission() {
     if (cameraPermissionInformation?.status === PermissionStatus.UNDETERMINED) {
       const permissionResponse = await requestPermission();
       return permissionResponse.granted;
     }
+
     if (cameraPermissionInformation?.status === PermissionStatus.DENIED) {
       const permissionResponse = await requestPermission();
-      console.log(permissionResponse);
-      if (permissionResponse.granted === false) {
+      if (!permissionResponse.granted) {
         Alert.alert(
           'Insufficient permission!',
-          'You need to grant camera access to use this app'
+          'You need to grant camera access to use this app.'
         );
       }
       return permissionResponse.granted;
     }
+
     return true;
   }
-  const pickImage = async () => {
-    const hasPermission = await verifyPermission();
-    if (!hasPermission) {
-      return;
-    }
 
-    let result = await launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const handleImageResult = (result: any) => {
+    if (result?.assets?.length > 0) {
+      const asset = result.assets[0];
+      const uri = asset.uri;
+      const formattedUri = uri.startsWith('file://') ? uri : 'file://' + uri;
+      const fileName = asset.fileName ?? `image-${Date.now()}.jpg`;
 
-    if (result.assets != null) {
-      let uri = result.assets[0].uri;
-      uri = uri.startsWith('file://') ? uri : 'file://' + uri;
+      setFile(formattedUri);
+      setFileType('image');
+      setFileName(fileName);
 
       onFileSelected?.({
-        name: result.assets[0].fileName!,
-        uri: uri,
-        type: result.assets[0].mimeType!,
+        name: fileName,
+        uri: formattedUri,
+        type: asset.mimeType ?? 'image/jpeg',
       });
-      setFile(uri);
+    }
+  };
+
+  const pickImage = async () => {
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) return;
+
+    try {
+      const result = await launchImageLibraryAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      handleImageResult(result);
+    } catch (err) {
+      console.error('Image picking error:', err);
     }
   };
 
   const takePhoto = async () => {
     const hasPermission = await verifyPermission();
-    if (!hasPermission) {
-      return;
-    }
-    let result = await launchCameraAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-    });
-
-    if (result.assets != null) {
-      let uri = result.assets[0].uri;
-      uri = uri.startsWith('file://') ? uri : 'file://' + uri;
-
-      onFileSelected?.({
-        name: result.assets[0].fileName!,
-        uri: uri,
-        type: result.assets[0].mimeType!,
+    if (!hasPermission) return;
+    try {
+      const result = await launchCameraAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        quality: 1,
       });
-      setFile(uri);
+      handleImageResult(result);
+    } catch (err) {
+      console.error('Camera error:', err);
     }
   };
 
-  const createFile = async (uri: string, name: string, type: string) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    return new File([blob], name, { type });
-  };
   const pickDocument = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: 'application/pdf',
         copyToCacheDirectory: true,
+        multiple: false,
       });
 
-      if (result.assets != null) {
-        let uri = result.assets[0].uri;
-        uri = uri.startsWith('file://') ? uri : 'file://' + uri;
+      if (!result.canceled && result.assets?.length > 0) {
+        const asset = result.assets[0];
+        const uri = asset.uri;
+        const formattedUri = uri.startsWith('file://') ? uri : 'file://' + uri;
+
+        setFile(formattedUri);
+        setFileType('pdf');
+        setFileName(asset.name ?? 'document.pdf');
 
         onFileSelected?.({
-          name: result.assets[0].name!,
-          uri: uri,
-          type: result.assets[0].mimeType!,
+          name: asset.name ?? 'document.pdf',
+          uri: formattedUri,
+          type: asset.mimeType ?? 'application/pdf',
         });
-        setFile(uri);
-        setFileType('pdf');
-        setFileName(result.assets[0].name);
       }
     } catch (error) {
-      console.error('Error picking document:', error);
+      console.error('Document picker error:', error);
     }
   };
+
+  const handleRemoveFile = () => {
+    setFile('');
+    setFileType(null);
+    setFileName('');
+    onFileSelected?.({ name: '', uri: '', type: '' });
+  };
+
   return (
     <Pressable
       onPress={() => {
-        typeOfFileToPick == 'pdf' ? pickDocument() : setShowModal(true);
+        if (typeOfFileToPick === 'pdf') {
+          pickDocument();
+        } else {
+          setShowModal(true);
+        }
       }}
       style={{
         paddingVertical: size.getHeightSize(14),
         backgroundColor: file ? colors.appBackground() : colors.white(),
         alignItems: 'center',
-
         borderRadius: size.getHeightSize(8),
-
         flexDirection: 'row',
         justifyContent: 'center',
         gap: size.getWidthSize(16),
@@ -158,233 +187,148 @@ const AttachmentView = ({
       }}
     >
       {file ? (
-        fileType == 'pdf' ? (
+        fileType === 'pdf' ? (
           <>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'flex-end',
-                gap: size.getWidthSize(4),
-                flex: 1,
-                backgroundColor: colors.white(),
-                paddingVertical: size.getHeightSize(16),
-                borderRadius: size.getHeightSize(8),
-                paddingHorizontal: size.getWidthSize(16),
-              }}
-            >
+            <View style={styles.pdfContainer}>
               <PdfIcon size={size.getHeightSize(84)} />
-              <View
-                style={{
-                  justifyContent: 'flex-end',
-                  flex: 1,
-                  gap: size.getHeightSize(8),
-                }}
-              >
-                <CText
-                  color={'secondaryBlack'}
-                  fontSize={14}
-                  lineHeight={19.6}
-                  fontFamily="bold"
-                  style={{
-                    textAlign: 'left',
-                    // flex: 1,
-                  }}
-                >
+              <View style={styles.pdfTextContainer}>
+                <CText color="secondaryBlack" fontSize={14} fontFamily="bold">
                   {description}
                 </CText>
                 <CText
-                  color={'secondaryBlack'}
+                  color="secondaryBlack"
                   fontSize={14}
-                  lineHeight={19.6}
                   fontFamily="semibold"
-                  style={{
-                    textAlign: 'left',
-                    // flex: 1,
-                  }}
                 >
                   {fileName}
                 </CText>
               </View>
             </View>
             <AttachmentRemoveIcon
-              style={{
-                alignSelf: 'center',
-              }}
+              style={{ alignSelf: 'center' }}
               width={size.getWidthSize(50)}
               height={size.getHeightSize(116)}
-              onPress={() => {
-                setFile('');
-                onFileSelected?.({
-                  name: '',
-                  uri: '',
-                  type: '',
-                });
-              }}
+              onPress={handleRemoveFile}
             />
           </>
         ) : (
           <>
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: colors.white(),
-                paddingVertical: size.getHeightSize(16),
-                borderRadius: size.getHeightSize(8),
-                paddingHorizontal: size.getWidthSize(16),
-              }}
-            >
-              <View
-                style={{
-                  width: size.getWidthSize(121),
-                  height: size.getHeightSize(84),
-                }}
-              >
-                <Image
-                  source={{ uri: file }}
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                  }}
-                />
+            <View style={styles.pdfContainer}>
+              <Image source={{ uri: file }} style={styles.imagePreview} />
+              <View style={styles.pdfTextContainer}>
+                <CText color="secondaryBlack" fontSize={14} fontFamily="bold">
+                  {description}
+                </CText>
+                <CText
+                  color="secondaryBlack"
+                  fontSize={14}
+                  fontFamily="semibold"
+                >
+                  {fileName}
+                </CText>
               </View>
             </View>
             <AttachmentRemoveIcon
-              style={{
-                alignSelf: 'center',
-              }}
+              style={{ alignSelf: 'center' }}
               width={size.getWidthSize(50)}
               height={size.getHeightSize(116)}
-              onPress={() => {
-                setFile('');
-                onFileSelected?.({
-                  name: '',
-                  uri: '',
-                  type: '',
-                });
-              }}
+              onPress={handleRemoveFile}
             />
           </>
         )
       ) : (
-        <View
-          style={{
-            gap: size.getHeightSize(8),
-          }}
-        >
+        <View style={{ gap: size.getHeightSize(8) }}>
           <AAttachmentIcon
-            style={{
-              alignSelf: 'center',
-            }}
+            style={{ alignSelf: 'center' }}
             size={size.getHeightSize(40)}
           />
           <CText
-            color={'secondaryBlack'}
+            color="secondaryBlack"
             fontSize={14}
-            lineHeight={19.6}
             fontFamily="semibold"
-            style={{
-              textAlign: 'center',
-            }}
+            style={{ textAlign: 'center' }}
           >
-            {description}
-            <CText
-              color={'primaryColor'}
-              fontSize={14}
-              lineHeight={19.6}
-              fontFamily="bold"
-            >
+            {description}{' '}
+            <CText color="primaryColor" fontSize={14} fontFamily="bold">
               Click to upload{' '}
               {required && (
-                <CText
-                  color={'warning'}
-                  fontSize={18}
-                  lineHeight={19.6}
-                  fontFamily="bold"
-                >
+                <CText color="warning" fontSize={18} fontFamily="bold">
                   *
                 </CText>
               )}
             </CText>
-            {' \n'} {type}
+            {'\n'}
+            {type}
           </CText>
         </View>
       )}
+
       <Modal
         transparent
         visible={showModal}
         animationType="fade"
-        onRequestClose={() => {
-          setShowModal(false);
-        }}
+        onRequestClose={() => setShowModal(false)}
       >
-        <View style={styles.overlay}>
-          <View style={styles.modalContainer}>
+        <Pressable style={styles.overlay} onPress={() => setShowModal(false)}>
+          <Pressable style={styles.modalContainer} onPress={() => {}}>
             <CText fontSize={14} fontFamily="semibold" style={styles.title}>
               Upload from
             </CText>
-            {typeOfFileToPick !== 'pdf' && (
-              <>
-                <Pressable
-                  style={styles.optionButton}
-                  onPress={() => {
-                    setShowModal(false);
-                    takePhoto();
-                  }}
-                >
-                  <Feather name="camera" size={size.getHeightSize(16)} />
-                  <CText
-                    fontSize={13}
-                    color="secondaryBlack"
-                    style={styles.optionText}
-                  >
-                    Camera
-                  </CText>
-                </Pressable>
-                <Pressable
-                  style={styles.optionButton}
-                  onPress={() => {
-                    setShowModal(false);
-                    pickImage();
-                  }}
-                >
-                  <MaterialIcons
-                    name="perm-media"
-                    size={size.getHeightSize(16)}
-                  />
-                  <CText
-                    fontSize={13}
-                    color="secondaryBlack"
-                    style={styles.optionText}
-                  >
-                    Gallery
-                  </CText>
-                </Pressable>
-              </>
-            )}
 
-            {typeOfFileToPick !== 'image' && (
-              <Pressable
-                style={styles.optionButton}
-                onPress={() => {
-                  setShowModal(false);
-                  pickDocument();
-                }}
-              >
-                <Feather name="file" size={size.getHeightSize(16)} />
-                <CText
-                  fontSize={13}
-                  color="secondaryBlack"
-                  style={styles.optionText}
-                >
-                  Files
-                </CText>
-              </Pressable>
-            )}
             <Pressable
-              style={styles.closeButton}
+              style={styles.optionButton}
               onPress={() => {
+                setPendingAction(() => takePhoto);
                 setShowModal(false);
               }}
+            >
+              <Feather name="camera" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Camera
+              </CText>
+            </Pressable>
+
+            <Pressable
+              style={styles.optionButton}
+              onPress={() => {
+                setPendingAction(() => pickImage);
+                setShowModal(false);
+              }}
+            >
+              <MaterialIcons name="perm-media" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Gallery
+              </CText>
+            </Pressable>
+
+            <Pressable
+              style={styles.optionButton}
+              onPress={() => {
+                setPendingAction(() => pickDocument);
+                setShowModal(false);
+              }}
+            >
+              <Feather name="file" size={size.getHeightSize(16)} />
+              <CText
+                fontSize={13}
+                color="secondaryBlack"
+                style={styles.optionText}
+              >
+                Files
+              </CText>
+            </Pressable>
+
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setShowModal(false)}
             >
               <CText
                 fontSize={13}
@@ -394,8 +338,8 @@ const AttachmentView = ({
                 Cancel
               </CText>
             </Pressable>
-          </View>
-        </View>
+          </Pressable>
+        </Pressable>
       </Modal>
     </Pressable>
   );
@@ -406,7 +350,7 @@ export default AttachmentView;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -435,8 +379,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeText: {
-    fontSize: size.getHeightSize(14),
     color: colors.primary(),
     fontWeight: '600',
+  },
+  pdfContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: size.getWidthSize(4),
+    flex: 1,
+    backgroundColor: colors.white(),
+    paddingVertical: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(8),
+    paddingHorizontal: size.getWidthSize(16),
+  },
+  pdfTextContainer: {
+    justifyContent: 'flex-end',
+    flex: 1,
+    gap: size.getHeightSize(8),
+  },
+  imageContainer: {
+    flex: 1,
+    backgroundColor: colors.white(),
+    paddingVertical: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(8),
+    paddingHorizontal: size.getWidthSize(16),
+  },
+  imagePreview: {
+    width: size.getWidthSize(121),
+    height: size.getHeightSize(84),
+    borderRadius: size.getHeightSize(8),
   },
 });

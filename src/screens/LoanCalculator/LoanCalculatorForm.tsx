@@ -9,6 +9,7 @@ import { colors } from '../../constants/colors';
 import InfoIcon from '../../../assets/svgs/Loan/InfoIcon';
 import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useMutation } from '@tanstack/react-query';
 import LoanDescriptionsheet from '../../components/LoanCalculator/LoanDescriptionsheet';
 import { LoanCalculatorFormProps } from '../../types/navigations.types';
@@ -25,6 +26,7 @@ import {
 } from '../../services/providers/provider.dto';
 import { updateToast } from '../../features/ui/ui.slice';
 import ShowLoader from '../../shared/ShowLoader';
+import { useNavigation } from '@react-navigation/native';
 
 interface Forms {
   salary: number;
@@ -61,6 +63,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
     loanCalculatorReducer,
     formInitialState
   );
+  const { navigate } = useNavigation();
   const loanType = params?.loanType || 'House Rent';
   const pageTitle =
     loanType === 'rent'
@@ -128,125 +131,143 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
           paddingHorizontal: size.getWidthSize(16),
         }}
       >
-        <CText
-          fontSize={16}
-          lineHeight={22}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'left',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          {pageTitle}
-        </CText>
-        <CText
-          color="secondaryBlack"
-          fontSize={16}
-          lineHeight={22.4}
-          fontFamily="regular"
-          style={{
-            textAlign: 'left',
-            marginTop: size.getHeightSize(4),
-          }}
-        >
-          Estimate loan for {pageSubtitle}
-        </CText>
-        <View
-          style={{
-            backgroundColor: colors.primary('10'),
-            paddingHorizontal: size.getWidthSize(8),
-            paddingVertical: size.getHeightSize(8),
-            borderRadius: size.getHeightSize(8),
-            gap: size.getWidthSize(8),
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          <InfoIcon size={size.getHeightSize(20)} />
+        <KeyboardAwareScrollView>
           <CText
-            color="black"
-            fontSize={12}
-            lineHeight={16.8}
-            fontFamily="regular"
+            fontSize={16}
+            lineHeight={22}
+            fontFamily="semibold"
             style={{
-              flex: 1,
+              textAlign: 'left',
+              marginTop: size.getHeightSize(16),
             }}
           >
-            This loan type offers a repayment of 3 months
+            {pageTitle}
           </CText>
-        </View>
+          <CText
+            color="secondaryBlack"
+            fontSize={16}
+            lineHeight={22.4}
+            fontFamily="regular"
+            style={{
+              textAlign: 'left',
+              marginTop: size.getHeightSize(4),
+            }}
+          >
+            Estimate loan for {pageSubtitle}
+          </CText>
+          <View
+            style={{
+              backgroundColor: colors.primary('10'),
+              paddingHorizontal: size.getWidthSize(8),
+              paddingVertical: size.getHeightSize(8),
+              borderRadius: size.getHeightSize(8),
+              gap: size.getWidthSize(8),
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: size.getHeightSize(16),
+            }}
+          >
+            <InfoIcon size={size.getHeightSize(20)} />
+            <CText
+              color="black"
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+              style={{
+                flex: 1,
+              }}
+            >
+              This loan type offers a repayment of 3 months
+            </CText>
+          </View>
 
-        <View
-          style={{
-            gap: size.getHeightSize(16),
-            marginTop: size.getHeightSize(16),
-          }}
-        >
-          <PTextInput
-            isAmount
-            value={details.salary.toString()}
-            onChangeText={(text) => {
-              stateDispatch({ type: 'SET_SALARY', payload: +text });
+          <View
+            style={{
+              gap: size.getHeightSize(16),
+              marginTop: size.getHeightSize(16),
             }}
-            placeholder="₦ Enter your predictable monthly income"
-          />
-          <PTextInput
-            isAmount
-            onChangeText={(text) => {
-              stateDispatch({ type: 'SET_LOAN_AMOUNT', payload: +text });
+          >
+            <PTextInput
+              isAmount
+              value={details.salary.toString()}
+              onChangeText={(text) => {
+                stateDispatch({ type: 'SET_SALARY', payload: +text });
+              }}
+              placeholder="₦ Enter your predictable monthly income"
+            />
+            <PTextInput
+              isAmount
+              onChangeText={(text) => {
+                stateDispatch({ type: 'SET_LOAN_AMOUNT', payload: +text });
+              }}
+              value={details.loanAmount.toString()}
+              placeholder="₦ Enter your desired loan amount"
+            />
+            <PTextInput
+              isAmount
+              value={details.durationInMonths.toString()}
+              onChangeText={(text) => {
+                stateDispatch({
+                  type: 'SET_DURATION',
+                  payload: +text,
+                });
+              }}
+              placeholder="Enter duration in months"
+              rightIcon={
+                <MaterialIcons
+                  name="mail-outline"
+                  size={size.getHeightSize(20)}
+                  color={colors.primary()}
+                />
+              }
+            />
+          </View>
+          <PrimaryButton
+            isLoading={isPending}
+            style={{
+              marginTop: size.getHeightSize(40),
             }}
-            value={details.loanAmount.toString()}
-            placeholder="₦ Enter your desired loan amount"
-          />
-          <PTextInput
-            isAmount
-            value={details.durationInMonths.toString()}
-            onChangeText={(text) => {
-              stateDispatch({
-                type: 'SET_DURATION',
-                payload: +text,
+            label="Calculate Loan Offer"
+            onPress={() => {
+              if (details.salary <= 0 || details.loanAmount <= 0) {
+                dispatch(
+                  updateToast({
+                    displayToast: true,
+                    toastMessage: 'Please enter valid salary and loan amount',
+                    toastType: 'info',
+                  })
+                );
+                return;
+              }
+
+              calculateLoanOffer({
+                salary: details.salary,
+                loanAmount: details.loanAmount,
+                durationInMonths: details.durationInMonths,
               });
             }}
-            placeholder="Enter duration in months"
-            rightIcon={
-              <MaterialIcons
-                name="mail-outline"
-                size={size.getHeightSize(20)}
-                color={colors.primary()}
-              />
-            }
           />
-        </View>
-        <PrimaryButton
-          isLoading={isPending}
-          style={{
-            marginTop: size.getHeightSize(40),
-          }}
-          label="Calculate Loan Offer"
-          onPress={() => {
-            if (details.salary <= 0 || details.loanAmount <= 0) {
-              dispatch(
-                updateToast({
-                  displayToast: true,
-                  toastMessage: 'Please enter valid salary and loan amount',
-                  toastType: 'info',
-                })
-              );
-              return;
-            }
-
-            calculateLoanOffer({
-              salary: details.salary,
-              loanAmount: details.loanAmount,
-              durationInMonths: details.durationInMonths,
-            });
-          }}
-        />
+        </KeyboardAwareScrollView>
       </View>
       <LoanDescriptionsheet
         isVisible={showBottomsheet}
-        onClose={() => setShowBottomsheet(false)}
+        onClose={() => {
+          if (loanType === 'rent') {
+            navigate('HouseRentService');
+          } else if (loanType == 'school fee') {
+            navigate('PayServices');
+          } else if (loanType == 'transport') {
+            navigate('TransportDetails');
+          }
+          // setShowBottomsheet(false);
+        }}
+        label={
+          loanType === 'rent'
+            ? 'Apply For House Rent'
+            : loanType === 'school fee'
+            ? 'Apply for School Fees'
+            : 'Apply For Transport Credit'
+        }
         data={data?.data}
       />
       <ShowLoader isLoading={isPending} />

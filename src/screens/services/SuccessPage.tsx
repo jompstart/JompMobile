@@ -1,5 +1,6 @@
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
+import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
@@ -22,6 +23,28 @@ const SuccessPage = ({ route: { params } }: SuccessPageScreenProps) => {
         paddingHorizontal: size.getWidthSize(16),
       }}
     >
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: size.screenHeight - bottom - top,
+          width: size.screenWidth,
+          backgroundColor: colors.white(),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Image
+          style={{
+            height: '100%',
+            width: '100%',
+          }}
+          resizeMode="contain"
+          source={images.successGif2}
+        />
+      </View>
       <View
         style={{
           flex: 1,
