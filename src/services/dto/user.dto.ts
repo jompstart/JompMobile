@@ -34,6 +34,10 @@ export interface DeleteAccountDto {
   reason: string;
   description: string;
 }
+export interface ReportProblemDto {
+  problem: string;
+  description: string;
+}
 
 export interface DeleteAccountErrorResponseDto {
   type: string;

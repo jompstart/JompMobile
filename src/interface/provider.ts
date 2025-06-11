@@ -61,6 +61,7 @@ export interface SelfSchoolFeeDetails {
     schoolFeeInvoice?: MediaFile;
     schoolIdCard?: MediaFile;
   };
+  IdempotencyKey: string;
 }
 
 export interface TransportDetails {
@@ -89,6 +90,7 @@ export interface TransportDetails {
     utilityBill?: MediaFile;
     bankStatement?: MediaFile;
   };
+  IdempotencyKey: string;
 }
 
 export interface TransportRequest {
@@ -109,6 +111,7 @@ export interface TransportRequest {
   paySlip: MediaFile;
   bankStatement: MediaFile;
   utility: MediaFile;
+  IdempotencyKey: string;
 }
 
 export interface ChildSchoolFeeRequest {
@@ -148,6 +151,7 @@ export interface ChildSchoolFeeRequest {
     bankStatement: MediaFile;
     bankStatement2?: MediaFile;
   };
+  IdempotencyKey: string;
 }
 
 export interface AddBankDto {
@@ -156,5 +160,3 @@ export interface AddBankDto {
   accountName: string;
   bankCode: string;
 }
-
-

@@ -21,6 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../types';
 import { updateToast } from '../../features/ui/ui.slice';
+import { useGetIdempotencyKey } from '../../hooks/api/auth';
 const HouseRentsForms = ({
   shouldLoad,
 }: {
@@ -33,6 +34,7 @@ const HouseRentsForms = ({
   const { houseRentDetails, setHouseRentDetails } = useContext(
     CustomerServicesContext
   );
+  const idempotencyKey = useGetIdempotencyKey();
   const [state, dispatch] = useReducer(
     rentLoanFormReducer,
     rentLoanInitailState
@@ -225,6 +227,7 @@ const HouseRentsForms = ({
           }}
           description="6 Months Bank Statement."
           type=".pdf, (max. 1MB)"
+          typeOfFileToPick={'pdf'}
         />
         <AttachmentView
           onFileSelected={(file) => {
@@ -247,6 +250,7 @@ const HouseRentsForms = ({
           }}
           description="Bank Statement 2."
           type=".pdf, (max. 1MB)"
+          typeOfFileToPick={'pdf'}
         />
         <AttachmentView
           onFileSelected={(file) => {
@@ -254,6 +258,7 @@ const HouseRentsForms = ({
           }}
           description="Bank Statement 3."
           type=".pdf, (max. 1MB)"
+          typeOfFileToPick={'pdf'}
         />
       </View>
       <View
@@ -264,7 +269,10 @@ const HouseRentsForms = ({
         <PrimaryButton
           label="Proceed"
           onPress={async () => {
-            mutate(state);
+            mutate({
+              ...state,
+              IdempotencyKey: idempotencyKey,
+            });
           }}
         />
       </View>

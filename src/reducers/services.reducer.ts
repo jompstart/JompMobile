@@ -21,6 +21,7 @@ export interface HouseRentLoanFormState {
   payMentSlip: MediaFile;
   bankStatement2: MediaFile;
   bankStatement3: MediaFile;
+  IdempotencyKey: string;
 }
 
 export type OtherBillsFormState = Omit<OtherBillsDto, 'CustomerId'>;
@@ -61,6 +62,7 @@ export const otherBillsInitialState: OtherBillsFormState = {
     type: '',
     name: '',
   },
+  IdempotencyKey: '',
 };
 
 export const rentLoanInitailState: HouseRentLoanFormState = {
@@ -112,6 +114,7 @@ export const rentLoanInitailState: HouseRentLoanFormState = {
     type: '',
     name: '',
   },
+  IdempotencyKey: '',
 };
 
 export type OtherBillsAction =

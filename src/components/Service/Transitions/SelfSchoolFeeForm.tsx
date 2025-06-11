@@ -29,11 +29,12 @@ import {
 } from '../../../features/ui/ui.slice';
 import { API_RESPONSE } from '../../../types';
 import { SelfSchoolFeeDetails } from '../../../interface/provider';
+import { useGetIdempotencyKey } from '../../../hooks/api/auth';
 const SelfSchoolFeeForm = () => {
   const { width } = Dimensions.get('window');
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-
+  const idempotencyKey = useGetIdempotencyKey();
   const [showStatesBottomsheet, setShowStatesBottomSheet] = useState(false);
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
@@ -47,7 +48,6 @@ const SelfSchoolFeeForm = () => {
   } = useMutation<API_RESPONSE<any>, Error, SelfSchoolFeeDetails>({
     mutationFn: (data) => providerInstance.registerSchoolFee(data), // Ensure data is passed
     onError: (error) => {
-      console.log('======= service error =======');
       console.log(error);
       dispatch(
         updateToast({
@@ -58,7 +58,6 @@ const SelfSchoolFeeForm = () => {
       );
     },
     onSuccess: (d) => {
-      console.log('======= service success =======');
       navigation.navigate('SuccessPage');
     },
   });
@@ -228,7 +227,10 @@ const SelfSchoolFeeForm = () => {
       },
     };
 
-    requestSchoolLoan(selfSchoolFeeDetails);
+    requestSchoolLoan({
+      ...selfSchoolFeeDetails,
+      IdempotencyKey: idempotencyKey,
+    });
   };
 
   return (
@@ -265,7 +267,7 @@ const SelfSchoolFeeForm = () => {
               flex: 1,
             }}
           >
-            {(fill) => (
+            {(fill: any) => (
               <CText
                 color={'#31005C' as any}
                 fontSize={23}

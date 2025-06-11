@@ -271,6 +271,23 @@ const Drawer = (props: Props) => {
             </CText>
           </Pressable>
         </View>
+        <View
+          style={{
+            flex: 1,
+          }}
+        />
+        <CText
+          fontFamily="semibold"
+          fontSize={18}
+          color={colors.primary() as any}
+          lineHeight={23}
+          style={{
+            marginHorizontal: size.getWidthSize(16),
+            marginBottom: size.getHeightSize(40),
+          }}
+        >
+          Terms & Conditions
+        </CText>
       </View>
     </View>
   );

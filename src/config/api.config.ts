@@ -2,7 +2,8 @@ import axios from 'axios';
 import { BASE_URL } from './urls';
 import { API_RESPONSE } from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { navigationRef } from '../routes/RootNavigation';
+import { StackActions } from '@react-navigation/native';
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 50000,
@@ -46,12 +47,15 @@ export const makeRequest = async <T, D = any>({
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.log(`Error making request to ${url}:`, error);
       // Handle Axios-specific errors
 
-      console.log(
-        `Axios error: ${url} ===>>`,
-        error.response?.data || error.message
-      );
+      if (error.response?.status === 401) {
+        await AsyncStorage.removeItem('token');
+
+        navigationRef.current?.dispatch(StackActions.replace('Login'));
+        
+      }
       throw error.response?.data || error.message;
     } else {
       // Handle non-Axios errors

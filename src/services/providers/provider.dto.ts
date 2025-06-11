@@ -60,4 +60,5 @@ export interface OtherBillsDto {
   ValidateId: MediaFile;
   BankStatement: MediaFile; //
   UtilityBill: MediaFile; //
+  IdempotencyKey: string;
 }

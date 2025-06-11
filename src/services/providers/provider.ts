@@ -165,6 +165,8 @@ export class ProviderService {
         data.documentUploads.bankStatement2 as any
       );
     }
+    formData.append('isMobile', `${true}`);
+    formData.append('IdempotencyKey', data.IdempotencyKey);
 
     return await makeRequest<{
       message: string;
@@ -263,6 +265,8 @@ export class ProviderService {
     );
     formData.append('AgreedToTermsAndConditions', `${true}`);
     formData.append('AgreedToLoanAgreement', `${true}`);
+    formData.append('isMobile', `${true}`);
+    formData.append('IdempotencyKey', data.IdempotencyKey);
 
     return await makeRequest<{
       message: string;
@@ -318,7 +322,8 @@ export class ProviderService {
       'RentEmployeerRequest.CompanyLocation',
       data.companyAddress
     );
-    console.log(formData);
+    formData.append('isMobile', `${true}`);
+    formData.append('IdempotencyKey', data.IdempotencyKey);
 
     return await makeRequest({
       method: 'POST',
@@ -381,6 +386,8 @@ export class ProviderService {
     formData.append('TransportCreditRequest.InformationAgreement', `${true}`);
     formData.append('TransportCreditRequest.AuthorizeDebit', `${true}`);
     formData.append('TransportCreditRequest.TermsAndConditions', `${true}`);
+    formData.append('isMobile', `${true}`);
+    formData.append('IdempotencyKey', data.IdempotencyKey);
 
     return await makeRequest({
       method: 'POST',
@@ -445,8 +452,8 @@ export class ProviderService {
     formData.append('ValidateId', data.ValidateId as any);
     formData.append('BankStatement', data.BankStatement as any);
     formData.append('UtilityBill', data.UtilityBill as any);
-    console.log('Form Data for Other Bills Request:');
-    console.log(formData);
+    formData.append('isMobile', `${true}`);
+    formData.append('IdempotencyKey', data.IdempotencyKey);
     return await makeRequest({
       method: 'POST',
       url: `/bills-payment-request`,

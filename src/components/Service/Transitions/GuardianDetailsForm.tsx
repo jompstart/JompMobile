@@ -23,6 +23,7 @@ import { ChildSchoolFeeRequest } from '../../../interface/provider';
 import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../../types';
 import { updateToast } from '../../../features/ui/ui.slice';
+import { useGetIdempotencyKey } from '../../../hooks/api/auth';
 const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
   const navigation = useNavigation();
@@ -32,6 +33,7 @@ const GuardianDetailsForm = () => {
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+  const idempotencyKey = useGetIdempotencyKey();
   let PADDING = size.getWidthSize(26);
   let newWidth = width - 2 * PADDING;
   const { mutate: requestLoan, isPending } = useMutation<
@@ -42,7 +44,6 @@ const GuardianDetailsForm = () => {
     mutationFn: (payload) =>
       providerInstance.registerSchoolFeeForOthers(payload),
     onError: (error) => {
-      console.log('====== request child school fee error ======');
       console.log(error);
       dispatch(
         updateToast({
@@ -54,8 +55,9 @@ const GuardianDetailsForm = () => {
       );
     },
     onSuccess: (data) => {
-      console.log('====== request child school fee success ======');
-      navigation.navigate('SuccessPage');
+      navigation.navigate('SuccessPage', {
+        message: 'Your request for child school fee has been sent successfully',
+      });
     },
   });
   const views = [
@@ -94,7 +96,6 @@ const GuardianDetailsForm = () => {
       setViewIndex(viewIndex + 1);
       setProgress(progress + 100 / views.length);
     } else {
-      console.log(childSchoolFeeDetails);
       requestLoan({
         workDetails: {
           address:
@@ -144,6 +145,7 @@ const GuardianDetailsForm = () => {
             schoolAddress2: child.schoolAddress2!,
           };
         }),
+        IdempotencyKey: idempotencyKey,
       });
     }
   };
@@ -183,7 +185,7 @@ const GuardianDetailsForm = () => {
               flex: 1,
             }}
           >
-            {(fill) => (
+            {(fill: any) => (
               <CText
                 color={'#31005C' as any}
                 fontSize={23}

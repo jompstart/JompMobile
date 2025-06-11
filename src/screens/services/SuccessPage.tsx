@@ -41,7 +41,6 @@ const SuccessPage = ({ route: { params } }: SuccessPageScreenProps) => {
             height: '100%',
             width: '100%',
           }}
-          resizeMode="contain"
           source={images.successGif2}
         />
       </View>
@@ -93,7 +92,7 @@ const SuccessPage = ({ route: { params } }: SuccessPageScreenProps) => {
       <PrimaryButton
         label="Go to Dashboard"
         onPress={() => {
-          navigation.dispatch(StackActions.replace('BottomtabNavigation'));
+          navigation.dispatch(StackActions.replace('NavigationDrawer'));
         }}
         style={{
           marginBottom: size.getHeightSize(32),

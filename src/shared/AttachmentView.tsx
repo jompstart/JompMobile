@@ -55,7 +55,7 @@ const AttachmentView = ({
   >(null);
 
   useEffect(() => {
-    if (!showModal && pendingAction) {
+    if (!showModal && pendingAction && Platform.OS === 'android') {
       pendingAction().finally(() => setPendingAction(null));
     }
   }, [showModal]);
@@ -268,6 +268,11 @@ const AttachmentView = ({
         visible={showModal}
         animationType="fade"
         onRequestClose={() => setShowModal(false)}
+        onDismiss={() => {
+          if (pendingAction && Platform.OS === 'ios') {
+            pendingAction().finally(() => setPendingAction(null));
+          }
+        }}
       >
         <Pressable style={styles.overlay} onPress={() => setShowModal(false)}>
           <Pressable style={styles.modalContainer} onPress={() => {}}>

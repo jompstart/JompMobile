@@ -44,23 +44,17 @@ const Request = () => {
     error,
     isError,
     reset,
-  } = useMutation<
-    API_RESPONSE<any>,
-    Error,
-    // DeleteAccountErrorResponseDto,
-    DeleteAccountDto
-  >({
+  } = useMutation<API_RESPONSE<any>, Error, DeleteAccountDto>({
     mutationFn: (data) => userInstance.deleteAccount(data),
     onSuccess: (res) => {
       if (res.success) {
         navigation.navigate('SuccessPage', {
-          message: 'Account Deleted Successfully',
-          title: 'Your account has been deleted successfully.',
+          message: 'Your request to delete your account has been sent',
+          title: 'Your request to delete your account has been sent',
         });
       }
     },
     onError: (err) => {
-      console.log('======= error deleting account =======');
       console.log(err);
     },
   });

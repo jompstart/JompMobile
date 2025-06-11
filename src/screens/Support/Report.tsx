@@ -5,7 +5,6 @@ import GradientHeader from '../../shared/GradientHeader';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { colors } from '../../constants/colors';
@@ -19,10 +18,7 @@ import { userSelector } from '../../features/user/user.selector';
 import { UserService } from '../../services/user';
 import { API_RESPONSE } from '../../types';
 import { useNavigation } from '@react-navigation/native';
-import {
-  DeleteAccountDto,
-  DeleteAccountErrorResponseDto,
-} from '../../services/dto/user.dto';
+import { ReportProblemDto } from '../../services/dto/user.dto';
 const Report = () => {
   const [reasonBottomSheetVisible, setShowReasonBottomSheet] =
     React.useState(false);
@@ -39,28 +35,22 @@ const Report = () => {
   const navigation = useNavigation();
   const userInstance = new UserService(user.customerId, user.userId);
   const {
-    mutate: deleteAccount,
+    mutate: reportProblem,
     isPending,
     error,
     isError,
     reset,
-  } = useMutation<
-    API_RESPONSE<any>,
-    Error,
-    // DeleteAccountErrorResponseDto,
-    DeleteAccountDto
-  >({
-    mutationFn: (data) => userInstance.deleteAccount(data),
+  } = useMutation<API_RESPONSE<any>, Error, ReportProblemDto>({
+    mutationFn: (data) => userInstance.reportProblem(data),
     onSuccess: (res) => {
       if (res.success) {
         navigation.navigate('SuccessPage', {
-          message: 'Account Deleted Successfully',
-          title: 'Your account has been deleted successfully.',
+          message: 'Your report has been sent successfully',
+          title: 'Your report has been sent',
         });
       }
     },
     onError: (err) => {
-      console.log('======= error deleting account =======');
       console.log(err);
     },
   });
@@ -121,7 +111,7 @@ const Report = () => {
             lineHeight={28.8}
             fontFamily="bold"
           >
-            Request to Remove Account
+            Report a Problem
           </CText>
           <CText
             color={'secondaryBlack'}
@@ -133,7 +123,7 @@ const Report = () => {
               marginTop: size.getHeightSize(4),
             }}
           >
-            Please specify reason
+            Please specify
           </CText>
           <Pressable
             onPress={() => {
@@ -196,11 +186,11 @@ const Report = () => {
           <PrimaryButton
             isLoading={isPending}
             disabled={!details || !selectedReason.id}
-            label="Send Request"
+            label="Send Report"
             onPress={() => {
-              deleteAccount({
+              reportProblem({
                 description: details,
-                reason: selectedReason.text,
+                problem: selectedReason.text,
               });
             }}
           />

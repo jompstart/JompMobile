@@ -10,6 +10,7 @@ import {
   InitiateTransferDto,
   OrderResponseDto,
   RecentTransactionDto,
+  ReportProblemDto,
   RequestPayoutDto,
   TransactionDto,
   TransactionResponseDto,
@@ -87,6 +88,21 @@ export class UserService {
         'Content-Type': 'multipart/form-data',
       },
       data: formData,
+    });
+  }
+
+  async reportProblem(data: ReportProblemDto) {
+    return await makeRequest({
+      method: 'POST',
+      url: `/submit-problem`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        customerId: this.customerId,
+        problem: data.problem,
+        description: data.description,
+      },
     });
   }
 

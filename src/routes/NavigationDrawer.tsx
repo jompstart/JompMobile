@@ -21,30 +21,9 @@ const NavigationDrawer = () => {
       }}
       drawerContent={(props) => {
         return <DrawerComponent props={props} />;
-        // if (
-        //   memoizedCurrentTab === 'Main' ||
-        //   memoizedCurrentTab === 'UserProfile'
-        // ) {
-        //   return <FeedDrawerContent {...props} />;
-        // } else if (memoizedCurrentTab === 'Community') {
-        //   return <CommunityDrawerContent {...props} />;
-        // }
       }}
     >
       <Drawer.Screen name="HomePage" component={BottomtabNavigation} />
-      {/* <Drawer.Screen name="HouseRent" component={HouseRentService} />
-      <Drawer.Screen name="Transport" component={TransportForm} />
-      <Drawer.Screen name="Savings" component={Savings} /> */}
-      {/* <Drawer.Screen name="Transactions" component={Support} />
-      <Drawer.Screen
-        name="TowneSquarePurpleScreen"
-        component={TowneSquarePurpleScreen}
-      />
-      <Drawer.Screen
-        name="CommunityInfoScreen"
-        component={CommunityInfoScreen}
-      />
-      <Drawer.Screen name="ChannelChat" component={ChannelChat} /> */}
     </Drawer.Navigator>
   );
 };

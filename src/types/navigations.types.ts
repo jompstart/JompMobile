@@ -23,6 +23,7 @@ export type RootStackParamList = {
     ServiceCategory: string;
     UserContribution: string;
     ServiceId: string;
+    action: string;
   };
   Report: undefined;
   OnboardingScreen: undefined;
@@ -108,6 +109,7 @@ type NotificationParams = {
     ServiceCategory: string;
     UserContribution: string;
     ServiceId: string;
+    action: string;
   };
 };
 

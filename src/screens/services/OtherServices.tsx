@@ -38,6 +38,7 @@ import { ProviderService } from '../../services/providers/provider';
 import { useNavigation } from '@react-navigation/native';
 import { updateToast } from '../../features/ui/ui.slice';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useGetIdempotencyKey } from '../../hooks/api/auth';
 const OtherServices = () => {
   const [state, dispatch] = useReducer(
     otherBillsFormReducer,
@@ -54,6 +55,7 @@ const OtherServices = () => {
   const [showStatus, setShowStatus] = useState(false);
   const [date, setDate] = useState<Date | null>(null);
   const [showDate, setShowDate] = useState(false);
+  const idempotencyKey = useGetIdempotencyKey();
   const onChange = (event: any, selectedDate?: Date) => {
     setShowDate(false);
     if (selectedDate) {
@@ -352,7 +354,12 @@ const OtherServices = () => {
           </View>
         </View>
         <PrimaryButton
-          onPress={() => requestOtherService(state)}
+          onPress={() =>
+            requestOtherService({
+              ...state,
+              IdempotencyKey: idempotencyKey,
+            })
+          }
           label="Proceed"
           style={{
             marginBottom: size.getHeightSize(32),

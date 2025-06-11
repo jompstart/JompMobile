@@ -17,6 +17,7 @@ import CompliancePromptModal from './src/components/compliance/CompliancePromptM
 import OverlayWrapper from './src/shared/OverlayWrapper';
 import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
+import { navigationRef } from './src/routes/RootNavigation';
 import { RootStackParamList } from './src/types/navigations.types';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -35,7 +36,7 @@ export default function App() {
     config: {
       screens: {
         Notification:
-          'Notifications/:token/:CustomerRequest/:ApprovedAmount/:DisbursedAmount/:ServiceCategory/:UserContribution/:ServiceId',
+          'Notifications/:action/:token/:CustomerRequest/:ApprovedAmount/:DisbursedAmount/:ServiceCategory/:UserContribution/:ServiceId',
 
         SplashScreen: '*',
       },
@@ -49,7 +50,7 @@ export default function App() {
     <GestureHandlerRootView style={styles.gestureHandler}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <MainNavigator />
             <WalletAccountDetails />
             <PayBills />
