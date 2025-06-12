@@ -4,7 +4,10 @@ import ScrollablebottomsheetWrapper from './ScrollablebottomsheetWrapper';
 import { colors } from '../constants/colors';
 import Feather from '@expo/vector-icons/Feather';
 import { useAppDispatch } from '../controller/redux.controller';
-import { updateAccountDetailsBottomsheetVisibility } from '../features/ui/ui.slice';
+import {
+  updateAccountDetailsBottomsheetVisibility,
+  updateToast,
+} from '../features/ui/ui.slice';
 import CText from './CText';
 import { size } from '../config/size';
 import BankIcon from '../../assets/svgs/Home/BankIcon';
@@ -17,6 +20,7 @@ import { userSelector } from '../features/user/user.selector';
 import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
 import { UserService } from '../services/user';
 import { changeUserState } from '../features/user/user.slice';
+import * as Clipboard from 'expo-clipboard';
 
 const AccountDetailsBottomsheet = () => {
   const dispatch = useAppDispatch();
@@ -187,7 +191,18 @@ const AccountDetailsBottomsheet = () => {
                     {item.accountNumber}
                   </CText>
                 </View>
-                <View
+                <Pressable
+                  onPress={() => {
+                    Clipboard.setStringAsync(item.accountNumber).then(() => {
+                      dispatch(
+                        updateToast({
+                          displayToast: true,
+                          toastMessage: 'Account number copied to clipboard',
+                          toastType: 'success',
+                        })
+                      );
+                    });
+                  }}
                   style={{
                     flexDirection: 'row',
                     gap: size.getWidthSize(4),
@@ -206,7 +221,7 @@ const AccountDetailsBottomsheet = () => {
                   >
                     Copy
                   </CText>
-                </View>
+                </Pressable>
               </View>
             </View>
           ))}
