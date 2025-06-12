@@ -50,7 +50,7 @@ export default function App() {
     <GestureHandlerRootView style={styles.gestureHandler}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <NavigationContainer ref={navigationRef}>
+          <NavigationContainer linking={linking} ref={navigationRef}>
             <MainNavigator />
             <WalletAccountDetails />
             <PayBills />

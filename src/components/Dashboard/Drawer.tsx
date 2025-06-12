@@ -26,7 +26,7 @@ const Drawer = (props: Props) => {
   } = props;
   const { top } = useSafeAreaInsets();
   const dispatch = useAppDispatch();
-  // const { navigate, dispatch: navigationDispatch } = useNavigation();
+
   return (
     <View
       style={{
