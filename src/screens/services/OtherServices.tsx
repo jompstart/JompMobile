@@ -1,16 +1,9 @@
-import {
-  StyleSheet,
-  Pressable,
-  Platform,
-  View,
-  ScrollView,
-} from 'react-native';
-import React, { useReducer, useState } from 'react';
+import { StyleSheet, Pressable, Platform, View } from 'react-native';
+import React, { useEffect, useReducer, useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Feather from '@expo/vector-icons/Feather';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -50,6 +43,7 @@ const OtherServices = () => {
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const [showCategory, setShowCategory] = useState(false);
   const [showRepaymentPlan, setShowRepaymentPlan] = useState(false);
+  const [shouldDisableButton, setShouldDisableButton] = useState(false);
   const [paymentMethod, setPaymentMethhod] = useState('');
   const [category, setCategory] = useState('');
   const [showStatus, setShowStatus] = useState(false);
@@ -102,6 +96,30 @@ const OtherServices = () => {
       );
     },
   });
+
+  useEffect(() => {
+    setShouldDisableButton(
+      !(
+        state.ServiceName &&
+        state.ServiceProvider &&
+        state.ServiceProviderContact &&
+        state.ServiceCategory &&
+        state.CostOfService &&
+        state.RepaymentPlan &&
+        state.LoanAmountRequested &&
+        state.ServiceCompletionStatus &&
+        state.ReasonForLoan &&
+        state.ServiceDate &&
+        state.GuarantorName &&
+        state.GuarantorPhoneNumber &&
+        state.GuarantorAddress &&
+        state.ProofOfService.uri &&
+        state.ValidateId.uri &&
+        state.BankStatement.uri &&
+        state.UtilityBill.uri
+      )
+    );
+  }, [state]);
 
   return (
     <GradientSafeAreaView>
@@ -354,6 +372,7 @@ const OtherServices = () => {
           </View>
         </View>
         <PrimaryButton
+          disabled={shouldDisableButton}
           onPress={() =>
             requestOtherService({
               ...state,
