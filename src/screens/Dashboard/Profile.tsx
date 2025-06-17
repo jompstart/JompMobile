@@ -7,6 +7,7 @@ import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import Opticons from '@expo/vector-icons/Octicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { images } from '../../constants/images';
 import PencilIcon from '../../../assets/svgs/Dashboard/PencilIcon';
@@ -25,7 +26,7 @@ const Profile = () => {
   const { navigate, goBack } = useNavigation();
   const user = useAppSelector(userSelector);
   const { data: banks } = useGetUserBanks(user?.userId, user?.customerId);
- 
+
   return (
     <GradientSafeAreaView>
       <LinearGradient
@@ -67,20 +68,24 @@ const Profile = () => {
           style={{
             height: size.getHeightSize(146),
             width: size.getHeightSize(146),
-            borderRadius: '100%',
             alignSelf: 'center',
             marginTop: size.getHeightSize(14),
+            backgroundColor: '#FFFFFF95',
+            borderRadius: size.getHeightSize(200),
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          <Image
+          <Ionicons name="person" size={100} color={colors.primary('')} />
+          {/* <Image
             style={{
               height: '100%',
               width: '100%',
               borderRadius: size.getHeightSize(200),
             }}
             source={images.pfpImage}
-          />
-          <View
+          /> */}
+          {/* <View
             style={{
               position: 'absolute',
               height: size.getHeightSize(45.31),
@@ -105,7 +110,7 @@ const Profile = () => {
             >
               <PencilIcon size={size.getHeightSize(20.14)} />
             </View>
-          </View>
+          </View> */}
         </View>
         <CText
           color={'white'}
@@ -144,7 +149,7 @@ const Profile = () => {
             >
               Details
             </CText>
-            <View
+            {/* <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -164,7 +169,7 @@ const Profile = () => {
               >
                 Edit Profile
               </CText>
-            </View>
+            </View> */}
           </View>
           <View
             style={{

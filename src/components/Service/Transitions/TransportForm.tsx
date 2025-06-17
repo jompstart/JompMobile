@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, use, useEffect } from 'react';
 import { size } from '../../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import CText from '../../../shared/CText';
@@ -29,6 +29,7 @@ const TransportForm = () => {
   const { transportDetails, setTransportDetails } = useContext(
     CustomerServicesContext
   );
+  const [shouldDisableButton, setShouldDisableButton] = useState(false);
   const idempotencyKey = useGetIdempotencyKey();
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
@@ -117,6 +118,38 @@ const TransportForm = () => {
 
     // console.log(transportResponce);
   };
+  useEffect(() => {
+    if (viewIndex === 0) {
+      const isEmpty =
+        !transportDetails.creditRequestDetails.transportMode ||
+        !transportDetails.creditRequestDetails.estimatedMonthlyCost ||
+        !transportDetails.creditRequestDetails.requestedAmount ||
+        !transportDetails.creditRequestDetails.paymentDuration;
+      setShouldDisableButton(isEmpty);
+    } else if (viewIndex === 1) {
+      const isEmpty =
+        !transportDetails.employmentDetails.employmentStatus ||
+        !transportDetails.employmentDetails.name ||
+        !transportDetails.employmentDetails.address ||
+        !transportDetails.employmentDetails.payday ||
+        !transportDetails.employmentDetails.incomeRange ||
+        !transportDetails.employmentDetails.payday ||
+        !transportDetails.employmentDetails.modeOfPayment ||
+        !transportDetails.employmentDetails.employerName ||
+        !transportDetails.employmentDetails.employerContact;
+      setShouldDisableButton(isEmpty);
+    } else if (viewIndex === 2) {
+      const isEmpty =
+        !transportDetails.documentUploads.idFile?.uri ||
+        !transportDetails.documentUploads.utilityBill?.uri ||
+        // !transportDetails.documentUploads.proofOfMonthlyIncome?.uri ||
+        !transportDetails.documentUploads.bankStatement?.uri ||
+        !transportDetails.documentUploads.proofOfEmployment?.uri;
+      setShouldDisableButton(isEmpty);
+    } else {
+      setShouldDisableButton(false);
+    }
+  }, [transportDetails]);
 
   return (
     <View
@@ -290,6 +323,7 @@ const TransportForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
+        disabled={shouldDisableButton || isPending}
         style={{
           marginBottom: size.getHeightSize(32),
         }}

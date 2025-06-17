@@ -1,5 +1,5 @@
 import { StyleSheet, Animated, Dimensions, FlatList, View } from 'react-native';
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { size } from '../../../config/size';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import CText from '../../../shared/CText';
@@ -28,6 +28,7 @@ const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
+  const [disableButton, setDisableButton] = useState(false);
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
@@ -149,6 +150,55 @@ const GuardianDetailsForm = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (
+      (viewIndex === 0 && !childSchoolFeeDetails?.guardianDetails.firstName) ||
+      !childSchoolFeeDetails?.guardianDetails.lastName ||
+      !childSchoolFeeDetails?.guardianDetails.email ||
+      !childSchoolFeeDetails?.guardianDetails.phoneNumber ||
+      !childSchoolFeeDetails.guardianDetails.loanAmount
+    ) {
+      setDisableButton(true);
+    } else if (viewIndex === 1) {
+      const isEmpty = childSchoolFeeDetails.childSchoolDetails.some((child) => {
+        return (
+          !child?.childFirstName ||
+          !child?.childLastName ||
+          !child?.nameOfSchool ||
+          !child?.country ||
+          !child?.postalCode ||
+          !child?.schoolEmail ||
+          !child?.childSchoolFees ||
+          !child?.schoolFeeInvoice?.uri ||
+          !child?.childGrade
+        );
+      });
+
+      setDisableButton(isEmpty);
+    } else if (viewIndex === 2) {
+      const isEmpty =
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyLocation ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyEmail ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyCountry ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyState;
+      setDisableButton(isEmpty);
+    } else if (viewIndex === 3) {
+      const isEmpty =
+        !childSchoolFeeDetails.documentUploads.bankStatement?.uri ||
+        !childSchoolFeeDetails.documentUploads.utilityBill?.uri ||
+        !childSchoolFeeDetails.documentUploads.schoolFeeInvoice?.uri ||
+        !childSchoolFeeDetails.documentUploads.schoolIdCard?.uri ||
+        !childSchoolFeeDetails.documentUploads.paymentSlip?.uri;
+      setDisableButton(isEmpty);
+    } else {
+      setDisableButton(false);
+    }
+  }, [childSchoolFeeDetails]);
 
   return (
     <View
@@ -304,10 +354,7 @@ const GuardianDetailsForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
-        // disabled={
-        //   viewIndex == 0 &&
-        //   isAnyFieldEmpty(childSchoolFeeDetails.guardianDetails)
-        // }
+        disabled={disableButton}
         style={{
           marginBottom: size.getHeightSize(32),
         }}

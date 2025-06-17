@@ -12,6 +12,8 @@ import { colors } from '../constants/colors';
 import { TextStyle } from 'react-native';
 import CText from './CText';
 import Asterisks from '../../assets/svgs/Onboarding/Asterisks';
+import { useAppDispatch } from '../controller/redux.controller';
+import { updateToast } from '../features/ui/ui.slice';
 
 interface CTextInputProps extends TextInputProps {
   style?: TextStyle;
@@ -24,6 +26,7 @@ interface CTextInputProps extends TextInputProps {
   fixedHeight?: boolean;
   height?: number;
   onPress?: () => void;
+  maxAmount?: number; // Optional prop to limit the maximum amount
 }
 const PTextInput: React.FC<CTextInputProps> = ({
   style,
@@ -43,7 +46,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
       ? formatAmount(String(props.value))
       : String(props.value ?? '')
   );
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     if (isAmount && props.value !== undefined) {
       setFormattedValue(formatAmount(String(props.value)));
@@ -51,6 +54,19 @@ const PTextInput: React.FC<CTextInputProps> = ({
   }, [props.value]);
 
   const handleAmountChange = (text: string) => {
+    if (
+      props.maxAmount &&
+      parseFloat(text.replace(/[^0-9.]/g, '')) > props.maxAmount
+    ) {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: `Loan amount cannot be more than ₦${props.maxAmount.toLocaleString()}`,
+          toastType: 'info',
+        })
+      );
+      return;
+    }
     const numericValue = text.replace(/[^0-9.]/g, ''); // Preserve the decimal point
     setFormattedValue(formatAmount(numericValue));
     props.onChangeText?.(numericValue); // Return raw numeric value to the parent
@@ -130,7 +146,13 @@ const PTextInput: React.FC<CTextInputProps> = ({
             {...props}
             cursorColor={colors.primary()}
             placeholderTextColor={'#21212180'}
-            value={isAmount ? formattedValue : props.value}
+            value={
+              isAmount
+                ? formattedValue == '0'
+                  ? ''
+                  : formattedValue
+                : props.value
+            }
             onChangeText={isAmount ? handleAmountChange : props.onChangeText}
             keyboardType={isAmount ? 'numeric' : props.keyboardType}
             style={[

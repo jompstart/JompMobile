@@ -50,9 +50,10 @@ const CText: React.FC<CTextProps> = ({
     ? { fontFamily: fontFamilyMap[fontFamily] }
     : { fontFamily: fontFamilyMap.regular };
 
+  // increase fontSize and lineHeight to match the design
   const fontSizeStyle = fontSize
-    ? { fontSize: size.fontSize(fontSize) }
-    : { fontSize: size.fontSize(16) };
+    ? { fontSize: size.fontSize(fontSize) + 0.2 * size.fontSize(fontSize) }
+    : { fontSize: size.fontSize(16) + 0.2 * size.fontSize(16) };
   const lineHeightStyle = lineHeight
     ? { lineHeight: size.getHeightSize(lineHeight) }
     : { lineHeight: size.getHeightSize(24) };

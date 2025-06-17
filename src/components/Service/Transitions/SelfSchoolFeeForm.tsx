@@ -39,6 +39,7 @@ const SelfSchoolFeeForm = () => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+  const [shouldDisableButton, setShouldDisableButton] = useState(false);
   const navigation = useNavigation();
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const {
@@ -91,62 +92,61 @@ const SelfSchoolFeeForm = () => {
       component: <Form4 />,
     },
   ];
-  const shouldButtonDisable = () => {
-    if (viewIndex == 0) {
-      return (
-        !selfSchoolFeeDetails.basicInformation.address ||
-        !selfSchoolFeeDetails.basicInformation.email ||
+  useEffect(() => {
+    if (viewIndex === 0) {
+      if (
         !selfSchoolFeeDetails.basicInformation.firstName ||
         !selfSchoolFeeDetails.basicInformation.lastName ||
-        !selfSchoolFeeDetails.basicInformation.phoneNumber
-      );
-    }
-    if (viewIndex == 1) {
-      // return isAnyFieldEmpty(selfSchoolFeeDetails.educationnDetails);
-      return (
-        !selfSchoolFeeDetails.educationnDetails.city ||
-        !selfSchoolFeeDetails.educationnDetails.country ||
+        !selfSchoolFeeDetails.basicInformation.email ||
+        !selfSchoolFeeDetails.basicInformation.phoneNumber ||
+        !selfSchoolFeeDetails.basicInformation.address
+      ) {
+        setShouldDisableButton(true);
+      } else {
+        setShouldDisableButton(false);
+      }
+    } else if (viewIndex == 1) {
+      const isEmpty =
+        !selfSchoolFeeDetails.educationnDetails.nameOfSchool ||
         !selfSchoolFeeDetails.educationnDetails.course ||
+        !selfSchoolFeeDetails.educationnDetails.state ||
+        !selfSchoolFeeDetails.educationnDetails.city ||
         !selfSchoolFeeDetails.educationnDetails.level ||
         !selfSchoolFeeDetails.educationnDetails.location ||
-        !selfSchoolFeeDetails.educationnDetails.nameOfSchool ||
+        !selfSchoolFeeDetails.educationnDetails.tuitionFee ||
+        !selfSchoolFeeDetails.educationnDetails.loanAmount ||
         !selfSchoolFeeDetails.educationnDetails.state ||
-        !selfSchoolFeeDetails.educationnDetails.tuitionFee
-      );
-    }
-    if (viewIndex == 2) {
-      // return isAnyFieldEmpty(selfSchoolFeeDetails.employmentDetails);
-      return (
+        !selfSchoolFeeDetails.educationnDetails.city;
+      setShouldDisableButton(isEmpty);
+    } else if (viewIndex == 2) {
+      const isEmpty =
+        !selfSchoolFeeDetails.employmentDetails.nameOfCompany ||
         !selfSchoolFeeDetails.employmentDetails.companyEmail ||
         !selfSchoolFeeDetails.employmentDetails.companyLocation ||
-        !selfSchoolFeeDetails.employmentDetails.companyPhoneNumber ||
+        !selfSchoolFeeDetails.employmentDetails.occupation ||
+        !selfSchoolFeeDetails.employmentDetails.employerName ||
+        !selfSchoolFeeDetails.employmentDetails.hrContactNumber ||
         !selfSchoolFeeDetails.employmentDetails.employerAddress ||
         !selfSchoolFeeDetails.employmentDetails.employerCity ||
-        !selfSchoolFeeDetails.employmentDetails.employerCountry ||
-        !selfSchoolFeeDetails.employmentDetails.employerName ||
         !selfSchoolFeeDetails.employmentDetails.employerPostalCode ||
         !selfSchoolFeeDetails.employmentDetails.employerState ||
-        !selfSchoolFeeDetails.employmentDetails.hrContactNumber ||
-        !selfSchoolFeeDetails.employmentDetails.month ||
-        !selfSchoolFeeDetails.employmentDetails.nameOfCompany ||
-        !selfSchoolFeeDetails.employmentDetails.occupation ||
-        !selfSchoolFeeDetails.employmentDetails.paymentSlip ||
+        !selfSchoolFeeDetails.employmentDetails.employerCountry ||
+        !selfSchoolFeeDetails.employmentDetails.companyPhoneNumber ||
         !selfSchoolFeeDetails.employmentDetails.yearsInCompany ||
-        !selfSchoolFeeDetails.employmentDetails.employerPostalCode ||
-        !selfSchoolFeeDetails.employmentDetails.paymentSlip
-      );
+        !selfSchoolFeeDetails.employmentDetails.month ||
+        !selfSchoolFeeDetails.employmentDetails.paymentSlip;
+      setShouldDisableButton(isEmpty);
+    } else if (viewIndex == 3) {
+      const isEmpty =
+        !selfSchoolFeeDetails.documentUploads.bankStatement?.uri ||
+        !selfSchoolFeeDetails.documentUploads.schoolFeeInvoice?.uri ||
+        !selfSchoolFeeDetails.documentUploads.schoolIdCard?.uri ||
+        !selfSchoolFeeDetails.documentUploads.utilityBill?.uri;
+      setShouldDisableButton(isEmpty);
+    } else {
+      setShouldDisableButton(false);
     }
-    if (viewIndex == 3) {
-      // return isAnyFieldEmpty(selfSchoolFeeDetails.documentUploads);
-      return (
-        !selfSchoolFeeDetails.documentUploads.bankStatement ||
-        !selfSchoolFeeDetails.documentUploads.schoolFeeInvoice ||
-        !selfSchoolFeeDetails.documentUploads.schoolIdCard ||
-        !selfSchoolFeeDetails.documentUploads.utilityBill
-      );
-    }
-    return false;
-  };
+  }, [selfSchoolFeeDetails]);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
@@ -161,71 +161,6 @@ const SelfSchoolFeeForm = () => {
       setProgress(progress + 100 / views.length);
       return;
     }
-
-    const loanData = {
-      basicInformation: {
-        address: 'Lagos',
-        email: 'ayomide@gmail.com',
-        firstName: 'Ayomide',
-        lastName: 'Obiwale',
-        phoneNumber: '09070903614',
-      },
-      documentUploads: {
-        bankStatement: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/05A953EA-98B3-424E-ADBD-4418D3502276.pdf',
-        },
-        schoolFeeInvoice: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/24793D61-26BC-4E90-AC00-2953A8B49801.pdf',
-        },
-        schoolIdCard: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/E4CFCD88-F1BE-4659-85C0-840D21E12A03.pdf',
-        },
-        utilityBill: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/22959764-5B39-41BD-807F-9579B3A6C7E6.pdf',
-        },
-      },
-      educationnDetails: {
-        postalCode: '123344',
-        city: 'Ikeja',
-        country: 'Nigeria',
-        course: 'Medicine',
-        level: '100',
-        loanAmount: '2000',
-        location: 'Lagos',
-        nameOfSchool: 'Unilag',
-        state: 'Lagos',
-        tuitionFee: '1005',
-      },
-      employmentDetails: {
-        companyEmail: 'Jomp@gmail.com',
-        companyLocation: 'Lagos',
-        companyPhoneNumber: '09070903614',
-        employerAddress: 'Lagos',
-        employerCity: 'Ikeja',
-        employerCountry: 'Nigeria',
-        employerName: 'Salami',
-        employerPostalCode: '123344',
-        employerState: 'Lagos',
-        hrContactNumber: '09070903614',
-        month: '2',
-        nameOfCompany: 'JOMP',
-        occupation: 'Developer',
-        paymentSlip: {
-          name: 'ELG3336Microprocessor.pdf',
-          type: 'application/pdf',
-          uri: 'file:///var/mobile/Containers/Data/Application/604BDE58-8ED7-4C52-BA51-5B053DB54E8C/Library/Caches/ExponentExperienceData/@prime_dev/JompStart/DocumentPicker/09736887-4B01-4386-8786-BF1D7861D70E.pdf',
-        },
-        yearsInCompany: '6',
-      },
-    };
 
     requestSchoolLoan({
       ...selfSchoolFeeDetails,
@@ -386,7 +321,7 @@ const SelfSchoolFeeForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
-        // disabled={shouldButtonDisable()}
+        disabled={shouldDisableButton}
         style={{
           marginBottom: size.getHeightSize(32),
         }}

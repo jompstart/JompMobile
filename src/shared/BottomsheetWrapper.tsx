@@ -82,7 +82,7 @@ const BottomsheetWrapper = ({
     );
 
     return () => {
-      backHandler.remove(); // <- This is the correct modern way to remove the listener
+      backHandler.remove();
     };
   }, [visibility]);
 
@@ -112,6 +112,7 @@ const BottomsheetWrapper = ({
           onClose={() => {
             onClose();
           }}
+          
           ref={bottomSheetRef}
           enableDynamicSizing
           enablePanDownToClose={enablePanDownToClose}

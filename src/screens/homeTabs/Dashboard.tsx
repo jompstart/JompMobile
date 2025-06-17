@@ -38,10 +38,8 @@ const Dashboard = () => {
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const { data: recenTransactions } = useGetRecentTransactions(
-    user.customerId,
-    user.userId
-  );
+  const { data: recenTransactions, refetch: reloadRecentTransaction } =
+    useGetRecentTransactions(user.customerId, user.userId);
   const { isPending, refetch } = useRefreschUserData();
 
   return (
@@ -59,7 +57,13 @@ const Dashboard = () => {
       </GradientHeader>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={isPending} onRefresh={refetch} />
+          <RefreshControl
+            refreshing={isPending}
+            onRefresh={() => {
+              refetch();
+              reloadRecentTransaction();
+            }}
+          />
         }
         showsVerticalScrollIndicator={false}
       >
@@ -192,7 +196,8 @@ const Dashboard = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  gap: size.getWidthSize(16),
+                  alignItems: 'center',
                 }}
               >
                 <CText
@@ -200,6 +205,9 @@ const Dashboard = () => {
                   fontSize={13}
                   lineHeight={20.8}
                   fontFamily="bold"
+                  style={{
+                    flex: 1,
+                  }}
                 >
                   You have bills to pay?
                 </CText>
@@ -265,7 +273,8 @@ const Dashboard = () => {
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  gap: size.getWidthSize(16),
+                  alignItems: 'center',
                 }}
               >
                 <CText
@@ -273,6 +282,9 @@ const Dashboard = () => {
                   fontSize={13}
                   lineHeight={20.8}
                   fontFamily="bold"
+                  style={{
+                    flex: 1,
+                  }}
                 >
                   Save with JOMP
                 </CText>

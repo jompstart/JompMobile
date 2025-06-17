@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -77,6 +77,9 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
       : loanType === 'school fee'
       ? 'School Fees'
       : 'Transportation';
+
+  const loanDuration =
+    params?.loanType === 'school fee' ? 3 : params?.loanType === 'rent' ? 6 : 1;
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const {
     mutateAsync: calculateLoanOffer,
@@ -100,6 +103,12 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
       },
     }
   );
+  useEffect(() => {
+    stateDispatch({
+      type: 'SET_DURATION',
+      payload: loanDuration,
+    });
+  }, [loanDuration]);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -177,7 +186,8 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                 flex: 1,
               }}
             >
-              This loan type offers a repayment of 3 months
+              This loan type offers a repayment of {loanDuration}{' '}
+              {loanDuration == 1 ? 'month' : 'months'}
             </CText>
           </View>
 
@@ -197,6 +207,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
             />
             <PTextInput
               isAmount
+              maxAmount={500000}
               onChangeText={(text) => {
                 stateDispatch({ type: 'SET_LOAN_AMOUNT', payload: +text });
               }}
@@ -205,6 +216,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
             />
             <PTextInput
               isAmount
+              editable={false}
               value={details.durationInMonths.toString()}
               onChangeText={(text) => {
                 stateDispatch({
@@ -213,17 +225,10 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                 });
               }}
               placeholder="Enter duration in months"
-              rightIcon={
-                <MaterialIcons
-                  name="mail-outline"
-                  size={size.getHeightSize(20)}
-                  color={colors.primary()}
-                />
-              }
             />
           </View>
           <PrimaryButton
-            isLoading={isPending}
+            // isLoading={isPending}
             style={{
               marginTop: size.getHeightSize(40),
             }}
@@ -250,8 +255,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
         </KeyboardAwareScrollView>
       </View>
       <LoanDescriptionsheet
-        isVisible={showBottomsheet}
-        onClose={() => {
+        onContinue={() => {
           if (loanType === 'rent') {
             navigate('HouseRentService');
           } else if (loanType == 'school fee') {
@@ -259,7 +263,10 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
           } else if (loanType == 'transport') {
             navigate('TransportDetails');
           }
-          // setShowBottomsheet(false);
+        }}
+        isVisible={showBottomsheet}
+        onClose={() => {
+          setShowBottomsheet(false);
         }}
         label={
           loanType === 'rent'

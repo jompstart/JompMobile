@@ -120,7 +120,7 @@ const CustomerSupport = () => {
               }}
             >
               <CText fontSize={14} fontFamily="semibold">
-                support@jompstart.com
+                {email}
               </CText>
               <CText fontSize={14} color="secondaryBlack" fontFamily="regular">
                 Email

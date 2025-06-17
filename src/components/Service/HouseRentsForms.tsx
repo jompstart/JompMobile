@@ -34,6 +34,7 @@ const HouseRentsForms = ({
   const { houseRentDetails, setHouseRentDetails } = useContext(
     CustomerServicesContext
   );
+  const [shouldDisableButton, setShouldDisableButton] = React.useState(false);
   const idempotencyKey = useGetIdempotencyKey();
   const [state, dispatch] = useReducer(
     rentLoanFormReducer,
@@ -70,6 +71,28 @@ const HouseRentsForms = ({
   useEffect(() => {
     shouldLoad(isPending);
   }, [isPending]);
+  useEffect(() => {
+    const isFormValid =
+      state.rentAmount &&
+      state.requestedAmount &&
+      state.landlordName &&
+      state.landlordAccountName &&
+      state.landlordAccountNumber &&
+      state.landlordBankName &&
+      state.landlordContactNumber &&
+      state.occupation &&
+      state.companyName &&
+      state.companyPhone &&
+      state.yearsInCompany &&
+      state.companyEmail &&
+      state.companyAddress &&
+      state.id?.uri &&
+      state.utilityBill?.uri &&
+      state.bankStatement?.uri &&
+      state.tenancyAgreement?.uri &&
+      state.payMentSlip?.uri;
+    setShouldDisableButton(!isFormValid);
+  }, [state]);
 
   return (
     <View
@@ -267,6 +290,7 @@ const HouseRentsForms = ({
         }}
       >
         <PrimaryButton
+          disabled={shouldDisableButton || isPending}
           label="Proceed"
           onPress={async () => {
             mutate({

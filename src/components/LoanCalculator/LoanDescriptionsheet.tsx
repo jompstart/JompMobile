@@ -19,8 +19,15 @@ interface Props {
   isVisible: boolean;
   data?: CalculateLoanResponse;
   label: string;
+  onContinue: () => void;
 }
-const LoanDescriptionsheet = ({ isVisible, onClose, data, label }: Props) => {
+const LoanDescriptionsheet = ({
+  isVisible,
+  onClose,
+  data,
+  label,
+  onContinue,
+}: Props) => {
   const {
     approvedLoanAmount,
     durationInMonths,
@@ -163,7 +170,7 @@ const LoanDescriptionsheet = ({ isVisible, onClose, data, label }: Props) => {
         }}
       >
         {/* <PrimaryButton label="Apply for Loan" /> */}
-        <PrimaryButton label={label} onPress={onClose} />
+        <PrimaryButton label={label} onPress={onContinue} />
       </View>
     </BottomsheetWrapper>
   );

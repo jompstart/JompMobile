@@ -3,9 +3,10 @@ import {
   Platform,
   View,
   TouchableOpacity,
-  ViewStyle,
+  BackHandler,
 } from 'react-native';
 import React, { ReactNode, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import CText from '../shared/CText';
@@ -14,6 +15,7 @@ import {
   RouteProp,
   getFocusedRouteNameFromRoute,
 } from '@react-navigation/native';
+import { useNavigationState, useNavigation } from '@react-navigation/native';
 import Dashboard from '../screens/homeTabs/Dashboard';
 import Services from '../screens/homeTabs/Services';
 import Transactions from '../screens/homeTabs/Transactions';
@@ -25,7 +27,11 @@ import TransactionsIcon from '../../assets/svgs/Home/TransactionsIcon';
 import SavingsIcon from '../../assets/svgs/Home/SavingsIcon';
 import MoreIcon from '../../assets/svgs/Home/MoreIcon';
 import { useAppDispatch, useAppSelector } from '../controller/redux.controller';
-import { updateCompliancePromptVisibility } from '../features/ui/ui.slice';
+import {
+  updateAccountDetailsBottomsheetVisibility,
+  updateCompliancePromptVisibility,
+} from '../features/ui/ui.slice';
+import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
 const Tab = createBottomTabNavigator();
 
 type RootStackParamList = {
@@ -63,13 +69,42 @@ const more = 'More';
 
 const BottomtabNavigation = () => {
   const user = useAppSelector((state) => state.user);
+  const accountDetailsBottomsheet = useAppSelector(
+    accountDetailsBottomsheetSelector
+  );
+  const navState = useNavigationState((state) => state);
+  const navigation = useNavigation();
   useEffect(() => {
     if (user.userId && user.complianceStatus == false) {
       dispatch(updateCompliancePromptVisibility(true));
     }
   }, [getFocusedRouteNameFromRoute, user]);
   const dispatch = useAppDispatch();
-
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (accountDetailsBottomsheet.isVisible) {
+          dispatch(updateAccountDetailsBottomsheetVisibility(false));
+          return true;
+        }
+        if (navState?.routes?.[navState.index].state?.index !== 0) {
+          navigation.navigate('NavigationDrawer', {
+            screen: 'HomePage',
+            params: {
+              screen: 'Home',
+            },
+          } as any);
+          return true;
+        }
+        return false;
+      };
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+      return () => backHandler.remove();
+    }, [navState, accountDetailsBottomsheet])
+  );
   return (
     <Tab.Navigator
       backBehavior="none"
