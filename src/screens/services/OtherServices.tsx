@@ -197,6 +197,7 @@ const OtherServices = () => {
             />
 
             <PhoneInput
+              keyboardType="phone-pad"
               placeholder="Provider’s Phone Number"
               value={state.ServiceProviderContact}
               onChangeText={(text) => {
