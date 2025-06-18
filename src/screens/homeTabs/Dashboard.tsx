@@ -1,4 +1,10 @@
-import { StyleSheet, View, Pressable, RefreshControl } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
@@ -16,7 +22,6 @@ import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
 import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
-import { ScrollView } from 'react-native-gesture-handler';
 import BillImage from '../../../assets/svgs/Home/BillImage';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
