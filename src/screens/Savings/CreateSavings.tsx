@@ -38,7 +38,6 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
   >({
     mutationFn: (data) => savingsService.createSavings(data),
     onError: (error) => {
-     
       dispatch(
         updateToast({
           displayToast: true,
@@ -387,6 +386,7 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
           }}
         >
           <PrimaryButton
+            disabled={!agreement1}
             onPress={() => {
               if (agreement1) {
                 const data: CreateSavingsRequestDto = {

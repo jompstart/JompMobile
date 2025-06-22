@@ -562,7 +562,7 @@ const Savings = () => {
                         }
                       }
                     >
-                      {(fill) => (
+                      {(fill: any) => (
                         <CText
                           color={'#F75555' as any}
                           fontSize={12}

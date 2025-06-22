@@ -15,11 +15,8 @@ import PiggyIcon from '../../../assets/svgs/Home/PiggyIcon';
 import WithdrawIcon from '../../../assets/svgs/Home/WithdrawIcon';
 import CarIcon from '../../../assets/svgs/Home/CarIcon';
 import BankIcon from '../../../assets/svgs/Home/BankIcon';
-import CopyIcon from '../../../assets/svgs/Home/CopyIcon';
 import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
 import PersonIcon from '../../../assets/svgs/Home/PersonIcon';
-import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
 import BillImage from '../../../assets/svgs/Home/BillImage';
@@ -29,7 +26,6 @@ import {
   useAppSelector,
   useAppDispatch,
 } from '../../controller/redux.controller';
-
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { userSelector } from '../../features/user/user.selector';
 import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
@@ -58,7 +54,7 @@ const Dashboard = () => {
         />
         <View style={{ flex: 1 }} />
         {/* <SearchIcon size={size.getHeightSize(28)} /> */}
-        <NotificationBell size={size.getHeightSize(28)} />
+        {/* <NotificationBell size={size.getHeightSize(28)} /> */}
       </GradientHeader>
       <ScrollView
         refreshControl={

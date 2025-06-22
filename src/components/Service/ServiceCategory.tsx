@@ -4,6 +4,7 @@ import { size } from '../../config/size';
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import CText from '../../shared/CText';
+import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import OptionBox from '../../shared/OptionBox';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { colors } from '../../constants/colors';
@@ -96,14 +97,19 @@ const ServiceCategory = ({
             description={service.name}
           />
         ))}
-        <PTextInput placeholder="Others?, Please specify" />
+        {/* <BottomSheetTextInput
+        onChangeText={(text)=>{
+          onSelect({  });
+          onClose();
+        }}
+        placeholder="Others?, Please specify" /> */}
       </View>
-      <PrimaryButton
+      {/* <PrimaryButton
         style={{
           marginTop: size.getHeightSize(24),
         }}
         label="Okay"
-      />
+      /> */}
     </BottomsheetWrapper>
   );
 };

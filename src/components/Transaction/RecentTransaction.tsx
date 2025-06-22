@@ -57,8 +57,10 @@ const RecentTransaction = (txn: Props) => {
             paddingHorizontal: size.getWidthSize(10),
             paddingVertical: size.getHeightSize(3),
             backgroundColor:
-              txn.data.transactionStatus == 'Completed' ||
-              txn.data.transactionStatus == 'Success'
+              txn.data.transactionStatus.toLowerCase() ==
+                'completed'.toLowerCase() ||
+              txn.data.transactionStatus.toLowerCase() ==
+                'success'.toLowerCase()
                 ? colors.primarySuccess('10')
                 : colors.primaryWarning('10'),
             borderRadius: size.getHeightSize(9),
@@ -66,8 +68,10 @@ const RecentTransaction = (txn: Props) => {
         >
           <CText
             color={
-              txn.data.transactionStatus == 'Completed' ||
-              txn.data.transactionStatus == 'Success'
+              txn.data.transactionStatus.toLowerCase() ==
+                'completed'.toLowerCase() ||
+              txn.data.transactionStatus.toLowerCase() ==
+                'success'.toLowerCase()
                 ? 'success'
                 : ('#F0756E' as any)
             }

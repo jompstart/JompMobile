@@ -99,15 +99,19 @@ const SavingsGoal = () => {
   const onChangeTime = (event: any, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       setSelectedTime(selectedDate);
-      const time = selectedDate.toLocaleTimeString();
-      // Update the selected time
+      const time = selectedDate.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+
       savingsInitialState({
         type: 'SET_PREFERRED_TIME',
         payload: time,
       });
-      setShowTime(false); // Close the picker
+      setShowTime(false);
     } else if (event.type === 'dismissed') {
-      setShowTime(false); // Close the picker if dismissed
+      setShowTime(false);
     }
   };
 
@@ -976,7 +980,7 @@ const SavingsGoal = () => {
         <View style={{ flex: 1 }}>
           <Paystack
             paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
-            amount={state.targetAmount}
+            amount={state.monthlyContribution}
             billingEmail={user.email}
             phone={user?.phoneNumber}
             activityIndicatorColor={colors.primary()}
@@ -992,7 +996,7 @@ const SavingsGoal = () => {
                     displayToast: true,
                     toastMessage:
                       'You have successfully funded your wallet with ₦' +
-                      formatToAmount(state.targetAmount),
+                      formatToAmount(state.monthlyContribution),
                     toastType: 'success',
                   })
                 );
