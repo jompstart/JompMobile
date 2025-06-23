@@ -36,6 +36,7 @@ const SelfSchoolFeeForm = () => {
   const dispatch = useAppDispatch();
   const idempotencyKey = useGetIdempotencyKey();
   const [showStatesBottomsheet, setShowStatesBottomSheet] = useState(false);
+  const [viewIndex, setViewIndex] = useState(0);
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
@@ -146,10 +147,10 @@ const SelfSchoolFeeForm = () => {
     } else {
       setShouldDisableButton(false);
     }
-  }, [selfSchoolFeeDetails]);
+  }, [selfSchoolFeeDetails, viewIndex]);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList<any>>(null);
-  const [viewIndex, setViewIndex] = useState(0);
+
   const [progress, setProgress] = useState(25);
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {

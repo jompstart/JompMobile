@@ -198,7 +198,7 @@ const GuardianDetailsForm = () => {
     } else {
       setDisableButton(false);
     }
-  }, [childSchoolFeeDetails]);
+  }, [childSchoolFeeDetails, viewIndex]);
 
   return (
     <View

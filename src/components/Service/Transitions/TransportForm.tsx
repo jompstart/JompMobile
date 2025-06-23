@@ -125,6 +125,7 @@ const TransportForm = () => {
         !transportDetails.creditRequestDetails.estimatedMonthlyCost ||
         !transportDetails.creditRequestDetails.requestedAmount ||
         !transportDetails.creditRequestDetails.paymentDuration;
+
       setShouldDisableButton(isEmpty);
     } else if (viewIndex === 1) {
       const isEmpty =
@@ -137,6 +138,7 @@ const TransportForm = () => {
         !transportDetails.employmentDetails.modeOfPayment ||
         !transportDetails.employmentDetails.employerName ||
         !transportDetails.employmentDetails.employerContact;
+
       setShouldDisableButton(isEmpty);
     } else if (viewIndex === 2) {
       const isEmpty =
@@ -149,7 +151,7 @@ const TransportForm = () => {
     } else {
       setShouldDisableButton(false);
     }
-  }, [transportDetails]);
+  }, [transportDetails, viewIndex]);
 
   return (
     <View
@@ -323,7 +325,7 @@ const TransportForm = () => {
         </View>
       </KeyboardAwareScrollView>
       <PrimaryButton
-        disabled={shouldDisableButton || isPending}
+        disabled={shouldDisableButton}
         style={{
           marginBottom: size.getHeightSize(32),
         }}
