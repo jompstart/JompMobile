@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useReducer, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { size } from '../../config/size';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import GradientHeader from '../../shared/GradientHeader';
@@ -36,7 +37,7 @@ interface Forms {
 const formInitialState: Forms = {
   salary: 0,
   loanAmount: 0,
-  durationInMonths: 3, // Default to 3 months as per the description
+  durationInMonths: 0, // Default to 3 months as per the description
 };
 type FormAction =
   | { type: 'SET_SALARY'; payload: number }
@@ -103,12 +104,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
       },
     }
   );
-  useEffect(() => {
-    stateDispatch({
-      type: 'SET_DURATION',
-      payload: loanDuration,
-    });
-  }, [loanDuration]);
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -214,18 +210,55 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
               value={details.loanAmount.toString()}
               placeholder="₦ Enter your desired loan amount"
             />
-            <PTextInput
-              isAmount
-              editable={false}
-              value={details.durationInMonths.toString()}
-              onChangeText={(text) => {
-                stateDispatch({
-                  type: 'SET_DURATION',
-                  payload: +text,
-                });
+
+            <View
+              style={{
+                height: size.getHeightSize(52),
+                borderColor: '#21212130',
+                borderWidth: size.getHeightSize(1),
+                backgroundColor: colors.white(),
+                borderRadius: size.getHeightSize(8),
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: size.getWidthSize(16),
               }}
-              placeholder="Enter duration in months"
-            />
+            >
+              <AntDesign
+                name="minus"
+                color={colors.primary()}
+                size={size.getHeightSize(24)}
+                onPress={() => {
+                  if (details.durationInMonths > 1) {
+                    stateDispatch({
+                      type: 'SET_DURATION',
+                      payload: details.durationInMonths - 1,
+                    });
+                  }
+                }}
+              />
+              <CText
+                color="secondaryBlack"
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="semibold"
+              >
+                {details.durationInMonths.toString()}
+              </CText>
+              <AntDesign
+                onPress={() => {
+                  if (Number(details.durationInMonths) < Number(loanDuration)) {
+                    stateDispatch({
+                      type: 'SET_DURATION',
+                      payload: details.durationInMonths + 1,
+                    });
+                  }
+                }}
+                name="plus"
+                color={colors.primary()}
+                size={size.getHeightSize(24)}
+              />
+            </View>
           </View>
           <PrimaryButton
             // isLoading={isPending}
@@ -239,6 +272,16 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                   updateToast({
                     displayToast: true,
                     toastMessage: 'Please enter valid salary and loan amount',
+                    toastType: 'info',
+                  })
+                );
+                return;
+              }
+              else if(details.durationInMonths <= 0) {
+                dispatch(
+                  updateToast({
+                    displayToast: true,
+                    toastMessage: 'Please select a valid duration',
                     toastType: 'info',
                   })
                 );

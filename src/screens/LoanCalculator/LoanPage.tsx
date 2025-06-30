@@ -78,26 +78,27 @@ const LoanPage = () => {
           <CText
             color="white"
             fontSize={14}
-            lineHeight={19.6}
+            lineHeight={38.4}
             fontFamily="semibold"
             style={{
               textAlign: 'center',
               marginTop: size.getHeightSize(16),
             }}
           >
-            Get access in 5 minutes to a loan up to
-          </CText>
-          <CText
-            color="white"
-            fontSize={24}
-            lineHeight={38.4}
-            fontFamily="bold"
-            style={{
-              textAlign: 'center',
-              marginTop: size.getHeightSize(16),
-            }}
-          >
-            ₦ 500,000.00
+            Get access in 5 minutes to a loan up to{'\n '}
+            <CText
+              color="white"
+              fontSize={24}
+              lineHeight={38.4}
+              fontFamily="bold"
+              style={{
+                textAlign: 'center',
+                marginTop: size.getHeightSize(16),
+              }}
+            >
+              ₦ 500,000.00
+            </CText>{' '}
+            and more!
           </CText>
         </View>
         <Pressable
