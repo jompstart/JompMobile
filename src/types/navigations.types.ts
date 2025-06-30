@@ -71,6 +71,7 @@ export type RootStackParamList = {
   CustomerSupport: undefined;
   Faqs: undefined;
   Request: undefined;
+  AcceptService: undefined;
 };
 
 type SignUpScreenParams = {

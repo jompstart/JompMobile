@@ -29,6 +29,7 @@ const TransportForm = () => {
   const { transportDetails, setTransportDetails } = useContext(
     CustomerServicesContext
   );
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
   const [shouldDisableButton, setShouldDisableButton] = useState(false);
   const idempotencyKey = useGetIdempotencyKey();
   const dispatch = useAppDispatch();
@@ -60,8 +61,6 @@ const TransportForm = () => {
   } = useMutation<API_RESPONSE<any>, Error, TransportRequest>({
     mutationFn: (data) => providerInstance.transportloan(data),
     onError: (error) => {
-      console.log('====== transport error =====');
-      console.log(error);
       dispatch(
         updateToast({
           displayToast: true,
@@ -83,6 +82,7 @@ const TransportForm = () => {
   const [progress, setProgress] = useState(25);
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
+      scrollViewRef.current?.scrollToPosition(0, 0, true);
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
         animated: true,

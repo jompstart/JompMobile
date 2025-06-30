@@ -69,7 +69,7 @@ const Transaction = (item: TransactionResponseDto) => {
               lineHeight={16.8}
               fontFamily="regular"
             >
-              {formatDateTime(item.dateCompleted)}
+              {formatDateTime(item.dateInitiated)}
             </CText>
             <View
               style={{
@@ -84,7 +84,7 @@ const Transaction = (item: TransactionResponseDto) => {
               <CText
                 color={item.isCompleted ? 'success' : ('#F0756E' as any)}
                 fontSize={12}
-                lineHeight={11.2}
+                lineHeight={16.2}
                 fontFamily="semibold"
                 style={{
                   opacity: 0.75,

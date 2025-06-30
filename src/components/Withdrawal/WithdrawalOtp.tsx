@@ -35,7 +35,7 @@ const WithdrawalOtp = ({
   onClose,
 }: Props) => {
   const inputRefs = useRef<TextInput[]>([]);
-  const [userInput, setUserInput] = useState<string[]>(Array(4).fill(''));
+  const [userInput, setUserInput] = useState<string[]>(Array(6).fill(''));
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(userSelector);
@@ -171,13 +171,15 @@ const WithdrawalOtp = ({
             marginTop: size.getHeightSize(24),
           }}
         >
-          {Array(4)
+          {Array(6)
             .fill(null)
             .map((_, index) => (
               <BottomSheetTextInput
                 cursorColor={colors.black()}
                 keyboardType="number-pad"
-                ref={(ref) => (inputRefs.current[index] = ref!)}
+                ref={(ref) => {
+                  inputRefs.current[index] = ref!;
+                }}
                 key={index}
                 maxLength={1}
                 placeholder="_"
@@ -203,7 +205,7 @@ const WithdrawalOtp = ({
             marginTop: size.getHeightSize(32),
           }}
           label="Verify"
-          disabled={isPending || userInput.join('').length < 4}
+          disabled={isPending || userInput.join('').length < 6}
         />
       </View>
     </BottomsheetWrapper>
@@ -223,5 +225,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirLTStd-Heavy',
     fontSize: size.fontSize(32),
     textAlign: 'center',
+    color: colors.black(),
   },
 });

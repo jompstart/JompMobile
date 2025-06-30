@@ -90,6 +90,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
       ? `${formattedInteger}.${decimalPart}`
       : formattedInteger;
   }
+
   return (
     <Pressable
       onPress={onPress}
@@ -111,7 +112,7 @@ const PTextInput: React.FC<CTextInputProps> = ({
           height: fixedHeight ? size.getHeightSize(height!) : undefined,
         }}
       >
-        {props.value && (
+        {props.value && props?.value != '0' && (
           <View
             style={{
               flexDirection: 'row',

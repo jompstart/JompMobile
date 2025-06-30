@@ -16,7 +16,10 @@ import TransportCreditIcon from '../../../assets/svgs/Drawer/TransportCreditIcon
 import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { useAppDispatch } from '../../controller/redux.controller';
-import { updateLogoutBottomsheetVisibility } from '../../features/ui/ui.slice';
+import {
+  updateLogoutBottomsheetVisibility,
+  updateTermsAndConditionVisibility,
+} from '../../features/ui/ui.slice';
 interface Props {
   props: DrawerContentComponentProps;
 }
@@ -278,6 +281,7 @@ const Drawer = (props: Props) => {
         />
         <CText
           fontFamily="semibold"
+          onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
           fontSize={18}
           color={colors.primary() as any}
           lineHeight={23}

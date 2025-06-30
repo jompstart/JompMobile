@@ -40,6 +40,7 @@ const SelfSchoolFeeForm = () => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
   const [shouldDisableButton, setShouldDisableButton] = useState(false);
   const navigation = useNavigation();
   const providerInstance = new ProviderService(user.userId, user.customerId);
@@ -154,6 +155,7 @@ const SelfSchoolFeeForm = () => {
   const [progress, setProgress] = useState(25);
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
+      scrollViewRef.current?.scrollToPosition(0, 0, true);
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
         animated: true,
@@ -295,7 +297,6 @@ const SelfSchoolFeeForm = () => {
                 setProgress(((newIndex + 1) / views.length) * 100);
               }
             }}
-            // onViewableItemsChanged={onViewChangeRef.current}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: false }

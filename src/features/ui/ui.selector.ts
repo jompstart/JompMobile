@@ -8,3 +8,6 @@ export const accountDetailsBottomsheetSelector = (state: RootState) =>
 
 export const logoutBottomsheetSelector = (state: RootState) =>
   state.ui.showLogoutBottomSheet;
+
+export const termsAndConditionSelector = (state: RootState) =>
+  state.ui.showTermsAndCondition;

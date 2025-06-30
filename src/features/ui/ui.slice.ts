@@ -14,10 +14,12 @@ const initialState: UIState = {
     callBack: () => {},
     buttonText: '',
   },
+
   accountDetailsBottomsheet: {
     isVisible: false,
   },
   showLogoutBottomSheet: false,
+  showTermsAndCondition: false,
 };
 
 const uiSlice = createSlice({
@@ -54,6 +56,9 @@ const uiSlice = createSlice({
     updateLogoutBottomsheetVisibility(state, action: PayloadAction<boolean>) {
       state.showLogoutBottomSheet = action.payload;
     },
+    updateTermsAndConditionVisibility(state, action: PayloadAction<boolean>) {
+      state.showTermsAndCondition = action.payload;
+    },
   },
 });
 export const {
@@ -64,6 +69,7 @@ export const {
   resetSuccessModal,
   updateAccountDetailsBottomsheetVisibility,
   updateLogoutBottomsheetVisibility,
+  updateTermsAndConditionVisibility,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

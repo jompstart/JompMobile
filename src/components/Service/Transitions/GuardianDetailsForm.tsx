@@ -29,6 +29,7 @@ const GuardianDetailsForm = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [disableButton, setDisableButton] = useState(false);
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { width, height } = Dimensions.get('window');
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
@@ -90,6 +91,7 @@ const GuardianDetailsForm = () => {
   const [progress, setProgress] = useState(25);
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
+      scrollViewRef.current?.scrollToPosition(0, 0, true);
       flatListRef.current?.scrollToIndex({
         index: viewIndex + 1,
         animated: true,

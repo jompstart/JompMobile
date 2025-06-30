@@ -37,7 +37,6 @@ const WithdrawFunds = () => {
   const [shouldShowOtpBottomsheet, showOtpBottomsheet] = React.useState(false);
   const dispatch = useAppDispatch();
   const userInstance = new UserService(user.customerId, user.userId);
-
   const {
     data,
     isPending,
@@ -363,6 +362,7 @@ const WithdrawFunds = () => {
           showOtpBottomsheet(true);
           setShowBottomsheet(false);
         }}
+        amount={inputAmount}
       />
       <WithdrawalOtp
         recipientCode={data?.data!}

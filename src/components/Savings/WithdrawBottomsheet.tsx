@@ -31,6 +31,9 @@ const WithdrawBottomsheet = ({ goalId, onClose, visibility }: Props) => {
         }}
       >
         <CancelIcon
+          onPress={() => {
+            onClose();
+          }}
           style={{
             alignSelf: 'flex-end',
           }}

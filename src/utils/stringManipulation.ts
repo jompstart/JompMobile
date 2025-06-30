@@ -141,6 +141,4 @@ export const formatDateTime = (dateString: string): string => {
   return `${day} ${month}, ${year} ${hours}:${minutes} ${ampm}`;
 };
 
-// Example usage
-const formattedDateTime = formatDateTime('2025-04-23T22:29:54.987789Z');
-console.log(formattedDateTime); // Output: "23 April, 2025 10:29 PM"
+

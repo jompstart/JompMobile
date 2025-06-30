@@ -23,6 +23,7 @@ export interface UIState {
     isVisible: boolean;
   };
   showLogoutBottomSheet: boolean;
+  showTermsAndCondition: boolean;
 }
 
 export interface Toast {

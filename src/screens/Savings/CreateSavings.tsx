@@ -101,9 +101,6 @@ const CreateSavings = ({ route: { params } }: CreateSavingsScreenProps) => {
           >
             You are about to create a new savings goal. You will earn your
             interest every day at a rate of {params?.interestRate}% per annum.
-            {/* Set up a new savings goal and get paid every day (@{' '}
-            {params?.interestTagentSaving}% interest P.A) to reach your goals
-            faster. */}
           </CText>
         </View>
         <View

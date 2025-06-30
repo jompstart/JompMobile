@@ -29,6 +29,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
     user.customerId,
     params?.goalId
   );
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -420,12 +421,12 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
           }}
           label="Top Up"
         />
-        {/* <SecondaryButton
+        <SecondaryButton
           label="Withdraw"
           onPress={() => {
             setShowWithdrawal(true);
           }}
-        /> */}
+        />
       </View>
       <WithdrawBottomsheet
         goalId={params?.goalId}

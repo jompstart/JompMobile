@@ -19,6 +19,7 @@ import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 import { navigationRef } from './src/routes/RootNavigation';
 import { RootStackParamList } from './src/types/navigations.types';
+import TermsAndCondition from './src/shared/TermsAndCondition';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ export default function App() {
             <WalletAccountDetails />
             <PayBills />
             <BillTypes />
+            <TermsAndCondition />
             <SchoolPreference />
             <FilterBottomsheet />
             <CompliancePromptModal />

@@ -42,6 +42,7 @@ import Faqs from '../screens/Support/Faqs';
 import Request from '../screens/Support/Request';
 import Report from '../screens/Support/Report';
 import Notification from '../screens/Notifications/Notification';
+import AcceptService from '../screens/services/AcceptService';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -215,6 +216,10 @@ const MainNavigator = () => {
     {
       name: 'Notification',
       component: Notification,
+    },
+    {
+      name: 'AcceptService',
+      component: AcceptService,
     },
   ];
 

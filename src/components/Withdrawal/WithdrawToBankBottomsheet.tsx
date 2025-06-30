@@ -123,7 +123,7 @@ const WithdrawToBankBottomsheet = ({
             color="primaryColor"
             style={{}}
           >
-            ₦{formatToAmount('1000')}
+            ₦{formatToAmount(amount || '0')}
           </CText>
         </View>
         <CText

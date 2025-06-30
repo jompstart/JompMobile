@@ -100,7 +100,7 @@ const Dashboard = () => {
               <CText
                 color={'white'}
                 fontSize={14}
-                lineHeight={22.4}
+                lineHeight={16.4}
                 fontFamily="semibold"
               >
                 Wallet Balance
@@ -109,13 +109,13 @@ const Dashboard = () => {
             <CText
               color={'white'}
               fontSize={24}
-              lineHeight={26.4}
+              lineHeight={28.4}
               fontFamily="bold"
             >
               <CText
                 color={'white'}
-                fontSize={14}
-                lineHeight={25.6}
+                fontSize={24}
+                lineHeight={28.4}
                 fontFamily="regular"
               >
                 ₦
@@ -123,33 +123,7 @@ const Dashboard = () => {
               {user?.balance === 0 ? '0.00' : formatToAmount(user?.balance)}
             </CText>
           </View>
-          <View
-            style={{
-              gap: size.getHeightSize(14),
-            }}
-          >
-            {/* <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: colors.white(),
-                paddingHorizontal: size.getWidthSize(8),
-                paddingVertical: size.getHeightSize(8),
-                alignSelf: 'flex-end',
-                gap: size.getWidthSize(4),
-                borderRadius: size.getHeightSize(16),
-              }}
-            >
-              <CText
-                color={'#31005C' as any}
-                fontSize={12}
-                lineHeight={16.8}
-                fontFamily="regular"
-              >
-                1234567890
-              </CText>
-              <CopyIcon size={size.getHeightSize(16)} />
-            </View> */}
+          <View>
             <Pressable
               onPress={() => {
                 dispatch(updateAccountDetailsBottomsheetVisibility(true));

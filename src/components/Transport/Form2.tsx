@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, Platform, View } from 'react-native';
+import { StyleSheet, Modal, Pressable, FlatList, View } from 'react-native';
 import React, { useContext, useState } from 'react';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -19,6 +19,9 @@ const Form2 = () => {
   );
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1); // Generate days 1–31
 
   const onChange = (event: any, selectedDate?: Date) => {
     // Close the picker after selection
@@ -296,9 +299,7 @@ const Form2 = () => {
           description="₦200,000.00 & Above"
         />
         <PTextInput
-          onChangeText={(text) => {
-            setTransportDetails('employmentDetails', 'payday', text);
-          }}
+          onPress={() => setShowModal(true)}
           value={transportDetails.employmentDetails?.payday}
           placeholder="Payday (Salary Payment Date)"
           rightIcon={
@@ -308,18 +309,62 @@ const Form2 = () => {
               color={colors.primary()}
             />
           }
+          editable={false}
         />
-        {/* {show && (
-          <DateTimePicker
-            value={date}
-            mode="date" // Can be "date", "time", or "datetime"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={onChange}
-            style={{
-              alignSelf: 'center',
-            }}
-          />
-        )} */}
+        {/* Modal for selecting payday */}
+        <Modal
+          transparent
+          visible={showModal}
+          animationType="slide"
+          onRequestClose={() => setShowModal(false)} // Close modal on back press
+        >
+          <View style={styles.overlay}>
+            <View style={styles.modalContainer}>
+              <CText style={styles.title}>Select Payday</CText>
+
+              <View
+                style={{
+                  flexWrap: 'wrap',
+                  flexDirection: 'row',
+                  rowGap: size.getHeightSize(16),
+                  columnGap: size.getHeightSize(16),
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {daysOfMonth.map((day) => (
+                  <Pressable
+                    onPress={() => {
+                      setTransportDetails(
+                        'employmentDetails',
+                        'payday',
+                        day.toString()
+                      );
+                      setShowModal(false);
+                    }}
+                    style={{
+                      height: size.getHeightSize(40),
+                      width: size.getHeightSize(40),
+                      backgroundColor: colors.primary('50'),
+                      borderRadius: size.getHeightSize(10),
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CText>{day}</CText>
+                  </Pressable>
+                ))}
+              </View>
+
+              <Pressable
+                style={styles.closeButton}
+                onPress={() => setShowModal(false)}
+              >
+                <CText style={styles.closeButtonText}>Cancel</CText>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
 
         <View
           style={{
@@ -469,5 +514,46 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: size.getWidthSize(10),
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: colors.white(),
+    borderRadius: size.getHeightSize(16),
+    paddingVertical: size.getHeightSize(16),
+    paddingHorizontal: size.getWidthSize(16),
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: size.getHeightSize(18),
+    fontWeight: 'bold',
+    marginBottom: size.getHeightSize(16),
+    color: colors.black(),
+  },
+  dayButton: {
+    paddingVertical: size.getHeightSize(12),
+    paddingHorizontal: size.getWidthSize(16),
+    backgroundColor: colors.primary('10'),
+    borderRadius: size.getHeightSize(8),
+    marginBottom: size.getHeightSize(8),
+    width: '100%',
+    alignItems: 'center',
+  },
+  dayText: {
+    fontSize: size.getHeightSize(16),
+    color: colors.black(),
+  },
+  closeButton: {
+    marginTop: size.getHeightSize(24),
+  },
+  closeButtonText: {
+    fontSize: size.getHeightSize(14),
+    color: colors.primary(),
+    fontWeight: 'bold',
   },
 });
