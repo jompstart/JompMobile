@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
 import GradientHeader from '../../shared/GradientHeader';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -7,20 +7,17 @@ import CText from '../../shared/CText';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Paystack } from 'react-native-paystack-webview';
-import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { colors } from '../../constants/colors';
-import VisaIcon from '../../../assets/svgs/Cards/VisaIcon';
+import Constants from 'expo-constants';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useAppSelector } from '../../controller/redux.controller';
-import MastercardIcon from '../../../assets/svgs/Cards/MastercardIcon';
-import StrikePath from '../../../assets/svgs/Cards/Strike';
 import { userSelector } from '../../features/user/user.selector';
 import { useNavigation } from '@react-navigation/native';
-import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
 import { formatToAmount } from '../../utils/stringManipulation';
 const AddCard = () => {
+  const paystackKey = Constants.expoConfig?.extra?.PAYSTACK_KEY as string;
+
   const [pay, setPay] = useState(false);
   const [amount, setAmount] = useState('');
   const user = useAppSelector(userSelector);
@@ -277,7 +274,7 @@ const AddCard = () => {
         {pay && (
           <View style={{ flex: 1 }}>
             <Paystack
-              paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
+              paystackKey={paystackKey}
               amount={amount}
               billingEmail={user.email}
               activityIndicatorColor={colors.primary()}

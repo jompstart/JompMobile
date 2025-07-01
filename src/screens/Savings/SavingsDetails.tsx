@@ -72,7 +72,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
             lineHeight={48}
             fontFamily="bold"
           >
-            ₦{formatToAmount(savings?.data?.targetAmount || '')}
+            ₦{formatToAmount(params?.savedAmount || '')}
           </CText>
           <View
             style={{
@@ -254,7 +254,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
               lineHeight={18.2}
               fontFamily="semibold"
             >
-              Yes
+              {savings?.data?.autoSave ? 'Yes' : 'No'}
             </CText>
           </View>
           <View style={styles.view2}>

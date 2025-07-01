@@ -97,12 +97,12 @@ const SavingsTransactions = () => {
             paddingHorizontal: size.getWidthSize(16),
           }}
         >
+          {/* <Transaction />
           <Transaction />
           <Transaction />
           <Transaction />
           <Transaction />
-          <Transaction />
-          <Transaction />
+          <Transaction /> */}
         </View>
       </ScrollView>
     </GradientSafeAreaView>

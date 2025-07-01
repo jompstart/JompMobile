@@ -37,7 +37,7 @@ interface Forms {
 const formInitialState: Forms = {
   salary: 0,
   loanAmount: 0,
-  durationInMonths: 0, // Default to 3 months as per the description
+  durationInMonths: 0,
 };
 type FormAction =
   | { type: 'SET_SALARY'; payload: number }
@@ -276,8 +276,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                   })
                 );
                 return;
-              }
-              else if(details.durationInMonths <= 0) {
+              } else if (details.durationInMonths <= 0) {
                 dispatch(
                   updateToast({
                     displayToast: true,

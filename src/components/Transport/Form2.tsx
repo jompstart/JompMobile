@@ -1,4 +1,4 @@
-import { StyleSheet, Modal, Pressable, FlatList, View } from 'react-native';
+import { StyleSheet, Modal, Pressable, View } from 'react-native';
 import React, { useContext, useState } from 'react';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
@@ -8,31 +8,17 @@ import PTextInput from '../../shared/PTextInput';
 import Fontisto from '@expo/vector-icons/Fontisto';
 import Feather from '@expo/vector-icons/Feather';
 import OptionBox from '../../shared/OptionBox';
-import SelectBox from '../../../assets/svgs/Transport/SelectBox';
-import SelectedBox from '../../../assets/svgs/Transport/SelectedBox';
 import Asterisks from '../../../assets/svgs/Onboarding/Asterisks';
 import { CustomerServicesContext } from '../../context/ServicesContext';
-import DateTimePicker from '@react-native-community/datetimepicker';
 const Form2 = () => {
   const { transportDetails, setTransportDetails } = useContext(
     CustomerServicesContext
   );
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
 
-  const daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1); // Generate days 1–31
+  const daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  const onChange = (event: any, selectedDate?: Date) => {
-    // Close the picker after selection
-    if (selectedDate) {
-      setDate(selectedDate); // Update the selected date
-    }
-  };
-
-  const showDatePicker = () => {
-    setShow(true);
-  };
   return (
     <View>
       <View style={styles.row}>

@@ -472,6 +472,7 @@ const Savings = () => {
                     onPress={() => {
                       navigate('SavingsDetails', {
                         goalId: savings.id,
+                        savedAmount: savings.savedAmount,
                       });
                     }}
                     style={styles.view3}

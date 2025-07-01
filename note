@@ -57,3 +57,4 @@ GuarantorPhoneNumber
 09070903614
 
 
+{"data": {"event": "successful", "transactionRef": {"message": "Approved", "redirecturl": "https://jompstart.com/paystack/callback?trxref=T505319332021147&reference=T505319332021147", "reference": "T505319332021147", "status": "success", "trans": "5105612246", "transaction": "5105612246", "trxref": "T505319332021147"}}, "status": "success", "transactionRef": {"message": "Approved", "redirecturl": "https://jompstart.com/paystack/callback?trxref=T505319332021147&reference=T505319332021147", "reference": "T505319332021147", "status": "success", "trans": "5105612246", "transaction": "5105612246", "trxref": "T505319332021147"}}

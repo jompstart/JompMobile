@@ -70,4 +70,5 @@ export interface SingleSavingsResponseDto {
   interest: number;
   savingMethod: string;
   autoWithDraw: boolean;
+  autoSave: boolean;
 }

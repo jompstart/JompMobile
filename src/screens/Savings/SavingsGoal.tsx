@@ -16,7 +16,7 @@ import FundSourceBottomsheet from '../../components/Savings/FundSourceBottomshee
 import { useNavigation } from '@react-navigation/native';
 import { useReducer, useState, useEffect } from 'react';
 import SavingsCategoryBottomsheet from '../../components/Savings/CategoryBottomsheet';
-
+import Constants from 'expo-constants';
 import {
   savingsFormReducer,
   createSavingsInitialState,
@@ -95,6 +95,7 @@ const SavingsGoal = () => {
       });
     }
   };
+  const paystackKey = Constants.expoConfig?.extra?.PAYSTACK_KEY as string;
 
   const onChangeTime = (event: any, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
@@ -979,7 +980,7 @@ const SavingsGoal = () => {
       {pay && (
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
+            paystackKey={paystackKey}
             amount={state.monthlyContribution}
             billingEmail={user.email}
             phone={user?.phoneNumber}
@@ -989,6 +990,7 @@ const SavingsGoal = () => {
               setPay(false);
             }}
             onSuccess={(response) => {
+              console.log(response);
               if (response.data.event == 'successful') {
                 setPay(false);
                 dispatch(
@@ -1000,6 +1002,12 @@ const SavingsGoal = () => {
                     toastType: 'success',
                   })
                 );
+                // savingsInitialState({
+                //   type:"SET_CARD_DETAILS",
+                //   payload:{
+                //      cardNumber:response.data.
+                //   }
+                // })
               }
             }}
             autoStart={pay}

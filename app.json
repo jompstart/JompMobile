@@ -38,9 +38,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-apple-authentication"
-      ],
+      ["expo-apple-authentication"],
       [
         "expo-font",
         {
@@ -93,7 +91,8 @@
     "extra": {
       "eas": {
         "projectId": "beff92a5-f32e-49f1-a5fa-e616f0e8b13e"
-      }
+      },
+      "PAYSTACK_KEY": "pk_live_0902a194cd1f77f1488c17183e97544b516b6f33"
     }
   }
 }

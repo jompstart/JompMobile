@@ -53,6 +53,7 @@ export type RootStackParamList = {
   SavingsTransactions: undefined;
   SavingsDetails: {
     goalId: string;
+    savedAmount: number;
   };
   NavigationDrawer: undefined;
   TransportDetails: undefined;
@@ -83,6 +84,7 @@ type SignUpScreenParams = {
 type SavingsDetailsParams = {
   [SavingsDetails: string]: {
     goalId: string;
+    savedAmount: number;
   };
 };
 

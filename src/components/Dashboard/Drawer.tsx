@@ -279,18 +279,48 @@ const Drawer = (props: Props) => {
             flex: 1,
           }}
         />
-        <CText
-          fontFamily="semibold"
-          onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
-          fontSize={18}
-          color={colors.primary() as any}
-          lineHeight={23}
+        <View
           style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: size.getWidthSize(16),
             marginHorizontal: size.getWidthSize(16),
             marginBottom: size.getHeightSize(40),
           }}
         >
-          Terms & Conditions
+          <CText
+            fontFamily="semibold"
+            onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
+            fontSize={15}
+            color={colors.primary() as any}
+            lineHeight={19}
+          >
+            Terms & Conditions
+          </CText>
+          <CText
+            fontFamily="semibold"
+            onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
+            fontSize={15}
+            color={colors.primary() as any}
+            lineHeight={19}
+          >
+            Privacy
+          </CText>
+        </View>
+        <CText
+          fontFamily="medium"
+          onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
+          fontSize={13}
+          color={colors.primary() as any}
+          lineHeight={18}
+          style={{
+            marginHorizontal: size.getWidthSize(16),
+            marginBottom: size.getHeightSize(10),
+          }}
+        >
+          Lending by Jompstart, Savings managed by Partners, notably Kudy
+          Financials Ltd, a licensed fund & portfolio manager regulated by SEC
+          Nigeria
         </CText>
       </View>
     </View>
