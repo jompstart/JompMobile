@@ -78,18 +78,25 @@ export const useGetPendingServices = (userId: string, customerId: string) => {
 export const useGetPaymentTerms = (userId: string, customerId: string) => {
   const providerInstance = new ProviderService(userId, customerId);
   const getPaymentTerms = async () => {
-    const [paymentTerms, paymentMethod, serviceCategory, interestRate] =
-      await Promise.all([
-        providerInstance.getPaymentTerms(),
-        providerInstance.getPaymentMethods(),
-        providerInstance.getServiceCategories(),
-        providerInstance.getInterestRate(),
-      ]);
+    const [
+      paymentTerms,
+      paymentMethod,
+      serviceCategory,
+      interestRate,
+      processingFee,
+    ] = await Promise.all([
+      providerInstance.getPaymentTerms(),
+      providerInstance.getPaymentMethods(),
+      providerInstance.getServiceCategories(),
+      providerInstance.getInterestRate(),
+      providerInstance.getProcessingFee(),
+    ]);
     return {
       paymentTerms: paymentTerms.data,
       paymentMethod: paymentMethod.data,
       serviceCategory: serviceCategory.data,
       interestRate: interestRate.data,
+      processingFee: processingFee.data,
     };
   };
   return useQuery({
@@ -114,9 +121,9 @@ export const useGetPaymentBreakdown = (
     return response;
   };
   return useQuery({
-    queryKey: ['getPaymentBreakdown', amount, amount],
+    queryKey: ['getPaymentBreakdown', amount, months],
     queryFn: () => getPaymentBreakdown(),
     refetchOnWindowFocus: false,
-    enabled: !!amount && !!amount,
+    enabled: !!amount && !!months,
   });
 };

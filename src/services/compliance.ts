@@ -1,6 +1,6 @@
 import { makeRequest } from '../config/api.config';
 import { CustomerVerificationType } from '../types/verification.type';
-import { testData } from '../utils/test';
+import { testData } from '../utils/formatter';
 import { UserService } from './user';
 
 export class ComplianceService extends UserService {

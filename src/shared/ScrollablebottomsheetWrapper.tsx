@@ -57,7 +57,7 @@ const ScrollablebottomsheetWrapper = ({
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const sheetSnapPoints = useMemo(
-    () => (snapPoints ? snapPoints : ['60%', '85%', '100%']),
+    () => (snapPoints ? snapPoints : ['80%']),
     []
   );
 

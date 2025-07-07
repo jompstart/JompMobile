@@ -496,7 +496,8 @@ export class ProviderService {
   async getProcessingFee() {
     return await makeRequest<{
       processingFee: number;
-      processingFeePercentage: number;
+      insuranceFee: number;
+      adminFee: number;
     }>({
       method: 'GET',
       url: `/get-processing-fee`,
@@ -505,22 +506,25 @@ export class ProviderService {
 
   async getInterestRate() {
     return await makeRequest<{
-      interestRate: number;
-      interestRatePercentage: number;
-    }>({
+      interestCostPartner: number;
+      interestAmount: number;
+      jompInterestPremium: number;
+    }[]>({
       method: 'GET',
       url: `/get-interateRate`,
     });
   }
 
   async getPaymentBreakdown(month: string, loanAmount: string) {
-    return await makeRequest<{
-      month: number;
-      openingPrincipal: number;
-      interest: number;
-      principalRepayment: number;
-      monthlyInstallment: number;
-    }>({
+    return await makeRequest<
+      {
+        month: number;
+        openingPrincipal: number;
+        interest: number;
+        principalRepayment: number;
+        monthlyInstallment: number;
+      }[]
+    >({
       method: 'GET',
       url: `/payment-breakdown?months=Month ${month}&loanAmount=${loanAmount}`,
     });

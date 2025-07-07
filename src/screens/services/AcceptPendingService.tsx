@@ -1,5 +1,11 @@
-import { StyleSheet, RefreshControl, FlatList, View } from 'react-native';
-import React, { useState } from 'react';
+import {
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+  View,
+  Pressable,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import CText from '../../shared/CText';
@@ -21,11 +27,16 @@ import PTextInput from '../../shared/PTextInput';
 import { useGetServiceDetails } from '../../hooks/api/providers';
 import { getOrdinal, getServiceMonths } from '../../helpers/services';
 import PaymentBreakdown from '../../components/Service/PaymentBreakdown';
+import PrimaryButton from '../../shared/PrimaryButton';
 const AcceptPendingService = ({
   route: { params },
 }: AcceptPendingServiceProps) => {
   const [showState, setShowState] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | undefined>(
+    undefined
+  );
+  const [serviceMonth, selectedServiceMonth] = useState<number | undefined>();
+  const [showBreakDown, setShowBreakDown] = useState(false);
   const user = useAppSelector(userSelector);
   const { data: serviceDetails } = useGetServiceDetails(
     user.userId,
@@ -35,20 +46,31 @@ const AcceptPendingService = ({
     params?.serviceType
   );
 
-  const { data: serviceData } = useGetPaymentTerms(
-    user.userId,
-    user.customerId
-  );
+  const { data: serviceData, isLoading: serviceDataLoading } =
+    useGetPaymentTerms(user.userId, user.customerId);
 
-  const { data: paymentBreakDown } = useGetPaymentBreakdown(
+  const {
+    data: paymentBreakDown,
+    isRefetching,
+    refetch,
+    isLoading,
+    isSuccess,
+  } = useGetPaymentBreakdown(
     user.userId,
     user.customerId,
-    selectedMonth?.toString() || undefined,
+    selectedMonth?.toString(),
     serviceDetails?.data?.requestAmount.toString() || undefined
   );
-
-  console.log('Payment Breakdown:', paymentBreakDown);
-  console.log('Service Details:', serviceDetails);
+  useEffect(() => {
+    if (
+      selectedMonth &&
+      isSuccess &&
+      paymentBreakDown?.data &&
+      paymentBreakDown?.data?.length > 0
+    ) {
+      setShowBreakDown(true);
+    }
+  }, [selectedMonth, isSuccess, isLoading, isRefetching, paymentBreakDown]);
 
   const [form, setFormState] = useState({
     address: '',
@@ -118,7 +140,7 @@ const AcceptPendingService = ({
               }}
             />
             <PTextInput
-              editable
+              editable={false}
               onPress={() => {
                 setShowState(true);
               }}
@@ -143,44 +165,74 @@ const AcceptPendingService = ({
           >
             Select your preferred loan duration
           </CText>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              gap: size.getWidthSize(12),
-              marginTop: size.getHeightSize(13),
-            }}
-          >
-            {serviceData?.paymentTerms?.map((term, index) => {
-              if (
-                serviceData &&
-                serviceData?.serviceCategory &&
-                getServiceMonths(
-                  params?.serviceType,
-                  serviceData?.serviceCategory
-                )?.length > 0 &&
-                getServiceMonths(
-                  params?.serviceType,
-                  serviceData?.serviceCategory
-                )[index]
-              ) {
-                return (
-                  <View style={styles.idle} key={index}>
-                    <CText
-                      color={'black'}
-                      fontSize={14}
-                      lineHeight={18.4}
-                      fontFamily="semibold"
+          {serviceDataLoading ? (
+            <ActivityIndicator
+              color={colors.primary()}
+              size={size.getHeightSize(24)}
+              style={{
+                marginTop: size.getHeightSize(16),
+                alignSelf: 'flex-start',
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: size.getWidthSize(12),
+                marginTop: size.getHeightSize(13),
+              }}
+            >
+              {serviceData?.paymentTerms?.map((term, index) => {
+                if (
+                  serviceData &&
+                  serviceData?.serviceCategory &&
+                  getServiceMonths(
+                    params?.serviceType,
+                    serviceData?.serviceCategory
+                  )?.length > 0 &&
+                  getServiceMonths(
+                    params?.serviceType,
+                    serviceData?.serviceCategory
+                  )[index]
+                ) {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        setSelectedMonth(index + 1);
+                        refetch();
+                      }}
+                      style={
+                        serviceMonth === index + 1
+                          ? styles.selected
+                          : styles.idle
+                      }
+                      key={index}
                     >
-                      {getOrdinal(index + 1)} Month
-                    </CText>
-                  </View>
-                );
-              }
-            })}
-          </View>
+                      <CText
+                        color={'black'}
+                        fontSize={14}
+                        lineHeight={18.4}
+                        fontFamily="semibold"
+                      >
+                        {getOrdinal(index + 1)} Month
+                      </CText>
+                    </Pressable>
+                  );
+                }
+              })}
+            </View>
+          )}
         </KeyboardAwareScrollView>
       </View>
+      <PrimaryButton
+        label="Submit Plan"
+        disabled={!form.address || !form.state || !serviceMonth}
+        style={{
+          marginHorizontal: size.getWidthSize(16),
+          marginBottom: size.getHeightSize(16),
+        }}
+      />
       <StatesBottomsheet
         isVisible={showState}
         onClose={() => {
@@ -191,7 +243,26 @@ const AcceptPendingService = ({
           setShowState(false);
         }}
       />
-      <PaymentBreakdown isVisible onClose={() => {}} month="1" />
+      <PaymentBreakdown
+        approvedAmount={serviceDetails?.data?.requestAmount || 0}
+        disbursedAmount={serviceDetails?.data?.disturbmentAmount || 0}
+        customerContribution={serviceDetails?.data?.userContribution || 0}
+        processingFee={serviceData?.processingFee?.processingFee || 0}
+        insuranceFee={serviceData?.processingFee?.insuranceFee || 0}
+        adminFee={serviceData?.processingFee?.adminFee || 0}
+        interestAmount={serviceData?.interestRate?.[0]?.interestAmount || 0}
+        isVisible={showBreakDown}
+        onClose={() => {
+          setShowBreakDown(false);
+        }}
+        breakdown={paymentBreakDown?.data || []}
+        month={selectedMonth?.toString() || ''}
+        isLoading={isRefetching || isLoading}
+        onContinue={() => {
+          setShowBreakDown(false);
+          selectedServiceMonth(selectedMonth);
+        }}
+      />
     </GradientSafeAreaView>
   );
 };
