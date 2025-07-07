@@ -60,52 +60,106 @@ const PaymentBreakdown = ({ isVisible, onClose, month }: Props) => {
             #1,000,000.00
           </CText>
         </View>
+        <View style={styles.row}>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+            style={{ flex: 1 }}
+          >
+            {' '}
+            Loan Amount
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            #1,000,000.00
+          </CText>
+        </View>
 
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={18.4}
-          fontFamily="semibold"
-        >
-          {' '}
-          Loan Amount
-        </CText>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={18.4}
-          fontFamily="semibold"
-        >
-          {' '}
-          Customer's Contribution
-        </CText>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={18.4}
-          fontFamily="semibold"
-        >
-          {' '}
-          Processing Fee
-        </CText>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={18.4}
-          fontFamily="semibold"
-        >
-          {' '}
-          Admin Fee
-        </CText>
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={18.4}
-          fontFamily="semibold"
-        >
-          {' '}
-          Payment Due Today
-        </CText>
+        <View style={styles.row}>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+            style={{ flex: 1 }}
+          >
+            {' '}
+            Customer's Contribution
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            #1,000,000.00
+          </CText>
+        </View>
+        <View style={styles.row}>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+            style={{ flex: 1 }}
+          >
+            {' '}
+            Processing Fee
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            #1,000,000.00
+          </CText>
+        </View>
+        <View style={styles.row}>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+            style={{ flex: 1 }}
+          >
+            {' '}
+            Admin Fee
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            #1,000,000.00
+          </CText>
+        </View>
+        <View style={styles.row}>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            {' '}
+            Payment Due Today
+          </CText>
+          <CText
+            color={'secondaryBlack'}
+            fontSize={14}
+            lineHeight={18.4}
+            fontFamily="semibold"
+          >
+            #1,000,000.00
+          </CText>
+        </View>
         <View style={{}}>
           {[1, 2, 3].map((item, index) => (
             <View
@@ -122,39 +176,83 @@ const PaymentBreakdown = ({ isVisible, onClose, month }: Props) => {
               >
                 Month
               </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={14}
-                lineHeight={18.4}
-                fontFamily="semibold"
-              >
-                Outstanding Loan Amount
-              </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={14}
-                lineHeight={18.4}
-                fontFamily="semibold"
-              >
-                {' '}
-                Principal Repayment
-              </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={14}
-                lineHeight={18.4}
-                fontFamily="semibold"
-              >
-                Interest Due
-              </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={14}
-                lineHeight={18.4}
-                fontFamily="semibold"
-              >
-                Payment For Month
-              </CText>
+              <View style={styles.row}>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                  style={{ flex: 1 }}
+                >
+                  Outstanding Loan Amount
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                >
+                  #1,000,000.00
+                </CText>
+              </View>
+              <View style={styles.row}>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                  style={{ flex: 1 }}
+                >
+                  {' '}
+                  Principal Repayment
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                >
+                  #1,000,000.00
+                </CText>
+              </View>
+              <View style={styles.row}>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                  style={{ flex: 1 }}
+                >
+                  Interest Due
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                >
+                  #1,000,000.00
+                </CText>
+              </View>
+              <View style={styles.row}>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                  style={{ flex: 1 }}
+                >
+                  Payment For Month
+                </CText>
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={14}
+                  lineHeight={18.4}
+                  fontFamily="semibold"
+                >
+                  #1,000,000.00
+                </CText>
+              </View>
             </View>
           ))}
         </View>
