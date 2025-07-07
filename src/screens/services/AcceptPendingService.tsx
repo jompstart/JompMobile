@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  View,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, ActivityIndicator, View, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
@@ -13,13 +7,14 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { userSelector } from '../../features/user/user.selector';
-import { useAppSelector } from '../../controller/redux.controller';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../controller/redux.controller';
 import {
   useGetPaymentBreakdown,
   useGetPaymentTerms,
-  useGetPendingServices,
 } from '../../hooks/api/providers';
-import SecondaryButton from '../../shared/SecondaryButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AcceptPendingServiceProps } from '../../types/navigations.types';
 import StatesBottomsheet from '../../shared/StateBottomsheet';
@@ -28,6 +23,12 @@ import { useGetServiceDetails } from '../../hooks/api/providers';
 import { getOrdinal, getServiceMonths } from '../../helpers/services';
 import PaymentBreakdown from '../../components/Service/PaymentBreakdown';
 import PrimaryButton from '../../shared/PrimaryButton';
+import { useMutation } from '@tanstack/react-query';
+import { ProviderService } from '../../services/providers/provider';
+import { API_RESPONSE } from '../../types';
+import { AcceptLoandDto } from '../../services/providers/provider.dto';
+import { useNavigation } from '@react-navigation/native';
+import { updateToast } from '../../features/ui/ui.slice';
 const AcceptPendingService = ({
   route: { params },
 }: AcceptPendingServiceProps) => {
@@ -35,19 +36,47 @@ const AcceptPendingService = ({
   const [selectedMonth, setSelectedMonth] = useState<number | undefined>(
     undefined
   );
+  const dispatch = useAppDispatch();
+  const { navigate } = useNavigation();
   const [serviceMonth, selectedServiceMonth] = useState<number | undefined>();
   const [showBreakDown, setShowBreakDown] = useState(false);
   const user = useAppSelector(userSelector);
   const { data: serviceDetails } = useGetServiceDetails(
     user.userId,
     user.customerId,
-    // params?.serviceId,
-    'bbca1013-c790-44ed-a640-3ae051bc8834',
+    params?.serviceId,
+    // 'bbca1013-c790-44ed-a640-3ae051bc8834',
     params?.serviceType
   );
+  const providerInstance = new ProviderService(user.userId, user.customerId);
 
   const { data: serviceData, isLoading: serviceDataLoading } =
     useGetPaymentTerms(user.userId, user.customerId);
+
+  const { mutate: acceptLoan, isPending } = useMutation<
+    API_RESPONSE<any>,
+    Error,
+    AcceptLoandDto
+  >({
+    mutationFn: async (data) => providerInstance.acceptLoanRequest(data),
+    onSuccess: (response) => {
+      console.log('Response from accept loan request:', response);
+      navigate('SuccessPage', {
+        title: 'Loan Request Accepted',
+        message: 'Your loan request has been successfully accepted.',
+      });
+    },
+    onError: (error) => {
+      console.error('Error accepting loan request:', error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message,
+          toastType: 'info',
+        })
+      );
+    },
+  });
 
   const {
     data: paymentBreakDown,
@@ -226,11 +255,41 @@ const AcceptPendingService = ({
         </KeyboardAwareScrollView>
       </View>
       <PrimaryButton
+        isLoading={isPending}
         label="Submit Plan"
-        disabled={!form.address || !form.state || !serviceMonth}
+        disabled={!form.address || !form.state || !serviceMonth || isPending}
         style={{
           marginHorizontal: size.getWidthSize(16),
           marginBottom: size.getHeightSize(16),
+        }}
+        onPress={() => {
+          if (
+            form.address &&
+            form.state &&
+            serviceMonth &&
+            serviceDetails?.data
+          ) {
+            const amountDiferrence =
+              +(serviceDetails.data.requestAmount ?? 0) -
+              +(serviceDetails?.data?.disturbmentAmount ?? 0);
+            acceptLoan({
+              amountDisbursed: +(serviceDetails?.data?.disturbmentAmount ?? 0),
+              contactaddress: form.address,
+              customerContribution: +(
+                serviceDetails?.data?.userContribution ?? 0
+              ),
+              interestRate: +(
+                serviceData?.interestRate?.[0]?.interestAmount ?? 0
+              ),
+              loanDuration: serviceMonth?.toString(),
+              marginAmount: amountDiferrence,
+              monthlyInstallment: +(
+                paymentBreakDown?.data?.[0]?.monthlyInstallment ?? 0
+              ),
+              serviceId: params?.serviceId || '',
+              status: 'Accept',
+            });
+          }
         }}
       />
       <StatesBottomsheet

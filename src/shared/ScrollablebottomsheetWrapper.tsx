@@ -69,21 +69,24 @@ const ScrollablebottomsheetWrapper = ({
   //   }
   // }, [visibility]);
 
-  // useEffect(() => {
-  //   onMount?.();
-  //   const handleBackButton = () => {
-  //     if (visibility === true) {
-  //       onClose();
-  //       return true;
-  //     } else {
-  //       return false;
-  //     }
-  //   };
-  //   BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-  //   return () => {
-  //     BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-  //   };
-  // }, [visibility]);
+  useEffect(() => {
+    onMount?.();
+    const handleBackButton = () => {
+      if (visibility === true) {
+        onClose();
+        return true;
+      } else {
+        return false;
+      }
+    };
+    const backButton = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButton
+    );
+    return () => {
+      backButton.remove();
+    };
+  }, [visibility]);
 
   const renderBackdrop = useCallback(
     (props: any) => (

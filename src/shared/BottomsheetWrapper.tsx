@@ -112,7 +112,6 @@ const BottomsheetWrapper = ({
           onClose={() => {
             onClose();
           }}
-          
           ref={bottomSheetRef}
           enableDynamicSizing
           enablePanDownToClose={enablePanDownToClose}

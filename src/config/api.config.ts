@@ -48,19 +48,25 @@ export const makeRequest = async <T, D = any>({
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(`Error making request to ${url}:`, error);
-      // Handle Axios-specific errors
-
+      if (!error.response) {
+        throw new Error(
+          'No internet connection. Please check your network and try again.'
+        );
+      }
+      if (error.response?.status === 404) {
+        throw new Error('Resource not found. Please  try again.');
+      }
       if (error.response?.status === 401) {
         await AsyncStorage.removeItem('token');
 
         navigationRef.current?.dispatch(StackActions.replace('Login'));
-        
       }
       throw error.response?.data || error.message;
     } else {
+      let err = error as Error;
       // Handle non-Axios errors
       console.log('Unexpected error:', error);
-      throw error;
+      throw err.message || err.cause || 'An unexpected error occurred';
     }
   }
 };

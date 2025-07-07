@@ -9,6 +9,7 @@ import {
   TransportRequest,
 } from '../../interface/provider';
 import {
+  AcceptLoandDto,
   CalculateLoanDto,
   CalculateLoanResponse,
   CustomerServiceDetails,
@@ -505,11 +506,13 @@ export class ProviderService {
   }
 
   async getInterestRate() {
-    return await makeRequest<{
-      interestCostPartner: number;
-      interestAmount: number;
-      jompInterestPremium: number;
-    }[]>({
+    return await makeRequest<
+      {
+        interestCostPartner: number;
+        interestAmount: number;
+        jompInterestPremium: number;
+      }[]
+    >({
       method: 'GET',
       url: `/get-interateRate`,
     });
@@ -527,6 +530,17 @@ export class ProviderService {
     >({
       method: 'GET',
       url: `/payment-breakdown?months=Month ${month}&loanAmount=${loanAmount}`,
+    });
+  }
+
+  async acceptLoanRequest(acceptLoanPayload: AcceptLoandDto) {
+    return await makeRequest({
+      method: 'POST',
+      url: `/accept-schoolFeeLoan`,
+      data: {
+        ...acceptLoanPayload,
+        customerId: this.customerId,
+      },
     });
   }
 }

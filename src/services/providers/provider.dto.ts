@@ -96,3 +96,15 @@ export interface SingelServiceDetail {
     companyLocation: string;
   };
 }
+
+export interface AcceptLoandDto {
+  amountDisbursed: number;
+  contactaddress: string;
+  customerContribution: number;
+  interestRate: number;
+  loanDuration: string;
+  marginAmount: number;
+  monthlyInstallment: number;
+  serviceId: string;
+  status: string;
+}
