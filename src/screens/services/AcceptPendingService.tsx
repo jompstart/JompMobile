@@ -23,7 +23,7 @@ import { useGetServiceDetails } from '../../hooks/api/providers';
 import { getOrdinal, getServiceMonths } from '../../helpers/services';
 import PaymentBreakdown from '../../components/Service/PaymentBreakdown';
 import PrimaryButton from '../../shared/PrimaryButton';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ProviderService } from '../../services/providers/provider';
 import { API_RESPONSE } from '../../types';
 import { AcceptLoandDto } from '../../services/providers/provider.dto';
@@ -48,6 +48,8 @@ const AcceptPendingService = ({
     // 'bbca1013-c790-44ed-a640-3ae051bc8834',
     params?.serviceType
   );
+
+  const queryClient = useQueryClient();
   const providerInstance = new ProviderService(user.userId, user.customerId);
 
   const { data: serviceData, isLoading: serviceDataLoading } =
@@ -64,6 +66,9 @@ const AcceptPendingService = ({
       navigate('SuccessPage', {
         title: 'Loan Request Accepted',
         message: 'Your loan request has been successfully accepted.',
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['getPendingServices', user.userId, user.customerId],
       });
     },
     onError: (error) => {
@@ -274,7 +279,7 @@ const AcceptPendingService = ({
               +(serviceDetails?.data?.disturbmentAmount ?? 0);
             acceptLoan({
               amountDisbursed: +(serviceDetails?.data?.disturbmentAmount ?? 0),
-              contactaddress: form.address,
+              contactaddress: `${form.address}, ${form.state}, ${form.country}`,
               customerContribution: +(
                 serviceDetails?.data?.userContribution ?? 0
               ),

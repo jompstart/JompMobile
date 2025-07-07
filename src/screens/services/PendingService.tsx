@@ -108,8 +108,8 @@ const PendingService = () => {
                 >
                   <CText
                     color={'black'}
-                    fontSize={16}
-                    lineHeight={20}
+                    fontSize={15}
+                    lineHeight={18}
                     fontFamily="bold"
                   >
                     Service Name
@@ -130,8 +130,8 @@ const PendingService = () => {
                 >
                   <CText
                     color={'black'}
-                    fontSize={16}
-                    lineHeight={20}
+                    fontSize={15}
+                    lineHeight={18}
                     fontFamily="bold"
                   >
                     Service Name

@@ -69,7 +69,7 @@ export const useGetPendingServices = (userId: string, customerId: string) => {
     return response;
   };
   return useQuery({
-    queryKey: ['getPendingServices'],
+    queryKey: ['getPendingServices', userId, customerId],
     queryFn: () => getPendingServices(),
     refetchOnWindowFocus: false,
   });

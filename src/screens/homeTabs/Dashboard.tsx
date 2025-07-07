@@ -4,8 +4,10 @@ import {
   Pressable,
   RefreshControl,
   ScrollView,
+  Modal,
+  BackHandler,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
 import WalletIcon from '../../../assets/svgs/Home/WalletIcon';
@@ -37,7 +39,9 @@ import {
 import RecentTransaction from '../../components/Transaction/RecentTransaction';
 import Banner from '../../components/Dashboard/Banner';
 import { useGetPendingServices } from '../../hooks/api/providers';
+import PrimaryButton from '../../shared/PrimaryButton';
 const Dashboard = () => {
+  const [showPendingServiceModal, setShowPendingServiceModal] = useState(false);
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -46,6 +50,14 @@ const Dashboard = () => {
   const { isPending, refetch } = useRefreschUserData();
   const { data: pendingServices, refetch: refetchPendingService } =
     useGetPendingServices(user.userId, user.customerId);
+
+  useEffect(() => {
+    if (pendingServices?.data && pendingServices?.data?.length > 0) {
+      setShowPendingServiceModal(true);
+    } else {
+      setShowPendingServiceModal(false);
+    }
+  }, [pendingServices]);
 
   return (
     <GradientSafeAreaView>
@@ -401,6 +413,50 @@ const Dashboard = () => {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        transparent
+        visible={showPendingServiceModal}
+        onRequestClose={() => {
+          setShowPendingServiceModal(false);
+        }}
+        onDismiss={() => {
+          setShowPendingServiceModal(false);
+        }}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.modalContainer}>
+            <CText
+              color={'black'}
+              fontSize={16}
+              lineHeight={24}
+              fontFamily="bold"
+              style={{ textAlign: 'center' }}
+            >
+              Pending Service Request
+            </CText>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={14}
+              lineHeight={22.4}
+              fontFamily="regular"
+              style={{ textAlign: 'center', marginTop: size.getHeightSize(8) }}
+            >
+              You currently have pending services that requires your attention
+              and review.
+            </CText>
+            <PrimaryButton
+              label="Review now"
+              style={{
+                marginTop: size.getHeightSize(16),
+              }}
+              onPress={() => {
+                setShowPendingServiceModal(false);
+                navigate('PendingService');
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
     </GradientSafeAreaView>
   );
 };
@@ -473,5 +529,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: size.getHeightSize(16),
     borderRadius: size.getHeightSize(8),
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: size.getWidthSize(300),
+    backgroundColor: colors.appBackground(),
+    borderRadius: size.getHeightSize(16),
+    padding: size.getHeightSize(16),
   },
 });
