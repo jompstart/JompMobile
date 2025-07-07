@@ -1,4 +1,5 @@
 import { makeRequest } from '../../config/api.config';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HouseRentLoanFormState } from '../../reducers/services.reducer';
 import {
   ChildSchoolFeeRequest,
@@ -13,8 +14,11 @@ import {
   CustomerServiceDetails,
   OtherBillsDto,
   PaymentOptionResponse,
+  PendingService,
   ServicesCategories,
+  SingelServiceDetail,
 } from './provider.dto';
+import axios from 'axios';
 
 export class ProviderService {
   constructor(private userId: string, private customerId: string) {}
@@ -461,6 +465,64 @@ export class ProviderService {
         'Content-Type': 'multipart/form-data',
       },
       data: formData,
+    });
+  }
+
+  async getPendingTransactions() {
+    return await makeRequest<PendingService[]>({
+      method: 'POST',
+      url: `/get-notification?customerId=${this.customerId}`,
+    });
+  }
+
+  async getSingleServiceDetails(serviceId: string, serviceType: string) {
+    return await makeRequest<SingelServiceDetail>({
+      method: 'GET',
+      url: `/get-services?serviceId=${serviceId}&serviceType=${serviceType}`,
+    });
+  }
+  async getPaymentTerms() {
+    return await makeRequest<
+      {
+        id: string;
+        name: string;
+        description: string;
+      }[]
+    >({
+      method: 'GET',
+      url: `/payment-terms`,
+    });
+  }
+  async getProcessingFee() {
+    return await makeRequest<{
+      processingFee: number;
+      processingFeePercentage: number;
+    }>({
+      method: 'GET',
+      url: `/get-processing-fee`,
+    });
+  }
+
+  async getInterestRate() {
+    return await makeRequest<{
+      interestRate: number;
+      interestRatePercentage: number;
+    }>({
+      method: 'GET',
+      url: `/get-interateRate`,
+    });
+  }
+
+  async getPaymentBreakdown(month: string, loanAmount: string) {
+    return await makeRequest<{
+      month: number;
+      openingPrincipal: number;
+      interest: number;
+      principalRepayment: number;
+      monthlyInstallment: number;
+    }>({
+      method: 'GET',
+      url: `/payment-breakdown?months=Month ${month}&loanAmount=${loanAmount}`,
     });
   }
 }

@@ -73,6 +73,11 @@ export type RootStackParamList = {
   Faqs: undefined;
   Request: undefined;
   AcceptService: undefined;
+  PendingService: undefined;
+  AcceptPendingService: {
+    serviceId: string;
+    serviceType: string;
+  };
 };
 
 type SignUpScreenParams = {
@@ -114,6 +119,17 @@ type NotificationParams = {
     ServiceId: string;
     action: string;
   };
+};
+
+type AcceptPendingServiceParams = {
+  [AcceptPendingService: string]: {
+    serviceId: string;
+    serviceType: string;
+  };
+};
+export type AcceptPendingServiceProps = {
+  navigation: NavigationProp<RootStackParamList, 'AcceptPendingService'>;
+  route: RouteProp<AcceptPendingServiceParams, 'AcceptPendingService'>;
 };
 
 export type CreateSavingsScreenProps = {

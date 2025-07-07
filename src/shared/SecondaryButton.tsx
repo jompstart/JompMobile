@@ -35,12 +35,12 @@ const SecondaryButton = ({
       onPress={() => onPress?.()}
       style={[
         styles.pressable,
-        style,
         {
           backgroundColor: colors.white(opacity),
           borderColor: colors.primary(),
           borderWidth: size.getHeightSize(1),
         },
+        style,
       ]}
     >
       {isLoading ? (

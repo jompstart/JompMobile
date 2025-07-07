@@ -1,8 +1,10 @@
 import {
   StyleSheet,
   RefreshControl,
+  FlatList,
   Image,
   View,
+  Pressable,
 } from 'react-native';
 import React, { useState } from 'react';
 import { size } from '../../config/size';
@@ -14,11 +16,9 @@ import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { useGetUserServices } from '../../hooks/api/providers';
 import { useAppSelector } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
-import { FlatList } from 'react-native-gesture-handler';
 import { formatToAmount } from '../../utils/stringManipulation';
 const CreatedServices = () => {
   const user = useAppSelector(userSelector);
-
   const { data: services, refetch } = useGetUserServices(
     user.userId,
     user.customerId
@@ -124,7 +124,7 @@ const CreatedServices = () => {
               keyExtractor={(item) => item.id}
               data={services.data}
               renderItem={({ item }) => (
-                <View style={styles.view4}>
+                <Pressable style={styles.view4}>
                   <View style={styles.view3}>
                     <Image
                       style={styles.image}
@@ -195,7 +195,7 @@ const CreatedServices = () => {
                         : item.status}
                     </CText>
                   </View>
-                </View>
+                </Pressable>
               )}
             />
           )}

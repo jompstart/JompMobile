@@ -7,7 +7,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
 import Octicons from '@expo/vector-icons/Octicons';
 import { colors } from '../../constants/colors';
-import Transaction from '../../components/Transaction/Transaction';
 
 const SavingsTransactions = () => {
   return (

@@ -432,8 +432,9 @@ const Login = () => {
           >
             <CTextInput
               keyboardType="email-address"
-              onChangeText={setEmail}
+              onChangeText={(text) => setEmail(text.trim().toLowerCase())}
               title="Email Address"
+              value={email}
               placeholder="@mail.com"
               rightIcon={<MailIcon size={size.getHeightSize(24)} />}
             />

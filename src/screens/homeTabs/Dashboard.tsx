@@ -35,6 +35,8 @@ import {
   useRefreschUserData,
 } from '../../hooks/api/user';
 import RecentTransaction from '../../components/Transaction/RecentTransaction';
+import Banner from '../../components/Dashboard/Banner';
+import { useGetPendingServices } from '../../hooks/api/providers';
 const Dashboard = () => {
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
@@ -42,6 +44,8 @@ const Dashboard = () => {
   const { data: recenTransactions, refetch: reloadRecentTransaction } =
     useGetRecentTransactions(user.customerId, user.userId);
   const { isPending, refetch } = useRefreschUserData();
+  const { data: pendingServices, refetch: refetchPendingService } =
+    useGetPendingServices(user.userId, user.customerId);
 
   return (
     <GradientSafeAreaView>
@@ -63,6 +67,7 @@ const Dashboard = () => {
             onRefresh={() => {
               refetch();
               reloadRecentTransaction();
+              refetchPendingService();
             }}
           />
         }
@@ -162,170 +167,46 @@ const Dashboard = () => {
             }}
             horizontal
           >
-            <Pressable
+            {pendingServices?.data && pendingServices?.data?.length > 0 && (
+              <Banner
+                onPress={() => {
+                  navigate('PendingService');
+                }}
+                description=" You currently have pending services that requires your
+                    attention and review"
+                step="1/3"
+                title="Pending Service Request"
+                buttonText="Review Service"
+              />
+            )}
+            <Banner
               onPress={() => {
                 navigate('UserCreated');
               }}
-              style={styles.cardView}
-            >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: size.getWidthSize(16),
-                  alignItems: 'center',
-                }}
-              >
-                <CText
-                  color={'black'}
-                  fontSize={13}
-                  lineHeight={20.8}
-                  fontFamily="bold"
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  You have bills to pay?
-                </CText>
-                <CText
-                  color={'black'}
-                  fontSize={10}
-                  lineHeight={16}
-                  fontFamily="regular"
-                  style={{
-                    opacity: 0.7,
-                  }}
-                >
-                  1/2
-                </CText>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <View
-                  style={{
-                    gap: size.getHeightSize(8),
-                    flex: 1,
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <CText
-                    color={'black'}
-                    fontSize={11}
-                    lineHeight={17.6}
-                    fontFamily="semibold"
-                    style={{
-                      opacity: 0.7,
-                    }}
-                  >
-                    Yes, we all do! But managing them doesn't have to be
-                    overwhelming. Do it with JOMP
-                  </CText>
-                  <View style={styles.cardButton}>
-                    <CText
-                      color={'white'}
-                      fontSize={12}
-                      lineHeight={14.4}
-                      fontFamily="semibold"
-                      style={{
-                        letterSpacing: size.getWidthSize(0.2),
-                      }}
-                    >
-                      Pay with Jomp
-                    </CText>
-                  </View>
-                </View>
-                <BillImage
-                  width={size.getWidthSize(110)}
-                  height={size.getHeightSize(97)}
-                  style={{}}
-                />
-              </View>
-            </Pressable>
-            <View style={styles.cardView}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: size.getWidthSize(16),
-                  alignItems: 'center',
-                }}
-              >
-                <CText
-                  color={'black'}
-                  fontSize={13}
-                  lineHeight={20.8}
-                  fontFamily="bold"
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  Save with JOMP
-                </CText>
-                <CText
-                  color={'black'}
-                  fontSize={10}
-                  lineHeight={16}
-                  fontFamily="regular"
-                  style={{
-                    opacity: 0.7,
-                  }}
-                >
-                  2/2
-                </CText>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <View
-                  style={{
-                    gap: size.getHeightSize(8),
-                    justifyContent: 'space-between',
-                    flex: 1,
-                  }}
-                >
-                  <CText
-                    color={'black'}
-                    fontSize={11}
-                    lineHeight={17.6}
-                    fontFamily="semibold"
-                    style={{
-                      opacity: 0.7,
-                    }}
-                  >
-                    You can now save towards all your bills on JOMP and pay when
-                    you’re ready.
-                  </CText>
-                  <Pressable
-                    onPress={() => {
-                      navigate('Savings' as any);
-                    }}
-                    style={styles.cardButton}
-                  >
-                    <CText
-                      color={'white'}
-                      fontSize={12}
-                      lineHeight={14.4}
-                      fontFamily="semibold"
-                      style={{
-                        letterSpacing: size.getWidthSize(0.2),
-                      }}
-                    >
-                      Start Saving
-                    </CText>
-                  </Pressable>
-                </View>
-                <BillImage
-                  width={size.getWidthSize(110)}
-                  height={size.getHeightSize(97)}
-                  style={{}}
-                />
-              </View>
-            </View>
+              description="Yes, we all do! But managing them doesn't have to be
+                    overwhelming. Do it with JOMP"
+              step={
+                pendingServices?.data && pendingServices?.data?.length > 0
+                  ? '2/3'
+                  : '1/2'
+              }
+              title="You have bills to pay?"
+              buttonText="Pay with Jomp"
+            />
+            <Banner
+              onPress={() => {
+                navigate('Savings' as any);
+              }}
+              description="You can now save towards all your bills on JOMP and pay when
+                    you’re ready."
+              step={
+                pendingServices?.data && pendingServices?.data?.length > 0
+                  ? '3/3'
+                  : '2/2'
+              }
+              title="Save with JOMP"
+              buttonText="Start Saving"
+            />
           </ScrollView>
         </View>
         <View style={styles.view2}>
@@ -518,55 +399,6 @@ const Dashboard = () => {
               return <RecentTransaction data={item} key={index} />;
             })}
           </View>
-          {/* <View
-            style={{
-              flex: 1,
-            }}
-          >
-            <CText
-              color={'black'}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="semibold"
-            >
-              Number of Orders
-            </CText>
-            <View style={styles.view4}>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: size.getHeightSize(8),
-                }}
-              >
-                <OrderIcon size={size.getHeightSize(41)} />
-                <CText
-                  color={'black'}
-                  fontSize={17}
-                  lineHeight={27.2}
-                  fontFamily="bold"
-                >
-                  {user.totalOrders}
-                </CText>
-                <CText
-                  color={'black'}
-                  fontSize={12}
-                  lineHeight={19.2}
-                  fontFamily="semibold"
-                >
-                  <CText
-                    color={'success'}
-                    fontSize={12}
-                    lineHeight={19.2}
-                    fontFamily="semibold"
-                  >
-                    +8.42%
-                  </CText>{' '}
-                  From last month
-                </CText>
-              </View>
-            </View>
-          </View> */}
         </View>
       </ScrollView>
     </GradientSafeAreaView>

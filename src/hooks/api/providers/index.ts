@@ -39,3 +39,84 @@ export const useGetPaymentMethods = (userId: string, customerId: string) => {
     refetchOnWindowFocus: false,
   });
 };
+
+export const useGetServiceDetails = (
+  userId: string,
+  customerId: string,
+  serviceId: string,
+  servceType: string
+) => {
+  const providerInstance = new ProviderService(userId, customerId);
+  const getServiceDetails = async () => {
+    const response = await providerInstance.getSingleServiceDetails(
+      serviceId,
+      servceType
+    );
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getServiceDetails', serviceId],
+    queryFn: () => getServiceDetails(),
+    refetchOnWindowFocus: false,
+    enabled: !!serviceId && !!servceType,
+  });
+};
+
+export const useGetPendingServices = (userId: string, customerId: string) => {
+  const providerInstance = new ProviderService(userId, customerId);
+  const getPendingServices = async () => {
+    const response = await providerInstance.getPendingTransactions();
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getPendingServices'],
+    queryFn: () => getPendingServices(),
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetPaymentTerms = (userId: string, customerId: string) => {
+  const providerInstance = new ProviderService(userId, customerId);
+  const getPaymentTerms = async () => {
+    const [paymentTerms, paymentMethod, serviceCategory, interestRate] =
+      await Promise.all([
+        providerInstance.getPaymentTerms(),
+        providerInstance.getPaymentMethods(),
+        providerInstance.getServiceCategories(),
+        providerInstance.getInterestRate(),
+      ]);
+    return {
+      paymentTerms: paymentTerms.data,
+      paymentMethod: paymentMethod.data,
+      serviceCategory: serviceCategory.data,
+      interestRate: interestRate.data,
+    };
+  };
+  return useQuery({
+    queryKey: ['getPaymentTerms'],
+    queryFn: () => getPaymentTerms(),
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetPaymentBreakdown = (
+  userId: string,
+  customerId: string,
+  months: string | undefined,
+  amount: string | undefined
+) => {
+  const providerInstance = new ProviderService(userId, customerId);
+  const getPaymentBreakdown = async () => {
+    const response = await providerInstance.getPaymentBreakdown(
+      months!,
+      amount!
+    );
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getPaymentBreakdown', amount, amount],
+    queryFn: () => getPaymentBreakdown(),
+    refetchOnWindowFocus: false,
+    enabled: !!amount && !!amount,
+  });
+};

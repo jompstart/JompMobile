@@ -62,3 +62,37 @@ export interface OtherBillsDto {
   UtilityBill: MediaFile; //
   IdempotencyKey: string;
 }
+
+export interface PendingService {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface SingelServiceDetail {
+  requestAmount: number;
+  disturbmentAmount?: number;
+  userContribution?: number;
+  descriptions: string;
+  fullName: string;
+  houseRent: number;
+  bankStatement: string;
+  utilityBill: string;
+  idCard: string;
+  tenancyAgreement: string;
+  landLordDetailsResponse: {
+    landLordName: string;
+    accountName: string;
+    accountNumber: string;
+    bankName: string;
+    contactNumber: string;
+  };
+  rentEmployeerResponse: {
+    occupaction: string;
+    companyName: string;
+    companyPhone: string;
+    yearsOfWorkinWithThem: string;
+    companyEmail: string;
+    companyLocation: string;
+  };
+}
