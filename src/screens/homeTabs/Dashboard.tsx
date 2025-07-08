@@ -5,11 +5,12 @@ import {
   RefreshControl,
   ScrollView,
   Modal,
-  BackHandler,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { size } from '../../config/size';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import WalletIcon from '../../../assets/svgs/Home/WalletIcon';
 import HouseIcon from '../../../assets/svgs/Home/HouseIcon';
 import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
@@ -21,7 +22,6 @@ import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
 import PersonIcon from '../../../assets/svgs/Home/PersonIcon';
 import CText from '../../shared/CText';
 import { colors } from '../../constants/colors';
-import BillImage from '../../../assets/svgs/Home/BillImage';
 import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
 import GradientHeader from '../../shared/GradientHeader';
 import {
@@ -40,8 +40,13 @@ import RecentTransaction from '../../components/Transaction/RecentTransaction';
 import Banner from '../../components/Dashboard/Banner';
 import { useGetPendingServices } from '../../hooks/api/providers';
 import PrimaryButton from '../../shared/PrimaryButton';
+import SecondaryButton from '../../shared/SecondaryButton';
 const Dashboard = () => {
   const [showPendingServiceModal, setShowPendingServiceModal] = useState(false);
+  const [hasAcceptedLoanAgreement, setHasAcceptedLoanAgreement] =
+    useState(false);
+  const [payMode, setPayMode] = useState<'yes' | 'no' | null>(null);
+
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -221,6 +226,124 @@ const Dashboard = () => {
             />
           </ScrollView>
         </View>
+
+        <View
+          style={{
+            paddingHorizontal: size.getWidthSize(16),
+            backgroundColor: colors.white(),
+            borderRadius: size.getHeightSize(8),
+            marginTop: size.getHeightSize(16),
+            marginBottom: size.getHeightSize(16),
+            marginHorizontal: size.getWidthSize(16),
+            paddingVertical: size.getHeightSize(16),
+          }}
+        >
+          <View>
+            <CText
+              color={'black'}
+              fontSize={14}
+              lineHeight={22.4}
+              fontFamily="regular"
+              style={{
+                letterSpacing: 0.04,
+              }}
+            >
+              Thank you for accepting our offer. As contained in the breakdown
+              shown to you previously, you are required to make a down payment
+              of 9000.00. Please click YES to also pay the balance between our
+              approved amount and your request. Click NO if you want to pay the
+              balance to the Landlord yourself.
+            </CText>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: size.getWidthSize(32),
+                marginVertical: size.getHeightSize(8),
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  setPayMode('yes');
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: size.getWidthSize(8),
+                }}
+              >
+                <MaterialIcons
+                  name={
+                    payMode === 'yes'
+                      ? 'radio-button-checked'
+                      : 'radio-button-unchecked'
+                  }
+                  color={colors.primary()}
+                  size={size.getHeightSize(24)}
+                />
+                <CText>Yes</CText>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  setPayMode('no');
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: size.getWidthSize(8),
+                }}
+              >
+                <MaterialIcons
+                  name={
+                    payMode === 'no'
+                      ? 'radio-button-checked'
+                      : 'radio-button-unchecked'
+                  }
+                  color={colors.primary()}
+                  size={size.getHeightSize(24)}
+                />
+                <CText>No</CText>
+              </Pressable>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: size.getWidthSize(8),
+                marginTop: size.getHeightSize(8),
+              }}
+            >
+              <Fontisto
+                onPress={() => {
+                  setHasAcceptedLoanAgreement(!hasAcceptedLoanAgreement);
+                }}
+                name={
+                  hasAcceptedLoanAgreement
+                    ? 'checkbox-active'
+                    : 'checkbox-passive'
+                }
+                size={size.getHeightSize(24)}
+                color={colors.primary()}
+              />
+              <CText
+                color={'black'}
+                fontSize={13}
+                lineHeight={22.4}
+                fontFamily="regular"
+              >
+                I agree to the Loan Agreement
+              </CText>
+            </View>
+            <SecondaryButton
+              label="Pay Now"
+              style={{
+                marginTop: size.getHeightSize(16),
+              }}
+            />
+          </View>
+        </View>
+
         <View style={styles.view2}>
           <Pressable
             onPress={() => {
@@ -415,7 +538,8 @@ const Dashboard = () => {
       </ScrollView>
       <Modal
         transparent
-        visible={showPendingServiceModal}
+        visible={false}
+        // visible={showPendingServiceModal}
         onRequestClose={() => {
           setShowPendingServiceModal(false);
         }}

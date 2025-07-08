@@ -543,4 +543,10 @@ export class ProviderService {
       },
     });
   }
+  async pendinngAdminReview() {
+    return await makeRequest({
+      method: 'GET',
+      url: `/pending-admin-review/${this.customerId}`,
+    });
+  }
 }

@@ -78,7 +78,7 @@ const PaymentBreakdown = ({
               lineHeight={18.4}
               fontFamily="bold"
             >
-              Payment Breakdown for Term: Month {month}{' '}
+              Reepayment Breakdown for Term: Month {month}{' '}
             </CText>
 
             <CText
