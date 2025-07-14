@@ -5,19 +5,15 @@ import {
   Pressable,
   Text,
   ActivityIndicator,
-  BackHandler,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { WebView } from 'react-native-webview';
 import { size } from '../config/size';
 import { colors } from '../constants/colors';
 import { useAppSelector, useAppDispatch } from '../controller/redux.controller';
-import { updateTermsAndConditionVisibility } from '../features/ui/ui.slice';
-import {
-  payStackModalSelector,
-  termsAndConditionSelector,
-} from '../features/ui/ui.selector';
-
+import { updatePayNowBottomsheet } from '../features/ui/ui.slice';
+import { payStackModalSelector } from '../features/ui/ui.selector';
+import { useNavigation } from '@react-navigation/native';
 interface Props {
   onClose: () => void;
 
@@ -25,7 +21,11 @@ interface Props {
 }
 const PaystackView = ({ onClose }: Props) => {
   const [isLoading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { navigate } = useNavigation();
+  const webViewRef = useRef<WebView>(null);
   const paystackModal = useAppSelector(payStackModalSelector);
+  const redirectUrl = 'https://jompstart.com/paystack/callback';
   return (
     <View style={styles.container}>
       <Modal
@@ -46,6 +46,23 @@ const PaystackView = ({ onClose }: Props) => {
             )}
 
             <WebView
+              ref={webViewRef}
+              onNavigationStateChange={(navState) => {
+                console.log('Current URL:', navState.url);
+                if (navState.url.startsWith(redirectUrl)) {
+                  webViewRef.current?.stopLoading();
+                  onClose();
+                  dispatch(
+                    updatePayNowBottomsheet({
+                      amount: 0,
+                      visible: false,
+                    })
+                  );
+                  navigate('SuccessPage', {
+                    message: 'Your payment was successful 🥂',
+                  });
+                }
+              }}
               onLoadStart={() => setLoading(true)}
               onLoadEnd={() => setLoading(false)}
               source={{ uri: paystackModal.url }}

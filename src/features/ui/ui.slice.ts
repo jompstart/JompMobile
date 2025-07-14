@@ -17,6 +17,7 @@ const initialState: UIState = {
 
   accountDetailsBottomsheet: {
     isVisible: false,
+    shouldConfirmTransfer: false,
   },
   showLogoutBottomSheet: false,
   showTermsAndCondition: false,
@@ -57,9 +58,11 @@ const uiSlice = createSlice({
     },
     updateAccountDetailsBottomsheetVisibility(
       state,
-      action: PayloadAction<boolean>
+      action: PayloadAction<UIState['accountDetailsBottomsheet']>
     ) {
-      state.accountDetailsBottomsheet.isVisible = action.payload;
+      state.accountDetailsBottomsheet.isVisible = action.payload.isVisible;
+      state.accountDetailsBottomsheet.shouldConfirmTransfer =
+        action.payload.shouldConfirmTransfer;
     },
     updateLogoutBottomsheetVisibility(state, action: PayloadAction<boolean>) {
       state.showLogoutBottomSheet = action.payload;

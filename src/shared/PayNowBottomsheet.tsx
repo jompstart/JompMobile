@@ -72,7 +72,12 @@ const PayNowBottomsheet = () => {
         <Pressable
           onPress={() => {
             if (paymentSheet.amount < user.balance) {
-              dispatch(updateAccountDetailsBottomsheetVisibility(true));
+              dispatch(
+                updateAccountDetailsBottomsheetVisibility({
+                  isVisible: true,
+                  shouldConfirmTransfer: true,
+                })
+              );
             }
           }}
           style={styles.row}

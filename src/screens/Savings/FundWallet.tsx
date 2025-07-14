@@ -74,7 +74,12 @@ const FundWallet = () => {
         >
           <Pressable
             onPress={() => {
-              dispatch(updateAccountDetailsBottomsheetVisibility(true));
+              dispatch(
+                updateAccountDetailsBottomsheetVisibility({
+                  isVisible: true,
+                  shouldConfirmTransfer: false,
+                })
+              );
             }}
             style={[
               styles.view,

@@ -21,6 +21,7 @@ export interface UIState {
   };
   accountDetailsBottomsheet: {
     isVisible: boolean;
+    shouldConfirmTransfer: boolean;
   };
   showLogoutBottomSheet: boolean;
   showTermsAndCondition: boolean;

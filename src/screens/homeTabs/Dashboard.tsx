@@ -168,7 +168,12 @@ const Dashboard = () => {
           <View>
             <Pressable
               onPress={() => {
-                dispatch(updateAccountDetailsBottomsheetVisibility(true));
+                dispatch(
+                  updateAccountDetailsBottomsheetVisibility({
+                    isVisible: true,
+                    shouldConfirmTransfer: false,
+                  })
+                );
               }}
               style={{
                 backgroundColor: colors.white(),

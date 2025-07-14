@@ -21,12 +21,21 @@ import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
 import { UserService } from '../services/user';
 import { changeUserState } from '../features/user/user.slice';
 import * as Clipboard from 'expo-clipboard';
+import SecondaryButton from './SecondaryButton';
+import { useRefreschUserData } from '../hooks/api/user';
+import { formatToAmount } from '../utils/stringManipulation';
 
 const AccountDetailsBottomsheet = () => {
   const dispatch = useAppDispatch();
   const accountDetailsBottomsheet = useAppSelector(
     accountDetailsBottomsheetSelector
   );
+  const {
+    refetch: refetchUserData,
+    isPending,
+    isFetching,
+    isLoading,
+  } = useRefreschUserData();
   const [isReady, setIsReady] = React.useState(false);
   const user = useAppSelector(userSelector);
   const userInstance = new UserService(user.customerId, user.userId);
@@ -61,12 +70,24 @@ const AccountDetailsBottomsheet = () => {
       topRadius={16}
       enableBackdrop
       visibility={accountDetailsBottomsheet.isVisible}
-      onClose={() => dispatch(updateAccountDetailsBottomsheetVisibility(false))}
+      onClose={() =>
+        dispatch(
+          updateAccountDetailsBottomsheetVisibility({
+            isVisible: false,
+            shouldConfirmTransfer: false,
+          })
+        )
+      }
       backgroundColor={colors.appBackground()}
     >
       <Pressable
         onPress={() =>
-          dispatch(updateAccountDetailsBottomsheetVisibility(false))
+          dispatch(
+            updateAccountDetailsBottomsheetVisibility({
+              isVisible: false,
+              shouldConfirmTransfer: false,
+            })
+          )
         }
         style={{
           alignSelf: 'flex-end',
@@ -224,10 +245,26 @@ const AccountDetailsBottomsheet = () => {
                   </CText>
                 </Pressable>
               </View>
+              <View>
+                <CText color="primaryColor" fontFamily="semibold" fontSize={14}>
+                  Balance:₦{formatToAmount(user?.balance)}
+                </CText>
+              </View>
             </View>
           ))}
         </View>
       </BottomSheetScrollView>
+      {accountDetailsBottomsheet.shouldConfirmTransfer && (
+        <SecondaryButton
+          isLoading={isFetching}
+          onPress={refetchUserData}
+          label="I have made transfer"
+          style={{
+            marginHorizontal: size.getWidthSize(16),
+            marginBottom: size.getHeightSize(30),
+          }}
+        />
+      )}
     </ScrollablebottomsheetWrapper>
   );
 };
