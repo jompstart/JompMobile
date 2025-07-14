@@ -30,7 +30,11 @@ import {
 } from '../../controller/redux.controller';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { userSelector } from '../../features/user/user.selector';
-import { updateAccountDetailsBottomsheetVisibility } from '../../features/ui/ui.slice';
+import {
+  updateAccountDetailsBottomsheetVisibility,
+  updatePayNowBottomsheet,
+  updatePayStackModal,
+} from '../../features/ui/ui.slice';
 import { formatToAmount } from '../../utils/stringManipulation';
 import {
   useGetRecentTransactions,
@@ -38,23 +42,39 @@ import {
 } from '../../hooks/api/user';
 import RecentTransaction from '../../components/Transaction/RecentTransaction';
 import Banner from '../../components/Dashboard/Banner';
-import { useGetPendingServices } from '../../hooks/api/providers';
+import {
+  useGetPendingAdminReview,
+  useGetPendingServices,
+} from '../../hooks/api/providers';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
+import { useMutation } from '@tanstack/react-query';
+import { ProviderService } from '../../services/providers/provider';
+import {
+  MakePaymentDto,
+  MakePaymnetApiResponse,
+} from '../../services/providers/provider.dto';
+import { API_RESPONSE } from '../../types';
+import PaystackView from '../../shared/PaystackView';
+import PaymentBalanceInfo from '../../shared/PaymentBalanceInfo';
 const Dashboard = () => {
   const [showPendingServiceModal, setShowPendingServiceModal] = useState(false);
   const [hasAcceptedLoanAgreement, setHasAcceptedLoanAgreement] =
     useState(false);
   const [payMode, setPayMode] = useState<'yes' | 'no' | null>(null);
-
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
+
+  const [showBalanceInfo, setShowBalanceInfo] = useState(false);
+
   const dispatch = useAppDispatch();
   const { data: recenTransactions, refetch: reloadRecentTransaction } =
     useGetRecentTransactions(user.customerId, user.userId);
   const { isPending, refetch } = useRefreschUserData();
   const { data: pendingServices, refetch: refetchPendingService } =
     useGetPendingServices(user.userId, user.customerId);
+  const { data: pendingPayment, refetch: refetchPendingPayment } =
+    useGetPendingAdminReview(user.userId, user.customerId);
 
   useEffect(() => {
     if (pendingServices?.data && pendingServices?.data?.length > 0) {
@@ -227,122 +247,129 @@ const Dashboard = () => {
           </ScrollView>
         </View>
 
-        <View
-          style={{
-            paddingHorizontal: size.getWidthSize(16),
-            backgroundColor: colors.white(),
-            borderRadius: size.getHeightSize(8),
-            marginTop: size.getHeightSize(16),
-            marginBottom: size.getHeightSize(16),
-            marginHorizontal: size.getWidthSize(16),
-            paddingVertical: size.getHeightSize(16),
-          }}
-        >
-          <View>
-            <CText
-              color={'black'}
-              fontSize={14}
-              lineHeight={22.4}
-              fontFamily="regular"
-              style={{
-                letterSpacing: 0.04,
-              }}
-            >
-              Thank you for accepting our offer. As contained in the breakdown
-              shown to you previously, you are required to make a down payment
-              of 9000.00. Please click YES to also pay the balance between our
-              approved amount and your request. Click NO if you want to pay the
-              balance to the Landlord yourself.
-            </CText>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: size.getWidthSize(32),
-                marginVertical: size.getHeightSize(8),
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  setPayMode('yes');
-                }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: size.getWidthSize(8),
-                }}
-              >
-                <MaterialIcons
-                  name={
-                    payMode === 'yes'
-                      ? 'radio-button-checked'
-                      : 'radio-button-unchecked'
-                  }
-                  color={colors.primary()}
-                  size={size.getHeightSize(24)}
-                />
-                <CText>Yes</CText>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  setPayMode('no');
-                }}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: size.getWidthSize(8),
-                }}
-              >
-                <MaterialIcons
-                  name={
-                    payMode === 'no'
-                      ? 'radio-button-checked'
-                      : 'radio-button-unchecked'
-                  }
-                  color={colors.primary()}
-                  size={size.getHeightSize(24)}
-                />
-                <CText>No</CText>
-              </Pressable>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: size.getWidthSize(8),
-                marginTop: size.getHeightSize(8),
-              }}
-            >
-              <Fontisto
-                onPress={() => {
-                  setHasAcceptedLoanAgreement(!hasAcceptedLoanAgreement);
-                }}
-                name={
-                  hasAcceptedLoanAgreement
-                    ? 'checkbox-active'
-                    : 'checkbox-passive'
-                }
-                size={size.getHeightSize(24)}
-                color={colors.primary()}
-              />
+        {pendingPayment?.data && (
+          <View style={styles.view8}>
+            <View>
               <CText
-                color={'black'}
-                fontSize={13}
+                color={'secondary'}
+                fontSize={14}
                 lineHeight={22.4}
-                fontFamily="regular"
+                fontFamily="bold"
+                style={{
+                  letterSpacing: 0.04,
+                }}
               >
-                I agree to the Loan Agreement
+                {pendingPayment?.message}
               </CText>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: size.getWidthSize(8),
+                  marginTop: size.getHeightSize(8),
+                }}
+              >
+                <Fontisto
+                  onPress={() => {
+                    setHasAcceptedLoanAgreement(!hasAcceptedLoanAgreement);
+                  }}
+                  name={
+                    hasAcceptedLoanAgreement
+                      ? 'checkbox-active'
+                      : 'checkbox-passive'
+                  }
+                  size={size.getHeightSize(18)}
+                  color={colors.primary()}
+                />
+                <CText
+                  color={'black'}
+                  fontSize={13}
+                  lineHeight={22.4}
+                  fontFamily="regular"
+                >
+                  I agree to the Loan Agreement
+                </CText>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: size.getWidthSize(32),
+                  marginVertical: size.getHeightSize(8),
+                  marginTop: size.getHeightSize(16),
+                }}
+              >
+                <Pressable
+                  onPress={() => {
+                    setPayMode('yes');
+                    setShowBalanceInfo(true);
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: size.getWidthSize(8),
+                  }}
+                >
+                  <MaterialIcons
+                    name={
+                      payMode === 'yes'
+                        ? 'radio-button-checked'
+                        : 'radio-button-unchecked'
+                    }
+                    color={colors.primary()}
+                    size={size.getHeightSize(18)}
+                  />
+                  <CText>Yes</CText>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    setPayMode('no');
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: size.getWidthSize(8),
+                  }}
+                >
+                  <MaterialIcons
+                    name={
+                      payMode === 'no'
+                        ? 'radio-button-checked'
+                        : 'radio-button-unchecked'
+                    }
+                    color={colors.primary()}
+                    size={size.getHeightSize(18)}
+                  />
+                  <CText>No</CText>
+                </Pressable>
+              </View>
+              <SecondaryButton
+                // isLoading={isPaymentPending}
+                onPress={() => {
+                  if (payMode === 'yes') {
+                    setShowBalanceInfo(true);
+                  } else {
+                    // payNow({
+                    //   amount: pendingPayment?.data?.userContribution || 0,
+                    //   loanAgreement: hasAcceptedLoanAgreement,
+                    // });
+                    dispatch(
+                      updatePayNowBottomsheet({
+                        amount: pendingPayment?.data?.userContribution || 0,
+                        visible: true,
+                      })
+                    );
+                  }
+                }}
+                label="Pay Now"
+                style={{
+                  marginTop: size.getHeightSize(16),
+                }}
+              />
             </View>
-            <SecondaryButton
-              label="Pay Now"
-              style={{
-                marginTop: size.getHeightSize(16),
-              }}
-            />
           </View>
-        </View>
+        )}
 
         <View style={styles.view2}>
           <Pressable
@@ -538,8 +565,8 @@ const Dashboard = () => {
       </ScrollView>
       <Modal
         transparent
-        visible={false}
-        // visible={showPendingServiceModal}
+        // visible={false}
+        visible={showPendingServiceModal}
         onRequestClose={() => {
           setShowPendingServiceModal(false);
         }}
@@ -578,9 +605,54 @@ const Dashboard = () => {
                 navigate('PendingService');
               }}
             />
+            <SecondaryButton
+              label="Review later"
+              style={{
+                marginTop: size.getHeightSize(12),
+              }}
+              onPress={() => {
+                setShowPendingServiceModal(false);
+              }}
+            />
           </View>
         </View>
       </Modal>
+      <PaystackView
+        onClose={() => {
+          dispatch(
+            updatePayStackModal({
+              url: '',
+              visible: false,
+            })
+          );
+          refetchPendingPayment();
+        }}
+      />
+      <PaymentBalanceInfo
+        amountToPay={
+          (pendingPayment?.data?.balanceToBePaid ?? 0) +
+            (pendingPayment?.data?.userContribution ?? 0) || 0
+        }
+        balanceToPay={pendingPayment?.data?.balanceToBePaid || 0}
+        userContribution={pendingPayment?.data?.userContribution || 0}
+        isVisible={showBalanceInfo}
+        onClose={() => {
+          setShowBalanceInfo(false);
+        }}
+        onPress={() => {
+          setShowBalanceInfo(false);
+          dispatch(
+            updatePayNowBottomsheet({
+              amount: pendingPayment?.data?.userContribution || 0,
+              visible: true,
+            })
+          );
+          // payNow({
+          //   amount: pendingPayment?.data?.userContribution || 0,
+          //   loanAgreement: hasAcceptedLoanAgreement,
+          // });
+        }}
+      />
     </GradientSafeAreaView>
   );
 };
@@ -665,5 +737,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.appBackground(),
     borderRadius: size.getHeightSize(16),
     padding: size.getHeightSize(16),
+  },
+  view8: {
+    paddingHorizontal: size.getWidthSize(16),
+    backgroundColor: colors.white(),
+    borderRadius: size.getHeightSize(8),
+    marginTop: size.getHeightSize(16),
+    marginBottom: size.getHeightSize(16),
+    marginHorizontal: size.getWidthSize(16),
+    paddingVertical: size.getHeightSize(16),
   },
 });

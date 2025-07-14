@@ -13,6 +13,8 @@ import {
   CalculateLoanDto,
   CalculateLoanResponse,
   CustomerServiceDetails,
+  MakePaymentDto,
+  MakePaymnetApiResponse,
   OtherBillsDto,
   PaymentOptionResponse,
   PendingService,
@@ -544,9 +546,26 @@ export class ProviderService {
     });
   }
   async pendinngAdminReview() {
-    return await makeRequest({
+    return await makeRequest<{
+      userContribution: number;
+      balanceToBePaid: number;
+      loanAggrement: boolean;
+    }>({
       method: 'GET',
       url: `/pending-admin-review/${this.customerId}`,
+    });
+  }
+
+  async makePayment(data: MakePaymentDto) {
+    return await makeRequest<MakePaymnetApiResponse>({
+      method: 'POST',
+      url: `/make-payment`,
+      data: {
+        customerId: this.customerId,
+        amount: data.amount,
+        loanAgreement: data.loanAgreement,
+        reference: null,
+      },
     });
   }
 }

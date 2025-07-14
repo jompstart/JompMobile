@@ -24,6 +24,14 @@ export interface UIState {
   };
   showLogoutBottomSheet: boolean;
   showTermsAndCondition: boolean;
+  showPayNowBottomsheet: {
+    visible: boolean;
+    amount: number;
+  };
+  paystackModal: {
+    visible: boolean;
+    url: string;
+  };
 }
 
 export interface Toast {

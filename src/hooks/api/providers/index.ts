@@ -127,3 +127,19 @@ export const useGetPaymentBreakdown = (
     enabled: !!amount && !!months,
   });
 };
+
+export const useGetPendingAdminReview = (
+  userId: string,
+  customerId: string
+) => {
+  const providerInstance = new ProviderService(userId, customerId);
+  const getPendingAdminReview = async () => {
+    const response = await providerInstance.pendinngAdminReview();
+    return response;
+  };
+  return useQuery({
+    queryKey: ['getPendingAdminReview'],
+    queryFn: () => getPendingAdminReview(),
+    refetchOnWindowFocus: false,
+  });
+};

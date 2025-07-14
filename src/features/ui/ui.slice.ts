@@ -20,6 +20,14 @@ const initialState: UIState = {
   },
   showLogoutBottomSheet: false,
   showTermsAndCondition: false,
+  showPayNowBottomsheet: {
+    visible: false,
+    amount: 0,
+  },
+  paystackModal: {
+    url: '',
+    visible: false,
+  },
 };
 
 const uiSlice = createSlice({
@@ -59,6 +67,18 @@ const uiSlice = createSlice({
     updateTermsAndConditionVisibility(state, action: PayloadAction<boolean>) {
       state.showTermsAndCondition = action.payload;
     },
+    updatePayNowBottomsheet(
+      state,
+      action: PayloadAction<UIState['showPayNowBottomsheet']>
+    ) {
+      state.showPayNowBottomsheet = action.payload;
+    },
+    updatePayStackModal(
+      state,
+      action: PayloadAction<UIState['paystackModal']>
+    ) {
+      state.paystackModal = action.payload;
+    },
   },
 });
 export const {
@@ -70,6 +90,8 @@ export const {
   updateAccountDetailsBottomsheetVisibility,
   updateLogoutBottomsheetVisibility,
   updateTermsAndConditionVisibility,
+  updatePayNowBottomsheet,
+  updatePayStackModal,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

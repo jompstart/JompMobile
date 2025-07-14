@@ -244,12 +244,14 @@ const AcceptPendingService = ({
                       key={index}
                     >
                       <CText
-                        color={'black'}
+                        color={
+                          serviceMonth === index + 1 ? 'white' : 'black'
+                        }
                         fontSize={14}
                         lineHeight={18.4}
                         fontFamily="semibold"
                       >
-                        {getOrdinal(index + 1)} Month
+                        {index + 1} {index === 0 ? 'Month' : 'Months'}
                       </CText>
                     </Pressable>
                   );
@@ -345,6 +347,6 @@ const styles = StyleSheet.create({
     borderWidth: size.getHeightSize(1),
     borderColor: colors.primary(),
     borderRadius: size.getHeightSize(8),
-    backgroundColor: colors.primary('10'),
+    backgroundColor: colors.primary(''),
   },
 });

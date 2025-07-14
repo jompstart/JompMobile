@@ -72,6 +72,7 @@ const AccountDetailsBottomsheet = () => {
           alignSelf: 'flex-end',
           marginRight: size.getWidthSize(24),
           marginTop: size.getHeightSize(24),
+          padding: size.getHeightSize(6),
         }}
       >
         <CancelIcon size={size.getHeightSize(24)} />

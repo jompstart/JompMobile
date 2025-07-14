@@ -108,3 +108,13 @@ export interface AcceptLoandDto {
   serviceId: string;
   status: string;
 }
+
+export interface MakePaymentDto {
+  amount: number;
+  loanAgreement: boolean;
+}
+
+export interface MakePaymnetApiResponse {
+  paymentUrl: string;
+  reference: string;
+}

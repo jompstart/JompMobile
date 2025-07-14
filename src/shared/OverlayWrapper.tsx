@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import {
   accountDetailsBottomsheetSelector,
+  payNowBottomsheetSelector,
   successModalSelector,
   toastSelector,
 } from '../features/ui/ui.selector';
@@ -10,10 +11,11 @@ import SuccessModal from './SuccessModal';
 import AccountDetailsBottomsheet from './AccountDetailsBottomsheet';
 import CToast from './CToast';
 import { updateSuccessModalVisibility } from '../features/ui/ui.slice';
+import PayNowBottomsheet from './PayNowBottomsheet';
 const OverlayWrapper = () => {
   const toast = useAppSelector(toastSelector);
   const successModal = useAppSelector(successModalSelector);
-
+  // const showPayNowModal = useAppSelector(payNowBottomsheetSelector);
   const dispatch = useAppDispatch();
   return (
     <>
@@ -40,7 +42,7 @@ const OverlayWrapper = () => {
           }}
         />
       )}
-
+      <PayNowBottomsheet />
       <AccountDetailsBottomsheet />
     </>
   );

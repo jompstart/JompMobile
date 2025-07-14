@@ -6,7 +6,6 @@ import CText from './CText';
 import PrimaryButton from './PrimaryButton';
 import { useAppSelector, useAppDispatch } from '../controller/redux.controller';
 import { updateLogoutBottomsheetVisibility } from '../features/ui/ui.slice';
-import { images } from '../constants/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logoutBottomsheetSelector } from '../features/ui/ui.selector';
 import { useNavigation } from '@react-navigation/native';

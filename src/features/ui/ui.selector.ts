@@ -11,3 +11,7 @@ export const logoutBottomsheetSelector = (state: RootState) =>
 
 export const termsAndConditionSelector = (state: RootState) =>
   state.ui.showTermsAndCondition;
+export const payNowBottomsheetSelector = (state: RootState) =>
+  state.ui.showPayNowBottomsheet;
+export const payStackModalSelector = (state: RootState) =>
+  state.ui.paystackModal;

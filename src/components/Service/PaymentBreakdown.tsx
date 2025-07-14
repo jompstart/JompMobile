@@ -47,6 +47,7 @@ const PaymentBreakdown = ({
   onContinue,
   isLoading,
 }: Props) => {
+  console.log('customerContribution', customerContribution);
   return (
     <ScrollablebottomsheetWrapper
       visibility={isVisible}
@@ -78,11 +79,12 @@ const PaymentBreakdown = ({
               lineHeight={18.4}
               fontFamily="bold"
             >
-              Reepayment Breakdown for Term: Month {month}{' '}
+              Repayment Breakdown for Term: {month}{' '}
+              {month === '1' ? 'month' : 'months'}
             </CText>
 
             <CText
-              color={'black'}
+              color={'primaryColor'}
               fontSize={14}
               lineHeight={18.4}
               fontFamily="bold"
@@ -163,7 +165,13 @@ const PaymentBreakdown = ({
               </CText>
             </View>
             <View style={styles.row}>
-              <View style={{ flex: 1, justifyContent: 'center' }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  gap: size.getHeightSize(4),
+                }}
+              >
                 <CText
                   color={'secondaryBlack'}
                   fontSize={14}
@@ -180,7 +188,7 @@ const PaymentBreakdown = ({
                   fontFamily="regular"
                 >
                   {' '}
-                  Admin Fee: {adminFee}% and Insurance Fee:{insuranceFee}%
+                  (Admin Fee: {adminFee}% and Insurance Fee:{insuranceFee}%)
                 </CText>
               </View>
               <CText
@@ -195,19 +203,19 @@ const PaymentBreakdown = ({
 
             <View style={styles.row}>
               <CText
-                color={'secondaryBlack'}
+                color={'black'}
                 fontSize={14}
                 lineHeight={18.4}
-                fontFamily="semibold"
+                fontFamily="bold"
               >
                 {' '}
                 Payment Due Today
               </CText>
               <CText
-                color={'secondaryBlack'}
+                color={'black'}
                 fontSize={14}
                 lineHeight={18.4}
-                fontFamily="semibold"
+                fontFamily="bold"
               >
                 ₦
                 {formatToAmount(
@@ -215,7 +223,7 @@ const PaymentBreakdown = ({
                 )}
               </CText>
             </View>
-            <View style={{}}>
+            <View style={{ gap: size.getHeightSize(12) }}>
               {breakdown.map((item, index) => (
                 <View
                   key={index}
@@ -225,7 +233,7 @@ const PaymentBreakdown = ({
                   }}
                 >
                   <CText
-                    color={'black'}
+                    color={'primaryColor'}
                     fontSize={14}
                     lineHeight={18.4}
                     fontFamily="bold"
@@ -294,19 +302,19 @@ const PaymentBreakdown = ({
                   </View>
                   <View style={styles.row}>
                     <CText
-                      color={'secondaryBlack'}
+                      color={'black'}
                       fontSize={14}
                       lineHeight={18.4}
-                      fontFamily="semibold"
+                      fontFamily="bold"
                       style={{ flex: 1 }}
                     >
                       Payment For {getOrdinal(item.month)} Month
                     </CText>
                     <CText
-                      color={'secondaryBlack'}
+                      color={'black'}
                       fontSize={14}
                       lineHeight={18.4}
-                      fontFamily="semibold"
+                      fontFamily="bold"
                     >
                       ₦
                       {formatToAmount(
