@@ -24,6 +24,7 @@ const initialState: UIState = {
   showPayNowBottomsheet: {
     visible: false,
     amount: 0,
+    serviceId: '',
   },
   paystackModal: {
     url: '',

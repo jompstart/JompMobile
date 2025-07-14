@@ -8,10 +8,10 @@ import {
 } from '../features/ui/ui.selector';
 import { useAppSelector, useAppDispatch } from '../controller/redux.controller';
 import SuccessModal from './SuccessModal';
-import AccountDetailsBottomsheet from './AccountDetailsBottomsheet';
+
 import CToast from './CToast';
 import { updateSuccessModalVisibility } from '../features/ui/ui.slice';
-import PayNowBottomsheet from './PayNowBottomsheet';
+
 const OverlayWrapper = () => {
   const toast = useAppSelector(toastSelector);
   const successModal = useAppSelector(successModalSelector);
@@ -42,8 +42,8 @@ const OverlayWrapper = () => {
           }}
         />
       )}
-      <PayNowBottomsheet />
-      <AccountDetailsBottomsheet />
+      
+   
     </>
   );
 };

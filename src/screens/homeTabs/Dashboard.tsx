@@ -48,13 +48,7 @@ import {
 } from '../../hooks/api/providers';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
-import { useMutation } from '@tanstack/react-query';
-import { ProviderService } from '../../services/providers/provider';
-import {
-  MakePaymentDto,
-  MakePaymnetApiResponse,
-} from '../../services/providers/provider.dto';
-import { API_RESPONSE } from '../../types';
+
 import PaystackView from '../../shared/PaystackView';
 import PaymentBalanceInfo from '../../shared/PaymentBalanceInfo';
 const Dashboard = () => {
@@ -363,6 +357,7 @@ const Dashboard = () => {
                       updatePayNowBottomsheet({
                         amount: pendingPayment?.data?.userContribution || 0,
                         visible: true,
+                        serviceId: pendingPayment?.data?.serviceId || '',
                       })
                     );
                   }
@@ -650,6 +645,7 @@ const Dashboard = () => {
             updatePayNowBottomsheet({
               amount: pendingPayment?.data?.userContribution || 0,
               visible: true,
+              serviceId: pendingPayment?.data?.serviceId || '',
             })
           );
           // payNow({

@@ -19,14 +19,18 @@ import { API_RESPONSE } from '../types';
 import {
   MakePaymentDto,
   MakePaymnetApiResponse,
+  PayWithWalletDto,
 } from '../services/providers/provider.dto';
 import { ProviderService } from '../services/providers/provider';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigation } from '@react-navigation/native';
+import ShowLoader from './ShowLoader';
 const PayNowBottomsheet = () => {
   const paymentSheet = useAppSelector(payNowBottomsheetSelector);
-
+  const { navigate } = useNavigation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(userSelector);
+
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { mutate: payNow, isPending: isPaymentPending } = useMutation<
     API_RESPONSE<MakePaymnetApiResponse>,
@@ -49,6 +53,28 @@ const PayNowBottomsheet = () => {
     },
   });
 
+  const { mutate: payWithWallet, isPending: payWithWalletLoading } =
+    useMutation<API_RESPONSE<any>, Error, PayWithWalletDto>({
+      mutationFn: async (data) => providerInstance.makePaymentWithWallet(data),
+      onSuccess: (response) => {
+        if (response.success) {
+          dispatch(
+            updatePayNowBottomsheet({
+              amount: 0,
+              visible: false,
+              serviceId: '',
+            })
+          );
+          navigate('SuccessPage', {
+            message: response.message,
+          });
+        }
+      },
+      onError: (error) => {
+        console.error('Error making payment:', error);
+      },
+    });
+
   return (
     <BottomsheetWrapper
       topRadius={16}
@@ -59,6 +85,7 @@ const PayNowBottomsheet = () => {
           updatePayNowBottomsheet({
             amount: 0,
             visible: false,
+            serviceId: '',
           })
         );
       }}
@@ -82,7 +109,26 @@ const PayNowBottomsheet = () => {
           }}
           style={styles.row}
         >
-          <View style={styles.view}>
+          <Pressable
+            disabled={payWithWalletLoading}
+            onPress={() => {
+              if (paymentSheet.amount <= user.balance) {
+                payWithWallet({
+                  serviceId: paymentSheet.serviceId,
+                  amount: paymentSheet.amount,
+                  loanAgreement: true,
+                });
+              } else {
+                dispatch(
+                  updateAccountDetailsBottomsheetVisibility({
+                    isVisible: true,
+                    shouldConfirmTransfer: true,
+                  })
+                );
+              }
+            }}
+            style={styles.view}
+          >
             <CText fontFamily="bold" fontSize={16} lineHeight={24}>
               Pay with your JOMP wallet
             </CText>
@@ -117,12 +163,19 @@ const PayNowBottomsheet = () => {
                 </CText>
               </View>
             )}
-          </View>
-          <AntDesign
-            name="right"
-            color={colors.primary()}
-            size={size.getHeightSize(20)}
-          />
+          </Pressable>
+          {payWithWalletLoading ? (
+            <ActivityIndicator
+              size={size.getHeightSize(20)}
+              color={colors.primary()}
+            />
+          ) : (
+            <AntDesign
+              name="right"
+              color={colors.primary()}
+              size={size.getHeightSize(20)}
+            />
+          )}
         </Pressable>
         <Pressable
           disabled={isPaymentPending}
@@ -161,6 +214,7 @@ const PayNowBottomsheet = () => {
           )}
         </Pressable>
       </View>
+      <ShowLoader isLoading={isPaymentPending || payWithWalletLoading} />
     </BottomsheetWrapper>
   );
 };

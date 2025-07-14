@@ -118,3 +118,9 @@ export interface MakePaymnetApiResponse {
   paymentUrl: string;
   reference: string;
 }
+
+export interface PayWithWalletDto {
+  serviceId: string;
+  amount: number;
+  loanAgreement: boolean;
+}

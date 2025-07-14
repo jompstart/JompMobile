@@ -20,6 +20,8 @@ import * as Linking from 'expo-linking';
 import { navigationRef } from './src/routes/RootNavigation';
 import { RootStackParamList } from './src/types/navigations.types';
 import TermsAndCondition from './src/shared/TermsAndCondition';
+import PayNowBottomsheet from './src/shared/PayNowBottomsheet';
+import AccountDetailsBottomsheet from './src/shared/AccountDetailsBottomsheet';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const queryClient = new QueryClient();
@@ -38,7 +40,6 @@ export default function App() {
       screens: {
         Notification:
           'Notifications/:action/:token/:CustomerRequest/:ApprovedAmount/:DisbursedAmount/:ServiceCategory/:UserContribution/:ServiceId',
-
         SplashScreen: '*',
       },
     },
@@ -61,6 +62,8 @@ export default function App() {
             <FilterBottomsheet />
             <CompliancePromptModal />
             <LogoutAccountModal />
+            <PayNowBottomsheet />
+            <AccountDetailsBottomsheet />
           </NavigationContainer>
           <OverlayWrapper />
         </Provider>

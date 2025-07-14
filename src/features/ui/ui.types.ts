@@ -22,12 +22,15 @@ export interface UIState {
   accountDetailsBottomsheet: {
     isVisible: boolean;
     shouldConfirmTransfer: boolean;
+    serviceId?: string;
+    amount?: number;
   };
   showLogoutBottomSheet: boolean;
   showTermsAndCondition: boolean;
   showPayNowBottomsheet: {
     visible: boolean;
     amount: number;
+    serviceId: string;
   };
   paystackModal: {
     visible: boolean;

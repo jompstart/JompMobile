@@ -17,6 +17,7 @@ import {
   MakePaymnetApiResponse,
   OtherBillsDto,
   PaymentOptionResponse,
+  PayWithWalletDto,
   PendingService,
   ServicesCategories,
   SingelServiceDetail,
@@ -550,6 +551,7 @@ export class ProviderService {
       userContribution: number;
       balanceToBePaid: number;
       loanAggrement: boolean;
+      serviceId: string;
     }>({
       method: 'GET',
       url: `/pending-admin-review/${this.customerId}`,
@@ -566,6 +568,14 @@ export class ProviderService {
         loanAgreement: data.loanAgreement,
         reference: null,
       },
+    });
+  }
+
+  async makePaymentWithWallet(data: PayWithWalletDto) {
+    return await makeRequest({
+      method: 'POST',
+      url: `/down-payment-for-wallet`,
+      data,
     });
   }
 }

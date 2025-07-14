@@ -6,6 +6,8 @@ import Feather from '@expo/vector-icons/Feather';
 import { useAppDispatch } from '../controller/redux.controller';
 import {
   updateAccountDetailsBottomsheetVisibility,
+  updatePayNowBottomsheet,
+  updatePayStackModal,
   updateToast,
 } from '../features/ui/ui.slice';
 import CText from './CText';
@@ -17,14 +19,25 @@ import CancelIcon from '../../assets/svgs/Home/CancelIcon';
 import ProviderIcon from '../../assets/svgs/Services/ProviderIcon';
 import { useAppSelector } from '../controller/redux.controller';
 import { userSelector } from '../features/user/user.selector';
-import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
+import {
+  accountDetailsBottomsheetSelector,
+  payNowBottomsheetSelector,
+} from '../features/ui/ui.selector';
 import { UserService } from '../services/user';
 import { changeUserState } from '../features/user/user.slice';
 import * as Clipboard from 'expo-clipboard';
 import SecondaryButton from './SecondaryButton';
 import { useRefreschUserData } from '../hooks/api/user';
 import { formatToAmount } from '../utils/stringManipulation';
-
+import { ProviderService } from '../services/providers/provider';
+import { useMutation } from '@tanstack/react-query';
+import { API_RESPONSE } from '../types';
+import {
+  MakePaymentDto,
+  MakePaymnetApiResponse,
+  PayWithWalletDto,
+} from '../services/providers/provider.dto';
+import { useNavigation } from '@react-navigation/native';
 const AccountDetailsBottomsheet = () => {
   const dispatch = useAppDispatch();
   const accountDetailsBottomsheet = useAppSelector(
@@ -39,6 +52,50 @@ const AccountDetailsBottomsheet = () => {
   const [isReady, setIsReady] = React.useState(false);
   const user = useAppSelector(userSelector);
   const userInstance = new UserService(user.customerId, user.userId);
+  const { navigate } = useNavigation();
+  const paymentSheet = useAppSelector(payNowBottomsheetSelector);
+  const providerInstance = new ProviderService(user.userId, user.customerId);
+  const { mutate: payNow, isPending: isPaymentPending } = useMutation<
+    API_RESPONSE<MakePaymnetApiResponse>,
+    Error,
+    MakePaymentDto
+  >({
+    mutationFn: async (data) => providerInstance.makePayment(data),
+    onSuccess: (response) => {
+      if (response.success) {
+        dispatch(
+          updatePayStackModal({
+            visible: true,
+            url: response.data?.paymentUrl || '',
+          })
+        );
+      }
+    },
+    onError: (error) => {
+      console.error('Error making payment:', error);
+    },
+  });
+  const { mutate: payWithWallet, isPending: payWithWalletLoading } =
+    useMutation<API_RESPONSE<any>, Error, PayWithWalletDto>({
+      mutationFn: async (data) => providerInstance.makePaymentWithWallet(data),
+      onSuccess: (response) => {
+        if (response.success) {
+          dispatch(
+            updatePayNowBottomsheet({
+              amount: 0,
+              visible: false,
+              serviceId: '',
+            })
+          );
+          navigate('SuccessPage', {
+            message: response.message,
+          });
+        }
+      },
+      onError: (error) => {
+        console.error('Error making payment:', error);
+      },
+    });
 
   useEffect(() => {
     if (!user.bankDetails.length && accountDetailsBottomsheet.isVisible) {
@@ -256,9 +313,29 @@ const AccountDetailsBottomsheet = () => {
       </BottomSheetScrollView>
       {accountDetailsBottomsheet.shouldConfirmTransfer && (
         <SecondaryButton
-          isLoading={isFetching}
-          onPress={refetchUserData}
-          label="I have made transfer"
+          isLoading={isFetching || payWithWalletLoading}
+          disabled={isPending || isPaymentPending}
+          onPress={async () => {
+            const updatedData = await refetchUserData();
+            if (updatedData.isSuccess) {
+              if (paymentSheet.amount <= user.balance) {
+                payWithWallet({
+                  serviceId: paymentSheet.serviceId,
+                  amount: paymentSheet.amount,
+                  loanAgreement: true,
+                });
+              } else {
+                dispatch(
+                  updateToast({
+                    displayToast: true,
+                    toastMessage: 'Insufficient balance in wallet',
+                    toastType: 'info',
+                  })
+                );
+              }
+            }
+          }}
+          label="I have funded my wallet"
           style={{
             marginHorizontal: size.getWidthSize(16),
             marginBottom: size.getHeightSize(30),

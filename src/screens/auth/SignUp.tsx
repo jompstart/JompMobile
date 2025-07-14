@@ -23,7 +23,7 @@ import ShowLoader from '../../shared/ShowLoader';
 import AppleIcon from '../../../assets/svgs/Onboarding/AppleIcon';
 import FacebookIcon from '../../../assets/svgs/Onboarding/FacebookIcon';
 import { useMutation } from '@tanstack/react-query';
-import { SignupScreenProps } from '../../types/navigations.types';
+import { SignUpScreenProps } from '../../types/navigations.types';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { AuthService } from '../../services/auth';
 import { StackActions } from '@react-navigation/native';
@@ -41,8 +41,7 @@ const SignUp = ({
     params: { accountPreference },
   },
   navigation,
-}: SignupScreenProps) => {
-  //https://github.dev/jompstart/jomp_frontend/blob/main/src/api/axios.ts
+}: SignUpScreenProps) => {
   const [passwordValidation, setPasswordValidation] = useState({
     length: false,
     uppercase: false,
