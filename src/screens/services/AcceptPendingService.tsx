@@ -158,33 +158,35 @@ const AcceptPendingService = ({
           Complete your payment
         </CText>
         <KeyboardAwareScrollView>
-          <View
-            style={{
-              gap: size.getHeightSize(16),
-              marginTop: size.getHeightSize(20),
-            }}
-          >
-            <PTextInput
-              placeholder="Contact addrress"
-              value={form.address}
-              onChangeText={(text) => {
-                setFormState((prev) => ({ ...prev, address: text }));
+          {!user.address && (
+            <View
+              style={{
+                gap: size.getHeightSize(16),
+                marginTop: size.getHeightSize(20),
               }}
-            />
-            <PTextInput
-              editable={false}
-              onPress={() => {
-                setShowState(true);
-              }}
-              placeholder="State"
-              value={form.state}
-            />
-            <PTextInput
-              placeholder="Country"
-              value={form.country}
-              editable={false}
-            />
-          </View>
+            >
+              <PTextInput
+                placeholder="Contact addrress"
+                value={form.address}
+                onChangeText={(text) => {
+                  setFormState((prev) => ({ ...prev, address: text }));
+                }}
+              />
+              <PTextInput
+                editable={false}
+                onPress={() => {
+                  setShowState(true);
+                }}
+                placeholder="State"
+                value={form.state}
+              />
+              <PTextInput
+                placeholder="Country"
+                value={form.country}
+                editable={false}
+              />
+            </View>
+          )}
           <CText
             color={'black'}
             fontSize={14}
@@ -260,17 +262,25 @@ const AcceptPendingService = ({
       <PrimaryButton
         isLoading={isPending}
         label="Submit Plan"
-        disabled={!form.address || !form.state || !serviceMonth || isPending}
+        disabled={
+          (!user.address && (!form.address || !form.state || !serviceMonth)) ||
+          !serviceMonth
+        }
         style={{
           marginHorizontal: size.getWidthSize(16),
           marginBottom: size.getHeightSize(16),
         }}
         onPress={() => {
+          if (!user.address && !form.address && !form.state) {
+            return;
+          }
           if (
-            form.address &&
-            form.state &&
-            serviceMonth &&
-            serviceDetails?.data
+            serviceDetails?.data &&
+            serviceMonth
+            // (form.address &&
+            // form.state &&)
+            // serviceMonth &&
+            // serviceDetails?.data
           ) {
             const amountDiferrence =
               +(serviceDetails.data.requestAmount ?? 0) -

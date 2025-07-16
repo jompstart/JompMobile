@@ -83,7 +83,6 @@ export const useRefreschUserData = () => {
   const updateData = async () => {
     try {
       const user = await userInstance.getCustomer();
-      console.log('User data:', user);
 
       const wallet = await userInstance.getCustomerWallet();
 
