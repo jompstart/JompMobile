@@ -228,6 +228,12 @@ const Login = () => {
               value: user.data.phoneNumber,
             })
           );
+          dispatch(
+            changeUserState({
+              key: 'address',
+              value: user.data?.contactAddress || null,
+            })
+          );
         }
 
         navigation.dispatch(StackActions.replace('NavigationDrawer'));
@@ -343,6 +349,12 @@ const Login = () => {
               changeUserState({
                 key: 'phoneNumber',
                 value: user.data.phoneNumber,
+              })
+            );
+            dispatch(
+              changeUserState({
+                key: 'address',
+                value: user.data?.contactAddress || null,
               })
             );
           }

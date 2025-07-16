@@ -83,6 +83,7 @@ export const useRefreschUserData = () => {
   const updateData = async () => {
     try {
       const user = await userInstance.getCustomer();
+      console.log('User data:', user);
 
       const wallet = await userInstance.getCustomerWallet();
 
@@ -166,6 +167,12 @@ export const useRefreschUserData = () => {
             value: user.data.phoneNumber,
           })
         );
+        dispatch(
+          changeUserState({
+            key: 'address',
+            value: user.data?.contactAddress || null,
+          })
+        );
       }
       return user.data;
     } catch (error) {
@@ -176,7 +183,7 @@ export const useRefreschUserData = () => {
   return useQuery({
     queryKey: ['refreschUserData'],
     queryFn: () => updateData(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 20, // 20 minutes
     refetchOnWindowFocus: false,
   });
 };

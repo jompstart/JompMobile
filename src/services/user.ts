@@ -16,6 +16,7 @@ import {
   TransactionResponseDto,
   UnifiedTransactionDto,
   UnifiedTransactionResponseDto,
+  UpdateProfileDto,
 } from './dto/user.dto';
 
 export class UserService {
@@ -162,5 +163,11 @@ export class UserService {
     });
   }
 
-  
+  async updateProfile(data: UpdateProfileDto) {
+    return await makeRequest({
+      method: 'PUT',
+      url: `/update-contact/${this.customerId}`,
+      data,
+    });
+  }
 }

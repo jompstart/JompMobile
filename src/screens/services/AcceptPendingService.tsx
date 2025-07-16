@@ -20,7 +20,7 @@ import { AcceptPendingServiceProps } from '../../types/navigations.types';
 import StatesBottomsheet from '../../shared/StateBottomsheet';
 import PTextInput from '../../shared/PTextInput';
 import { useGetServiceDetails } from '../../hooks/api/providers';
-import { getOrdinal, getServiceMonths } from '../../helpers/services';
+import { getServiceMonths } from '../../helpers/services';
 import PaymentBreakdown from '../../components/Service/PaymentBreakdown';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -45,7 +45,6 @@ const AcceptPendingService = ({
     user.userId,
     user.customerId,
     params?.serviceId,
-    // 'bbca1013-c790-44ed-a640-3ae051bc8834',
     params?.serviceType
   );
 
@@ -62,7 +61,6 @@ const AcceptPendingService = ({
   >({
     mutationFn: async (data) => providerInstance.acceptLoanRequest(data),
     onSuccess: (response) => {
-      console.log('Response from accept loan request:', response);
       navigate('SuccessPage', {
         title: 'Loan Request Accepted',
         message: 'Your loan request has been successfully accepted.',
@@ -244,9 +242,7 @@ const AcceptPendingService = ({
                       key={index}
                     >
                       <CText
-                        color={
-                          serviceMonth === index + 1 ? 'white' : 'black'
-                        }
+                        color={serviceMonth === index + 1 ? 'white' : 'black'}
                         fontSize={14}
                         lineHeight={18.4}
                         fontFamily="semibold"

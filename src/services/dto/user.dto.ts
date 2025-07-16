@@ -7,6 +7,7 @@ export interface GetCustomerDto {
   niN?: string;
   bvn?: string;
   phoneNumber?: string;
+  contactAddress?: string | null;
 }
 
 export interface GetWalletResponseDto {
@@ -96,6 +97,11 @@ export interface UnifiedTransactionDto {
   status?: string;
   startDate?: string;
   endDate?: string;
+}
+
+export interface UpdateProfileDto {
+  contactAddress: string;
+  phoneNumber: string;
 }
 
 export interface UnifiedTransactionResponseDto {

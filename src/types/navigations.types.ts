@@ -78,6 +78,7 @@ export type RootStackParamList = {
     serviceId: string;
     serviceType: string;
   };
+  UpdateProfile: undefined;
 };
 
 type SignUpScreenParams = {

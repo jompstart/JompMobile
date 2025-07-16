@@ -20,6 +20,7 @@ const initialState: UserState = {
   ledger: 0.0,
   totalTransactions: 0,
   totalOrders: 0,
+  address: null,
   bankDetails: [],
 };
 

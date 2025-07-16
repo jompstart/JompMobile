@@ -8,10 +8,11 @@ import CText from '../../shared/CText';
 import Opticons from '@expo/vector-icons/Octicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { images } from '../../constants/images';
 import PencilIcon from '../../../assets/svgs/Dashboard/PencilIcon';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
+
 import IdIcon from '../../../assets/svgs/Dashboard/IdIcon';
 import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -280,6 +281,33 @@ const Profile = () => {
                 {user?.niN}
               </CText>
             </View>
+            <Pressable
+              onPress={() => navigate('UpdateProfile')}
+              style={{
+                alignSelf: 'flex-end',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: size.getWidthSize(2),
+              }}
+            >
+              <AntDesign
+                name="edit"
+                color={colors.primary()}
+                size={size.getHeightSize(18)}
+              />
+              <CText
+                color={'primaryColor'}
+                fontSize={14}
+                lineHeight={19.2}
+                fontFamily="semibold"
+                style={{
+                  textAlign: 'right',
+                  marginTop: size.getHeightSize(8),
+                }}
+              >
+                Update Profile{' '}
+              </CText>
+            </Pressable>
           </View>
           <View>
             <CText

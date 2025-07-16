@@ -18,6 +18,7 @@ export interface UserModel {
   totalTransactions: number;
   totalOrders: number;
   bankDetails: BankDetails[];
+  address: string | null;
 }
 
 export interface BankDetails {

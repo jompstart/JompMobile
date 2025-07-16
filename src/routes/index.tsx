@@ -45,6 +45,7 @@ import Notification from '../screens/Notifications/Notification';
 import AcceptService from '../screens/services/AcceptService';
 import PendingService from '../screens/services/PendingService';
 import AcceptPendingService from '../screens/services/AcceptPendingService';
+import UpdateProfile from '../screens/Dashboard/UpdateProfile';
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -229,7 +230,11 @@ const MainNavigator = () => {
     },
     {
       name: 'AcceptPendingService',
-      component: AcceptPendingService, // This is to prevent infinite loop in navigation
+      component: AcceptPendingService,
+    },
+    {
+      name: 'UpdateProfile',
+      component: UpdateProfile,
     },
   ];
 

@@ -47,7 +47,6 @@ const PaymentBreakdown = ({
   onContinue,
   isLoading,
 }: Props) => {
-  console.log('customerContribution', customerContribution);
   return (
     <ScrollablebottomsheetWrapper
       visibility={isVisible}

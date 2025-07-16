@@ -21,7 +21,7 @@ const PendingService = () => {
   const user = useAppSelector(userSelector);
   const { navigate } = useNavigation();
   const { data, refetch } = useGetPendingServices(user.userId, user.customerId);
-
+  console.log(data?.data);
   const [refreshing, setRefreshing] = useState(false);
   return (
     <GradientSafeAreaView>
