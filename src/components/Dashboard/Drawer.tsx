@@ -290,7 +290,14 @@ const Drawer = (props: Props) => {
         >
           <CText
             fontFamily="semibold"
-            onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
+            onPress={() =>
+              dispatch(
+                updateTermsAndConditionVisibility({
+                  url: 'https://dev.jompstart.com/terms',
+                  visible: true,
+                })
+              )
+            }
             fontSize={15}
             color={colors.primary() as any}
             lineHeight={19}
@@ -299,7 +306,14 @@ const Drawer = (props: Props) => {
           </CText>
           <CText
             fontFamily="semibold"
-            onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
+            onPress={() =>
+              dispatch(
+                updateTermsAndConditionVisibility({
+                  url: 'https://7p74mn4v-3000.uks1.devtunnels.ms/privacy',
+                  visible: true,
+                })
+              )
+            }
             fontSize={15}
             color={colors.primary() as any}
             lineHeight={19}
@@ -309,7 +323,6 @@ const Drawer = (props: Props) => {
         </View>
         <CText
           fontFamily="medium"
-          onPress={() => dispatch(updateTermsAndConditionVisibility(true))}
           fontSize={13}
           color={colors.primary() as any}
           lineHeight={18}

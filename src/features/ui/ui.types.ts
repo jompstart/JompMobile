@@ -26,7 +26,10 @@ export interface UIState {
     amount?: number;
   };
   showLogoutBottomSheet: boolean;
-  showTermsAndCondition: boolean;
+  showTermsAndCondition: {
+    visible: boolean;
+    url: string;
+  };
   showPayNowBottomsheet: {
     visible: boolean;
     amount: number;

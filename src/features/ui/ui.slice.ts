@@ -20,7 +20,10 @@ const initialState: UIState = {
     shouldConfirmTransfer: false,
   },
   showLogoutBottomSheet: false,
-  showTermsAndCondition: false,
+  showTermsAndCondition: {
+    visible: false,
+    url: '',
+  },
   showPayNowBottomsheet: {
     visible: false,
     amount: 0,
@@ -68,7 +71,10 @@ const uiSlice = createSlice({
     updateLogoutBottomsheetVisibility(state, action: PayloadAction<boolean>) {
       state.showLogoutBottomSheet = action.payload;
     },
-    updateTermsAndConditionVisibility(state, action: PayloadAction<boolean>) {
+    updateTermsAndConditionVisibility(
+      state,
+      action: PayloadAction<UIState['showTermsAndCondition']>
+    ) {
       state.showTermsAndCondition = action.payload;
     },
     updatePayNowBottomsheet(

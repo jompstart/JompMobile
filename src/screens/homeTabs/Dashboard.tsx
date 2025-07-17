@@ -48,19 +48,18 @@ import {
 } from '../../hooks/api/providers';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
-
+import LoanAgreement from '../../shared/LoanAgreement';
 import PaystackView from '../../shared/PaystackView';
 import PaymentBalanceInfo from '../../shared/PaymentBalanceInfo';
 const Dashboard = () => {
   const [showPendingServiceModal, setShowPendingServiceModal] = useState(false);
-  const [hasAcceptedLoanAgreement, setHasAcceptedLoanAgreement] =
-    useState(false);
   const [payMode, setPayMode] = useState<'yes' | 'no' | null>(null);
   const { navigate, dispatch: navigationDispatch } = useNavigation();
   const user = useAppSelector(userSelector);
 
   const [showBalanceInfo, setShowBalanceInfo] = useState(false);
-
+  const [showLoanAgreement, setShowLoanAgreement] = useState(false);
+  const [agreedToLoanAgreement, setAgreedToLoanAgreement] = useState(false);
   const dispatch = useAppDispatch();
   const { data: recenTransactions, refetch: reloadRecentTransaction } =
     useGetRecentTransactions(user.customerId, user.userId);
@@ -246,7 +245,7 @@ const Dashboard = () => {
           </ScrollView>
         </View>
 
-        {pendingPayment?.data && (
+        {pendingPayment?.data?.serviceId && (
           <View style={styles.view8}>
             <View>
               <CText
@@ -261,7 +260,11 @@ const Dashboard = () => {
                 {pendingPayment?.message}
               </CText>
 
-              <View
+              <Pressable
+                onPress={() => {
+                  // setHasAcceptedLoanAgreement(!hasAcceptedLoanAgreement);
+                  setShowLoanAgreement(true);
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -270,11 +273,8 @@ const Dashboard = () => {
                 }}
               >
                 <Fontisto
-                  onPress={() => {
-                    setHasAcceptedLoanAgreement(!hasAcceptedLoanAgreement);
-                  }}
                   name={
-                    hasAcceptedLoanAgreement
+                    agreedToLoanAgreement
                       ? 'checkbox-active'
                       : 'checkbox-passive'
                   }
@@ -289,7 +289,7 @@ const Dashboard = () => {
                 >
                   I agree to the Loan Agreement
                 </CText>
-              </View>
+              </Pressable>
               <View
                 style={{
                   flexDirection: 'row',
@@ -300,6 +300,7 @@ const Dashboard = () => {
                 }}
               >
                 <Pressable
+                  disabled={!agreedToLoanAgreement}
                   onPress={() => {
                     setPayMode('yes');
                     setShowBalanceInfo(true);
@@ -322,6 +323,7 @@ const Dashboard = () => {
                   <CText>Yes</CText>
                 </Pressable>
                 <Pressable
+                  disabled={!agreedToLoanAgreement}
                   onPress={() => {
                     setPayMode('no');
                   }}
@@ -344,6 +346,7 @@ const Dashboard = () => {
                 </Pressable>
               </View>
               <SecondaryButton
+                disabled={!agreedToLoanAgreement}
                 // isLoading={isPaymentPending}
                 onPress={() => {
                   if (payMode === 'yes') {
@@ -652,6 +655,17 @@ const Dashboard = () => {
           //   amount: pendingPayment?.data?.userContribution || 0,
           //   loanAgreement: hasAcceptedLoanAgreement,
           // });
+        }}
+      />
+      <LoanAgreement
+        visible={showLoanAgreement}
+        url="https://7p74mn4v-3000.uks1.devtunnels.ms/loan-agreement"
+        onClose={() => {
+          setShowLoanAgreement(false);
+        }}
+        agree={agreedToLoanAgreement}
+        onAccept={() => {
+          setAgreedToLoanAgreement((prev) => !prev);
         }}
       />
     </GradientSafeAreaView>

@@ -22,7 +22,7 @@ import {
   PayWithWalletDto,
 } from '../services/providers/provider.dto';
 import { ProviderService } from '../services/providers/provider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import ShowLoader from './ShowLoader';
 const PayNowBottomsheet = () => {
@@ -30,7 +30,7 @@ const PayNowBottomsheet = () => {
   const { navigate } = useNavigation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(userSelector);
-
+  const queryClient = useQueryClient();
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { mutate: payNow, isPending: isPaymentPending } = useMutation<
     API_RESPONSE<MakePaymnetApiResponse>,
@@ -39,6 +39,9 @@ const PayNowBottomsheet = () => {
   >({
     mutationFn: async (data) => providerInstance.makePayment(data),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ['refreschUserData'],
+      });
       if (response.success) {
         dispatch(
           updatePayStackModal({
