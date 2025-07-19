@@ -248,6 +248,7 @@ const MainNavigator = () => {
         },
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}
+      
     >
       {pages.map((page) => (
         <AppStack.Screen

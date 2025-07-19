@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
 import { size } from '../../config/size';
 import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
@@ -13,6 +13,7 @@ import {
 } from '../../features/user/user.slice';
 import { UserService } from '../../services/user';
 import { ComplianceService } from '../../services/compliance';
+import CText from '../../shared/CText';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -178,6 +179,8 @@ const SplashScreen = () => {
           alignItems: 'center',
         }}
       >
+        <Pressable></Pressable>
+
         <JompLogo size={size.getHeightSize(58.5)} />
         <JompTextLogo
           width={size.getWidthSize(205)}

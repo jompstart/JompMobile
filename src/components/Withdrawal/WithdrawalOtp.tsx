@@ -193,9 +193,8 @@ const WithdrawalOtp = ({
           isLoading={isPending}
           onPress={() => {
             const userOtpInput = userInput.join('');
-
             initiateTransfer({
-              amountInKobo: amount,
+              amountInKobo: (+amount).toString(),
               reason: reason!,
               recipientCode: recipientCode,
               otp: userOtpInput,

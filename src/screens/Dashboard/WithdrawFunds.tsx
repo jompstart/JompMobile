@@ -1,5 +1,6 @@
 import { StyleSheet, ScrollView, Pressable, View } from 'react-native';
 import React from 'react';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import GradientHeader from '../../shared/GradientHeader';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -84,7 +85,7 @@ const WithdrawFunds = () => {
           </CText>
         </View>
       </GradientHeader>
-      <ScrollView>
+      <KeyboardAwareScrollView extraHeight={120}>
         <View
           style={{
             paddingHorizontal: size.getWidthSize(16),
@@ -328,7 +329,7 @@ const WithdrawFunds = () => {
             onChangeText={setInputAmoutt}
           />
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <PrimaryButton
         disabled={!selectedBank || !inputAmount || isPending}
         isLoading={isPending}

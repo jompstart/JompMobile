@@ -659,7 +659,7 @@ const Dashboard = () => {
       />
       <LoanAgreement
         visible={showLoanAgreement}
-        url="https://7p74mn4v-3000.uks1.devtunnels.ms/loan-agreement"
+        url="https://7p74mn4v-3001.uks1.devtunnels.ms/loan-agreement"
         onClose={() => {
           setShowLoanAgreement(false);
         }}

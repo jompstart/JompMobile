@@ -87,6 +87,12 @@ const AccountDetailsBottomsheet = () => {
               serviceId: '',
             })
           );
+          dispatch(
+            updateAccountDetailsBottomsheetVisibility({
+              isVisible: false,
+              shouldConfirmTransfer: false,
+            })
+          );
           navigate('SuccessPage', {
             message: response.message,
           });

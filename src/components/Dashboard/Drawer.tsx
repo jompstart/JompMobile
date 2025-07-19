@@ -293,7 +293,7 @@ const Drawer = (props: Props) => {
             onPress={() =>
               dispatch(
                 updateTermsAndConditionVisibility({
-                  url: 'https://dev.jompstart.com/terms',
+                  url: 'https://7p74mn4v-3001.uks1.devtunnels.ms/terms',
                   visible: true,
                 })
               )
@@ -309,7 +309,7 @@ const Drawer = (props: Props) => {
             onPress={() =>
               dispatch(
                 updateTermsAndConditionVisibility({
-                  url: 'https://7p74mn4v-3000.uks1.devtunnels.ms/privacy',
+                  url: 'https://7p74mn4v-3001.uks1.devtunnels.ms/privacy',
                   visible: true,
                 })
               )

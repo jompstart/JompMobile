@@ -115,7 +115,7 @@ const PayNowBottomsheet = () => {
           <Pressable
             disabled={payWithWalletLoading}
             onPress={() => {
-              if (paymentSheet.amount <= user.balance) {
+              if (false) {
                 payWithWallet({
                   serviceId: paymentSheet.serviceId,
                   amount: paymentSheet.amount,
@@ -143,7 +143,7 @@ const PayNowBottomsheet = () => {
             >
               Wallet Balance: ₦{formatToAmount(user?.balance)}
             </CText>
-            {paymentSheet.amount > user.balance && (
+            {paymentSheet.amount < user.balance && (
               <View
                 style={{
                   flexDirection: 'row',

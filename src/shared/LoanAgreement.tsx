@@ -56,7 +56,10 @@ const LoanAgreement = ({ visible, url, onClose, agree, onAccept }: Props) => {
             />
             {hasLoaded && (
               <Pressable
-                onPress={() => onAccept()}
+                onPress={() => {
+                  onAccept();
+                  onClose?.();
+                }}
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',

@@ -47,7 +47,7 @@ const PaymentBalanceInfo = ({
               color="secondaryBlack"
               lineHeight={19}
             >
-              Your Contribution
+              Down payment / Processing fee
             </CText>
             <View style={styles.view}>
               <CText
@@ -56,7 +56,7 @@ const PaymentBalanceInfo = ({
                 color="secondaryBlack"
                 lineHeight={19}
               >
-                {formatToAmount(userContribution)}
+                ₦{formatToAmount(userContribution)}
               </CText>
             </View>
           </View>
@@ -76,7 +76,7 @@ const PaymentBalanceInfo = ({
                 color="secondaryBlack"
                 lineHeight={19}
               >
-                {formatToAmount(balanceToPay)}
+                ₦{formatToAmount(balanceToPay)}
               </CText>
             </View>
           </View>
@@ -96,7 +96,7 @@ const PaymentBalanceInfo = ({
                 color="secondaryBlack"
                 lineHeight={19}
               >
-                {formatToAmount(amountToPay)}
+                ₦{formatToAmount(amountToPay)}
               </CText>
             </View>
           </View>

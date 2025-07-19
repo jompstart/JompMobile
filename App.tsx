@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import MainNavigator from './src/routes';
@@ -21,9 +22,13 @@ import { navigationRef } from './src/routes/RootNavigation';
 import { RootStackParamList } from './src/types/navigations.types';
 import TermsAndCondition from './src/shared/TermsAndCondition';
 import PayNowBottomsheet from './src/shared/PayNowBottomsheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AccountDetailsBottomsheet from './src/shared/AccountDetailsBottomsheet';
+import { StackActions } from '@react-navigation/native';
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const appState = useRef(AppState.currentState);
+
   const queryClient = new QueryClient();
 
   const loadFonts = async () => {
@@ -34,6 +39,47 @@ export default function App() {
   useEffect(() => {
     loadFonts();
   }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const APP_EXIT_TIMESTAMP_KEY = 'lastBackgroundTime';
+  const handleAppStateChange = useCallback(
+    async (nextAppState: AppStateStatus) => {
+      if (appState.current.match(/active/) && nextAppState === 'background') {
+        const now = new Date().toISOString();
+        await AsyncStorage.setItem(APP_EXIT_TIMESTAMP_KEY, now);
+      }
+
+      if (
+        appState.current.match(/background|inactive/) &&
+        nextAppState === 'active'
+      ) {
+        const lastTimestamp = await AsyncStorage.getItem(
+          APP_EXIT_TIMESTAMP_KEY
+        );
+        if (lastTimestamp) {
+          const lastTime = new Date(lastTimestamp);
+          const now = new Date();
+          const diff = (now.getTime() - lastTime.getTime()) / 1000; // in seconds
+
+          if (diff > 180) {
+            AsyncStorage.removeItem('token');
+            navigationRef.current?.dispatch(StackActions.replace('Login'));
+          }
+        }
+      }
+      appState.current = nextAppState;
+    },
+    []
+  );
   const linking: LinkingOptions<RootStackParamList> = {
     prefixes: [Linking.createURL('/')],
     config: {
