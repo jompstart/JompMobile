@@ -520,10 +520,10 @@ const SignUp = ({
                 label="Sign up with Apple"
               />
             )}
-            <SecondaryButton
+            {/* <SecondaryButton
               icon={<FacebookIcon size={size.getHeightSize(24)} />}
               label="Sign up with Facebook"
-            />
+            /> */}
           </View>
           <CText
             fontFamily="semibold"

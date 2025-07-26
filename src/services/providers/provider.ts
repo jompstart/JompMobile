@@ -552,6 +552,8 @@ export class ProviderService {
       balanceToBePaid: number;
       loanAggrement: boolean;
       serviceId: string;
+      mobileUserContribution: number;
+   
     }>({
       method: 'GET',
       url: `/pending-admin-review/${this.customerId}`,

@@ -13,8 +13,8 @@ export class ComplianceService extends UserService {
   ) {
     const path =
       verificationType === 'nin'
-        ? `/nin-verification?Nin=${'11111111111'}&UserId=${this.customerId}`
-        : `/bvn-verification?bvn=${'11111111111'}&UserId=${this.customerId}`;
+        ? `/nin-verification?Nin=${verification}&UserId=${this.customerId}`
+        : `/bvn-verification?bvn=${verification}&UserId=${this.customerId}`;
     const body =
       verificationType === 'nin'
         ? { Nin: verification }
@@ -49,7 +49,7 @@ export class ComplianceService extends UserService {
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
     formData.append('VerificationStatus', VerificationStatus);
-    formData.append('IdentificationNumber', '11111111111');
+    formData.append('IdentificationNumber', IdentificationNumber);
     formData.append('IdentificationType', IdentificationType);
     formData.append('FullName', FullName);
     formData.append('PhoneNumber', PhoneNumber);

@@ -62,7 +62,6 @@ const VerifyBvn = () => {
           name: 'image.jpg',
           type: 'image/jpeg',
         };
-        console.log(fileData);
 
         const verifyCustomer = await complianceInstance.verifyCustomer(
           'bvn',
@@ -76,9 +75,9 @@ const VerifyBvn = () => {
 
         if (verifyCustomer.statusCode == 201 && verifyCustomer.success) {
           try {
-           const a = await complianceInstance.createAccount();
-           console.log('====== create account ======');
-           console.log(a)
+            const a = await complianceInstance.createAccount();
+            console.log('====== create account ======');
+            console.log(a);
           } catch (error) {
             console.log('====== create account error ======');
             console.log(error);

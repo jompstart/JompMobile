@@ -542,10 +542,10 @@ const Login = () => {
                 label="Login with Apple"
               />
             )}
-            <SecondaryButton
+            {/* <SecondaryButton
               icon={<FacebookIcon size={size.getHeightSize(24)} />}
               label="Login with Facebook"
-            />
+            /> */}
           </View>
           <CText
             fontFamily="semibold"

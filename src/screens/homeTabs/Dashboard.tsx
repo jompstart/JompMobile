@@ -634,10 +634,10 @@ const Dashboard = () => {
       <PaymentBalanceInfo
         amountToPay={
           (pendingPayment?.data?.balanceToBePaid ?? 0) +
-            (pendingPayment?.data?.userContribution ?? 0) || 0
+            (pendingPayment?.data?.mobileUserContribution ?? 0) || 0
         }
         balanceToPay={pendingPayment?.data?.balanceToBePaid || 0}
-        userContribution={pendingPayment?.data?.userContribution || 0}
+        userContribution={pendingPayment?.data?.mobileUserContribution || 0}
         isVisible={showBalanceInfo}
         onClose={() => {
           setShowBalanceInfo(false);
