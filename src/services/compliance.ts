@@ -1,6 +1,6 @@
 import { makeRequest } from '../config/api.config';
 import { CustomerVerificationType } from '../types/verification.type';
-import { testData } from '../utils/formatter';
+// import { testData } from '../utils/formatter';
 import { UserService } from './user';
 
 export class ComplianceService extends UserService {
@@ -19,21 +19,21 @@ export class ComplianceService extends UserService {
       verificationType === 'nin'
         ? { Nin: verification }
         : { bvn: verification };
-    // return await makeRequest<{
-    //   status: string;
-    //   image: string;
-    //   firstName: string;
-    //   lastName: string;
-    // }>({
-    //   method: 'POST',
-    //   url: `${path}`,
-    //   data: {},
-    // });
-    return {
-      statusCode: 200,
-      success: true,
-      data: testData,
-    };
+    return await makeRequest<{
+      status: string;
+      image: string;
+      firstName: string;
+      lastName: string;
+    }>({
+      method: 'POST',
+      url: `${path}`,
+      data: {},
+    });
+    // return {
+    //   statusCode: 200,
+    //   success: true,
+    //   data: testData,
+    // };
   }
 
   async verifyCustomer(
@@ -45,7 +45,7 @@ export class ComplianceService extends UserService {
     file: any,
     PhoneNumber: string
   ) {
-    console.log(file);
+    // console.log(file);
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
     formData.append('VerificationStatus', VerificationStatus);

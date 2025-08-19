@@ -185,7 +185,7 @@ const SignUp = ({
             paddingBottom: size.getHeightSize(20),
           }}
           showsVerticalScrollIndicator={false}
-          extraScrollHeight={size.getHeightSize(16)}
+          // extraScrollHeight={size.getHeightSize(16)}
         >
           <View
             style={{
@@ -513,7 +513,7 @@ const SignUp = ({
 
                   if (credential?.identityToken) {
                     const decoded = jwtDecode(credential.identityToken);
-                    console.log(decoded);
+                    // console.log(decoded);
                   }
                 }}
                 icon={<AppleIcon size={size.getHeightSize(24)} />}

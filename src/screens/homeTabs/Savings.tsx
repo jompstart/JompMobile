@@ -47,6 +47,7 @@ const Savings = () => {
   const user = useAppSelector(userSelector);
   const { data: totalSavings, refetch: refetchTotalSavings } =
     useGetTotalSavings(user.userId, user.customerId);
+
   const { data: accruedInterest, refetch: refetchInterest } =
     useGetAccruedInterest(user.userId, user.customerId);
   const [tab, setTab] = useState<'ongoing' | 'rollover' | 'completed'>(

@@ -12,7 +12,7 @@ export class AuthService {
     const path =
       accountType === UserAccount.Provider
         ? '/create-vendor'
-        : '/create-customer';
+        : '/mobile-create-customer';
     return await makeRequest<{ otp: string }>({
       method: 'POST',
       url: path,
@@ -61,7 +61,7 @@ export class AuthService {
       token: string;
     }>({
       method: 'POST',
-      url: '/user-login',
+      url: '/mobile-login',
       data: { email, password },
       headers: {
         'Content-Type': 'application/json',
