@@ -1,3 +1,4 @@
+// Profile.js
 import { StyleSheet, Image, View, Pressable } from 'react-native';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -5,14 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
-import Opticons from '@expo/vector-icons/Octicons';
+import Octicons from '@expo/vector-icons/Octicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { images } from '../../constants/images';
 import PencilIcon from '../../../assets/svgs/Dashboard/PencilIcon';
 import PhoneIcon from '../../../assets/svgs/Dashboard/PhoneIcon';
-
 import IdIcon from '../../../assets/svgs/Dashboard/IdIcon';
 import AddBankIcon from '../../../assets/svgs/Dashboard/AddBankIcon';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -22,11 +22,17 @@ import { userSelector } from '../../features/user/user.selector';
 import { useGetUserBanks } from '../../hooks/api/auth';
 import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
 import { obfuscateString } from '../../utils/stringManipulation';
+import { obfuscateLastDigits } from '../../utils/stringManipulation';
+
 const Profile = () => {
   const { top, bottom } = useSafeAreaInsets();
   const { navigate, goBack } = useNavigation();
   const user = useAppSelector(userSelector);
   const { data: banks } = useGetUserBanks(user?.userId, user?.customerId);
+
+  const isBvnEmpty = !user?.bvn;
+  const isNinEmpty = !user?.niN;
+  const showVerificationButton = !isBvnEmpty && !isNinEmpty;
 
   return (
     <GradientSafeAreaView>
@@ -36,7 +42,6 @@ const Profile = () => {
         end={{ x: 1, y: 1 }}
         style={{
           height: size.getHeightSize(311),
-
           paddingTop: top,
           borderBottomLeftRadius: size.getHeightSize(8),
           borderBottomRightRadius: size.getHeightSize(8),
@@ -78,40 +83,6 @@ const Profile = () => {
           }}
         >
           <Ionicons name="person" size={100} color={colors.primary('')} />
-          {/* <Image
-            style={{
-              height: '100%',
-              width: '100%',
-              borderRadius: size.getHeightSize(200),
-            }}
-            source={images.pfpImage}
-          /> */}
-          {/* <View
-            style={{
-              position: 'absolute',
-              height: size.getHeightSize(45.31),
-              width: size.getHeightSize(45.31),
-              borderRadius: size.getHeightSize(200),
-              backgroundColor: colors.white(),
-              paddingVertical: size.getHeightSize(3.02),
-              paddingHorizontal: size.getWidthSize(3.02),
-              bottom: 0,
-              right: 0,
-            }}
-          >
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                borderRadius: size.getHeightSize(200),
-                backgroundColor: colors.primary(),
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <PencilIcon size={size.getHeightSize(20.14)} />
-            </View>
-          </View> */}
         </View>
         <CText
           color={'white'}
@@ -150,27 +121,6 @@ const Profile = () => {
             >
               Details
             </CText>
-            {/* <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: size.getWidthSize(8),
-              }}
-            >
-              <Feather
-                name="edit"
-                size={size.getHeightSize(16)}
-                color={colors.primary()}
-              />
-              <CText
-                color={'primaryColor'}
-                fontSize={12}
-                lineHeight={19.2}
-                fontFamily="semibold"
-              >
-                Edit Profile
-              </CText>
-            </View> */}
           </View>
           <View
             style={{
@@ -178,7 +128,7 @@ const Profile = () => {
             }}
           >
             <View style={styles.view3}>
-              <Opticons
+              <Octicons
                 name="mail"
                 color={colors.primary()}
                 size={size.getHeightSize(24)}
@@ -231,7 +181,7 @@ const Profile = () => {
                 {user?.phoneNumber}
               </CText>
             </View>
-            <View style={styles.view3}>
+            <View style={[styles.view3, styles.view3WithButton]}>
               <IdIcon size={size.getHeightSize(24)} />
               <CText
                 color={'secondaryBlack'}
@@ -244,19 +194,42 @@ const Profile = () => {
               >
                 BVN
               </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={12}
-                lineHeight={19.2}
-                fontFamily="semibold"
-                style={{
-                  textAlign: 'right',
-                }}
-              >
-                {user?.bvn}
-              </CText>
+              {isBvnEmpty ? (
+                <Pressable
+                  onPress={() => navigate('UpdateVerificationInfo')}
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    pressed && styles.actionButtonPressed,
+                  ]}
+                >
+                  <AntDesign
+                    name="idcard"
+                    color={colors.white()}
+                    size={size.getHeightSize(16)}
+                  />
+                  <CText
+                    color={'white'}
+                    fontSize={12}
+                    lineHeight={19.2}
+                    fontFamily="semibold"
+                  >
+                    Update
+                  </CText>
+                </Pressable>
+              ) : (
+               <CText
+  color={'secondaryBlack'}
+  fontSize={12}
+  lineHeight={19.2}
+  fontFamily="semibold"
+  style={{ textAlign: 'right' }}
+>
+  {obfuscateLastDigits(user?.bvn)}
+</CText>
+
+              )}
             </View>
-            <View style={styles.view3}>
+            <View style={[styles.view3, styles.view3WithButton]}>
               <IdIcon size={size.getHeightSize(24)} />
               <CText
                 color={'secondaryBlack'}
@@ -269,45 +242,96 @@ const Profile = () => {
               >
                 NIN
               </CText>
-              <CText
-                color={'secondaryBlack'}
-                fontSize={12}
-                lineHeight={19.2}
-                fontFamily="semibold"
-                style={{
-                  textAlign: 'right',
-                }}
-              >
-                {user?.niN}
-              </CText>
+              {isNinEmpty ? (
+                <Pressable
+                  onPress={() => navigate('UpdateVerificationInfo')}
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    pressed && styles.actionButtonPressed,
+                  ]}
+                >
+                  <AntDesign
+                    name="idcard"
+                    color={colors.white()}
+                    size={size.getHeightSize(16)}
+                  />
+                  <CText
+                    color={'white'}
+                    fontSize={12}
+                    lineHeight={19.2}
+                    fontFamily="semibold"
+                  >
+                    Update
+                  </CText>
+                </Pressable>
+              ) : (
+                <CText
+                  color={'secondaryBlack'}
+                  fontSize={12}
+                  lineHeight={19.2}
+                  fontFamily="semibold"
+                  style={{
+                    textAlign: 'right',
+                  }}
+                >
+                    {obfuscateLastDigits(user?.niN)}
+
+                </CText>
+              )}
             </View>
-            <Pressable
-              onPress={() => navigate('UpdateProfile')}
+            <View
               style={{
-                alignSelf: 'flex-end',
                 flexDirection: 'row',
-                alignItems: 'center',
-                gap: size.getWidthSize(2),
+                alignSelf: 'flex-end',
+                gap: size.getWidthSize(16),
+                marginTop: size.getHeightSize(8),
               }}
             >
-              <AntDesign
-                name="edit"
-                color={colors.primary()}
-                size={size.getHeightSize(18)}
-              />
-              <CText
-                color={'primaryColor'}
-                fontSize={14}
-                lineHeight={19.2}
-                fontFamily="semibold"
-                style={{
-                  textAlign: 'right',
-                  marginTop: size.getHeightSize(8),
-                }}
+              <Pressable
+                onPress={() => navigate('UpdateProfile')}
+                style={({ pressed }) => [
+                  styles.actionButton,
+                  pressed && styles.actionButtonPressed,
+                ]}
               >
-                Update Profile{' '}
-              </CText>
-            </Pressable>
+                <AntDesign
+                  name="edit"
+                  color={colors.white()}
+                  size={size.getHeightSize(16)}
+                />
+                <CText
+                  color={'white'}
+                  fontSize={12}
+                  lineHeight={19.2}
+                  fontFamily="semibold"
+                >
+                  Update Profile
+                </CText>
+              </Pressable>
+              {showVerificationButton && (
+                <Pressable
+                  onPress={() => navigate('UpdateVerificationInfo')}
+                  style={({ pressed }) => [
+                    styles.actionButton,
+                    pressed && styles.actionButtonPressed,
+                  ]}
+                >
+                  <AntDesign
+                    name="idcard"
+                    color={colors.white()}
+                    size={size.getHeightSize(16)}
+                  />
+                  <CText
+                    color={'white'}
+                    fontSize={12}
+                    lineHeight={19.2}
+                    fontFamily="semibold"
+                  >
+                    Update Verification
+                  </CText>
+                </Pressable>
+              )}
+            </View>
           </View>
           <View>
             <CText
@@ -393,6 +417,27 @@ const styles = StyleSheet.create({
     paddingVertical: size.getHeightSize(19),
     borderBottomWidth: size.getHeightSize(1),
     borderColor: colors.primary('20'),
+  },
+  view3WithButton: {
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: size.getWidthSize(4),
+    backgroundColor: colors.primary('80'),
+    paddingHorizontal: size.getWidthSize(12),
+    paddingVertical: size.getHeightSize(6),
+    borderRadius: size.getHeightSize(12),
+    shadowColor: colors.black(),
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  actionButtonPressed: {
+    transform: [{ scale: 0.95 }],
+    backgroundColor: colors.primary('60'),
   },
   view1: {
     justifyContent: 'center',

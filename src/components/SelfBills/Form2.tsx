@@ -11,6 +11,8 @@ import { CustomerServicesContext } from '../../context/ServicesContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AttachmentView from '../../shared/AttachmentView';
 import NigeriaFlag from '../../../assets/svgs/shared/NigeriaFlag';
+
+
 const Form2 = ({ onSelectState }: { onSelectState: () => void }) => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext

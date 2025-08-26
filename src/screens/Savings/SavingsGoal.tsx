@@ -987,7 +987,7 @@ const SavingsGoal = () => {
             activityIndicatorColor={colors.primary()}
             onCancel={(e) => {
               // console.log(e);
-              setPay(false);
+            setPay(false);
             }}
             onSuccess={(response) => {
               console.log(response);

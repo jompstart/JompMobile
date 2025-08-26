@@ -20,152 +20,45 @@ interface Props {
   onStateSelected?: (bank: { name: string; state_code: string }) => void;
 }
 const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
-  const statelists = [
-    {
-      name: 'Abia State',
-      state_code: 'AB',
-    },
-    {
-      name: 'Adamawa State',
-      state_code: 'AD',
-    },
-    {
-      name: 'Akwa Ibom State',
-      state_code: 'AK',
-    },
-    {
-      name: 'Anambra State',
-      state_code: 'AN',
-    },
-    {
-      name: 'Bauchi State',
-      state_code: 'BA',
-    },
-    {
-      name: 'Bayelsa State',
-      state_code: 'BY',
-    },
-    {
-      name: 'Benue State',
-      state_code: 'BE',
-    },
-    {
-      name: 'Borno State',
-      state_code: 'BO',
-    },
-    {
-      name: 'Cross River State',
-      state_code: 'CR',
-    },
-    {
-      name: 'Delta State',
-      state_code: 'DE',
-    },
-    {
-      name: 'Ebonyi State',
-      state_code: 'EB',
-    },
-    {
-      name: 'Edo State',
-      state_code: 'ED',
-    },
-    {
-      name: 'Ekiti State',
-      state_code: 'EK',
-    },
-    {
-      name: 'Enugu State',
-      state_code: 'EN',
-    },
-    {
-      name: 'Federal Capital Territory',
-      state_code: 'FC',
-    },
-    {
-      name: 'Gombe State',
-      state_code: 'GO',
-    },
-    {
-      name: 'Imo State',
-      state_code: 'IM',
-    },
-    {
-      name: 'Jigawa State',
-      state_code: 'JI',
-    },
-    {
-      name: 'Kaduna State',
-      state_code: 'KD',
-    },
-    {
-      name: 'Kano State',
-      state_code: 'KN',
-    },
-    {
-      name: 'Katsina State',
-      state_code: 'KT',
-    },
-    {
-      name: 'Kebbi State',
-      state_code: 'KE',
-    },
-    {
-      name: 'Kogi State',
-      state_code: 'KO',
-    },
-    {
-      name: 'Kwara State',
-      state_code: 'KW',
-    },
-    {
-      name: 'Lagos',
-      state_code: 'LA',
-    },
-    {
-      name: 'Nasarawa State',
-      state_code: 'NA',
-    },
-    {
-      name: 'Niger State',
-      state_code: 'NI',
-    },
-    {
-      name: 'Ogun State',
-      state_code: 'OG',
-    },
-    {
-      name: 'Ondo State',
-      state_code: 'ON',
-    },
-    {
-      name: 'Osun State',
-      state_code: 'OS',
-    },
-    {
-      name: 'Oyo State',
-      state_code: 'OY',
-    },
-    {
-      name: 'Plateau State',
-      state_code: 'PL',
-    },
-    {
-      name: 'Sokoto State',
-      state_code: 'SO',
-    },
-    {
-      name: 'Taraba State',
-      state_code: 'TA',
-    },
-    {
-      name: 'Yobe State',
-      state_code: 'YO',
-    },
-    {
-      name: 'Zamfara State',
-      state_code: 'ZA',
-    },
-  ];
+ const statelists = [
+  { name: 'Abia', state_code: 'AB' },
+  { name: 'Adamawa', state_code: 'AD' },
+  { name: 'Akwa Ibom', state_code: 'AK' },
+  { name: 'Anambra', state_code: 'AN' },
+  { name: 'Bauchi', state_code: 'BA' },
+  { name: 'Bayelsa', state_code: 'BY' },
+  { name: 'Benue', state_code: 'BE' },
+  { name: 'Borno', state_code: 'BO' },
+  { name: 'Cross River', state_code: 'CR' },
+  { name: 'Delta', state_code: 'DE' },
+  { name: 'Ebonyi', state_code: 'EB' },
+  { name: 'Edo', state_code: 'ED' },
+  { name: 'Ekiti', state_code: 'EK' },
+  { name: 'Enugu', state_code: 'EN' },
+  { name: 'Federal Capital Territory', state_code: 'FC' },
+  { name: 'Gombe', state_code: 'GO' },
+  { name: 'Imo', state_code: 'IM' },
+  { name: 'Jigawa', state_code: 'JI' },
+  { name: 'Kaduna', state_code: 'KD' },
+  { name: 'Kano', state_code: 'KN' },
+  { name: 'Katsina', state_code: 'KT' },
+  { name: 'Kebbi', state_code: 'KE' },
+  { name: 'Kogi', state_code: 'KO' },
+  { name: 'Kwara', state_code: 'KW' },
+  { name: 'Lagos', state_code: 'LA' },
+  { name: 'Nasarawa', state_code: 'NA' },
+  { name: 'Niger', state_code: 'NI' },
+  { name: 'Ogun', state_code: 'OG' },
+  { name: 'Ondo', state_code: 'ON' },
+  { name: 'Osun', state_code: 'OS' },
+  { name: 'Oyo', state_code: 'OY' },
+  { name: 'Plateau', state_code: 'PL' },
+  { name: 'Sokoto', state_code: 'SO' },
+  { name: 'Taraba', state_code: 'TA' },
+  { name: 'Yobe', state_code: 'YO' },
+  { name: 'Zamfara', state_code: 'ZA' },
+];
+
 
   const [filteredStates, setFilteredStates] = useState(statelists);
   return (

@@ -329,7 +329,7 @@ const TransportForm = () => {
         style={{
           marginBottom: size.getHeightSize(32),
         }}
-        label="Procced"
+        label="Proceed"
         onPress={handleNextView}
       />
       <ShowLoader isLoading={isPending} />

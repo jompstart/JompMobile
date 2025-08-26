@@ -36,6 +36,7 @@ export type RootStackParamList = {
   VerifyNin: undefined;
   BottomtabNavigation: undefined;
   Profile: undefined;
+  UpdateVerificationInfo: undefined;
   AddBank: undefined;
   WithdrawFunds: undefined;
   GuardianDetails: undefined;

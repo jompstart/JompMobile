@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary(),
     paddingVertical: size.getHeightSize(8),
     paddingHorizontal: size.getWidthSize(13.5),
-    width: size.getWidthSize(113),
+    width: size.getWidthSize(115),
     borderRadius: size.getHeightSize(24),
   },
   cardView: {

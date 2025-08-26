@@ -141,4 +141,16 @@ export const formatDateTime = (dateString: string): string => {
   return `${day} ${month}, ${year} ${hours}:${minutes} ${ampm}`;
 };
 
+export const obfuscateLastDigits = (
+  value: string | number | undefined | null,
+  visibleCount: number = 4
+): string => {
+  if (value === undefined || value === null) return '';
+  
+  const strValue = String(value); // convert numbers safely to string
+  if (strValue.length <= visibleCount) return strValue;
+
+  const maskedLength = strValue.length - visibleCount;
+  return '*'.repeat(maskedLength) + strValue.slice(-visibleCount);
+};
 

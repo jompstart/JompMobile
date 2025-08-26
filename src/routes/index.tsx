@@ -15,6 +15,7 @@ import AccountPreference from '../screens/onboarding/AccountPreference';
 import VerifyNin from '../screens/compliance/VerifyNin';
 import BottomtabNavigation from './BottomtabNavigation';
 import Profile from '../screens/Dashboard/Profile';
+import UpdateVerificationInfo from '../screens/Dashboard/UpdateVerificationInfo';
 import AddBank from '../screens/Dashboard/AddBank';
 import WithdrawFunds from '../screens/Dashboard/WithdrawFunds';
 import GuardianDetails from '../screens/ChildBills/GuardianDetails';
@@ -105,6 +106,10 @@ const MainNavigator = () => {
     {
       name: 'Profile',
       component: Profile,
+    },
+    {
+      name: 'UpdateVerificationInfo',
+      component: UpdateVerificationInfo,
     },
     {
       name: 'AddBank',
@@ -247,9 +252,8 @@ const MainNavigator = () => {
           close: closeconfig as any,
         },
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      }}
-      
-    >
+      }}    
+>
       {pages.map((page) => (
         <AppStack.Screen
           key={page.name}

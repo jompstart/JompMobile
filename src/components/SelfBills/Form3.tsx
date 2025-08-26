@@ -1,18 +1,25 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect } from 'react';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
 import PTextInput from '../../shared/PTextInput';
 import CText from '../../shared/CText';
-import AAttachmentIcon from '../../../assets/svgs/Dashboard/AttachmentIcon';
+import AttachmentView from '../../shared/AttachmentView';
+import PDateInput from '../../shared/PDateInput';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { CustomerServicesContext } from '../../context/ServicesContext';
-import AttachmentView from '../../shared/AttachmentView';
+import MonthDropdown from '../../shared/MonthDropdown';
+
+
+
 const Form3 = () => {
   const { selfSchoolFeeDetails, setSelfSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+
+  const yearOptions: number[] = Array.from({ length: 100 }, (_, i) => i);
+  const monthOptions: number[] = Array.from({ length: 12 }, (_, i) => i + 1);
 
   return (
     <View
@@ -56,7 +63,6 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerName}
       />
-
       <PTextInput
         keyboardType="phone-pad"
         placeholder="HR Contact Number"
@@ -65,7 +71,6 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.hrContactNumber}
       />
-
       <PTextInput
         placeholder="Employer Address"
         onChangeText={(text) =>
@@ -98,7 +103,6 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerState}
       />
-
       <PTextInput
         placeholder="Employer country"
         onChangeText={(text) =>
@@ -106,7 +110,6 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.employerCountry}
       />
-
       <PhoneInput
         placeholder="Company/Business Line"
         keyboardType="phone-pad"
@@ -119,7 +122,6 @@ const Form3 = () => {
         }
         value={selfSchoolFeeDetails?.employmentDetails?.companyPhoneNumber}
       />
-
       <View
         style={{
           flexDirection: 'row',
@@ -133,17 +135,12 @@ const Form3 = () => {
             width: size.getWidthSize(236),
           }}
         >
-          <PTextInput
+          <PDateInput
             outerStyle={{
               flex: 1,
             }}
             placeholder="Years of working/operation"
-            rightIcon={
-              <MaterialIcons
-                name="arrow-drop-down"
-                size={size.getHeightSize(25)}
-              />
-            }
+            value={selfSchoolFeeDetails?.employmentDetails?.yearsInCompany}
             onChangeText={(text) =>
               setSelfSchoolFeeDetails(
                 'employmentDetails',
@@ -151,25 +148,19 @@ const Form3 = () => {
                 text
               )
             }
-            value={selfSchoolFeeDetails?.employmentDetails?.yearsInCompany}
+            maxValue={99}
+            minValue={0}
+            fieldName="Years of working"
           />
         </View>
-
-        <PTextInput
+        <MonthDropdown
           outerStyle={{
             flex: 1,
           }}
-          placeholder="Month"
-          rightIcon={
-            <MaterialIcons
-              name="arrow-drop-down"
-              size={size.getHeightSize(25)}
-            />
-          }
+          value={selfSchoolFeeDetails?.employmentDetails?.month}
           onChangeText={(text) =>
             setSelfSchoolFeeDetails('employmentDetails', 'month', text)
           }
-          value={selfSchoolFeeDetails?.employmentDetails?.month}
         />
       </View>
       <AttachmentView
@@ -192,5 +183,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: size.getHeightSize(8),
     paddingBottom: size.getHeightSize(14),
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    marginTop: size.getHeightSize(2),
+  },
+  dropdown: {
+    backgroundColor: colors.white(),
+    borderRadius: size.getHeightSize(8),
+    borderWidth: 1,
+    borderColor: colors.primaryDisabled(),
+    maxHeight: size.getHeightSize(200),
+    shadowColor: colors.black(),
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  scrollView: {
+    maxHeight: size.getHeightSize(200),
+  },
+  scrollViewContent: {
+    paddingBottom: size.getHeightSize(100), // Add padding inside scroll view
+  },
+  dropdownItem: {
+    paddingVertical: size.getHeightSize(12),
+    paddingHorizontal: size.getWidthSize(16),
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primaryDisabled(),
+  },
+  selectedItem: {
+    backgroundColor: colors.appBackground(),
+  },
+  dropdownText: {
+    color: colors.black(),
+  },
+  selectedText: {
+    color: colors.primary(),
+    fontWeight: '600',
   },
 });

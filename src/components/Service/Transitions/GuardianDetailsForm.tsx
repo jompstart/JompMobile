@@ -24,11 +24,14 @@ import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../../types';
 import { updateToast } from '../../../features/ui/ui.slice';
 import { useGetIdempotencyKey } from '../../../hooks/api/auth';
+import StatesBottomsheet from '../../../shared/StateBottomsheet';
+
 const GuardianDetailsForm = () => {
   const user = useAppSelector(userSelector);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const [disableButton, setDisableButton] = useState(false);
+  const [showStatesBottomsheet, setShowStatesBottomSheet] = useState(false);
   const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
   const providerInstance = new ProviderService(user.userId, user.customerId);
   const { width, height } = Dimensions.get('window');
@@ -50,9 +53,9 @@ const GuardianDetailsForm = () => {
       dispatch(
         updateToast({
           displayToast: true,
+          toastType: 'info',
           toastMessage:
             error?.message || 'There was an error requesting school loan',
-          toastType: 'info',
         })
       );
     },
@@ -62,12 +65,14 @@ const GuardianDetailsForm = () => {
       });
     },
   });
+
   const views = [
     {
       label: "Parent or Guardian's Details",
       title: 'Next: Child and School Details',
-      component: <Form1 />,
-    },
+ component: (
+        <Form1/>
+      ),   },
     {
       label: 'Child and School Details',
       title: 'Next: Parent Employment Details',
@@ -76,7 +81,13 @@ const GuardianDetailsForm = () => {
     {
       label: 'Parent Employment Details',
       title: 'Next: Document Uploads',
-      component: <Form3 />,
+      component: (
+        <Form3
+          onSelectState={() => {
+            setShowStatesBottomSheet(true);
+          }}
+        />
+      ),
     },
     {
       label: 'Document Uploads',
@@ -89,6 +100,7 @@ const GuardianDetailsForm = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const [viewIndex, setViewIndex] = useState(0);
   const [progress, setProgress] = useState(25);
+
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
       scrollViewRef.current?.scrollToPosition(0, 0, true);
@@ -120,7 +132,6 @@ const GuardianDetailsForm = () => {
             childSchoolFeeDetails.guardianEmploymentDetails.companyLocation!,
           monthsInCompany:
             childSchoolFeeDetails.guardianEmploymentDetails.month!,
-
           occupation:
             childSchoolFeeDetails.guardianEmploymentDetails.occupation!,
         },
@@ -155,7 +166,8 @@ const GuardianDetailsForm = () => {
 
   useEffect(() => {
     if (
-      (viewIndex === 0 && !childSchoolFeeDetails?.guardianDetails.firstName) ||
+      (viewIndex === 0 &&
+        !childSchoolFeeDetails?.guardianDetails.firstName) ||
       !childSchoolFeeDetails?.guardianDetails.lastName ||
       !childSchoolFeeDetails?.guardianDetails.email ||
       !childSchoolFeeDetails?.guardianDetails.phoneNumber ||
@@ -176,7 +188,6 @@ const GuardianDetailsForm = () => {
           !child?.childGrade
         );
       });
-
       setDisableButton(isEmpty);
     } else if (viewIndex === 2) {
       const isEmpty =
@@ -187,7 +198,8 @@ const GuardianDetailsForm = () => {
         !childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany ||
         !childSchoolFeeDetails.guardianEmploymentDetails.companyCountry ||
         !childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode ||
-        !childSchoolFeeDetails.guardianEmploymentDetails.companyState;
+        !childSchoolFeeDetails.guardianEmploymentDetails.companyState ||
+        !childSchoolFeeDetails.guardianEmploymentDetails.month;
       setDisableButton(isEmpty);
     } else if (viewIndex === 3) {
       const isEmpty =
@@ -318,18 +330,14 @@ const GuardianDetailsForm = () => {
             showsHorizontalScrollIndicator={false}
             bounces={false}
             onMomentumScrollEnd={(e) => {
-              // Calculate the new view index based on the scroll position
               const newIndex = Math.round(
                 e.nativeEvent.contentOffset.x / Dimensions.get('window').width
               );
-
-              // Update the view index and progress
               if (newIndex !== viewIndex) {
                 setViewIndex(newIndex);
                 setProgress(((newIndex + 1) / views.length) * 100);
               }
             }}
-            // onViewableItemsChanged={onViewChangeRef.current}
             onScroll={Animated.event(
               [{ nativeEvent: { contentOffset: { x: scrollX } } }],
               { useNativeDriver: false }
@@ -360,10 +368,23 @@ const GuardianDetailsForm = () => {
         style={{
           marginBottom: size.getHeightSize(32),
         }}
-        label="Procced"
+        label="proceed"
         onPress={handleNextView}
       />
       <ShowLoader isLoading={isPending} />
+      <StatesBottomsheet
+        isVisible={showStatesBottomsheet}
+        onClose={() => setShowStatesBottomSheet(false)}
+        onStateSelected={(state) => {
+          if (viewIndex === 2) {
+            setChildSchoolFeeDetails(
+              'guardianEmploymentDetails',
+              'companyState',
+              state.name
+            );
+          }
+        }}
+      />
     </View>
   );
 };

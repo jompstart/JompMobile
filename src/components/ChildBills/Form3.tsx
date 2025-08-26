@@ -1,124 +1,120 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useContext } from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+import React, { useContext, useEffect } from 'react';
 import { CustomerServicesContext } from '../../context/ServicesContext';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import PhoneInput from '../../shared/PhoneInput';
 import PTextInput from '../../shared/PTextInput';
+import PDateInput from '../../shared/PDateInput';
 import CText from '../../shared/CText';
 import AAttachmentIcon from '../../../assets/svgs/Dashboard/AttachmentIcon';
 import AttachmentView from '../../shared/AttachmentView';
-const Form3 = () => {
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MonthDropdown from "../../shared/MonthDropdown";
+
+const Form3 = ({ onSelectState }: { onSelectState?: () => void }) => {
   const { childSchoolFeeDetails, setChildSchoolFeeDetails } = useContext(
     CustomerServicesContext
   );
+
+  useEffect(() => {
+    setChildSchoolFeeDetails(
+      "guardianEmploymentDetails",
+      "companyCountry",
+      "Nigeria"
+    );
+  }, []);
+
   return (
     <View
       style={{
         gap: size.getHeightSize(16),
       }}
     >
-      {/* <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'occupation',
-            text
-          )
-        }
-        placeholder="Name of Company"
-      /> */}
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.nameOfCompany}
         onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'nameOfCompany',
-            text
-          )
+          setChildSchoolFeeDetails("guardianEmploymentDetails", "nameOfCompany", text)
         }
         placeholder="Name of Company"
       />
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.companyEmail}
         onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyEmail',
-            text
-          )
+          setChildSchoolFeeDetails("guardianEmploymentDetails", "companyEmail", text)
         }
         placeholder="Company’s Email Address"
       />
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.companyLocation}
         onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyLocation',
-            text
-          )
+          setChildSchoolFeeDetails("guardianEmploymentDetails", "companyLocation", text)
         }
         placeholder="Address line 1"
       />
       <PTextInput
         value={childSchoolFeeDetails.guardianEmploymentDetails.companyCity}
         onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyCity',
-            text
-          )
+          setChildSchoolFeeDetails("guardianEmploymentDetails", "companyCity", text)
         }
         placeholder="Address line 2"
       />
-
       <PTextInput
         keyboardType="phone-pad"
-        value={
-          childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode
-        }
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyPostalCode}
         onChangeText={(text) =>
           setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyPostalCode',
+            "guardianEmploymentDetails",
+            "companyPostalCode",
             text
           )
         }
         placeholder="Postal Code"
       />
       <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.companyState}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyState',
-            text
-          )
+        editable={false}
+        placeholder="Select Country"
+        rightIcon={
+          <View
+            style={{
+              height: size.getHeightSize(24),
+              width: size.getWidthSize(32),
+            }}
+          >
+            <Image
+              resizeMode="cover"
+              style={{
+                height: "100%",
+                width: "100%",
+              }}
+              source={{
+                uri: "https://upload.wikimedia.org/wikipedia/commons/7/79/Flag_of_Nigeria.svg",
+              }}
+            />
+          </View>
         }
-        placeholder="State"
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCountry}
       />
       <PTextInput
-        value={childSchoolFeeDetails.guardianEmploymentDetails.companyCountry}
-        onChangeText={(text) =>
-          setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyCountry',
-            text
-          )
+        editable={false}
+        onPress={() => {
+          onSelectState?.();
+        }}
+        placeholder="Select your State"
+        rightIcon={
+          <MaterialIcons
+            name="arrow-drop-down"
+            size={size.getHeightSize(25)}
+          />
         }
-        placeholder="Company’s Country"
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyState}
       />
-
       <PhoneInput
-        value={
-          childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber
-        }
+        value={childSchoolFeeDetails.guardianEmploymentDetails.companyPhoneNumber}
         onChangeText={(text) =>
           setChildSchoolFeeDetails(
-            'guardianEmploymentDetails',
-            'companyPhoneNumber',
+            "guardianEmploymentDetails",
+            "companyPhoneNumber",
             text
           )
         }
@@ -127,68 +123,54 @@ const Form3 = () => {
       />
       <View
         style={{
-          flexDirection: 'row',
-
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
           gap: size.getWidthSize(16),
         }}
       >
-        <PTextInput
-          outerStyle={{
+        <View
+          style={{
+            width: size.getWidthSize(236),
             flex: 1,
           }}
-          value={childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany}
-          onChangeText={(text) =>
-            setChildSchoolFeeDetails(
-              'guardianEmploymentDetails',
-              'yearsInCompany',
-              text
-            )
-          }
-          keyboardType="number-pad"
-          placeholder="Years of Working with them"
-        />
-
-        <PTextInput
+        >
+          <PDateInput
+            outerStyle={{
+              flex: 1,
+            }}
+            placeholder="Years of Working with them"
+            value={childSchoolFeeDetails.guardianEmploymentDetails.yearsInCompany}
+            onChangeText={(text) =>
+              setChildSchoolFeeDetails(
+                "guardianEmploymentDetails",
+                "yearsInCompany",
+                text
+              )
+            }
+            maxValue={99}
+            minValue={0}
+            fieldName="Years of Working"
+          />
+        </View>
+        <MonthDropdown
           outerStyle={{
             flex: 1,
           }}
           value={childSchoolFeeDetails.guardianEmploymentDetails.month}
           onChangeText={(text) =>
-            setChildSchoolFeeDetails('guardianEmploymentDetails', 'month', text)
+            setChildSchoolFeeDetails("guardianEmploymentDetails", "month", text)
           }
-          keyboardType="number-pad"
-          placeholder="Month"
         />
       </View>
-      {/* <View
-        style={{
-          paddingTop: size.getHeightSize(14),
-          backgroundColor: colors.white(),
-          alignItems: 'center',
-          gap: size.getHeightSize(8),
-        }}
-      >
-        <AAttachmentIcon size={size.getHeightSize(40)} />
-        <CText
-          color={'secondaryBlack'}
-          fontSize={14}
-          lineHeight={19.6}
-          fontFamily="semibold"
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          3 Months Payment Slip.
-          <CText
-            color={'primaryColor'}
-            fontSize={14}
-            lineHeight={19.6}
-            fontFamily="bold"
-          >
-            Click to upload
-          </CText>
-        </CText>
-      </View> */}
+      {/* Assuming AttachmentView is part of this form; adjust if needed */}
+      <AttachmentView
+        description="Payment Slip"
+        type=".pdf, .xsls (max. 1MB)"
+        onFileSelected={(file) =>
+          setChildSchoolFeeDetails("guardianEmploymentDetails", "paymentSlip", file)
+        }
+      />
     </View>
   );
 };

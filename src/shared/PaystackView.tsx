@@ -56,6 +56,7 @@ const PaystackView = ({ onClose }: Props) => {
                     updatePayNowBottomsheet({
                       amount: 0,
                       visible: false,
+                      serviceId: '',
                     })
                   );
                   navigate('SuccessPage', {

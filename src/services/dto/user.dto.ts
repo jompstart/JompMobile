@@ -112,3 +112,8 @@ export interface UnifiedTransactionResponseDto {
   status: string;
   type: string;
 }
+// user.dto.ts
+export interface UpdateVerificationInfoDto {
+  bvn: string;
+  nin: string;
+}

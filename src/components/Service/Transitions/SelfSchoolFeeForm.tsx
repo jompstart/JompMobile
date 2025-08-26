@@ -70,7 +70,7 @@ const SelfSchoolFeeForm = () => {
     {
       label: 'Basic Information (Personal Details)',
       title: 'Next: Education Details ',
-      component: <Form1 />,
+      component: <Form1/>,
     },
     {
       label: 'Education Details (Your Education Details)',
@@ -327,7 +327,7 @@ const SelfSchoolFeeForm = () => {
         style={{
           marginBottom: size.getHeightSize(32),
         }}
-        label="Procced"
+        label="Proceed"
         onPress={handleNextView}
       />
       <ShowLoader isLoading={isPending} />

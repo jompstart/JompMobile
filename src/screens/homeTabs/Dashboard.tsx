@@ -77,6 +77,14 @@ const Dashboard = () => {
     }
   }, [pendingServices]);
 
+  useEffect(() => {
+    refetch(); 
+    reloadRecentTransaction(); 
+    refetchPendingService(); 
+    refetchPendingPayment(); 
+  }, [refetch, reloadRecentTransaction, refetchPendingService, refetchPendingPayment]);
+
+
   return (
     <GradientSafeAreaView>
       <GradientHeader disable>
