@@ -69,6 +69,14 @@ const VerifyNin = () => {
         );
 
         if (verifyCustomer.statusCode == 201 && verifyCustomer.success) {
+          try {
+            const a = await complianceInstance.createAccount();
+            console.log('====== create account ======');
+            console.log(a);
+          } catch (error) {
+            console.log('====== create account error ======');
+            console.log(error);
+          }
           dispatch(
             updateToast({
               displayToast: true,

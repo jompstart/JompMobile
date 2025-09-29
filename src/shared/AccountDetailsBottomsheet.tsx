@@ -106,6 +106,7 @@ const AccountDetailsBottomsheet = () => {
   useEffect(() => {
     if (!user.bankDetails.length && accountDetailsBottomsheet.isVisible) {
       userInstance.getUserBankDetails().then((res) => {
+        console.log(res);
         if (res.data) {
           if (Array.isArray(res.data)) {
             dispatch(
