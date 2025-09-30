@@ -1,54 +1,53 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   createStackNavigator,
   CardStyleInterpolators,
-} from '@react-navigation/stack';
-import NavigationDrawer from './NavigationDrawer';
-import { Easing, Animated, Platform } from 'react-native';
-import { RootStackParamList } from '../types/navigations.types';
-import SplashScreen from '../screens/onboarding/SplashScreen';
-import OnboardingScreen from '../screens/onboarding/OnboardingScreen';
-import SignUp from '../screens/auth/SignUp';
-import Login from '../screens/auth/Login';
-import VerifyBvn from '../screens/compliance/VerifyBvn';
-import AccountPreference from '../screens/onboarding/AccountPreference';
-import VerifyNin from '../screens/compliance/VerifyNin';
-import BottomtabNavigation from './BottomtabNavigation';
-import Profile from '../screens/Dashboard/Profile';
-import UpdateVerificationInfo from '../screens/Dashboard/UpdateVerificationInfo';
-import AddBank from '../screens/Dashboard/AddBank';
-import WithdrawFunds from '../screens/Dashboard/WithdrawFunds';
-import GuardianDetails from '../screens/ChildBills/GuardianDetails';
-import SelfDetails from '../screens/ChildBills/SelfDetails';
-import LoanPage from '../screens/LoanCalculator/LoanPage';
-import LoanCalculatorForm from '../screens/LoanCalculator/LoanCalculatorForm';
-import UserCreated from '../screens/services/UserCreated';
-import PayServices from '../screens/services/PayServices';
-import PreviewRequest from '../shared/PreviewRequest';
-import SavingsGoal from '../screens/Savings/SavingsGoal';
-import CreateSavings from '../screens/Savings/CreateSavings';
-import SavingsTransactions from '../screens/Savings/SavingsTransactions';
-import SavingsDetails from '../screens/Savings/SavingsDetails';
-import TransportDetails from '../screens/TransportCredit/TransportDetails';
-import OtherServices from '../screens/services/OtherServices';
-import AddCard from '../screens/Cards/AddCard';
-import FundWallet from '../screens/Savings/FundWallet';
-import Verification from '../screens/compliance/Verification';
-import HouseRentService from '../screens/services/HouseRentService';
-import SuccessPage from '../screens/services/SuccessPage';
-import CreatedServices from '../screens/services/CreatedServices';
-import Support from '../screens/Support/Support';
-import CustomerSupport from '../screens/Support/CustomerSupport';
-import Faqs from '../screens/Support/Faqs';
-import Request from '../screens/Support/Request';
-import Report from '../screens/Support/Report';
-import Notification from '../screens/Notifications/Notification';
-import AcceptService from '../screens/services/AcceptService';
-import PendingService from '../screens/services/PendingService';
-import AcceptPendingService from '../screens/services/AcceptPendingService';
-import UpdateProfile from '../screens/Dashboard/UpdateProfile';
-import ServiceDetailScreen from '../screens/services/ServiceDetailScreen';
-
+} from "@react-navigation/stack";
+import NavigationDrawer from "./NavigationDrawer";
+import { Easing, Animated, Platform } from "react-native";
+import { RootStackParamList } from "../types/navigations.types";
+import SplashScreen from "../screens/onboarding/SplashScreen";
+import OnboardingScreen from "../screens/onboarding/OnboardingScreen";
+import SignUp from "../screens/auth/SignUp";
+import Login from "../screens/auth/Login";
+import VerifyBvn from "../screens/compliance/VerifyBvn";
+import AccountPreference from "../screens/onboarding/AccountPreference";
+import VerifyNin from "../screens/compliance/VerifyNin";
+import BottomtabNavigation from "./BottomtabNavigation";
+import Profile from "../screens/Dashboard/Profile";
+import UpdateVerificationInfo from "../screens/Dashboard/UpdateVerificationInfo";
+import AddBank from "../screens/Dashboard/AddBank";
+import WithdrawFunds from "../screens/Dashboard/WithdrawFunds";
+import GuardianDetails from "../screens/ChildBills/GuardianDetails";
+import SelfDetails from "../screens/ChildBills/SelfDetails";
+import LoanPage from "../screens/LoanCalculator/LoanPage";
+import LoanCalculatorForm from "../screens/LoanCalculator/LoanCalculatorForm";
+import UserCreated from "../screens/services/UserCreated";
+import PayServices from "../screens/services/PayServices";
+import PreviewRequest from "../shared/PreviewRequest";
+import SavingsGoal from "../screens/Savings/SavingsGoal";
+import CreateSavings from "../screens/Savings/CreateSavings";
+import SavingsTransactions from "../screens/Savings/SavingsTransactions";
+import SavingsDetails from "../screens/Savings/SavingsDetails";
+import TransportDetails from "../screens/TransportCredit/TransportDetails";
+import OtherServices from "../screens/services/OtherServices";
+import AddCard from "../screens/Cards/AddCard";
+import FundWallet from "../screens/Savings/FundWallet";
+import Verification from "../screens/compliance/Verification";
+import HouseRentService from "../screens/services/HouseRentService";
+import SuccessPage from "../screens/services/SuccessPage";
+import Support from "../screens/Support/Support";
+import CustomerSupport from "../screens/Support/CustomerSupport";
+import Faqs from "../screens/Support/Faqs";
+import Request from "../screens/Support/Request";
+import Report from "../screens/Support/Report";
+import Notification from "../screens/Notifications/Notification";
+import AcceptService from "../screens/services/AcceptService";
+import PendingService from "../screens/services/PendingService";
+import AcceptPendingService from "../screens/services/AcceptPendingService";
+import UpdateProfile from "../screens/Dashboard/UpdateProfile";
+import ServiceDetailScreen from "../screens/services/ServiceDetailScreen";
+import CreateServices from "../screens/services/CreateServices";
 
 interface pages {
   name: keyof RootStackParamList;
@@ -66,7 +65,7 @@ const MainNavigator = () => {
   };
 
   const closeconfig = {
-    animation: 'timing',
+    animation: "timing",
     config: {
       duration: 200,
       easing: Easing.linear,
@@ -74,178 +73,178 @@ const MainNavigator = () => {
   };
   const pages: pages[] = [
     {
-      name: 'SplashScreen',
+      name: "SplashScreen",
       component: SplashScreen,
     },
     {
-      name: 'OnboardingScreen',
+      name: "OnboardingScreen",
       component: OnboardingScreen,
     },
     {
-      name: 'AccountPreference',
+      name: "AccountPreference",
       component: AccountPreference,
     },
     {
-      name: 'SignUp',
+      name: "SignUp",
       component: SignUp,
     },
 
     {
-      name: 'Login',
+      name: "Login",
       component: Login,
     },
     {
-      name: 'VerifyBvn',
+      name: "VerifyBvn",
       component: VerifyBvn,
     },
     {
-      name: 'VerifyNin',
+      name: "VerifyNin",
       component: VerifyNin,
     },
     {
-      name: 'BottomtabNavigation',
+      name: "BottomtabNavigation",
       component: BottomtabNavigation,
     },
     {
-      name: 'Profile',
+      name: "Profile",
       component: Profile,
     },
     {
-      name: 'UpdateVerificationInfo',
+      name: "UpdateVerificationInfo",
       component: UpdateVerificationInfo,
     },
     {
-      name: 'AddBank',
+      name: "AddBank",
       component: AddBank,
     },
     {
-      name: 'WithdrawFunds',
+      name: "WithdrawFunds",
       component: WithdrawFunds,
     },
     {
-      name: 'GuardianDetails',
+      name: "GuardianDetails",
       component: GuardianDetails,
     },
     {
-      name: 'SelfDetails',
+      name: "SelfDetails",
       component: SelfDetails,
     },
-     {
-      name: 'ServiceDetailScreen',
+    {
+      name: "ServiceDetailScreen",
       component: ServiceDetailScreen,
     },
     {
-      name: 'LoanPage',
+      name: "LoanPage",
       component: LoanPage,
     },
 
     {
-      name: 'LoanCalculatorForm',
+      name: "LoanCalculatorForm",
       component: LoanCalculatorForm,
     },
     {
-      name: 'UserCreated',
+      name: "UserCreated",
       component: UserCreated,
     },
     {
-      name: 'PayServices',
+      name: "PayServices",
       component: PayServices,
     },
     {
-      name: 'SavingsGoal',
+      name: "SavingsGoal",
       component: SavingsGoal,
     },
     {
-      name: 'CreateSavings',
+      name: "CreateSavings",
       component: CreateSavings,
     },
     {
-      name: 'SavingsTransactions',
+      name: "SavingsTransactions",
       component: SavingsTransactions,
     },
     {
-      name: 'SavingsDetails',
+      name: "SavingsDetails",
       component: SavingsDetails,
     },
     {
-      name: 'TransportDetails',
+      name: "TransportDetails",
       component: TransportDetails,
     },
     {
-      name: 'PreviewRequest',
+      name: "PreviewRequest",
       component: PreviewRequest,
     },
     {
-      name: 'OtherServices',
+      name: "OtherServices",
       component: OtherServices,
     },
 
     {
-      name: 'FundWallet',
+      name: "FundWallet",
       component: FundWallet,
     },
     {
-      name: 'AddCard',
+      name: "AddCard",
       component: AddCard,
     },
     {
-      name: 'Verification',
+      name: "Verification",
       component: Verification,
     },
     {
-      name: 'HouseRentService',
+      name: "HouseRentService",
       component: HouseRentService,
     },
     {
-      name: 'SuccessPage',
+      name: "SuccessPage",
       component: SuccessPage,
     },
     {
-      name: 'CreatedServices',
-      component: CreatedServices,
+      name: "CreateServices",
+      component: CreateServices,
     },
     {
-      name: 'Support',
+      name: "Support",
       component: Support,
     },
     {
-      name: 'CustomerSupport',
+      name: "CustomerSupport",
       component: CustomerSupport,
     },
     {
-      name: 'Faqs',
+      name: "Faqs",
       component: Faqs,
     },
     {
-      name: 'Request',
+      name: "Request",
       component: Request,
     },
     {
-      name: 'NavigationDrawer',
+      name: "NavigationDrawer",
       component: NavigationDrawer,
     },
     {
-      name: 'Report',
+      name: "Report",
       component: Report,
     },
     {
-      name: 'Notification',
+      name: "Notification",
       component: Notification,
     },
     {
-      name: 'AcceptService',
+      name: "AcceptService",
       component: AcceptService,
     },
     {
-      name: 'PendingService',
+      name: "PendingService",
       component: PendingService,
     },
     {
-      name: 'AcceptPendingService',
+      name: "AcceptPendingService",
       component: AcceptPendingService,
     },
     {
-      name: 'UpdateProfile',
+      name: "UpdateProfile",
       component: UpdateProfile,
     },
   ];
@@ -259,8 +258,8 @@ const MainNavigator = () => {
           close: closeconfig as any,
         },
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      }}    
->
+      }}
+    >
       {pages.map((page) => (
         <AppStack.Screen
           key={page.name}

@@ -1,35 +1,22 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
-import React, { useEffect } from 'react';
-import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
-import GradientHeader from '../../shared/GradientHeader';
-import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
-import SearchIcon from '../../../assets/svgs/Home/SearchIcon';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
-import { size } from '../../config/size';
-import CText from '../../shared/CText';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
-import PersonIcon from '../../../assets/svgs/Services/PersonIcon';
-import ProviderIcon from '../../../assets/svgs/Services/ProviderIcon';
-import OrderBooks from '../../../assets/svgs/Services/OrderBooks';
-import ArrowRightIcon from '../../../assets/svgs/Services/ArrowRightIcon';
+import { StyleSheet, Text, View, Pressable } from "react-native";
+import React, { useEffect } from "react";
+import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
+import { size } from "../../config/size";
+import CText from "../../shared/CText";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
+import PersonIcon from "../../../assets/svgs/Services/PersonIcon";
+import ProviderIcon from "../../../assets/svgs/Services/ProviderIcon";
+import OrderBooks from "../../../assets/svgs/Services/OrderBooks";
+import ArrowRightIcon from "../../../assets/svgs/Services/ArrowRightIcon";
 
-import { colors } from '../../constants/colors';
-const Services = () => {
+import { colors } from "../../constants/colors";
+import HeaderWithBackIcon from "../../components/headers/HeaderWithBackIcon";
+const CreateServices = () => {
   const { navigate, dispatch } = useNavigation();
 
   return (
     <GradientSafeAreaView>
-      <GradientHeader disable>
-        <MenuIcon
-          onPress={() => {
-            dispatch(DrawerActions.openDrawer());
-          }}
-          size={size.getHeightSize(28)}
-        />
-        <View style={{ flex: 1 }} />
-        {/* <SearchIcon size={size.getHeightSize(28)} />
-        <NotificationBell size={size.getHeightSize(28)} /> */}
-      </GradientHeader>
+      <HeaderWithBackIcon title="Go Back" />
       <View
         style={{
           paddingHorizontal: size.getWidthSize(16),
@@ -37,7 +24,7 @@ const Services = () => {
         }}
       >
         <CText
-          color={'black'}
+          color={"black"}
           fontSize={18}
           lineHeight={28.8}
           fontFamily="bold"
@@ -48,7 +35,7 @@ const Services = () => {
           Services
         </CText>
         <CText
-          color={'secondaryBlack'}
+          color={"secondaryBlack"}
           fontSize={16}
           lineHeight={22.4}
           fontFamily="regular"
@@ -67,7 +54,7 @@ const Services = () => {
         >
           <Pressable
             onPress={() => {
-              navigate('UserCreated');
+              navigate("UserCreated");
             }}
             style={styles.view}
           >
@@ -79,7 +66,7 @@ const Services = () => {
               }}
             >
               <CText
-                color={'black'}
+                color={"black"}
                 fontSize={16}
                 lineHeight={22.4}
                 fontFamily="bold"
@@ -87,7 +74,7 @@ const Services = () => {
                 User Created
               </CText>
               <CText
-                color={'secondaryBlack'}
+                color={"secondaryBlack"}
                 fontSize={13}
                 lineHeight={18.2}
                 fontFamily="regular"
@@ -100,10 +87,7 @@ const Services = () => {
               height={size.getHeightSize(24)}
             />
           </Pressable>
-          <Pressable
-            onPress={() => {
-              navigate('CreatedServices');
-            }}
+          <View
             style={[
               styles.view,
               {
@@ -118,16 +102,19 @@ const Services = () => {
                 gap: size.getHeightSize(6),
               }}
             >
+              <View style={{ flexDirection: "row" }}>
+                <CText
+                  color={"black"}
+                  fontSize={16}
+                  lineHeight={22.4}
+                  fontFamily="bold"
+                >
+                  Provider Created
+                </CText>
+                <Text style={{ fontSize: 12 }}> (Coming soon)</Text>
+              </View>
               <CText
-                color={'black'}
-                fontSize={16}
-                lineHeight={22.4}
-                fontFamily="bold"
-              >
-                Provider Created (Coming soon)
-              </CText>
-              <CText
-                color={'secondaryBlack'}
+                color={"secondaryBlack"}
                 fontSize={13}
                 lineHeight={18.2}
                 fontFamily="regular"
@@ -139,12 +126,12 @@ const Services = () => {
               width={size.getWidthSize(12)}
               height={size.getHeightSize(24)}
             />
-          </Pressable>
+          </View>
           <View
             style={[
               styles.view,
               {
-                backgroundColor: '#ED9F0510',
+                backgroundColor: "#ED9F0510",
               },
             ]}
           >
@@ -155,16 +142,20 @@ const Services = () => {
                 gap: size.getHeightSize(6),
               }}
             >
+              <View style={{ flexDirection: "row" }}>
+                <CText
+                  color={"black"}
+                  fontSize={16}
+                  lineHeight={22.4}
+                  fontFamily="bold"
+                >
+                  Jomp Curated
+                </CText>
+                <Text style={{ fontSize: 12 }}> (Coming soon)</Text>
+              </View>
+
               <CText
-                color={'black'}
-                fontSize={16}
-                lineHeight={22.4}
-                fontFamily="bold"
-              >
-                Jomp Curated (Coming Soon)
-              </CText>
-              <CText
-                color={'secondaryBlack'}
+                color={"secondaryBlack"}
                 fontSize={13}
                 lineHeight={18.2}
                 fontFamily="regular"
@@ -183,16 +174,16 @@ const Services = () => {
   );
 };
 
-export default Services;
+export default CreateServices;
 
 const styles = StyleSheet.create({
   view: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: size.getWidthSize(8),
     paddingVertical: size.getHeightSize(16),
     paddingHorizontal: size.getWidthSize(16),
-    backgroundColor: '#424E9B10',
+    backgroundColor: "#424E9B10",
     borderRadius: size.getHeightSize(8),
   },
   text: {

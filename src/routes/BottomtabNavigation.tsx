@@ -4,34 +4,35 @@ import {
   View,
   TouchableOpacity,
   BackHandler,
-} from 'react-native';
-import React, { ReactNode, useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import { size } from '../config/size';
-import { colors } from '../constants/colors';
-import CText from '../shared/CText';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+} from "react-native";
+import React, { ReactNode, useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { size } from "../config/size";
+import { colors } from "../constants/colors";
+import CText from "../shared/CText";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   RouteProp,
   getFocusedRouteNameFromRoute,
-} from '@react-navigation/native';
-import { useNavigationState, useNavigation } from '@react-navigation/native';
-import Dashboard from '../screens/homeTabs/Dashboard';
-import Services from '../screens/homeTabs/Services';
-import Transactions from '../screens/homeTabs/Transactions';
-import Savings from '../screens/homeTabs/Savings';
-import More from '../screens/homeTabs/More';
-import HomeIcon from '../../assets/svgs/Home/HomeIcon';
-import ServicesIcon from '../../assets/svgs/Home/ServicesIcon';
-import TransactionsIcon from '../../assets/svgs/Home/TransactionsIcon';
-import SavingsIcon from '../../assets/svgs/Home/SavingsIcon';
-import MoreIcon from '../../assets/svgs/Home/MoreIcon';
-import { useAppDispatch, useAppSelector } from '../controller/redux.controller';
+} from "@react-navigation/native";
+import { useNavigationState, useNavigation } from "@react-navigation/native";
+import Dashboard from "../screens/homeTabs/Dashboard";
+import Services from "../screens/homeTabs/Services";
+import Transactions from "../screens/homeTabs/Transactions";
+import Savings from "../screens/homeTabs/Savings";
+import More from "../screens/homeTabs/More";
+import HomeIcon from "../../assets/svgs/Home/HomeIcon";
+import ServicesIcon from "../../assets/svgs/Home/ServicesIcon";
+import TransactionsIcon from "../../assets/svgs/Home/TransactionsIcon";
+import SavingsIcon from "../../assets/svgs/Home/SavingsIcon";
+import MoreIcon from "../../assets/svgs/Home/MoreIcon";
+import { useAppDispatch, useAppSelector } from "../controller/redux.controller";
 import {
   updateAccountDetailsBottomsheetVisibility,
   updateCompliancePromptVisibility,
-} from '../features/ui/ui.slice';
-import { accountDetailsBottomsheetSelector } from '../features/ui/ui.selector';
+} from "../features/ui/ui.slice";
+import { accountDetailsBottomsheetSelector } from "../features/ui/ui.selector";
+import ServiceScreen from "../screens/homeTabs/ServiceScreen";
 const Tab = createBottomTabNavigator();
 
 type RootStackParamList = {
@@ -61,11 +62,11 @@ const CustomTabBarButton: React.FC<any> = ({ children, onPress, style }) => {
   );
 };
 
-const home = 'Home';
-const services = 'Services';
-const transactions = 'Transactions';
-const savings = 'Savings';
-const more = 'More';
+const home = "Home";
+const services = "Services";
+const transactions = "Transactions";
+const savings = "Savings";
+const more = "More";
 
 const BottomtabNavigation = () => {
   const user = useAppSelector((state) => state.user);
@@ -88,10 +89,10 @@ const BottomtabNavigation = () => {
           return true;
         }
         if (navState?.routes?.[navState.index].state?.index !== 0) {
-          navigation.navigate('NavigationDrawer', {
-            screen: 'HomePage',
+          navigation.navigate("NavigationDrawer", {
+            screen: "HomePage",
             params: {
-              screen: 'Home',
+              screen: "Home",
             },
           } as any);
           return true;
@@ -99,7 +100,7 @@ const BottomtabNavigation = () => {
         return false;
       };
       const backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
+        "hardwareBackPress",
         onBackPress
       );
       return () => backHandler.remove();
@@ -113,7 +114,7 @@ const BottomtabNavigation = () => {
         tabBarStyle: {
           borderWidth: 0,
           height:
-            Platform.OS === 'ios'
+            Platform.OS === "ios"
               ? size.getHeightSize(72)
               : size.getHeightSize(64),
           backgroundColor: colors.white(),
@@ -130,10 +131,10 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color={focused ? 'primaryColor' : 'secondaryBlack'}
+                color={focused ? "primaryColor" : "secondaryBlack"}
                 lineHeight={12.6}
               >
-                {'Home'}
+                {"Home"}
               </CText>
             );
           }
@@ -145,7 +146,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color={focused ? 'primaryColor' : 'secondaryBlack'}
+                color={focused ? "primaryColor" : "secondaryBlack"}
                 lineHeight={12.6}
               >
                 {services}
@@ -160,7 +161,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color={focused ? 'primaryColor' : 'secondaryBlack'}
+                color={focused ? "primaryColor" : "secondaryBlack"}
                 lineHeight={12.6}
               >
                 {transactions}
@@ -175,7 +176,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color={focused ? 'primaryColor' : 'secondaryBlack'}
+                color={focused ? "primaryColor" : "secondaryBlack"}
                 lineHeight={12.6}
               >
                 {savings}
@@ -190,7 +191,7 @@ const BottomtabNavigation = () => {
                 }}
                 fontFamily="semibold"
                 fontSize={10}
-                color={focused ? 'primaryColor' : 'secondaryBlack'}
+                color={focused ? "primaryColor" : "secondaryBlack"}
                 lineHeight={12.6}
               >
                 {more}
@@ -257,7 +258,7 @@ const BottomtabNavigation = () => {
           headerShown: false,
         }}
         name={services}
-        component={Services}
+        component={ServiceScreen}
       />
       <Tab.Screen
         options={{

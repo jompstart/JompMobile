@@ -2,10 +2,10 @@ import {
   NavigationProp,
   ParamListBase,
   RouteProp,
-} from '@react-navigation/native';
-import { UserAccountPreference } from '../models/user';
-import { CreateSavingsFormState } from '../features/Savings/savings.reducer';
-import { loanType } from './loanCalculator';
+} from "@react-navigation/native";
+import { UserAccountPreference } from "../models/user";
+import { CreateSavingsFormState } from "../features/Savings/savings.reducer";
+import { loanType } from "./loanCalculator";
 
 declare global {
   namespace ReactNavigation {
@@ -69,7 +69,7 @@ export type RootStackParamList = {
     title?: string;
     message?: string;
   };
-  CreatedServices: undefined;
+  CreateServices: undefined;
   Support: undefined;
   CustomerSupport: undefined;
   Faqs: undefined;
@@ -131,36 +131,36 @@ type AcceptPendingServiceParams = {
   };
 };
 export type AcceptPendingServiceProps = {
-  navigation: NavigationProp<RootStackParamList, 'AcceptPendingService'>;
-  route: RouteProp<AcceptPendingServiceParams, 'AcceptPendingService'>;
+  navigation: NavigationProp<RootStackParamList, "AcceptPendingService">;
+  route: RouteProp<AcceptPendingServiceParams, "AcceptPendingService">;
 };
 
 export type CreateSavingsScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'CreateSavings'>;
-  route: RouteProp<CreateSavingsParams, 'CreateSavings'>;
+  navigation: NavigationProp<RootStackParamList, "CreateSavings">;
+  route: RouteProp<CreateSavingsParams, "CreateSavings">;
 };
 
 export type NotificationScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'Notification'>;
-  route: RouteProp<NotificationParams, 'Notification'>;
+  navigation: NavigationProp<RootStackParamList, "Notification">;
+  route: RouteProp<NotificationParams, "Notification">;
 };
 
 export type LoanCalculatorFormProps = {
-  navigation: NavigationProp<RootStackParamList, 'LoanCalculatorForm'>;
-  route: RouteProp<LoanCalculatorFormParams, 'LoanCalculatorForm'>;
+  navigation: NavigationProp<RootStackParamList, "LoanCalculatorForm">;
+  route: RouteProp<LoanCalculatorFormParams, "LoanCalculatorForm">;
 };
 
 export type SignUpScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'SignUp'>;
-  route: RouteProp<SignUpScreenParams, 'SignUp'>;
+  navigation: NavigationProp<RootStackParamList, "SignUp">;
+  route: RouteProp<SignUpScreenParams, "SignUp">;
 };
 
 export type SavingsDetailsScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'SavingsDetails'>;
-  route: RouteProp<SavingsDetailsParams, 'SavingsDetails'>;
+  navigation: NavigationProp<RootStackParamList, "SavingsDetails">;
+  route: RouteProp<SavingsDetailsParams, "SavingsDetails">;
 };
 
 export type SuccessPageScreenProps = {
-  navigation: NavigationProp<RootStackParamList, 'SuccessPage'>;
-  route: RouteProp<SuccessPageParams, 'SuccessPage'>;
+  navigation: NavigationProp<RootStackParamList, "SuccessPage">;
+  route: RouteProp<SuccessPageParams, "SuccessPage">;
 };
