@@ -14,17 +14,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { size } from "../../config/size";
 import { colors } from "../../constants/colors";
 import CText from "../../shared/CText";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import GradientHeader from "../../shared/GradientHeader";
 import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
 import { useGetUserServices } from "../../hooks/api/providers";
 import { useAppSelector } from "../../controller/redux.controller";
 import { userSelector } from "../../features/user/user.selector";
 import { formatToAmount } from "../../utils/stringManipulation";
 import { RootStackParamList } from "../../types/navigations.types";
-import AddBankIcon from "../../../assets/svgs/Dashboard/AddBankIcon";
-import AddIcon from "../../../assets/svgs/Savings/AddIcon";
-import PlusIcon from "../../../assets/svgs/Dashboard/PlusIcon";
 import PrimaryButton from "../../shared/PrimaryButton";
 import HeaderWithMenu from "../../components/headers/HeaderWithMenu";
 
@@ -224,8 +219,9 @@ const ServiceScreen = () => {
             />
           )}
         </View>
-
-        <PrimaryButton label="Add Service" onPress={handleAddService} />
+        <View style={{ marginBottom: 10 }}>
+          <PrimaryButton label="Add Service" onPress={handleAddService} />
+        </View>
       </View>
     </GradientSafeAreaView>
   );
