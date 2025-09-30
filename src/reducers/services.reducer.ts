@@ -13,6 +13,8 @@ export interface HouseRentLoanFormState {
   companyPhone: string;
   yearsInCompany: string;
   companyEmail: string;
+  accommodationType: string;
+  landlordEmail: string;
   companyAddress: string;
   id: MediaFile;
   utilityBill: MediaFile;
@@ -73,6 +75,8 @@ export const rentLoanInitailState: HouseRentLoanFormState = {
   landlordAccountNumber: '',
   landlordBankName: '',
   landlordContactNumber: '',
+  accommodationType: '',
+  landlordEmail: '',
   occupation: '',
   companyName: '',
   companyPhone: '',
@@ -120,6 +124,7 @@ export const rentLoanInitailState: HouseRentLoanFormState = {
 export type OtherBillsAction =
   | { type: 'SET_SERVICE_NAME'; payload: string }
   | { type: 'SET_SERVICE_COMPLETION_STATUS'; payload: string }
+  
   | { type: 'SET_SERVICE_DATE'; payload: string }
   | { type: 'SET_LOAN_AMOUNT_REQUESTED'; payload: string }
   | { type: 'SET_SERVICE_PROVIDER'; payload: string }
@@ -140,6 +145,8 @@ export type OtherBillsAction =
 export type FormAction =
   | { type: 'SET_RENT_AMOUNT'; payload: string }
   | { type: 'SET_REQUESTED_AMOUNT'; payload: string }
+    | { type: 'SET_ACCOMMODATION_TYPE'; payload: string }
+  | { type: 'SET_LANDLORD_EMAIL'; payload: string }
   | { type: 'SET_LANDLORD_NAME'; payload: string }
   | { type: 'SET_LANDLORD_ACCOUNT_NAME'; payload: string }
   | { type: 'SET_LANDLORD_ACCOUNT_NUMBER'; payload: string }
@@ -204,6 +211,10 @@ export const rentLoanFormReducer = (
       return { ...state, bankStatement2: action.payload };
     case 'SET_BANK_STATEMENT3':
       return { ...state, bankStatement3: action.payload };
+      case 'SET_ACCOMMODATION_TYPE':
+  return { ...state, accommodationType: action.payload };
+case 'SET_LANDLORD_EMAIL':
+  return { ...state, landlordEmail: action.payload };
 
     default:
       return state;

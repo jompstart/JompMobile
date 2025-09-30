@@ -5,7 +5,6 @@ import JompLogo from '../../../assets/svgs/Onboarding/JompLogo';
 import JompTextLogo from '../../../assets/svgs/Onboarding/JomtTextLogo';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
-
 import CheckIcon from '../../../assets/svgs/Onboarding/CheckIcon';
 import CancelIcon from '../../../assets/svgs/Onboarding/CancelIcon';
 import CTextInput from '../../shared/CTextInput';
@@ -36,6 +35,7 @@ import { UserAccount } from '../../enums/user.enums';
 import { updateToast } from '../../features/ui/ui.slice';
 import { useAppDispatch } from '../../controller/redux.controller';
 import { jwtDecode } from 'jwt-decode';
+
 const SignUp = ({
   route: {
     params: { accountPreference },
@@ -62,6 +62,7 @@ const SignUp = ({
   const [showSucessModal, setShowSuccessModal] = useState(false);
   const [state, dispatch] = useReducer(signUpFormReducer, signUpInitailState);
   const stateDispatch = useAppDispatch();
+  
   const [request, response, prompAsync] = Google.useAuthRequest({
     androidClientId:
       '801607727056-tfa731fpcvcn45qjlbso5rutbffvi891.apps.googleusercontent.com',
@@ -69,24 +70,73 @@ const SignUp = ({
       '801607727056-4praconm2f06hvvek28slfenq30gpoer.apps.googleusercontent.com',
   });
 
+  // Normalize email to lowercase
+  const normalizeEmail = (email: string) => {
+    return email.toLowerCase().trim();
+  };
+
+  // Validate form fields
+  const validateForm = () => {
+    if (!state.email) {
+      return 'Please enter your email address';
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(state.email)) {
+      return 'Please enter a valid email address';
+    }
+    
+    if (!state.firstName) {
+      return 'Please enter your first name';
+    }
+    
+    if (!state.lastName) {
+      return 'Please enter your last name';
+    }
+    
+    if (!state.password) {
+      return 'Please enter a password';
+    }
+    
+    if (!passwordValidation.length || 
+        !passwordValidation.uppercase || 
+        !passwordValidation.lowercase || 
+        !passwordValidation.specialCharacter || 
+        !passwordValidation.number) {
+      return 'Please ensure your password meets all requirements';
+    }
+    
+    if (state.password !== confirmPassword) {
+      return 'Passwords do not match';
+    }
+    
+    return null;
+  };
+
   const authInstance = new AuthService();
+  
   const { mutate: validateEmail, isPending } = useMutation({
     mutationFn: authInstance.validateEmail,
     onSuccess: async (data) => {
       try {
         if (data.statusCode === 200 && data.success === true) {
+          // Use normalized email for signup
+          const normalizedEmail = normalizeEmail(state.email);
+          const signupData = accountPreference == UserAccount.Customer
+            ? { ...state, email: normalizedEmail }
+            : {
+                businessEmail: normalizedEmail,
+                countryID: 125,
+                firstName: state.firstName,
+                lastName: state.lastName,
+                password: state.password,
+              };
+
           const createUserAccountResponse = await authInstance.signup(
             accountPreference,
-            accountPreference == UserAccount.Customer
-              ? state
-              : {
-                  businessEmail: state.email,
-                  countryID: 125,
-                  firstName: state.firstName,
-                  lastName: state.lastName,
-                  password: state.password,
-                }
+            signupData
           );
+          
           if (
             createUserAccountResponse.statusCode === 200 &&
             createUserAccountResponse.success === true &&
@@ -94,27 +144,51 @@ const SignUp = ({
           ) {
             setOtp(createUserAccountResponse?.data?.otp);
             setShowVerifyEmailBottomsheet(true);
+          } else {
+            stateDispatch(
+              updateToast({
+                displayToast: true,
+                toastMessage: createUserAccountResponse.message || 'Failed to create account. Please try again.',
+                toastType: 'info',
+              })
+            );
           }
         }
       } catch (error: any) {
-        console.log('========= otp error here ======');
-        console.log(error);
+        console.log('Signup error:', error);
+        let errorMessage = 'An unexpected error occurred. Please try again.';
+        
+        if (error.message?.includes('network') || error.message?.includes('offline')) {
+          errorMessage = 'Network error. Please check your internet connection and try again.';
+        } else if (error.message?.includes('email') || error.message?.includes('already exists')) {
+          errorMessage = 'This email address is already registered. Please try logging in or use a different email.';
+        }
+        
         stateDispatch(
           updateToast({
             displayToast: true,
-            toastMessage: error.message,
+            toastMessage: errorMessage,
             toastType: 'info',
           })
         );
       }
     },
-    onError: (error) => {
-      console.log('========= validation error here ======');
-      console.log(error);
+    onError: (error: any) => {
+      console.log('Email validation error:', error);
+      let errorMessage = 'Failed to validate email. Please try again.';
+      
+      if (error.message?.includes('network') || error.message?.includes('offline')) {
+        errorMessage = 'Network error. Please check your internet connection and try again.';
+      } else if (error.message?.includes('invalid email') || error.message?.includes('format')) {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.message?.includes('already exists')) {
+        errorMessage = 'This email address is already registered. Please try logging in.';
+      }
+      
       stateDispatch(
         updateToast({
           displayToast: true,
-          toastMessage: error.message,
+          toastMessage: errorMessage,
           toastType: 'info',
         })
       );
@@ -124,51 +198,141 @@ const SignUp = ({
   useEffect(() => {
     if (response?.type === 'success') {
       const { authentication } = response;
-      console.log('========= authentication here ======');
-      console.log(authentication?.accessToken);
+      console.log('Google authentication successful');
       getUserInfo(authentication?.accessToken!);
+    } else if (response?.type === 'error') {
+      console.log('Google authentication error:', response.error);
+      stateDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'Google sign-in failed. Please try again.',
+          toastType: 'info',
+        })
+      );
     }
   }, [response]);
 
   const getUserInfo = async (accessToken: string) => {
-    setIsLoading(true);
-    const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const userInfoResponse = await response.json();
+    try {
+      setIsLoading(true);
+      const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info from Google');
+      }
+      
+      const userInfoResponse = await response.json();
+      
+      // Normalize Google email
+      const normalizedEmail = normalizeEmail(userInfoResponse.email);
+      dispatch({
+        type: 'SET_EMAIL',
+        payload: normalizedEmail,
+      });
+      
+      await createUser(userInfoResponse, normalizedEmail);
+    } catch (error) {
+      console.log('Error fetching Google user info:', error);
+      setIsLoading(false);
+      stateDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'Failed to get user information from Google. Please try again.',
+          toastType: 'info',
+        })
+      );
+    }
+  };
+
+  const createUser = async (userInfoResponse: any, normalizedEmail: string) => {
+    try {
+      const createUserAccountResponse = await authInstance.signup(
+        accountPreference,
+        accountPreference == UserAccount.Customer
+          ? {
+              email: normalizedEmail,
+              firstName: userInfoResponse.given_name || 'User',
+              lastName: userInfoResponse.family_name || '',
+              password: userInfoResponse.id,
+            }
+          : {
+              businessEmail: normalizedEmail,
+              countryID: 125,
+              firstName: userInfoResponse.given_name || 'Business',
+              lastName: userInfoResponse.family_name || 'User',
+              password: userInfoResponse.id,
+            }
+      );
+      
+      setIsLoading(false);
+      
+      if (
+        createUserAccountResponse.statusCode === 200 &&
+        createUserAccountResponse.success === true &&
+        createUserAccountResponse?.data?.otp
+      ) {
+        setOtp(createUserAccountResponse?.data?.otp);
+        setShowVerifyEmailBottomsheet(true);
+      } else {
+        stateDispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: createUserAccountResponse.message || 'Google sign-up failed. Please try again.',
+            toastType: 'info',
+          })
+        );
+      }
+    } catch (error: any) {
+      console.log('Google signup error:', error);
+      setIsLoading(false);
+      let errorMessage = 'Failed to create account with Google. Please try again.';
+      
+      if (error.message?.includes('already exists')) {
+        errorMessage = 'This Google account is already registered. Please try logging in.';
+      }
+      
+      stateDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: errorMessage,
+          toastType: 'info',
+        })
+      );
+    }
+  };
+
+  const handleSignUp = () => {
+    const formError = validateForm();
+    if (formError) {
+      stateDispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: formError,
+          toastType: 'info',
+        })
+      );
+      return;
+    }
+
+    // Normalize email before validation
+    const normalizedEmail = normalizeEmail(state.email);
     dispatch({
       type: 'SET_EMAIL',
-      payload: userInfoResponse.email,
+      payload: normalizedEmail,
     });
-    createUser(userInfoResponse);
+
+    validateEmail(normalizedEmail);
   };
-  const createUser = async (userInfoResponse: any) => {
-    const createUserAccountResponse = await authInstance.signup(
-      accountPreference,
-      accountPreference == UserAccount.Customer
-        ? {
-            email: userInfoResponse.email,
-            firstName: userInfoResponse.given_name,
-            lastName: userInfoResponse.family_name,
-            password: userInfoResponse.id,
-          }
-        : {
-            businessEmail: userInfoResponse.email,
-            countryID: 125,
-            firstName: userInfoResponse.given_name,
-            lastName: userInfoResponse.family_name,
-            password: userInfoResponse.id,
-          }
-    );
-    setIsLoading(false);
-    if (
-      createUserAccountResponse.statusCode === 200 &&
-      createUserAccountResponse.success === true &&
-      createUserAccountResponse?.data?.otp
-    ) {
-      setOtp(createUserAccountResponse?.data?.otp);
-      setShowVerifyEmailBottomsheet(true);
-    }
+
+  const handleEmailChange = (text: string) => {
+    // Auto-format email to lowercase as user types
+    const normalizedEmail = normalizeEmail(text);
+    dispatch({
+      type: 'SET_EMAIL',
+      payload: normalizedEmail,
+    });
   };
 
   return (
@@ -185,7 +349,6 @@ const SignUp = ({
             paddingBottom: size.getHeightSize(20),
           }}
           showsVerticalScrollIndicator={false}
-          // extraScrollHeight={size.getHeightSize(16)}
         >
           <View
             style={{
@@ -232,15 +395,13 @@ const SignUp = ({
             }}
           >
             <CTextInput
-              onChangeText={(text) =>
-                dispatch({
-                  type: 'SET_EMAIL',
-                  payload: text,
-                })
-              }
+              onChangeText={handleEmailChange}
+              value={state.email}
               keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
               title="Email Address"
-              placeholder="@mail.com"
+              placeholder="example@mail.com"
               rightIcon={<MailIcon size={size.getHeightSize(24)} />}
             />
             <CTextInput
@@ -250,6 +411,7 @@ const SignUp = ({
                   payload: text,
                 })
               }
+              value={state.firstName}
               keyboardType="default"
               title="First Name"
               placeholder="Enter your first name"
@@ -268,6 +430,7 @@ const SignUp = ({
                   payload: text,
                 })
               }
+              value={state.lastName}
               title="Last Name"
               placeholder="Enter your last name"
               rightIcon={
@@ -282,6 +445,7 @@ const SignUp = ({
               title="Password"
               secureTextEntry={!showPassword}
               placeholder="Password"
+              value={state.password}
               onChangeText={(text) => {
                 dispatch({
                   type: 'SET_PASSWORD',
@@ -419,6 +583,7 @@ const SignUp = ({
             <CTextInput
               secureTextEntry={!showConfirmPassword}
               onChangeText={(text) => setConfirmPassword(text)}
+              value={confirmPassword}
               title="Confirm password"
               placeholder="Password"
               rightIcon={
@@ -446,9 +611,7 @@ const SignUp = ({
 
           <PrimaryButton
             label="Get Started"
-            onPress={() => {
-              validateEmail(state.email);
-            }}
+            onPress={handleSignUp}
             style={{
               marginTop: size.getHeightSize(24),
             }}
@@ -456,7 +619,13 @@ const SignUp = ({
               !state.email ||
               !state.password ||
               !state.firstName ||
-              !state.lastName
+              !state.lastName ||
+              !passwordValidation.length ||
+              !passwordValidation.uppercase ||
+              !passwordValidation.lowercase ||
+              !passwordValidation.specialCharacter ||
+              !passwordValidation.number ||
+              state.password !== confirmPassword
             }
           />
           <View
@@ -504,26 +673,36 @@ const SignUp = ({
             {Platform.OS == 'ios' && (
               <SecondaryButton
                 onPress={async () => {
-                  const credential = await AppleAuthentication.signInAsync({
-                    requestedScopes: [
-                      AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-                      AppleAuthentication.AppleAuthenticationScope.EMAIL,
-                    ],
-                  });
+                  try {
+                    const credential = await AppleAuthentication.signInAsync({
+                      requestedScopes: [
+                        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+                        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+                      ],
+                    });
 
-                  if (credential?.identityToken) {
-                    const decoded = jwtDecode(credential.identityToken);
-                    // console.log(decoded);
+                    if (credential?.identityToken) {
+                      const decoded = jwtDecode(credential.identityToken);
+                      // Handle Apple signup logic here
+                      console.log('Apple signup successful:', decoded);
+                    }
+                  } catch (error: any) {
+                    console.log('Apple signup error:', error);
+                    if (error.code !== 'ERR_CANCELED') {
+                      stateDispatch(
+                        updateToast({
+                          displayToast: true,
+                          toastMessage: 'Apple sign-in failed. Please try again.',
+                          toastType: 'info',
+                        })
+                      );
+                    }
                   }
                 }}
                 icon={<AppleIcon size={size.getHeightSize(24)} />}
                 label="Sign up with Apple"
               />
             )}
-            {/* <SecondaryButton
-              icon={<FacebookIcon size={size.getHeightSize(24)} />}
-              label="Sign up with Facebook"
-            /> */}
           </View>
           <CText
             fontFamily="semibold"

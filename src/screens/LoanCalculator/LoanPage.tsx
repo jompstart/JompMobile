@@ -85,7 +85,7 @@ const LoanPage = () => {
               marginTop: size.getHeightSize(16),
             }}
           >
-            Get access in 5 minutes to a loan up to{'\n '}
+            Get access within 24hrs to a loan up to{'\n '}
             <CText
               color="white"
               fontSize={24}

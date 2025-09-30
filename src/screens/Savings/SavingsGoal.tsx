@@ -37,6 +37,7 @@ import { formatToAmount } from '../../utils/stringManipulation';
 import GoalBottomsheet from '../../components/Savings/GoalBottomsheet';
 import CustomizedDuration from '../../components/Savings/CustomizedDuration';
 import SetDuration from '../../components/Savings/SetDuration';
+
 const SavingsGoal = () => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
@@ -54,7 +55,7 @@ const SavingsGoal = () => {
   const [showTime, setShowTime] = useState(false);
   const [showCategory, setShowCategory] = useState(false);
   const [showSource, setShowSource] = useState(false);
-  const [isProceedButtonDisabled, setProceedButtonDisabled] = useState(false);
+  const [isProceedButtonDisabled, setProceedButtonDisabled] = useState(true);
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const [showGoalSheet, setShowGoalSheet] = useState(false);
   const [estimatedAmount, setEstimatedAmount] = useState(0);
@@ -74,7 +75,7 @@ const SavingsGoal = () => {
   const [customizedDuration, setCustomizedDuration] = useState('');
 
   const savingsType = savingsTypes?.data?.find(
-    (item) => item.name == 'jompVault'
+    (item) => item.name === 'jompVault'
   );
 
   useEffect(() => {
@@ -84,7 +85,8 @@ const SavingsGoal = () => {
         payload: savingsType.interestRate.toString(),
       });
     }
-  }, []);
+  }, [savingsType]);
+
   const onChange = (event: any, selectedDate?: Date) => {
     setShowDate(false);
     if (selectedDate) {
@@ -95,6 +97,7 @@ const SavingsGoal = () => {
       });
     }
   };
+
   const paystackKey = Constants.expoConfig?.extra?.PAYSTACK_KEY as string;
 
   const onChangeTime = (event: any, selectedDate?: Date) => {
@@ -105,7 +108,6 @@ const SavingsGoal = () => {
         minute: '2-digit',
         hour12: false,
       });
-
       savingsInitialState({
         type: 'SET_PREFERRED_TIME',
         payload: time,
@@ -119,8 +121,8 @@ const SavingsGoal = () => {
   const showDatePicker = () => {
     setShowDate(true);
   };
+
   useEffect(() => {
-    // set end date based on the start date and selected duration
     if (state.startDate && state.duration) {
       const startDate = new Date(state.startDate);
       const duration = new Date(state.duration);
@@ -146,10 +148,9 @@ const SavingsGoal = () => {
         +state.targetAmount,
         state.startDate.toISOString(),
         state.endDate.toISOString(),
-        state.frequency as any
+        state.frequency
       );
-
-      setEstimatedAmount(+savingsPerPeriod);
+      setEstimatedAmount(savingsPerPeriod ? +savingsPerPeriod : 0);
     }
     if (
       state.targetAmount &&
@@ -162,10 +163,9 @@ const SavingsGoal = () => {
         +state.monthlyContribution,
         state.startDate.toISOString(),
         state.endDate.toISOString(),
-        state.frequency as any
-      ).toFixed(2);
-
-      setNewGoal(+savingsPerPeriod);
+        state.frequency
+      );
+      setNewGoal(savingsPerPeriod ? +savingsPerPeriod.toFixed(2) : 0);
     }
   }, [
     state.targetAmount,
@@ -176,14 +176,14 @@ const SavingsGoal = () => {
   ]);
 
   useEffect(() => {
-    if (+state.monthlyContribution > +state.targetAmount) {
+    if (+state.monthlyContribution > +state.targetAmount && state.targetAmount) {
       setShowPreferredSavingsWarning(true);
     } else {
       setShowPreferredSavingsWarning(false);
     }
   }, [state.targetAmount, state.monthlyContribution]);
+
   useEffect(() => {
-    // diabled proceed button if any of the fields except auto save, prefered time, auto withdrawal are empty
     if (
       !state.targetAmount ||
       !state.goalName ||
@@ -201,6 +201,7 @@ const SavingsGoal = () => {
       setProceedButtonDisabled(false);
     }
   }, [state]);
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -208,6 +209,7 @@ const SavingsGoal = () => {
           name="arrow-back-ios"
           size={size.getHeightSize(18)}
           color="white"
+          onPress={() => navigate('PreviousScreen')} // Replace with actual navigation
         />
         <CText
           color={'white'}
@@ -236,20 +238,7 @@ const SavingsGoal = () => {
           >
             Create a Savings Goal
           </CText>
-          <CText
-            color={'secondaryBlack'}
-            fontSize={16}
-            lineHeight={22.4}
-            fontFamily="regular"
-            style={{
-              opacity: 0.75,
-              marginTop: size.getHeightSize(4),
-            }}
-          >
-            Set up a new savings goal and get paid every day (@{' '}
-            {savingsType?.interestRate}% interest P.A) to reach your goals
-            faster.
-          </CText>
+          
           <View
             style={{
               backgroundColor: '#DBD4FC',
@@ -274,7 +263,7 @@ const SavingsGoal = () => {
               }}
             >
               Set up a new savings target and get paid every day (@{' '}
-              {savingsType?.interestRate}% interest P.A) to reach your goals
+              {savingsType?.interestRate ?? 0}% interest P.A) to reach your goals
               faster.
             </CText>
           </View>
@@ -325,7 +314,6 @@ const SavingsGoal = () => {
               <View style={styles.wrap}>
                 <Pressable
                   onPress={() => {
-                    // set date of 1 month from now
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 1);
@@ -353,7 +341,6 @@ const SavingsGoal = () => {
                 <Pressable
                   onPress={() => {
                     setHideCustomizedDuration(true);
-                    // set date of 3 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 3);
                     savingsInitialState({
@@ -366,9 +353,7 @@ const SavingsGoal = () => {
                     });
                     setEndDate('3months');
                   }}
-                  style={
-                    endDate === '3months' ? styles.isSelected : styles.view
-                  }
+                  style={endDate === '3months' ? styles.isSelected : styles.view}
                 >
                   <CText
                     color={endDate === '3months' ? 'white' : 'primaryColor'}
@@ -382,7 +367,6 @@ const SavingsGoal = () => {
                 <Pressable
                   onPress={() => {
                     setHideCustomizedDuration(true);
-                    // set date of 6 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 6);
                     savingsInitialState({
@@ -395,9 +379,7 @@ const SavingsGoal = () => {
                     });
                     setEndDate('6months');
                   }}
-                  style={
-                    endDate === '6months' ? styles.isSelected : styles.view
-                  }
+                  style={endDate === '6months' ? styles.isSelected : styles.view}
                 >
                   <CText
                     color={endDate === '6months' ? 'white' : 'primaryColor'}
@@ -411,23 +393,19 @@ const SavingsGoal = () => {
                 <Pressable
                   onPress={() => {
                     setHideCustomizedDuration(true);
-                    // set date of 9 month from now
                     const date = new Date();
                     date.setMonth(date.getMonth() + 9);
                     savingsInitialState({
                       type: 'SET_DURATION',
                       payload: date,
                     });
-
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
                       payload: '9 months',
                     });
                     setEndDate('9months');
                   }}
-                  style={
-                    endDate === '9months' ? styles.isSelected : styles.view
-                  }
+                  style={endDate === '9months' ? styles.isSelected : styles.view}
                 >
                   <CText
                     color={endDate === '9months' ? 'white' : 'primaryColor'}
@@ -441,7 +419,6 @@ const SavingsGoal = () => {
                 <Pressable
                   onPress={() => {
                     setHideCustomizedDuration(true);
-                    // set date of 1 year from now
                     const date = new Date();
                     date.setFullYear(date.getFullYear() + 1);
                     savingsInitialState({
@@ -469,9 +446,7 @@ const SavingsGoal = () => {
                   onPress={() => {
                     setShowCustomizeDuration(true);
                   }}
-                  style={
-                    endDate === 'customize' ? styles.isSelected : styles.view
-                  }
+                  style={endDate === 'customize' ? styles.isSelected : styles.view}
                 >
                   <CText
                     color={endDate === 'customize' ? 'white' : 'primaryColor'}
@@ -512,7 +487,7 @@ const SavingsGoal = () => {
                       lineHeight={22.4}
                       fontFamily="semibold"
                     >
-                      {customizedDuration}
+                      {customizedDuration || 'Select duration'}
                     </CText>
                   </Pressable>
                 </>
@@ -534,75 +509,128 @@ const SavingsGoal = () => {
               >
                 How will you like to save?
               </CText>
+              {!endDate && (
+                <CText
+                  color="secondaryBlack"
+                  fontSize={14}
+                  lineHeight={20}
+                  fontFamily="regular"
+                  style={{ marginBottom: size.getHeightSize(8) }}
+                >
+                  Please select a savings duration first.
+                </CText>
+              )}
               <View style={styles.wrap}>
                 <Pressable
                   onPress={() => {
-                    savingsInitialState({
-                      type: 'SET_FREQUENCY',
-                      payload: 'daily',
-                    });
+                    if (endDate) {
+                      savingsInitialState({
+                        type: 'SET_FREQUENCY',
+                        payload: 'daily',
+                      });
+                    } else {
+                      dispatch(
+                        updateToast({
+                          displayToast: true,
+                          toastMessage: 'Please select a savings duration first',
+                          toastType: 'info',
+                        })
+                      );
+                    }
                   }}
+                  disabled={!endDate}
                   style={
-                    state.frequency === 'daily'
+                    state.frequency === 'daily' && endDate
                       ? styles.isSelected
                       : styles.view
                   }
                 >
                   <CText
                     color={
-                      state.frequency === 'daily' ? 'white' : 'primaryColor'
+                      state.frequency === 'daily' && endDate
+                        ? 'white'
+                        : 'primaryColor'
                     }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
+                    style={!endDate ? { opacity: 0.5 } : {}}
                   >
                     Daily
                   </CText>
                 </Pressable>
                 <Pressable
                   onPress={() => {
-                    savingsInitialState({
-                      type: 'SET_FREQUENCY',
-                      payload: 'weekly',
-                    });
+                    if (endDate) {
+                      savingsInitialState({
+                        type: 'SET_FREQUENCY',
+                        payload: 'weekly',
+                      });
+                    } else {
+                      dispatch(
+                        updateToast({
+                          displayToast: true,
+                          toastMessage: 'Please select a savings duration first',
+                          toastType: 'info',
+                        })
+                      );
+                    }
                   }}
+                  disabled={!endDate}
                   style={
-                    state.frequency === 'weekly'
+                    state.frequency === 'weekly' && endDate
                       ? styles.isSelected
                       : styles.view
                   }
                 >
                   <CText
                     color={
-                      state.frequency === 'weekly' ? 'white' : 'primaryColor'
+                      state.frequency === 'weekly' && endDate
+                        ? 'white'
+                        : 'primaryColor'
                     }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
+                    style={!endDate ? { opacity: 0.5 } : {}}
                   >
                     Weekly
                   </CText>
                 </Pressable>
                 <Pressable
                   onPress={() => {
-                    savingsInitialState({
-                      type: 'SET_FREQUENCY',
-                      payload: 'monthly',
-                    });
+                    if (endDate) {
+                      savingsInitialState({
+                        type: 'SET_FREQUENCY',
+                        payload: 'monthly',
+                      });
+                    } else {
+                      dispatch(
+                        updateToast({
+                          displayToast: true,
+                          toastMessage: 'Please select a savings duration first',
+                          toastType: 'info',
+                        })
+                      );
+                    }
                   }}
+                  disabled={!endDate}
                   style={
-                    state.frequency === 'monthly'
+                    state.frequency === 'monthly' && endDate
                       ? styles.isSelected
                       : styles.view
                   }
                 >
                   <CText
                     color={
-                      state.frequency === 'monthly' ? 'white' : 'primaryColor'
+                      state.frequency === 'monthly' && endDate
+                        ? 'white'
+                        : 'primaryColor'
                     }
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="bold"
+                    style={!endDate ? { opacity: 0.5 } : {}}
                   >
                     Monthly
                   </CText>
@@ -620,18 +648,20 @@ const SavingsGoal = () => {
                   color={'secondaryBlack'}
                   fontFamily="regular"
                 >
-                  {new Intl.DateTimeFormat('en-GB', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                  }).format(new Date(state.startDate))}
+                  {state.startDate
+                    ? new Intl.DateTimeFormat('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }).format(new Date(state.startDate))
+                    : 'Select start date'}
                 </CText>
               </Pressable>
               {showDate && (
                 <DateTimePicker
                   value={date || new Date()}
                   minimumDate={new Date()}
-                  mode="date" // Can be "date", "time", or "datetime"
+                  mode="date"
                   display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                   onChange={onChange}
                   style={{
@@ -640,16 +670,25 @@ const SavingsGoal = () => {
                 />
               )}
             </View>
-
             <Pressable
               onPress={() => {
-                setShowCategory(true);
+                if (!state.targetAmount) {
+                  dispatch(
+                    updateToast({
+                      displayToast: true,
+                      toastMessage: 'Please set your target amount',
+                      toastType: 'info',
+                    })
+                  );
+                  return;
+                }
+                setShowSource(true);
               }}
               style={styles.view4}
             >
               <CText
                 color={
-                  state.savingCategory ? 'black' : (colors.black('70') as any)
+                  state.savingSource ? 'black' : colors.black('70')
                 }
                 fontSize={14}
                 lineHeight={19.2}
@@ -658,7 +697,7 @@ const SavingsGoal = () => {
                   flex: 1,
                 }}
               >
-                {state.savingCategory || 'Select category'}
+                {state.savingSource || 'Select source of funding'}
               </CText>
               <AntDesign
                 name="caretdown"
@@ -666,6 +705,19 @@ const SavingsGoal = () => {
                 color={colors.primary()}
               />
             </Pressable>
+            {state.savingSource === 'Wallet' && (
+              <CText
+                color="secondaryBlack"
+                fontSize={12}
+                lineHeight={14}
+                fontFamily="bold"
+                style={{
+                  textAlign: 'right',
+                }}
+              >
+                Wallet Bal: ₦{formatToAmount(user.balance ?? 0)}
+              </CText>
+            )}
             {state.targetAmount &&
               state.endDate &&
               state.frequency &&
@@ -676,14 +728,13 @@ const SavingsGoal = () => {
                     paddingHorizontal: size.getWidthSize(16),
                     paddingVertical: size.getHeightSize(8),
                     borderRadius: size.getHeightSize(8),
-
                     gap: size.getWidthSize(8),
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}
                 >
                   <CText
-                    color="secondary"
+                    color="secondaryBlack"
                     fontSize={12}
                     lineHeight={16.8}
                     fontFamily="regular"
@@ -692,13 +743,13 @@ const SavingsGoal = () => {
                       flex: 1,
                     }}
                   >
-                    Based on your selection above, you should be saving ₦{''}
+                    Based on your selection above, you should be saving ₦{' '}
                     {calculateSavingsPerPeriod(
                       +state.targetAmount,
                       state.startDate.toISOString(),
                       state.endDate.toISOString(),
-                      state.frequency as any
-                    )?.toFixed(2)}{' '}
+                      state.frequency
+                    )?.toFixed(2) ?? '0.00'}{' '}
                     {state.frequency.slice(0, 1).toLowerCase() +
                       state.frequency.slice(1).toLowerCase()}
                     .
@@ -717,7 +768,6 @@ const SavingsGoal = () => {
               placeholder="₦ Preferred amount to save on a basis"
               keyboardType="number-pad"
             />
-
             {showPreferredSavingsWarning && (
               <View style={styles.view6}>
                 <AntDesign
@@ -736,7 +786,6 @@ const SavingsGoal = () => {
                 </CText>
               </View>
             )}
-
             {state.targetAmount &&
               state.endDate &&
               state.frequency &&
@@ -747,8 +796,8 @@ const SavingsGoal = () => {
                       +state.targetAmount,
                       state.startDate.toISOString(),
                       state.endDate.toISOString(),
-                      state.frequency as any
-                    )
+                      state.frequency
+                    ) ?? 0
                   ).map((suggestedAmount, index) => (
                     <Pressable
                       key={index}
@@ -771,16 +820,39 @@ const SavingsGoal = () => {
                         lineHeight={19.2}
                         fontFamily="semibold"
                       >
-                        ₦ {suggestedAmount.toFixed(2).toString()}{' '}
+                        ₦ {suggestedAmount.toFixed(2)}
                       </CText>
                     </Pressable>
                   ))}
                 </View>
               )}
-
+            <Pressable
+              onPress={() => {
+                setShowCategory(true);
+              }}
+              style={styles.view4}
+            >
+              <CText
+                color={
+                  state.savingCategory ? 'black' : colors.black('70')
+                }
+                fontSize={14}
+                lineHeight={19.2}
+                fontFamily="semibold"
+                style={{
+                  flex: 1,
+                }}
+              >
+                {state.savingCategory || 'Select category'}
+              </CText>
+              <AntDesign
+                name="caretdown"
+                size={size.getHeightSize(16)}
+                color={colors.primary()}
+              />
+            </Pressable>
             <View style={styles.view4}>
               <CText
-                color={colors.black('70') as any}
                 fontSize={12}
                 lineHeight={19.2}
                 fontFamily="semibold"
@@ -824,7 +896,7 @@ const SavingsGoal = () => {
                 {showTime && (
                   <DateTimePicker
                     value={selectedTime || new Date()}
-                    mode="time" // Can be "date", "time", or "datetime"
+                    mode="time"
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     onChange={onChangeTime}
                     style={{
@@ -834,57 +906,8 @@ const SavingsGoal = () => {
                 )}
               </View>
             )}
-            <Pressable
-              onPress={() => {
-                if (!state.targetAmount) {
-                  dispatch(
-                    updateToast({
-                      displayToast: true,
-                      toastMessage: 'Please set your target amount',
-                      toastType: 'info',
-                    })
-                  );
-                  return;
-                }
-                setShowSource(true);
-              }}
-              style={styles.view4}
-            >
-              <CText
-                color={
-                  state.savingSource ? 'black' : (colors.black('70') as any)
-                }
-                fontSize={12}
-                lineHeight={19.2}
-                fontFamily="semibold"
-                style={{
-                  flex: 1,
-                }}
-              >
-                {state.savingSource || 'Select source of funding'}
-              </CText>
-              <AntDesign
-                name="caretdown"
-                size={size.getHeightSize(16)}
-                color={colors.primary()}
-              />
-            </Pressable>
-            {state.savingSource === 'Wallet' && (
-              <CText
-                color="secondaryBlack"
-                fontSize={12}
-                lineHeight={14}
-                fontFamily="bold"
-                style={{
-                  textAlign: 'right',
-                }}
-              >
-                Wallet Bal: ₦{formatToAmount(user.balance)}
-              </CText>
-            )}
             <View style={styles.view4}>
               <CText
-                color={colors.black('70') as any}
                 fontSize={12}
                 lineHeight={19.2}
                 fontFamily="semibold"
@@ -920,7 +943,7 @@ const SavingsGoal = () => {
             onPress={() => {
               if (
                 state.startDate.toDateString() === new Date().toDateString() &&
-                +state.monthlyContribution > user.balance
+                +state.monthlyContribution > (user.balance ?? 0)
               ) {
                 dispatch(
                   updateToast({
@@ -932,19 +955,18 @@ const SavingsGoal = () => {
                 );
                 return;
               }
-              if (+(+state.monthlyContribution).toFixed(2) != estimatedAmount) {
+              if (+(+state.monthlyContribution).toFixed(2) !== estimatedAmount) {
                 setShowGoalSheet(true);
                 savingsInitialState({
                   type: 'SET_TARGET_AMOUNT',
                   payload: newGoal.toString(),
                 });
                 return;
-              } else {
-                navigate('CreateSavings', {
-                  ...state,
-                  targetAmount: state.targetAmount,
-                });
               }
+              navigate('CreateSavings', {
+                ...state,
+                targetAmount: state.targetAmount,
+              });
             }}
             label="Proceed"
           />
@@ -980,18 +1002,16 @@ const SavingsGoal = () => {
       {pay && (
         <View style={{ flex: 1 }}>
           <Paystack
-            paystackKey={paystackKey}
-            amount={state.monthlyContribution}
+            paystackKey="pk_test_dcf001888005335ea262e8ec9491f490d11731b6"
+            amount={+state.monthlyContribution || 0}
             billingEmail={user.email}
             phone={user?.phoneNumber}
             activityIndicatorColor={colors.primary()}
-            onCancel={(e) => {
-              // console.log(e);
-            setPay(false);
+            onCancel={() => {
+              setPay(false);
             }}
             onSuccess={(response) => {
-              console.log(response);
-              if (response.data.event == 'successful') {
+              if (response.data.event === 'successful') {
                 setPay(false);
                 dispatch(
                   updateToast({
@@ -1002,12 +1022,6 @@ const SavingsGoal = () => {
                     toastType: 'success',
                   })
                 );
-                // savingsInitialState({
-                //   type:"SET_CARD_DETAILS",
-                //   payload:{
-                //      cardNumber:response.data.
-                //   }
-                // })
               }
             }}
             autoStart={pay}
@@ -1016,7 +1030,7 @@ const SavingsGoal = () => {
       )}
       <GoalBottomsheet
         visibility={showGoalSheet}
-        amount={newGoal?.toString()}
+        amount={newGoal.toString()}
         onClose={() => {
           setShowGoalSheet(false);
         }}

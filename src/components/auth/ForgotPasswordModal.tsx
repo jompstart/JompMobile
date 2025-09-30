@@ -3,7 +3,6 @@ import React, { useRef, useState } from 'react';
 import BottomsheetWrapper from '../../shared/BottomsheetWrapper';
 import CText from '../../shared/CText';
 import { size } from '../../config/size';
-import VerifyMailIcon from '../../../assets/svgs/Onboarding/VerifyMailIcon';
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 import { colors } from '../../constants/colors';
 import PrimaryButton from '../../shared/PrimaryButton';
@@ -11,12 +10,16 @@ import { useNavigation } from '@react-navigation/native';
 import ForgotPasswordLockIcon from '../../../assets/svgs/Onboarding/ForgotPasswordLockIcon';
 import MailIcon from '../../../assets/svgs/Onboarding/MailIcon';
 import { AuthService } from '../../services/auth';
+import { useAppDispatch } from '../../controller/redux.controller';
+import { updateToast } from '../../features/ui/ui.slice';
+
 interface Props {
   isVisible: boolean;
   onClose: () => void;
   onSuccess?: () => void;
   onChangeText?: (text: string) => void;
 }
+
 const ForgotPasswordModal = ({
   isVisible,
   onSuccess,
@@ -25,29 +28,50 @@ const ForgotPasswordModal = ({
 }: Props) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const authInstance = new AuthService();
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
   const handleForgotPassword = async () => {
     setIsLoading(true);
     try {
       const response = await authInstance.forgotPassword(email);
-      if (response.statusCode == 200 && response.success) {
+
+      if (response.statusCode === 200 && response.success) {
         onSuccess?.();
+      } else {
+        // Show toast if API returns failure
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: response.message || 'Email not found',
+            toastType: 'info',
+          })
+        );
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log('Forgot password error:', error);
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage:
+            error?.response?.data?.message ||
+            'Email not found, please try again.',
+          toastType: 'info',
+        })
+      );
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
       visibility={isVisible}
-      onClose={() => {
-        onClose();
-      }}
+      onClose={onClose}
     >
       <View>
         <ForgotPasswordLockIcon
@@ -57,6 +81,7 @@ const ForgotPasswordModal = ({
           }}
           size={size.getHeightSize(160)}
         />
+
         <CText
           fontFamily="bold"
           fontSize={24}
@@ -68,6 +93,7 @@ const ForgotPasswordModal = ({
         >
           Forgot Password?
         </CText>
+
         <CText
           color="secondaryBlack"
           fontFamily="regular"
@@ -80,6 +106,7 @@ const ForgotPasswordModal = ({
         >
           Please enter your registered email to reset your password.
         </CText>
+
         <CText
           style={{
             marginTop: size.getHeightSize(24),
@@ -91,6 +118,7 @@ const ForgotPasswordModal = ({
         >
           Email Address
         </CText>
+
         <View
           style={{
             borderWidth: size.getHeightSize(1),
@@ -107,6 +135,7 @@ const ForgotPasswordModal = ({
             numberOfLines={1}
             placeholder="@mail.com"
             style={styles.input}
+            value={email}
             onChangeText={(text) => {
               setEmail(text);
               onChangeText?.(text);
@@ -114,6 +143,10 @@ const ForgotPasswordModal = ({
           />
           <MailIcon size={size.getHeightSize(24)} />
         </View>
+
+        {/* Show error if email not found */}
+      
+
         <PrimaryButton
           onPress={handleForgotPassword}
           disabled={!email}
@@ -124,6 +157,7 @@ const ForgotPasswordModal = ({
           }}
           label="Submit"
         />
+
         <CText
           fontFamily="semibold"
           style={{
@@ -133,9 +167,7 @@ const ForgotPasswordModal = ({
         >
           Remember your login password?{' '}
           <CText
-            onPress={() => {
-              onClose();
-            }}
+            onPress={onClose}
             color="secondary"
             fontFamily="semibold"
           >

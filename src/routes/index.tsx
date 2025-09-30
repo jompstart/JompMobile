@@ -47,6 +47,9 @@ import AcceptService from '../screens/services/AcceptService';
 import PendingService from '../screens/services/PendingService';
 import AcceptPendingService from '../screens/services/AcceptPendingService';
 import UpdateProfile from '../screens/Dashboard/UpdateProfile';
+import ServiceDetailScreen from '../screens/services/ServiceDetailScreen';
+
+
 interface pages {
   name: keyof RootStackParamList;
   component: any;
@@ -126,6 +129,10 @@ const MainNavigator = () => {
     {
       name: 'SelfDetails',
       component: SelfDetails,
+    },
+     {
+      name: 'ServiceDetailScreen',
+      component: ServiceDetailScreen,
     },
     {
       name: 'LoanPage',

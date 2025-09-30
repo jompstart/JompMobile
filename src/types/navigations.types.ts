@@ -41,6 +41,7 @@ export type RootStackParamList = {
   WithdrawFunds: undefined;
   GuardianDetails: undefined;
   SelfDetails: undefined;
+  ServiceDetailScreen: undefined;
   LoanPage: undefined;
   SchoolFees: undefined;
   Transport: undefined;

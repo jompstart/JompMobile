@@ -1,5 +1,5 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useContext, useEffect, useReducer } from 'react';
+import { StyleSheet, View, TouchableOpacity, Modal, FlatList } from 'react-native';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { size } from '../../config/size';
 import CText from '../../shared/CText';
 import PTextInput from '../../shared/PTextInput';
@@ -22,6 +22,151 @@ import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../types';
 import { updateToast } from '../../features/ui/ui.slice';
 import { useGetIdempotencyKey } from '../../hooks/api/auth';
+
+// Custom Dropdown Component
+const CustomDropdown = ({ 
+  options, 
+  selectedValue, 
+  onValueChange, 
+  placeholder 
+}: {
+  options: { label: string; value: string }[];
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  placeholder: string;
+}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState('');
+
+  useEffect(() => {
+    const selectedOption = options.find(option => option.value === selectedValue);
+    setSelectedLabel(selectedOption ? selectedOption.label : '');
+  }, [selectedValue, options]);
+
+  const handleSelect = (value: string, label: string) => {
+    onValueChange(value);
+    setSelectedLabel(label);
+    setModalVisible(false);
+  };
+
+  return (
+    <View>
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={{
+          borderWidth: 1,
+          borderColor: '#E5E5E5',
+          borderRadius: 8,
+          padding: 16,
+          backgroundColor: 'white',
+        }}
+      >
+        <CText
+          fontSize={16}
+          lineHeight={22.4}
+          fontFamily="regular"
+          style={{
+            opacity: selectedValue ? 0.75 : 0.6,
+          }}
+        >
+          {selectedLabel || placeholder}
+        </CText>
+      </TouchableOpacity>
+
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          }}
+        >
+
+
+          
+          <View
+            style={{
+              backgroundColor: 'white',
+              borderRadius: 12,
+              padding: 20,
+              width: '80%',
+              maxHeight: '60%',
+            }}
+          >
+            <CText
+              color={'black'}
+              fontSize={18}
+              lineHeight={28.8}
+              fontFamily="bold"
+              style={{
+                opacity: 0.75,
+                marginBottom: 16,
+                textAlign: 'center',
+              }}
+            >
+              Select Accommodation Type
+            </CText>
+            <FlatList
+              data={options}
+              keyExtractor={(item) => item.value}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => handleSelect(item.value, item.label)}
+                  style={{
+                    padding: 16,
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#F0F0F0',
+                  }}
+                >
+                  <CText
+                    color={'black'}
+                    fontSize={16}
+                    lineHeight={22.4}
+                    fontFamily="regular"
+                    style={{
+                      opacity: 0.75,
+                    }}
+                  >
+                    {item.label}
+                  </CText>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={{
+                marginTop: 16,
+                padding: 12,
+                backgroundColor: '#F0F0F0',
+                borderRadius: 8,
+                alignItems: 'center',
+              }}
+            >
+              <CText
+                color={'black'}
+                fontSize={16}
+                lineHeight={22.4}
+                fontFamily="medium"
+                style={{
+                  opacity: 0.75,
+                }}
+              >
+                Cancel
+              </CText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
 const HouseRentsForms = ({
   shouldLoad,
 }: {
@@ -40,6 +185,23 @@ const HouseRentsForms = ({
     rentLoanFormReducer,
     rentLoanInitailState
   );
+  
+  // Accommodation type options
+  const accommodationOptions = [
+    { label: 'Self Contain (Selfcon)', value: 'selfcon' },
+  { label: 'Single Room (Shared Facilities)', value: 'single_room' },
+  { label: 'Mini Flat (1 Bedroom + Living Room)', value: 'mini_flat' },
+  { label: '2 Bedroom Flat', value: '2_bedroom' },
+  { label: '3 Bedroom Flat', value: '3_bedroom' },
+  { label: 'Bungalow', value: 'bungalow' },
+  { label: 'Duplex', value: 'duplex' },
+  { label: 'Terrace', value: 'terrace' },
+  { label: 'Penthouse', value: 'penthouse' },
+  { label: 'Studio Apartment', value: 'studio' },
+  { label: 'Mansion', value: 'mansion' },
+  { label: 'Others', value: 'others' },
+  ];
+
   const { mutate, data, isPending } = useMutation<
     API_RESPONSE<any>,
     Error,
@@ -59,18 +221,13 @@ const HouseRentsForms = ({
     },
     onSuccess: (data) => {
       navigation.navigate('SuccessPage');
-      // appDispatch(
-      //   updateToast({
-      //     toastMessage: data?.message,
-      //     displayToast: true,
-      //     toastType: data?.success === true ? 'success' : 'info',
-      //   })
-      // );
     },
   });
+  
   useEffect(() => {
     shouldLoad(isPending);
   }, [isPending]);
+  
   useEffect(() => {
     const isFormValid =
       state.rentAmount &&
@@ -130,6 +287,19 @@ const HouseRentsForms = ({
           marginTop: size.getHeightSize(25),
         }}
       >
+        {/* Accommodation Type Dropdown */}
+        <View>
+  <CustomDropdown
+    options={accommodationOptions}
+    selectedValue={state.accommodationType}
+    onValueChange={(value) => {
+      dispatch({ type: 'SET_ACCOMMODATION_TYPE', payload: value });
+    }}
+    placeholder="Select Type of Accommodation"
+  />
+</View>
+
+        {/* Rest of your form fields remain the same */}
         <PTextInput
           isAmount
           value={state.rentAmount}
@@ -154,6 +324,17 @@ const HouseRentsForms = ({
           }}
           placeholder="Name of Landlord"
         />
+        
+        {/* Landlord Email (Optional) */}
+        <PTextInput
+          keyboardType="email-address"
+          value={state.landlordEmail}
+          onChangeText={(text) => {
+            dispatch({ type: 'SET_LANDLORD_EMAIL', payload: text });
+          }}
+          placeholder="Landlord Email (Optional)"
+        />
+        
         <PTextInput
           value={state.landlordAccountName}
           onChangeText={(text) => {
@@ -191,19 +372,22 @@ const HouseRentsForms = ({
           }}
           placeholder="Your Occupation"
         />
+        
+        {/* Updated Company/Organization Name Field */}
         <PTextInput
           value={state.companyName}
           onChangeText={(text) => {
             dispatch({ type: 'SET_COMPANY_NAME', payload: text });
           }}
-          placeholder="Your Company Name"
+          placeholder="Your Company/Organization Name"
         />
+        
         <PTextInput
           value={state.companyPhone}
           onChangeText={(text) => {
             dispatch({ type: 'SET_COMPANY_PHONE', payload: text });
           }}
-          placeholder="Company Phone Number"
+          placeholder="Company/Organization Phone Number"
           keyboardType="phone-pad"
         />
         <PTextInput
@@ -219,7 +403,7 @@ const HouseRentsForms = ({
           onChangeText={(text) => {
             dispatch({ type: 'SET_COMPANY_EMAIL', payload: text });
           }}
-          placeholder="Company Email Address"
+          placeholder="Company/Organization Email Address"
         />
 
         <PTextInput
@@ -227,7 +411,7 @@ const HouseRentsForms = ({
           onChangeText={(text) => {
             dispatch({ type: 'SET_COMPANY_ADDRESS', payload: text });
           }}
-          placeholder="Company Address"
+          placeholder="Company/Organization Address"
         />
 
         <AttachmentView

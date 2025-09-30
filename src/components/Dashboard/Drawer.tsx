@@ -104,6 +104,24 @@ const Drawer = (props: Props) => {
               House Rent
             </CText>
           </Pressable>
+            <Pressable
+            onPress={() => {
+              navigation.navigate('Notification');
+            }}
+            style={styles.view1}
+          >
+            <HouseRentIcon size={size.getWidthSize(40)} />
+            <CText
+              fontFamily="semibold"
+              fontSize={16}
+              color={colors.black('70') as any}
+              style={{
+                flex: 1,
+              }}
+            >
+             Notification
+            </CText>
+          </Pressable>
           <Pressable
             onPress={() => {
               navigation.navigate('TransportDetails');
@@ -293,7 +311,7 @@ const Drawer = (props: Props) => {
             onPress={() =>
               dispatch(
                 updateTermsAndConditionVisibility({
-                  url: 'https://dev.jompstart.com/terms',
+                  url: 'https://dev.jompstart.com/terms&conditions',
                   visible: true,
                 })
               )

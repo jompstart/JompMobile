@@ -182,7 +182,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                 flex: 1,
               }}
             >
-              This loan type offers a repayment of {loanDuration}{' '}
+              This loan type offers a repayment of up to {loanDuration}{' '}
               {loanDuration == 1 ? 'month' : 'months'}
             </CText>
           </View>
@@ -203,7 +203,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
             />
             <PTextInput
               isAmount
-              maxAmount={500000}
+              maxAmount={50000000000000000}
               onChangeText={(text) => {
                 stateDispatch({ type: 'SET_LOAN_AMOUNT', payload: +text });
               }}

@@ -10,7 +10,6 @@ import CTextInput from '../../shared/CTextInput';
 import InfoIcon from '../../../assets/svgs/Onboarding/InfoIcon';
 import { ScrollView } from 'react-native-gesture-handler';
 import CheckCircle from '../../../assets/svgs/Onboarding/CheckCircle';
-import SecondaryButton from '../../shared/SecondaryButton';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import SuccessModal from '../../shared/SuccessModal';
@@ -26,23 +25,68 @@ import { userSelector } from '../../features/user/user.selector';
 import { updateToast } from '../../features/ui/ui.slice';
 import { base64ToFile } from '../../utils/fileReader';
 import { changeUserState } from '../../features/user/user.slice';
+
 const VerifyBvn = () => {
   const [isVerified, setVerificationStatus] = useState(false);
   const [bvn, setBvn] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [bvnError, setBvnError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [showUploadFileModal, setShowUploadFileModal] = useState(false);
   const [fileUri, setFileUri] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const dispatch = useAppDispatch();
   const [isVerificationLoading, setVerificationLoadingState] = useState(false);
   const navigation = useNavigation();
   const user = useAppSelector(userSelector);
+  const dispatch = useAppDispatch();
 
   const complianceInstance = new ComplianceService(
     user.userId,
     user.customerId
   );
 
+  // Validation function for BVN and Phone Number
+  const validateInputs = () => {
+    let isValid = true;
+
+    // Validate BVN (max 11 digits)
+    if (!/^\d{1,11}$/.test(bvn)) {
+      setBvnError('BVN must be up to 11 digits.');
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'BVN must be up to 11 digits.',
+          toastType: 'info',
+        })
+      );
+      isValid = false;
+    } else {
+      setBvnError('');
+    }
+
+    // Validate Phone Number (max 12 digits)
+    if (!/^\d{1,12}$/.test(phoneNumber)) {
+      setPhoneError('Phone number must be up to 12 digits.');
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'Phone number must be up to 12 digits.',
+          toastType: 'info',
+        })
+      );
+      isValid = false;
+    } else {
+      setPhoneError('');
+    }
+
+    return isValid;
+  };
+
   const handleVerifyBvn = async () => {
+    // Validate inputs before proceeding
+    if (!validateInputs()) {
+      return;
+    }
+
     setVerificationLoadingState(true);
     try {
       const response = await complianceInstance.validateCustomerCompliance(
@@ -119,7 +163,7 @@ const VerifyBvn = () => {
       dispatch(
         updateToast({
           displayToast: true,
-          toastMessage: error?.message,
+          toastMessage: error?.message || 'An error occurred during verification.',
           toastType: 'info',
         })
       );
@@ -127,6 +171,7 @@ const VerifyBvn = () => {
       setVerificationLoadingState(false);
     }
   };
+
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
       <View
@@ -209,11 +254,19 @@ const VerifyBvn = () => {
             }}
           >
             <CTextInput
-              onChangeText={setBvn}
+              onChangeText={(text) => {
+                setBvn(text);
+                if (text.length > 11) {
+                  setBvnError('BVN must be up to 11 digits.');
+                } else {
+                  setBvnError('');
+                }
+              }}
               required
               placeholder="Enter here"
               title="BVN"
               keyboardType="phone-pad"
+              maxLength={11} // Restrict input to 11 characters
             />
             <View
               style={{
@@ -221,11 +274,19 @@ const VerifyBvn = () => {
               }}
             />
             <CTextInput
-              onChangeText={setPhoneNumber}
+              onChangeText={(text) => {
+                setPhoneNumber(text);
+                if (text.length > 12) {
+                  setPhoneError('Phone number must be up to 12 digits.');
+                } else {
+                  setPhoneError('');
+                }
+              }}
               required
               placeholder="1234567890"
               title="Phone Number"
               keyboardType="phone-pad"
+              maxLength={12} // Restrict input to 12 characters
             />
             <View
               style={{
@@ -259,7 +320,6 @@ const VerifyBvn = () => {
               <ScrollView
                 showsVerticalScrollIndicator
                 indicatorStyle="white"
-                //   scrollIndicatorInsets={{ right: 40 }}
               >
                 <View
                   style={{
@@ -370,7 +430,7 @@ const VerifyBvn = () => {
           >
             <PrimaryButton
               isLoading={isVerificationLoading}
-              disabled={!bvn}
+              disabled={!bvn || !phoneNumber || !!bvnError || !!phoneError}
               label="Verify"
               onPress={handleVerifyBvn}
             />
@@ -392,7 +452,6 @@ const VerifyBvn = () => {
           onSelectedImage={(uri) => {
             setFileUri(uri);
             setShowUploadFileModal(false);
-            // convertImageToBinary(uri);
           }}
         />
       </View>

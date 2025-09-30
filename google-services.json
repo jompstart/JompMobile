@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "653988595692",
+    "project_id": "jompstart-45825",
+    "storage_bucket": "jompstart-45825.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653988595692:android:eff3a4138230f9e09522c9",
+        "android_client_info": {
+          "package_name": "com.jomp.jompstart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACzTo9_RL9R1H44KdJGnacvQJN00CKfnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
