@@ -1,12 +1,12 @@
-import { Text, TextProps } from 'react-native';
-import React from 'react';
-import { size } from '../config/size';
-import { colors } from '../constants/colors';
+import { Text, TextProps } from "react-native";
+import React from "react";
+import { size } from "../config/size";
+import { colors } from "../constants/colors";
 
 // Define the props interface
 interface CTextProps extends TextProps {
   fontFamily?: keyof typeof fontFamilyMap;
-  color?: keyof typeof fontColorMap;
+  color?: keyof typeof fontColorMap | string;
   fontSize?: number;
   lineHeight?: number;
   obscureText?: boolean;
@@ -14,26 +14,26 @@ interface CTextProps extends TextProps {
 
 // Map font family names to actual font files
 const fontFamilyMap = {
-  regular: 'AvenirLTStd-Roman',
-  medium: 'AvenirLTStd-Medium',
-  bold: 'AvenirLTStd-Heavy',
-  semibold: 'AvenirLTStd-Medium',
+  regular: "AvenirLTStd-Roman",
+  medium: "AvenirLTStd-Medium",
+  bold: "AvenirLTStd-Heavy",
+  semibold: "AvenirLTStd-Medium",
 };
 
 // Map color names to actual color codes
 export const fontColorMap = {
-  black: '#212121',
-  secondaryBlack: '#616161',
-  warning: '#F75555',
-  success: '#2ECC71',
-  white: '#FFFFFF',
-  secondary: '#00008B',
-  black2: '#303030',
-  primaryColor: '#EFA005',
-  aappBackground: '#F9F8FF',
-  blue: '#175CD3',
-  black3: '#475467',
-  purple: '#31005C',
+  black: "#212121",
+  secondaryBlack: "#616161",
+  warning: "#F75555",
+  success: "#2ECC71",
+  white: "#FFFFFF",
+  secondary: "#00008B",
+  black2: "#303030",
+  primaryColor: "#EFA005",
+  aappBackground: "#F9F8FF",
+  blue: "#175CD3",
+  black3: "#475467",
+  purple: "#31005C",
 };
 
 const CText: React.FC<CTextProps> = ({
@@ -77,7 +77,7 @@ const CText: React.FC<CTextProps> = ({
         lineHeightStyle,
       ]}
     >
-      {obscureText ? '******' : children}
+      {obscureText ? "******" : children}
     </Text>
   );
 };

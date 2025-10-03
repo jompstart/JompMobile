@@ -6,7 +6,6 @@ import {
   View,
   Pressable,
   ActivityIndicator,
-  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
