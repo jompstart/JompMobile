@@ -30,6 +30,7 @@ import {
 import { API_RESPONSE } from '../../../types';
 import { SelfSchoolFeeDetails } from '../../../interface/provider';
 import { useGetIdempotencyKey } from '../../../hooks/api/auth';
+
 const SelfSchoolFeeForm = () => {
   const { width } = Dimensions.get('window');
   const user = useAppSelector(userSelector);
@@ -49,7 +50,7 @@ const SelfSchoolFeeForm = () => {
     isPending,
     data,
   } = useMutation<API_RESPONSE<any>, Error, SelfSchoolFeeDetails>({
-    mutationFn: (data) => providerInstance.registerSchoolFee(data), // Ensure data is passed
+    mutationFn: (data) => providerInstance.registerSchoolFee(data),
     onError: (error) => {
       console.log(error);
       dispatch(
@@ -70,7 +71,7 @@ const SelfSchoolFeeForm = () => {
     {
       label: 'Basic Information (Personal Details)',
       title: 'Next: Education Details ',
-      component: <Form1/>,
+      component: <Form1 />,
     },
     {
       label: 'Education Details (Your Education Details)',
@@ -153,6 +154,7 @@ const SelfSchoolFeeForm = () => {
   const flatListRef = useRef<FlatList<any>>(null);
 
   const [progress, setProgress] = useState(25);
+
   const handleNextView = async () => {
     if (viewIndex < views.length - 1) {
       scrollViewRef.current?.scrollToPosition(0, 0, true);
@@ -169,6 +171,18 @@ const SelfSchoolFeeForm = () => {
       ...selfSchoolFeeDetails,
       IdempotencyKey: idempotencyKey,
     });
+  };
+
+  const handlePreviousView = () => {
+    if (viewIndex > 0) {
+      scrollViewRef.current?.scrollToPosition(0, 0, true);
+      flatListRef.current?.scrollToIndex({
+        index: viewIndex - 1,
+        animated: true,
+      });
+      setViewIndex(viewIndex - 1);
+      setProgress(progress - 100 / views.length);
+    }
   };
 
   return (
@@ -286,12 +300,9 @@ const SelfSchoolFeeForm = () => {
             showsHorizontalScrollIndicator={false}
             bounces={false}
             onMomentumScrollEnd={(e) => {
-              // Calculate the new view index based on the scroll position
               const newIndex = Math.round(
                 e.nativeEvent.contentOffset.x / Dimensions.get('window').width
               );
-
-              // Update the view index and progress
               if (newIndex !== viewIndex) {
                 setViewIndex(newIndex);
                 setProgress(((newIndex + 1) / views.length) * 100);
@@ -322,14 +333,32 @@ const SelfSchoolFeeForm = () => {
           />
         </View>
       </KeyboardAwareScrollView>
-      <PrimaryButton
-        disabled={shouldDisableButton}
+      <View
         style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
           marginBottom: size.getHeightSize(32),
         }}
-        label="Proceed"
-        onPress={handleNextView}
-      />
+      >
+        {viewIndex > 0 && (
+          <PrimaryButton
+            label="Back"
+            onPress={handlePreviousView}
+            style={{
+              width: size.getWidthSize(150),
+              backgroundColor: colors.secondaryBlack, // Optional: Different style for Back button
+            }}
+          />
+        )}
+        <PrimaryButton
+          disabled={shouldDisableButton}
+          style={{
+            width: viewIndex > 0 ? size.getWidthSize(150) : '100%',
+          }}
+          label="Proceed"
+          onPress={handleNextView}
+        />
+      </View>
       <ShowLoader isLoading={isPending} />
       <StatesBottomsheet
         onStateSelected={(state) => {

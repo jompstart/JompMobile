@@ -236,34 +236,50 @@ const Notification: React.FC<NotificationScreenProps> = ({
     notification: NotificationItemData
   ) => {
     setState((prev) => ({ ...prev, selectedNotification: notification }));
-    if (notification.hasRedDot) {
-      try {
-        const response = await userService.markNotificationRead(
-          notification.id
-        );
 
-        console.log("Mark read response:", JSON.stringify(response, null, 2));
+    // Skip marking as read if the notification is already deleted
+    if (
+      !notification.hasRedDot ||
+      state.deletingNotificationId === notification.id
+    ) {
+      return;
+    }
 
-        const status =
-          (response as API_RESPONSE<{ status: string }>).data?.status ??
-          response.status;
-        if (status === "marked as read") {
-          setState((prev) => ({
-            ...prev,
-            notifications: prev.notifications.map((n) =>
-              n.id === notification.id ? { ...n, hasRedDot: false } : n
-            ),
-            unreadCount: Math.max(prev.unreadCount - 1, 0),
-          }));
-        } else {
-          console.warn("Unexpected response status:", status);
-          setState((prev) => ({
-            ...prev,
-            error: "Failed to mark notification as read",
-          }));
-        }
-      } catch (err) {
-        console.error("Failed to mark notification as read:", err);
+    try {
+      const response = await userService.markNotificationRead(notification.id);
+      console.log("Mark read response:", JSON.stringify(response, null, 2));
+
+      // Check for "message" instead of "status"
+      const message =
+        (response as API_RESPONSE<{ message: string }>).data?.message ??
+        response.message;
+      if (message === "Notification marked as read.") {
+        setState((prev) => ({
+          ...prev,
+          notifications: prev.notifications.map((n) =>
+            n.id === notification.id ? { ...n, hasRedDot: false } : n
+          ),
+          unreadCount: Math.max(prev.unreadCount - 1, 0),
+        }));
+      } else {
+        console.warn("Unexpected response message:", message);
+        setState((prev) => ({
+          ...prev,
+          error: "Failed to mark notification as read",
+        }));
+      }
+    } catch (err: any) {
+      console.error("Failed to mark notification as read:", err);
+      // Ignore "Notification not found" errors after deletion
+      if (err.message.includes("Notification not found")) {
+        setState((prev) => ({
+          ...prev,
+          notifications: prev.notifications.filter(
+            (n) => n.id !== notification.id
+          ),
+          unreadCount: Math.max(prev.unreadCount - 1, 0),
+        }));
+      } else {
         setState((prev) => ({
           ...prev,
           error: "Failed to mark notification as read",
@@ -273,6 +289,7 @@ const Notification: React.FC<NotificationScreenProps> = ({
   };
 
   // Handle deleting a notification
+  // Replace your handleDeleteNotification function with this:
   const handleDeleteNotification = async (notificationId: string) => {
     const notificationToDelete = state.notifications.find(
       (n) => n.id === notificationId
@@ -282,7 +299,7 @@ const Notification: React.FC<NotificationScreenProps> = ({
       return;
     }
 
-    // Optimistic update
+    // Optimistically update the UI
     setState((prev) => ({
       ...prev,
       notifications: prev.notifications.filter((n) => n.id !== notificationId),
@@ -300,42 +317,61 @@ const Notification: React.FC<NotificationScreenProps> = ({
         JSON.stringify(response, null, 2)
       );
 
-      const status =
-        (response as API_RESPONSE<{ status: string }>).data?.status ??
-        response.status;
-      if (status === "deleted") {
+      // Check for "message" instead of "status"
+      const message =
+        (response as API_RESPONSE<{ message: string }>).data?.message ??
+        response.message;
+      if (
+        message === "Notification deleted." ||
+        response.status === 200 ||
+        response.statusCode === 200
+      ) {
         Toast.show({
           type: "success",
           text1: "Success",
           text2: "Notification deleted successfully",
         });
       } else {
-        throw new Error("Invalid response from server");
+        throw new Error(`Unexpected response from server: ${message}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to delete notification:", err);
+
+      // Roll back the optimistic update
       setState((prev) => ({
         ...prev,
-        notifications: notificationToDelete
-          ? [...prev.notifications, notificationToDelete].sort((a, b) =>
-              b.id.localeCompare(a.id)
-            )
-          : prev.notifications,
-        error: "Failed to delete notification. Please try again.",
+        notifications: [...prev.notifications, notificationToDelete].sort(
+          (a, b) => (b.time > a.time ? 1 : -1)
+        ),
+        deletingNotificationId: null,
+        error: null,
       }));
+
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to delete notification. Please try again.",
+        text2:
+          err?.message || "Failed to delete notification. Please try again.",
       });
     } finally {
       setState((prev) => ({ ...prev, deletingNotificationId: null }));
     }
   };
 
-  // Handle clearing all notifications
+  // Replace your handleClearAllNotifications function with this:
   const handleClearAllNotifications = async () => {
-    setState((prev) => ({ ...prev, deletingNotificationId: "all" }));
+    const currentNotifications = state.notifications;
+    const currentUnreadCount = state.unreadCount;
+
+    // Optimistically clear notifications
+    setState((prev) => ({
+      ...prev,
+      notifications: [],
+      unreadCount: 0,
+      selectedNotification: null,
+      deletingNotificationId: "all",
+    }));
+
     try {
       const response = await userService.deleteAllNotifications();
       console.log(
@@ -343,31 +379,40 @@ const Notification: React.FC<NotificationScreenProps> = ({
         JSON.stringify(response, null, 2)
       );
 
-      const status =
-        (response as API_RESPONSE<{ status: string }>).data?.status ??
-        response.status;
-      if (status === "all deleted") {
-        setState((prev) => ({
-          ...prev,
-          notifications: [],
-          unreadCount: 0,
-          selectedNotification: null,
-        }));
+      // Check for "message" instead of "status"
+      const message =
+        (response as API_RESPONSE<{ message: string }>).data?.message ??
+        response.message;
+      if (
+        message === "All user notifications deleted." ||
+        response.status === 200 ||
+        response.statusCode === 200
+      ) {
         Toast.show({
           type: "success",
           text1: "Success",
           text2: "All notifications cleared successfully",
         });
       } else {
-        throw new Error("Invalid response from server");
+        throw new Error(`Unexpected response from server: ${message}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to clear notifications:", err);
-      setState((prev) => ({ ...prev, error: "Failed to clear notifications" }));
+
+      // Roll back the optimistic update
+      setState((prev) => ({
+        ...prev,
+        notifications: currentNotifications,
+        unreadCount: currentUnreadCount,
+        deletingNotificationId: null,
+        error: null,
+      }));
+
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to clear notifications. Please try again.",
+        text2:
+          err?.message || "Failed to clear notifications. Please try again.",
       });
     } finally {
       setState((prev) => ({ ...prev, deletingNotificationId: null }));
@@ -560,53 +605,68 @@ const Notification: React.FC<NotificationScreenProps> = ({
             <CText fontSize={20} lineHeight={22.4} fontFamily="bold">
               Notifications
             </CText>
-            <CText
-              fontSize={16}
-              color="secondaryBlack"
-              style={{ marginTop: size.getHeightSize(4) }}
-            >
-              Savings Goal
-            </CText>
             {state.loading && (
               <CText fontSize={14} color="secondaryBlack">
                 Loading...
               </CText>
             )}
           </View>
-          <ScrollView
-            style={styles.notificationsList}
-            showsVerticalScrollIndicator={false}
-          >
-            {state.notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                icon={notification.icon}
-                title={notification.title}
-                time={notification.time}
-                type={notification.type}
-                hasRedDot={notification.hasRedDot}
-                onPress={() => handleNotificationPress(notification)}
+          {state.notifications.length === 0 && !state.loading ? (
+            <View style={styles.noNotificationsContainer}>
+              <MaterialIcons
+                name="notifications-none"
+                size={64}
+                color="#8E8E93"
               />
-            ))}
-          </ScrollView>
-          {state.notifications.length > 0 && (
-            <TouchableOpacity
-              style={styles.clearAllButton}
-              onPress={handleClearAllNotifications}
-              disabled={state.deletingNotificationId === "all"}
-            >
               <CText
                 fontSize={16}
                 fontFamily="semibold"
-                color={
-                  state.deletingNotificationId === "all" ? "#ccc" : "#F44336"
-                }
+                color="#8E8E93"
+                style={styles.noNotificationsText}
               >
-                {state.deletingNotificationId === "all"
-                  ? "Clearing..."
-                  : "Clear All Notifications"}
+                You have no recent notifications
               </CText>
-            </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <ScrollView
+                style={styles.notificationsList}
+                showsVerticalScrollIndicator={false}
+              >
+                {state.notifications.map((notification) => (
+                  <NotificationItem
+                    key={notification.id}
+                    icon={notification.icon}
+                    title={notification.title}
+                    time={notification.time}
+                    type={notification.type}
+                    hasRedDot={notification.hasRedDot}
+                    onPress={() => handleNotificationPress(notification)}
+                  />
+                ))}
+              </ScrollView>
+              {state.notifications.length > 0 && (
+                <TouchableOpacity
+                  style={styles.clearAllButton}
+                  onPress={handleClearAllNotifications}
+                  disabled={state.deletingNotificationId === "all"}
+                >
+                  <CText
+                    fontSize={16}
+                    fontFamily="semibold"
+                    color={
+                      state.deletingNotificationId === "all"
+                        ? "#ccc"
+                        : "#F44336"
+                    }
+                  >
+                    {state.deletingNotificationId === "all"
+                      ? "Clearing..."
+                      : "Clear All Notifications"}
+                  </CText>
+                </TouchableOpacity>
+              )}
+            </>
           )}
         </View>
       )}
@@ -872,6 +932,16 @@ const styles = StyleSheet.create({
     padding: size.getWidthSize(16),
     alignItems: "center",
     marginVertical: size.getHeightSize(16),
+  },
+  noNotificationsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: size.getHeightSize(32),
+  },
+  noNotificationsText: {
+    marginTop: size.getHeightSize(16),
+    textAlign: "center",
   },
 });
 

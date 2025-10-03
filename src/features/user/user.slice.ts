@@ -22,6 +22,9 @@ const initialState: UserState = {
   totalOrders: 0,
   address: null,
   bankDetails: [],
+      walletUniqueID: '',
+
+
 };
 
 const userSlice = createSlice({
