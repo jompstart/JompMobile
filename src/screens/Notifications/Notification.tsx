@@ -14,6 +14,7 @@ import { NotificationDto, API_RESPONSE } from "../../services/dto/user.dto";
 import { useAppSelector } from "../../controller/redux.controller";
 import { userSelector } from "../../features/user/user.selector";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import HeaderWithBackIcon from "../../components/headers/HeaderWithBackIcon";
 
 // Interfaces for type safety
 interface NotificationItemData {
@@ -422,42 +423,14 @@ const Notification: React.FC<NotificationScreenProps> = ({
   const handleBackToNotifications = () => {
     setState((prev) => ({ ...prev, selectedNotification: null }));
   };
-
+  console.log(state);
   return (
     <GradientSafeAreaView>
-      <GradientHeader>
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <MaterialIcons name="chevron-left" size={24} color="white" />
-            <CText
-              color="white"
-              fontSize={16}
-              lineHeight={25.6}
-              fontFamily="bold"
-              style={styles.backText}
-            >
-              Go Back
-            </CText>
-          </TouchableOpacity>
-          <CText
-            color="white"
-            fontSize={16}
-            lineHeight={25.6}
-            fontFamily="bold"
-            style={styles.headerTitle}
-          >
-            Notification {state.unreadCount > 0 && `(${state.unreadCount})`}
-          </CText>
-          <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.headerButton}>
-              <MaterialIcons name="search" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </GradientHeader>
+      <HeaderWithBackIcon
+        title={`Notification${
+          state.unreadCount > 0 ? ` (${state.unreadCount})` : ""
+        }`}
+      />
 
       {state.error && (
         <View style={styles.errorContainer}>

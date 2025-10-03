@@ -17,7 +17,6 @@ import {
 } from "@react-navigation/native";
 import { useNavigationState, useNavigation } from "@react-navigation/native";
 import Dashboard from "../screens/homeTabs/Dashboard";
-import Services from "../screens/homeTabs/Services";
 import Transactions from "../screens/homeTabs/Transactions";
 import Savings from "../screens/homeTabs/Savings";
 import More from "../screens/homeTabs/More";

@@ -6,60 +6,61 @@ import {
   ScrollView,
   Modal,
   Clipboard,
-} from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import GradientSafeAreaView from '../../shared/GradientSafeAreaView';
-import { size } from '../../config/size';
-import Fontisto from 'react-native-vector-icons/Fontisto';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import WalletIcon from '../../../assets/svgs/Home/WalletIcon';
-import HouseIcon from '../../../assets/svgs/Home/HouseIcon';
-import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
-import PiggyIcon from '../../../assets/svgs/Home/PiggyIcon';
-import WithdrawIcon from '../../../assets/svgs/Home/WithdrawIcon';
-import CarIcon from '../../../assets/svgs/Home/CarIcon';
-import BankIcon from '../../../assets/svgs/Home/BankIcon';
-import MenuIcon from '../../../assets/svgs/Home/MenuIcon';
-import PersonIcon from '../../../assets/svgs/Home/PersonIcon';
-import NotificationBell from '../../../assets/svgs/Home/NotificationBell';
-import CText from '../../shared/CText';
-import { colors } from '../../constants/colors';
-import SupportIcon from '../../../assets/svgs/Home/SupportIcon';
-import GradientHeader from '../../shared/GradientHeader';
+} from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
+import { size } from "../../config/size";
+import Fontisto from "react-native-vector-icons/Fontisto";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import WalletIcon from "../../../assets/svgs/Home/WalletIcon";
+import HouseIcon from "../../../assets/svgs/Home/HouseIcon";
+import SchoolIcon from "../../../assets/svgs/Home/SchoolIcon";
+import PiggyIcon from "../../../assets/svgs/Home/PiggyIcon";
+import WithdrawIcon from "../../../assets/svgs/Home/WithdrawIcon";
+import CarIcon from "../../../assets/svgs/Home/CarIcon";
+import BankIcon from "../../../assets/svgs/Home/BankIcon";
+import MenuIcon from "../../../assets/svgs/Home/MenuIcon";
+import PersonIcon from "../../../assets/svgs/Home/PersonIcon";
+import NotificationBell from "../../../assets/svgs/Home/NotificationBell";
+import CText from "../../shared/CText";
+import { colors } from "../../constants/colors";
+import SupportIcon from "../../../assets/svgs/Home/SupportIcon";
+import GradientHeader from "../../shared/GradientHeader";
 import {
   useAppSelector,
   useAppDispatch,
-} from '../../controller/redux.controller';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
-import { userSelector } from '../../features/user/user.selector';
+} from "../../controller/redux.controller";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
+import { userSelector } from "../../features/user/user.selector";
 import {
   updateAccountDetailsBottomsheetVisibility,
   updatePayNowBottomsheet,
   updatePayStackModal,
-} from '../../features/ui/ui.slice';
-import { formatToAmount } from '../../utils/stringManipulation';
+} from "../../features/ui/ui.slice";
+import { formatToAmount } from "../../utils/stringManipulation";
 import {
   useGetRecentTransactions,
   useRefreschUserData,
-} from '../../hooks/api/user';
-import RecentTransaction from '../../components/Transaction/RecentTransaction';
-import Banner from '../../components/Dashboard/Banner';
+} from "../../hooks/api/user";
+import RecentTransaction from "../../components/Transaction/RecentTransaction";
+import Banner from "../../components/Dashboard/Banner";
 import {
   useGetPendingAdminReview,
   useGetPendingServices,
-} from '../../hooks/api/providers';
-import PrimaryButton from '../../shared/PrimaryButton';
-import SecondaryButton from '../../shared/SecondaryButton';
-import LoanAgreement from '../../shared/LoanAgreement';
-import PaystackView from '../../shared/PaystackView';
-import PaymentBalanceInfo from '../../shared/PaymentBalanceInfo';
-import Toast from 'react-native-toast-message';
-import { UserService } from '../../services/user';
+} from "../../hooks/api/providers";
+import PrimaryButton from "../../shared/PrimaryButton";
+import SecondaryButton from "../../shared/SecondaryButton";
+import LoanAgreement from "../../shared/LoanAgreement";
+import PaystackView from "../../shared/PaystackView";
+import PaymentBalanceInfo from "../../shared/PaymentBalanceInfo";
+import Toast from "react-native-toast-message";
+import { UserService } from "../../services/user";
+import HeaderWithMenu from "../../components/headers/HeaderWithMenu";
 
 const Dashboard = () => {
   const [showPendingServiceModal, setShowPendingServiceModal] = useState(false);
-  const [payMode, setPayMode] = useState<'yes' | 'no' | null>(null);
+  const [payMode, setPayMode] = useState<"yes" | "no" | null>(null);
   const [showBalanceInfo, setShowBalanceInfo] = useState(false);
   const [showLoanAgreement, setShowLoanAgreement] = useState(false);
   const [agreedToLoanAgreement, setAgreedToLoanAgreement] = useState(false);
@@ -81,36 +82,6 @@ const Dashboard = () => {
 
   const userService = new UserService(user.customerId, user.userId);
 
-  const fetchUnreadCount = useCallback(async () => {
-    try {
-      const unreadResponse = await userService.getUnreadCount();
-      const unreadCountData =
-        unreadResponse.data !== undefined ? unreadResponse.data : unreadResponse;
-      if (typeof unreadCountData.count === 'number') {
-        setUnreadCount(unreadCountData.count);
-      } else {
-        setUnreadCount(0);
-      }
-    } catch (err) {
-      console.error('Error fetching unread count:', err);
-      setUnreadCount(0);
-    }
-  }, [user.userId, user.customerId]);
-
-  useEffect(() => {
-    if (user.userId && user.customerId) {
-      fetchUnreadCount();
-    }
-  }, [user.userId, user.customerId, fetchUnreadCount]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (user.userId && user.customerId) {
-        fetchUnreadCount();
-      }
-    }, [user.userId, user.customerId, fetchUnreadCount])
-  );
-
   useEffect(() => {
     if (pendingServices?.data && pendingServices?.data?.length > 0) {
       setShowPendingServiceModal(true);
@@ -124,7 +95,12 @@ const Dashboard = () => {
     reloadRecentTransaction();
     refetchPendingService();
     refetchPendingPayment();
-  }, [refetch, reloadRecentTransaction, refetchPendingService, refetchPendingPayment]);
+  }, [
+    refetch,
+    reloadRecentTransaction,
+    refetchPendingService,
+    refetchPendingPayment,
+  ]);
 
   // Toggle visibility of walletUniqueID
   const handleToggleWalletID = () => {
@@ -137,9 +113,9 @@ const Dashboard = () => {
       Clipboard.setString(user.walletUniqueID);
       setIsCopied(true);
       Toast.show({
-        type: 'success',
-        text1: 'Wallet ID Copied',
-        text2: 'The wallet ID has been copied to your clipboard.',
+        type: "success",
+        text1: "Wallet ID Copied",
+        text2: "The wallet ID has been copied to your clipboard.",
         visibilityTime: 2000,
       });
       // Reset copied state after 2 seconds
@@ -151,26 +127,7 @@ const Dashboard = () => {
 
   return (
     <GradientSafeAreaView>
-      <GradientHeader disable>
-        <MenuIcon
-          onPress={() => {
-            navigationDispatch(DrawerActions.openDrawer());
-          }}
-          size={size.getHeightSize(28)}
-        />
-        <View style={{ flex: 1 }} />
-        <Pressable
-          onPress={() => navigate('Notification')}
-          style={styles.notificationContainer}
-        >
-          <NotificationBell size={size.getHeightSize(28)} />
-          {unreadCount > 0 && (
-            <View style={styles.badge}>
-              <CText style={styles.badgeText}>{unreadCount}</CText>
-            </View>
-          )}
-        </Pressable>
-      </GradientHeader>
+      <HeaderWithMenu disable showNotification />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -179,7 +136,6 @@ const Dashboard = () => {
               refetch();
               reloadRecentTransaction();
               refetchPendingService();
-              fetchUnreadCount();
             }}
           />
         }
@@ -187,18 +143,18 @@ const Dashboard = () => {
       >
         <Pressable
           onPress={() => {
-            navigate('Profile');
+            navigate("Profile");
           }}
           style={styles.view3}
         >
           <PersonIcon size={size.getHeightSize(40)} />
           <CText
-            color={'black'}
+            color={"black"}
             fontSize={16}
             lineHeight={25.6}
             fontFamily="bold"
           >
-            Hello, {user?.fullName.split(' ')[0]}
+            Hello, {user?.fullName.split(" ")[0]}
           </CText>
         </Pressable>
         <View style={styles.walletView}>
@@ -209,13 +165,13 @@ const Dashboard = () => {
           >
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection: "row",
+                alignItems: "center",
                 gap: size.getWidthSize(8),
               }}
             >
               <CText
-                color={'white'}
+                color={"white"}
                 fontSize={14}
                 lineHeight={16.4}
                 fontFamily="semibold"
@@ -224,53 +180,57 @@ const Dashboard = () => {
               </CText>
             </View>
             <CText
-              color={'white'}
+              color={"white"}
               fontSize={24}
               lineHeight={28.4}
               fontFamily="bold"
             >
               <CText
-                color={'white'}
+                color={"white"}
                 fontSize={24}
                 lineHeight={28.4}
                 fontFamily="regular"
               >
                 ₦
-              </CText>{' '}
-              {user?.balance === 0 ? '0.00' : formatToAmount(user?.balance)}
+              </CText>{" "}
+              {user?.balance === 0 ? "0.00" : formatToAmount(user?.balance)}
             </CText>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                flexDirection: "row",
+                alignItems: "center",
                 gap: size.getWidthSize(8),
               }}
             >
               <CText
-                color={'white'}
+                color={"white"}
                 fontSize={14}
                 lineHeight={16.4}
                 fontFamily="semibold"
               >
-                Wallet ID: {showWalletID ? user.walletUniqueID || 'N/A' : '••••••••'}
+                Wallet ID:{" "}
+                {showWalletID ? user.walletUniqueID || "N/A" : "••••••••"}
               </CText>
               <Pressable onPress={handleToggleWalletID}>
                 <MaterialIcons
-                  name={showWalletID ? 'visibility-off' : 'visibility'}
+                  name={showWalletID ? "visibility-off" : "visibility"}
                   size={size.getHeightSize(20)}
                   color={colors.white()}
                 />
               </Pressable>
               {/* UPDATED: Copy button with visual feedback */}
-              <Pressable onPress={handleCopyWalletID} disabled={!user.walletUniqueID}>
+              <Pressable
+                onPress={handleCopyWalletID}
+                disabled={!user.walletUniqueID}
+              >
                 <MaterialIcons
-                  name={isCopied ? 'check' : 'content-copy'}
+                  name={isCopied ? "check" : "content-copy"}
                   size={size.getHeightSize(20)}
                   color={
-                    isCopied 
-                      ? '#4CAF50' 
-                      : user.walletUniqueID 
-                      ? colors.white() 
+                    isCopied
+                      ? "#4CAF50"
+                      : user.walletUniqueID
+                      ? colors.white()
                       : colors.black()
                   }
                 />
@@ -295,7 +255,7 @@ const Dashboard = () => {
               }}
             >
               <CText
-                color={'primaryColor'}
+                color={"primaryColor"}
                 fontSize={12}
                 lineHeight={14.4}
                 fontFamily="bold"
@@ -324,7 +284,7 @@ const Dashboard = () => {
             {pendingServices?.data && pendingServices?.data?.length > 0 && (
               <Banner
                 onPress={() => {
-                  navigate('PendingService');
+                  navigate("PendingService");
                 }}
                 description=" You currently have pending services that requires your
                     attention and review"
@@ -335,28 +295,28 @@ const Dashboard = () => {
             )}
             <Banner
               onPress={() => {
-                navigate('UserCreated');
+                navigate("UserCreated");
               }}
               description="Yes, we all do! But managing them doesn't have to be
                     overwhelming. Do it with JOMP"
               step={
                 pendingServices?.data && pendingServices?.data?.length > 0
-                  ? '2/3'
-                  : '1/2'
+                  ? "2/3"
+                  : "1/2"
               }
               title="You have bills to pay?"
               buttonText="Pay with Jomp"
             />
             <Banner
               onPress={() => {
-                navigate('Savings');
+                navigate("Savings");
               }}
               description="You can now save towards all your bills on JOMP and pay when
                     you're ready."
               step={
                 pendingServices?.data && pendingServices?.data?.length > 0
-                  ? '3/3'
-                  : '2/2'
+                  ? "3/3"
+                  : "2/2"
               }
               title="Save with JOMP"
               buttonText="Start Saving"
@@ -368,7 +328,7 @@ const Dashboard = () => {
           <View style={styles.view8}>
             <View>
               <CText
-                color={'secondary'}
+                color={"secondary"}
                 fontSize={14}
                 lineHeight={22.4}
                 fontFamily="bold"
@@ -384,8 +344,8 @@ const Dashboard = () => {
                   setShowLoanAgreement(true);
                 }}
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flexDirection: "row",
+                  alignItems: "center",
                   gap: size.getWidthSize(8),
                   marginTop: size.getHeightSize(8),
                 }}
@@ -393,14 +353,14 @@ const Dashboard = () => {
                 <Fontisto
                   name={
                     agreedToLoanAgreement
-                      ? 'checkbox-active'
-                      : 'checkbox-passive'
+                      ? "checkbox-active"
+                      : "checkbox-passive"
                   }
                   size={size.getHeightSize(18)}
                   color={colors.primary()}
                 />
                 <CText
-                  color={'black'}
+                  color={"black"}
                   fontSize={13}
                   lineHeight={22.4}
                   fontFamily="regular"
@@ -410,8 +370,8 @@ const Dashboard = () => {
               </Pressable>
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  flexDirection: "row",
+                  alignItems: "center",
                   gap: size.getWidthSize(32),
                   marginVertical: size.getHeightSize(8),
                   marginTop: size.getHeightSize(16),
@@ -420,20 +380,20 @@ const Dashboard = () => {
                 <Pressable
                   disabled={!agreedToLoanAgreement}
                   onPress={() => {
-                    setPayMode('yes');
+                    setPayMode("yes");
                     setShowBalanceInfo(true);
                   }}
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                     gap: size.getWidthSize(8),
                   }}
                 >
                   <MaterialIcons
                     name={
-                      payMode === 'yes'
-                        ? 'radio-button-checked'
-                        : 'radio-button-unchecked'
+                      payMode === "yes"
+                        ? "radio-button-checked"
+                        : "radio-button-unchecked"
                     }
                     color={colors.primary()}
                     size={size.getHeightSize(18)}
@@ -443,19 +403,19 @@ const Dashboard = () => {
                 <Pressable
                   disabled={!agreedToLoanAgreement}
                   onPress={() => {
-                    setPayMode('no');
+                    setPayMode("no");
                   }}
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flexDirection: "row",
+                    alignItems: "center",
                     gap: size.getWidthSize(8),
                   }}
                 >
                   <MaterialIcons
                     name={
-                      payMode === 'no'
-                        ? 'radio-button-checked'
-                        : 'radio-button-unchecked'
+                      payMode === "no"
+                        ? "radio-button-checked"
+                        : "radio-button-unchecked"
                     }
                     color={colors.primary()}
                     size={size.getHeightSize(18)}
@@ -466,14 +426,14 @@ const Dashboard = () => {
               <SecondaryButton
                 disabled={!agreedToLoanAgreement}
                 onPress={() => {
-                  if (payMode === 'yes') {
+                  if (payMode === "yes") {
                     setShowBalanceInfo(true);
                   } else {
                     dispatch(
                       updatePayNowBottomsheet({
                         amount: pendingPayment?.data?.userContribution || 0,
                         visible: true,
-                        serviceId: pendingPayment?.data?.serviceId || '',
+                        serviceId: pendingPayment?.data?.serviceId || "",
                       })
                     );
                   }
@@ -490,7 +450,7 @@ const Dashboard = () => {
         <View style={styles.view2}>
           <Pressable
             onPress={() => {
-              navigate('PayServices');
+              navigate("PayServices");
             }}
             style={styles.view1}
           >
@@ -498,7 +458,7 @@ const Dashboard = () => {
               <SchoolIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
@@ -508,7 +468,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('HouseRentService');
+              navigate("HouseRentService");
             }}
             style={styles.view1}
           >
@@ -516,7 +476,7 @@ const Dashboard = () => {
               <HouseIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
@@ -526,7 +486,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('TransportDetails');
+              navigate("TransportDetails");
             }}
             style={styles.view1}
           >
@@ -534,12 +494,12 @@ const Dashboard = () => {
               <CarIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Transport Credit
@@ -547,7 +507,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('Savings');
+              navigate("Savings");
             }}
             style={styles.view1}
           >
@@ -555,12 +515,12 @@ const Dashboard = () => {
               <PiggyIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Savings
@@ -568,7 +528,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('FundWallet');
+              navigate("FundWallet");
             }}
             style={styles.view1}
           >
@@ -576,12 +536,12 @@ const Dashboard = () => {
               <WalletIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Fund Wallet
@@ -589,7 +549,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('WithdrawFunds');
+              navigate("WithdrawFunds");
             }}
             style={styles.view1}
           >
@@ -597,12 +557,12 @@ const Dashboard = () => {
               <WithdrawIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Withdraw to your Bank
@@ -610,7 +570,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('Profile');
+              navigate("Profile");
             }}
             style={styles.view1}
           >
@@ -618,12 +578,12 @@ const Dashboard = () => {
               <BankIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Link Bank Account
@@ -631,7 +591,7 @@ const Dashboard = () => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigate('Support');
+              navigate("Support");
             }}
             style={styles.view1}
           >
@@ -639,12 +599,12 @@ const Dashboard = () => {
               <SupportIcon size={size.getHeightSize(26)} />
             </View>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={10}
               lineHeight={16}
               fontFamily="regular"
               style={{
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Chat With Support
@@ -657,7 +617,7 @@ const Dashboard = () => {
           }}
         >
           <CText
-            color={'black'}
+            color={"black"}
             fontSize={14}
             lineHeight={22.4}
             fontFamily="semibold"
@@ -673,18 +633,20 @@ const Dashboard = () => {
               borderRadius: size.getHeightSize(8),
             }}
           >
-            {recenTransactions?.data && Array.isArray(recenTransactions.data) && recenTransactions.data.length > 0 ? (
+            {recenTransactions?.data &&
+            Array.isArray(recenTransactions.data) &&
+            recenTransactions.data.length > 0 ? (
               recenTransactions.data.map((item, index) => (
                 <RecentTransaction data={item} key={index} />
               ))
             ) : (
               <CText
-                color={'black'}
+                color={"black"}
                 fontSize={14}
                 lineHeight={22.4}
                 fontFamily="regular"
                 style={{
-                  textAlign: 'center',
+                  textAlign: "center",
                   paddingVertical: size.getHeightSize(16),
                 }}
               >
@@ -707,20 +669,20 @@ const Dashboard = () => {
         <View style={styles.overlay}>
           <View style={styles.modalContainer}>
             <CText
-              color={'black'}
+              color={"black"}
               fontSize={16}
               lineHeight={24}
               fontFamily="bold"
-              style={{ textAlign: 'center' }}
+              style={{ textAlign: "center" }}
             >
               Pending Service Request
             </CText>
             <CText
-              color={'secondaryBlack'}
+              color={"secondaryBlack"}
               fontSize={14}
               lineHeight={22.4}
               fontFamily="regular"
-              style={{ textAlign: 'center', marginTop: size.getHeightSize(8) }}
+              style={{ textAlign: "center", marginTop: size.getHeightSize(8) }}
             >
               You currently have pending services that requires your attention
               and review.
@@ -732,7 +694,7 @@ const Dashboard = () => {
               }}
               onPress={() => {
                 setShowPendingServiceModal(false);
-                navigate('PendingService');
+                navigate("PendingService");
               }}
             />
             <SecondaryButton
@@ -751,7 +713,7 @@ const Dashboard = () => {
         onClose={() => {
           dispatch(
             updatePayStackModal({
-              url: '',
+              url: "",
               visible: false,
             })
           );
@@ -775,7 +737,7 @@ const Dashboard = () => {
             updatePayNowBottomsheet({
               amount: pendingPayment?.data?.userContribution || 0,
               visible: true,
-              serviceId: pendingPayment?.data?.serviceId || '',
+              serviceId: pendingPayment?.data?.serviceId || "",
             })
           );
         }}
@@ -811,25 +773,25 @@ const styles = StyleSheet.create({
     borderRadius: size.getHeightSize(8),
     paddingVertical: size.getHeightSize(8),
     paddingHorizontal: size.getWidthSize(8),
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   view: {
     height: size.getHeightSize(46),
     width: size.getHeightSize(46),
-    borderRadius: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F0EDFF',
+    borderRadius: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F0EDFF",
   },
   view1: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     gap: size.getHeightSize(4),
-    flexBasis: '20%',
+    flexBasis: "20%",
   },
   view2: {
-    flexWrap: 'wrap',
-    flexDirection: 'row',
+    flexWrap: "wrap",
+    flexDirection: "row",
     gap: size.getWidthSize(16),
     paddingVertical: size.getHeightSize(16),
     paddingHorizontal: size.getWidthSize(16),
@@ -837,11 +799,11 @@ const styles = StyleSheet.create({
     marginVertical: size.getHeightSize(16),
     backgroundColor: colors.white(),
     borderRadius: size.getHeightSize(8),
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   view3: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: size.getWidthSize(8),
     paddingHorizontal: size.getWidthSize(20),
     marginTop: size.getHeightSize(20),
@@ -852,23 +814,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary(),
     marginHorizontal: size.getWidthSize(16),
     borderRadius: size.getHeightSize(16),
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: size.getHeightSize(20),
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   view4: {
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: colors.white(),
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: size.getHeightSize(16),
     borderRadius: size.getHeightSize(8),
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     width: size.getWidthSize(300),
@@ -886,23 +848,23 @@ const styles = StyleSheet.create({
     paddingVertical: size.getHeightSize(16),
   },
   notificationContainer: {
-    position: 'relative',
+    position: "relative",
   },
   badge: {
-    position: 'absolute',
+    position: "absolute",
     top: -size.getHeightSize(4),
     right: -size.getWidthSize(4),
-    backgroundColor: '#F44336',
+    backgroundColor: "#F44336",
     borderRadius: size.getWidthSize(10),
     minWidth: size.getWidthSize(20),
     height: size.getWidthSize(20),
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: size.getWidthSize(4),
   },
   badgeText: {
-    color: 'white',
+    color: "white",
     fontSize: size.getHeightSize(12),
-    fontFamily: 'bold',
+    fontFamily: "bold",
   },
 });

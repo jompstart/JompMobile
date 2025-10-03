@@ -15,21 +15,29 @@ const HeaderWithBackIcon = ({ title }: HeaderWithBackIconProps) => {
     <GradientHeader>
       <Pressable
         onPress={() => navigation.goBack()}
-        style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          gap: 10,
+        }}
       >
         <MaterialIcons
           name="arrow-back-ios"
           size={size.getHeightSize(20)}
           color="white"
         />
-        <CText
-          color={"white"}
-          fontSize={16}
-          lineHeight={25.6}
-          fontFamily="bold"
-        >
-          {title}
-        </CText>
+        <View style={{ flex: 1, alignItems: "center", marginRight: 30 }}>
+          <CText
+            color={"white"}
+            fontSize={16}
+            lineHeight={25.6}
+            fontFamily="bold"
+          >
+            {title}
+          </CText>
+        </View>
       </Pressable>
     </GradientHeader>
   );

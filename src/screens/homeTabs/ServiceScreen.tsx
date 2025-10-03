@@ -57,15 +57,18 @@ interface Service {
 
 const ServiceScreen = () => {
   const user = useAppSelector(userSelector);
-  const { data: services, refetch } = useGetUserServices(
-    user.userId,
-    user.customerId
-  );
+  const {
+    data: services,
+    refetch,
+    isPending,
+    isError,
+  } = useGetUserServices(user.userId, user.customerId);
   const navigation = useNavigation<NavigationProp>();
   const [refreshing, setRefreshing] = useState(false);
 
   // Log services data
   console.log("Services data:", JSON.stringify(services, null, 2));
+  console.log(isError, isPending);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -125,99 +128,128 @@ const ServiceScreen = () => {
           View the services you have requested
         </CText>
         <View style={styles.view5}>
-          {services?.data ? (
+          {/* ✅ Error state */}
+          {isError && (
+            <CText
+              color="red"
+              fontSize={14}
+              lineHeight={20}
+              fontFamily="regular"
+              style={{ marginTop: size.getHeightSize(12) }}
+            >
+              Error fetching services. Please try again later.
+            </CText>
+          )}
+
+          {/* ✅ Loading state */}
+          {isPending && !refreshing ? (
+            <ActivityIndicator
+              size="large"
+              color={colors.primaryColor || "#007AFF"}
+              style={{ marginTop: size.getHeightSize(24) }}
+            />
+          ) : (
+            /* ✅ Data loaded OR refreshing */
             <FlatList
+              data={services?.data || []}
+              keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
+              ListEmptyComponent={() => (
+                <CText
+                  color={"black"}
+                  fontSize={16}
+                  lineHeight={22.4}
+                  style={{
+                    textAlign: "center",
+                    marginTop: size.getHeightSize(32),
+                  }}
+                >
+                  You haven’t created any service yet.
+                </CText>
+              )}
               contentContainerStyle={{
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: size.getHeightSize(16),
                 marginTop: size.getHeightSize(24),
+                paddingBottom: size.getHeightSize(100),
               }}
-              keyExtractor={(item) => item.id}
-              data={services.data}
-              renderItem={({ item }) => {
-                return (
-                  <Pressable
-                    style={styles.view4}
-                    onPress={() => handleServicePress(item)}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={styles.view4}
+                  onPress={() => handleServicePress(item)}
+                >
+                  <View style={styles.view3}>
+                    <Image
+                      style={styles.image}
+                      resizeMode="cover"
+                      source={{ uri: item.displayPicture }}
+                    />
+                  </View>
+                  <CText
+                    color={"primaryColor"}
+                    fontSize={16}
+                    lineHeight={22.4}
+                    fontFamily="bold"
+                    style={{ marginTop: size.getHeightSize(12) }}
                   >
-                    <View style={styles.view3}>
-                      <Image
-                        style={styles.image}
-                        resizeMode="cover"
-                        source={{ uri: item.displayPicture }}
-                      />
-                    </View>
+                    {item.name}
+                  </CText>
+                  <CText
+                    color={"secondaryBlack"}
+                    fontSize={16}
+                    lineHeight={22.4}
+                    fontFamily="regular"
+                    style={{ marginTop: size.getHeightSize(4) }}
+                  >
+                    {item.description}
+                  </CText>
+                  <CText
+                    color={"black"}
+                    fontSize={12}
+                    lineHeight={22.4}
+                    fontFamily="bold"
+                    style={{ marginTop: size.getHeightSize(4) }}
+                  >
+                    {item.currencyCode || "NGN"} {formatToAmount(item.price)}
+                  </CText>
+                  <View
+                    style={{
+                      marginTop: size.getHeightSize(4),
+                      backgroundColor:
+                        item.status in mappedStatus
+                          ? `${mappedStatus[item.status].color}20`
+                          : "#00000020",
+                      paddingVertical: size.getHeightSize(4),
+                      paddingHorizontal: size.getWidthSize(8),
+                      borderRadius: size.getHeightSize(8),
+                      alignSelf: "flex-start",
+                    }}
+                  >
                     <CText
-                      color={"primaryColor"}
-                      fontSize={16}
-                      lineHeight={22.4}
-                      fontFamily="bold"
-                      style={{ marginTop: size.getHeightSize(12) }}
-                    >
-                      {item.name}
-                    </CText>
-                    <CText
-                      color={"secondaryBlack"}
-                      fontSize={16}
-                      lineHeight={22.4}
-                      fontFamily="regular"
-                      style={{ marginTop: size.getHeightSize(4) }}
-                    >
-                      {item.description}
-                    </CText>
-                    <CText
-                      color={"black"}
+                      color={
+                        item.status in mappedStatus
+                          ? mappedStatus[item.status].color
+                          : "black"
+                      }
                       fontSize={12}
-                      lineHeight={22.4}
-                      fontFamily="bold"
-                      style={{ marginTop: size.getHeightSize(4) }}
+                      lineHeight={16.4}
+                      fontFamily="regular"
                     >
-                      {item.currencyCode || "NGN"} {formatToAmount(item.price)}
+                      {item.status in mappedStatus
+                        ? mappedStatus[item.status].label
+                        : item.status}
                     </CText>
-                    <View
-                      style={{
-                        marginTop: size.getHeightSize(4),
-                        backgroundColor:
-                          item.status in mappedStatus
-                            ? `${mappedStatus[item.status].color}20`
-                            : "#00000020",
-                        paddingVertical: size.getHeightSize(4),
-                        paddingHorizontal: size.getWidthSize(8),
-                        borderRadius: size.getHeightSize(8),
-                        alignSelf: "flex-start",
-                      }}
-                    >
-                      <CText
-                        color={
-                          item.status in mappedStatus
-                            ? mappedStatus[item.status].color
-                            : "black"
-                        }
-                        fontSize={12}
-                        lineHeight={16.4}
-                        fontFamily="regular"
-                      >
-                        {item.status in mappedStatus
-                          ? mappedStatus[item.status].label
-                          : item.status}
-                      </CText>
-                    </View>
-                  </Pressable>
-                );
-              }}
-            />
-          ) : (
-            <ActivityIndicator
-              size="large"
-              color={colors.primaryColor || "#007AFF"}
+                  </View>
+                </Pressable>
+              )}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
             />
           )}
         </View>
+
         <View style={{ marginBottom: 10 }}>
           <PrimaryButton label="Add Service" onPress={handleAddService} />
         </View>
