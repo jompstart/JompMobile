@@ -88,6 +88,9 @@ export const useRefreschUserData = () => {
 
       const userBanks = await userInstance.getUserBankDetails();
 
+            console.log('Wallet response:', JSON.stringify(wallet, null, 2));
+
+
       if (userBanks?.data) {
         if (Array.isArray(userBanks.data)) {
           dispatch(
@@ -115,6 +118,12 @@ export const useRefreschUserData = () => {
             value: wallet.data.ledgerBalance,
           })
         );
+        dispatch(
+  changeUserState({
+    key: 'walletUniqueID',
+            value: wallet.data.walletUniqueId ?? null, // Updated key
+  })
+);
       }
       if (user.data) {
         dispatch(

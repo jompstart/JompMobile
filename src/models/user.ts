@@ -19,6 +19,7 @@ export interface UserModel {
   totalOrders: number;
   bankDetails: BankDetails[];
   address: string | null;
+  walletUniqueID: string | null; // Add this line
 }
 
 export interface BankDetails {
