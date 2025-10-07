@@ -6,6 +6,7 @@ import {
 import { UserAccountPreference } from "../models/user";
 import { CreateSavingsFormState } from "../features/Savings/savings.reducer";
 import { loanType } from "./loanCalculator";
+import { NotificationItemData } from "../screens/Notifications/Notification";
 
 declare global {
   namespace ReactNavigation {
@@ -25,6 +26,8 @@ export type RootStackParamList = {
     ServiceId: string;
     action: string;
   };
+  LoanBreakdown: { id: string; notification: NotificationItemData };
+  NotificationDetails: { notification: NotificationItemData };
   Report: undefined;
   OnboardingScreen: undefined;
   SignUp: {

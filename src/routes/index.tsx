@@ -48,6 +48,8 @@ import AcceptPendingService from "../screens/services/AcceptPendingService";
 import UpdateProfile from "../screens/Dashboard/UpdateProfile";
 import ServiceDetailScreen from "../screens/services/ServiceDetailScreen";
 import CreateServices from "../screens/services/CreateServices";
+import NotificationDetails from "../screens/Notifications/NotificationDetails";
+import LoanBreakdown from "../screens/loan-breakdown/LoanBreakdown";
 
 interface pages {
   name: keyof RootStackParamList;
@@ -230,6 +232,14 @@ const MainNavigator = () => {
     {
       name: "Notification",
       component: Notification,
+    },
+    {
+      name: "NotificationDetails",
+      component: NotificationDetails,
+    },
+    {
+      name: "LoanBreakdown",
+      component: LoanBreakdown,
     },
     {
       name: "AcceptService",

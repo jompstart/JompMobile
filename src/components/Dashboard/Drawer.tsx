@@ -1,25 +1,25 @@
-import { StyleSheet, Pressable, View } from 'react-native';
-import React from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../constants/colors';
-import { size } from '../../config/size';
-import CText from '../../shared/CText';
-import LogOutIcon from '../../../assets/svgs/Drawer/LogoutIcon';
-import LoanCalculatorIcon from '../../../assets/svgs/Drawer/LoanCalculatorIcon';
-import TransactionIcon from '../../../assets/svgs/Drawer/TransactionIcon';
-import SavingsIcon from '../../../assets/svgs/Drawer/SavingsIcon';
-import SchoolFeeIcon from '../../../assets/svgs/Drawer/SchoolFee';
-import HouseRentIcon from '../../../assets/svgs/Drawer/HouseRentIcon';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import TransportCreditIcon from '../../../assets/svgs/Drawer/TransportCreditIcon';
-import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
-import { DrawerContentComponentProps } from '@react-navigation/drawer';
-import { useAppDispatch } from '../../controller/redux.controller';
+import { StyleSheet, Pressable, View } from "react-native";
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { colors } from "../../constants/colors";
+import { size } from "../../config/size";
+import CText from "../../shared/CText";
+import LogOutIcon from "../../../assets/svgs/Drawer/LogoutIcon";
+import LoanCalculatorIcon from "../../../assets/svgs/Drawer/LoanCalculatorIcon";
+import TransactionIcon from "../../../assets/svgs/Drawer/TransactionIcon";
+import SavingsIcon from "../../../assets/svgs/Drawer/SavingsIcon";
+import SchoolFeeIcon from "../../../assets/svgs/Drawer/SchoolFee";
+import HouseRentIcon from "../../../assets/svgs/Drawer/HouseRentIcon";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import TransportCreditIcon from "../../../assets/svgs/Drawer/TransportCreditIcon";
+import CancelIcon from "../../../assets/svgs/Home/CancelIcon";
+import { DrawerContentComponentProps } from "@react-navigation/drawer";
+import { useAppDispatch } from "../../controller/redux.controller";
 import {
   updateLogoutBottomsheetVisibility,
   updateTermsAndConditionVisibility,
-} from '../../features/ui/ui.slice';
+} from "../../features/ui/ui.slice";
 interface Props {
   props: DrawerContentComponentProps;
 }
@@ -38,7 +38,7 @@ const Drawer = (props: Props) => {
       }}
     >
       <LinearGradient
-        colors={['#EFA005', '#C5520A']}
+        colors={["#EFA005", "#C5520A"]}
         start={{ x: 1, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
@@ -55,7 +55,7 @@ const Drawer = (props: Props) => {
           size={size.getHeightSize(28)}
           style={{
             marginVertical: size.getHeightSize(16),
-            alignSelf: 'flex-end',
+            alignSelf: "flex-end",
             marginRight: size.getWidthSize(16),
           }}
           onPress={() => {
@@ -70,7 +70,7 @@ const Drawer = (props: Props) => {
         >
           <Pressable
             onPress={() => {
-              navigation.navigate('PayServices');
+              navigation.navigate("PayServices");
             }}
             style={styles.view1}
           >
@@ -78,7 +78,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -88,7 +88,7 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('HouseRentService');
+              navigation.navigate("HouseRentService");
             }}
             style={styles.view1}
           >
@@ -96,7 +96,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -104,9 +104,9 @@ const Drawer = (props: Props) => {
               House Rent
             </CText>
           </Pressable>
-            <Pressable
+          <Pressable
             onPress={() => {
-              navigation.navigate('Notification');
+              navigation.navigate("Notification");
             }}
             style={styles.view1}
           >
@@ -114,17 +114,17 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
             >
-             Notification
+              Notification
             </CText>
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('TransportDetails');
+              navigation.navigate("TransportDetails");
             }}
             style={styles.view1}
           >
@@ -132,7 +132,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -142,8 +142,8 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('HomePage', {
-                screen: 'Savings',
+              navigation.navigate("HomePage", {
+                screen: "Savings",
               });
             }}
             style={styles.view1}
@@ -152,7 +152,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -162,8 +162,8 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('HomePage', {
-                screen: 'Transactions',
+              navigation.navigate("HomePage", {
+                screen: "Transactions",
               });
             }}
             style={styles.view1}
@@ -172,7 +172,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -182,7 +182,7 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('LoanPage');
+              navigation.navigate("LoanPage");
             }}
             style={styles.view1}
           >
@@ -190,17 +190,17 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
             >
-              Loan Calculator{' '}
+              Loan Calculator{" "}
             </CText>
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('CreatedServices');
+              navigation.navigate("services");
             }}
             style={styles.view1}
           >
@@ -208,7 +208,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={colors.black('70') as any}
+              color={colors.black("70") as any}
               style={{
                 flex: 1,
               }}
@@ -247,7 +247,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={'#DD2025' as any}
+              color={"#DD2025" as any}
               style={{
                 flex: 1,
               }}
@@ -261,7 +261,7 @@ const Drawer = (props: Props) => {
               paddingTop: size.getHeightSize(20),
             }}
             onPress={() => {
-              navigation.navigate('Request');
+              navigation.navigate("Request");
             }}
           >
             <View
@@ -269,9 +269,9 @@ const Drawer = (props: Props) => {
                 width: size.getHeightSize(40),
                 height: size.getHeightSize(40),
                 borderRadius: size.getHeightSize(8),
-                backgroundColor: colors.primaryWarning('40'),
-                justifyContent: 'center',
-                alignItems: 'center',
+                backgroundColor: colors.primaryWarning("40"),
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
               <AntDesign
@@ -283,7 +283,7 @@ const Drawer = (props: Props) => {
             <CText
               fontFamily="semibold"
               fontSize={16}
-              color={'#DD2025' as any}
+              color={"#DD2025" as any}
               style={{
                 flex: 1,
               }}
@@ -299,8 +299,8 @@ const Drawer = (props: Props) => {
         />
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: "row",
+            alignItems: "center",
             gap: size.getWidthSize(16),
             marginHorizontal: size.getWidthSize(16),
             marginBottom: size.getHeightSize(40),
@@ -311,7 +311,7 @@ const Drawer = (props: Props) => {
             onPress={() =>
               dispatch(
                 updateTermsAndConditionVisibility({
-                  url: 'https://dev.jompstart.com/terms&conditions',
+                  url: "https://dev.jompstart.com/terms&conditions",
                   visible: true,
                 })
               )
@@ -327,7 +327,7 @@ const Drawer = (props: Props) => {
             onPress={() =>
               dispatch(
                 updateTermsAndConditionVisibility({
-                  url: 'https://dev.jompstart.com/privacy',
+                  url: "https://dev.jompstart.com/privacy",
                   visible: true,
                 })
               )
@@ -362,12 +362,12 @@ export default Drawer;
 
 const styles = StyleSheet.create({
   view1: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderBottomWidth: size.getHeightSize(1),
     paddingHorizontal: size.getWidthSize(16),
-    alignItems: 'center',
+    alignItems: "center",
     gap: size.getWidthSize(8),
-    borderColor: '#31005C12',
+    borderColor: "#31005C12",
     paddingVertical: size.getHeightSize(8),
   },
 });
