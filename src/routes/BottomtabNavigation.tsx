@@ -72,15 +72,24 @@ const BottomtabNavigation = () => {
   );
   const navState = useNavigationState((state) => state);
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
+
+  // Show compliance prompt if complianceStatus is false
   useEffect(() => {
-    if (user.userId && user.complianceStatus == false) {
+    if (user.userId && user.complianceStatus === false) {
       dispatch(updateCompliancePromptVisibility(true));
     }
-  }, [getFocusedRouteNameFromRoute, user]);
-  const dispatch = useAppDispatch();
+  }, [user, dispatch]);
+
+  // Handle back press to prevent bypassing compliance check
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
+        if (user.complianceStatus === false) {
+          // Prevent back navigation and show compliance prompt
+          dispatch(updateCompliancePromptVisibility(true));
+          return true;
+        }
         if (accountDetailsBottomsheet.isVisible) {
           dispatch(updateAccountDetailsBottomsheetVisibility(false));
           return true;
@@ -101,13 +110,14 @@ const BottomtabNavigation = () => {
         onBackPress
       );
       return () => backHandler.remove();
-    }, [navState, accountDetailsBottomsheet])
+    }, [accountDetailsBottomsheet, navigation, dispatch, user.complianceStatus])
   );
+
   return (
     <Tab.Navigator
       backBehavior="none"
       initialRouteName={home}
-      screenOptions={({ route }: any) => ({
+      screenOptions={({ route }) => ({
         tabBarStyle: {
           borderWidth: 0,
           height:
@@ -118,14 +128,24 @@ const BottomtabNavigation = () => {
           borderTopWidth: 0,
           paddingTop: size.getHeightSize(6),
         },
-        tabBarButton: (props) => <CustomTabBarButton {...props} />,
+        tabBarButton: (props) => (
+          <CustomTabBarButton
+            {...props}
+            onPress={
+              user.complianceStatus === false
+                ? () => {
+                    // Prevent navigation and show compliance prompt
+                    dispatch(updateCompliancePromptVisibility(true));
+                  }
+                : props.onPress // Allow navigation only if complianceStatus is true
+            }
+          />
+        ),
         tabBarLabel: ({ focused }) => {
           if (route.name === home) {
             return (
               <CText
-                style={{
-                  marginTop: size.getHeightSize(6),
-                }}
+                style={{ marginTop: size.getHeightSize(6) }}
                 fontFamily="semibold"
                 fontSize={10}
                 color={focused ? "primaryColor" : "secondaryBlack"}
@@ -138,9 +158,7 @@ const BottomtabNavigation = () => {
           if (route.name === services) {
             return (
               <CText
-                style={{
-                  marginTop: size.getHeightSize(6),
-                }}
+                style={{ marginTop: size.getHeightSize(6) }}
                 fontFamily="semibold"
                 fontSize={10}
                 color={focused ? "primaryColor" : "secondaryBlack"}
@@ -153,9 +171,7 @@ const BottomtabNavigation = () => {
           if (route.name === transactions) {
             return (
               <CText
-                style={{
-                  marginTop: size.getHeightSize(6),
-                }}
+                style={{ marginTop: size.getHeightSize(6) }}
                 fontFamily="semibold"
                 fontSize={10}
                 color={focused ? "primaryColor" : "secondaryBlack"}
@@ -168,9 +184,7 @@ const BottomtabNavigation = () => {
           if (route.name === savings) {
             return (
               <CText
-                style={{
-                  marginTop: size.getHeightSize(6),
-                }}
+                style={{ marginTop: size.getHeightSize(6) }}
                 fontFamily="semibold"
                 fontSize={10}
                 color={focused ? "primaryColor" : "secondaryBlack"}
@@ -183,9 +197,7 @@ const BottomtabNavigation = () => {
           if (route.name === more) {
             return (
               <CText
-                style={{
-                  marginTop: size.getHeightSize(6),
-                }}
+                style={{ marginTop: size.getHeightSize(6) }}
                 fontFamily="semibold"
                 fontSize={10}
                 color={focused ? "primaryColor" : "secondaryBlack"}
@@ -196,48 +208,43 @@ const BottomtabNavigation = () => {
             );
           }
         },
-        tabBarIcon: ({ focused }: any) => {
+        tabBarIcon: ({ focused }) => {
           let image: ReactNode;
-          let routeName = route.name;
+          const routeName = route.name;
           if (routeName === home) {
-            image =
-              focused === true ? (
-                <HomeIcon isFocused size={size.getHeightSize(24)} />
-              ) : (
-                <HomeIcon size={size.getHeightSize(24)} />
-              );
+            image = focused ? (
+              <HomeIcon isFocused size={size.getHeightSize(24)} />
+            ) : (
+              <HomeIcon size={size.getHeightSize(24)} />
+            );
           }
           if (routeName === services) {
-            image =
-              focused === true ? (
-                <ServicesIcon isFocused size={size.getHeightSize(24)} />
-              ) : (
-                <ServicesIcon size={size.getHeightSize(24)} />
-              );
+            image = focused ? (
+              <ServicesIcon isFocused size={size.getHeightSize(24)} />
+            ) : (
+              <ServicesIcon size={size.getHeightSize(24)} />
+            );
           }
           if (routeName === transactions) {
-            image =
-              focused === true ? (
-                <TransactionsIcon isFocused size={size.getHeightSize(24)} />
-              ) : (
-                <TransactionsIcon size={size.getHeightSize(24)} />
-              );
+            image = focused ? (
+              <TransactionsIcon isFocused size={size.getHeightSize(24)} />
+            ) : (
+              <TransactionsIcon size={size.getHeightSize(24)} />
+            );
           }
           if (routeName === savings) {
-            image =
-              focused === true ? (
-                <SavingsIcon isFocused size={size.getHeightSize(24)} />
-              ) : (
-                <SavingsIcon size={size.getHeightSize(24)} />
-              );
+            image = focused ? (
+              <SavingsIcon isFocused size={size.getHeightSize(24)} />
+            ) : (
+              <SavingsIcon size={size.getHeightSize(24)} />
+            );
           }
           if (routeName === more) {
-            image =
-              focused === true ? (
-                <MoreIcon size={size.getHeightSize(24)} />
-              ) : (
-                <MoreIcon size={size.getHeightSize(24)} />
-              );
+            image = focused ? (
+              <MoreIcon size={size.getHeightSize(24)} />
+            ) : (
+              <MoreIcon size={size.getHeightSize(24)} />
+            );
           }
           return image;
         },

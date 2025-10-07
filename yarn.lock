@@ -1892,6 +1892,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/netinfo@npm:^11.4.1":
+  version: 11.4.1
+  resolution: "@react-native-community/netinfo@npm:11.4.1"
+  peerDependencies:
+    react-native: ">=0.59"
+  checksum: d347ae522da6b8c045d6378754d4928bdf23cc85b74571b91fa8a03fa168bdac5e3c65eb97eac0dd0c7cbd20e782f99d41b090fb79ce7d815cbaf6fb5d1abe37
+  languageName: node
+  linkType: hard
+
 "@react-native-picker/picker@npm:^2.11.1":
   version: 2.11.2
   resolution: "@react-native-picker/picker@npm:2.11.2"
@@ -2867,7 +2876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.1":
+"axios@npm:^1.12.2":
   version: 1.12.2
   resolution: "axios@npm:1.12.2"
   dependencies:
@@ -5540,6 +5549,7 @@ __metadata:
     "@react-native-async-storage/async-storage": 2.2.0
     "@react-native-clipboard/clipboard": ^1.16.2
     "@react-native-community/datetimepicker": 8.4.4
+    "@react-native-community/netinfo": ^11.4.1
     "@react-native-picker/picker": ^2.11.1
     "@react-navigation/bottom-tabs": ^7.2.0
     "@react-navigation/drawer": ^7.3.11
@@ -5550,7 +5560,7 @@ __metadata:
     "@tanstack/react-query": ^5.67.1
     "@types/expo": ^33.0.3
     "@types/react": ~19.1.10
-    axios: ^1.8.1
+    axios: ^1.12.2
     babel-plugin-module-resolver: ^5.0.2
     babel-preset-expo: ^54.0.0
     country-state-city: ^3.2.1
