@@ -41,7 +41,6 @@ export const notificationStyles = StyleSheet.create({
   detailHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: size.getWidthSize(16),
     paddingVertical: size.getHeightSize(16),
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
@@ -86,7 +85,7 @@ export const notificationStyles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginTop: size.getHeightSize(16),
+    marginTop: size.getHeightSize(10),
   },
   titleSection: {
     padding: size.getWidthSize(16),

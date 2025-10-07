@@ -147,7 +147,7 @@ const ServiceScreen = () => {
           {isPending && !refreshing ? (
             <ActivityIndicator
               size="large"
-              color={colors.primaryColor() || "#007AFF"}
+              color="#007AFF"
               style={{ marginTop: size.getHeightSize(24) }}
             />
           ) : (
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: size.getWidthSize(16),
     borderRadius: size.getHeightSize(16),
     width: size.getWidthSize(175),
-    height: size.getHeightSize(300),
+    minHeight: size.getHeightSize(300),
     justifyContent: "space-between",
   },
   view5: {

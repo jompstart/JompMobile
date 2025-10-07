@@ -59,7 +59,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       style={[
         styles.notificationItem,
         {
-          backgroundColor: hasRedDot ? "white" : colors.appBackground(),
+          backgroundColor: hasRedDot ? "white" : "rgba(222, 222, 222, 0.5)",
         },
       ]}
       onPress={onPress}

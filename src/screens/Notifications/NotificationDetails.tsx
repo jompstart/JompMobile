@@ -67,36 +67,11 @@ const NotificationDetails = () => {
     }
   };
 
-  const handleMarkAsRead = async (notificationId: string) => {
-    setMarkingReadId(notificationId);
-    try {
-      const response = await userService.markNotificationAsRead(notificationId);
-      if (response.statusCode === 200) {
-        Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "Notification marked as read",
-        });
-        navigation.goBack();
-      } else {
-        throw new Error(response.message);
-      }
-    } catch (err: any) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: err?.message || "Failed to mark as read",
-      });
-    } finally {
-      setMarkingReadId(null);
-    }
-  };
-  console.log(notification.serviceType);
   return (
     <GradientSafeAreaView>
       <HeaderWithBackIcon title="Notification Details" />
 
-      <View style={[styles.content, { padding: 16 }]}>
+      <View style={[styles.content, { padding: 10 }]}>
         {/* Title + Badge */}
         <View
           style={[
@@ -107,23 +82,19 @@ const NotificationDetails = () => {
           <CText fontSize={18} fontFamily="bold" color="black">
             {notification.title}
           </CText>
-
-          <View
+          <TouchableOpacity
             style={{
-              backgroundColor: notification.read ? "#E0F7E9" : "#FFEBEE",
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 12,
+              borderRadius: 8,
+              marginRight: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
             }}
+            onPress={() => handleDeleteNotification(notification.id)}
+            disabled={deletingNotificationId === notification.id}
           >
-            <CText
-              fontSize={12}
-              fontFamily="semibold"
-              color={notification.read ? "green" : "red"}
-            >
-              {notification.read ? "Read" : "Unread"}
-            </CText>
-          </View>
+            <MaterialIcons name="delete" size={20} color="red" />
+          </TouchableOpacity>
         </View>
 
         {/* Body */}
@@ -131,6 +102,9 @@ const NotificationDetails = () => {
           style={{
             backgroundColor: "#f9f9f9",
             padding: 12,
+            height: 100,
+            justifyContent: "center",
+            alignItems: "center",
             borderRadius: 10,
             marginBottom: 16,
           }}
@@ -156,8 +130,9 @@ const NotificationDetails = () => {
           <TouchableOpacity
             style={{
               backgroundColor: colors.primarySuccess(),
-              height: 30,
+              height: 50,
               borderRadius: 8,
+
               marginRight: 10,
               flexDirection: "row",
               justifyContent: "center",
@@ -181,69 +156,6 @@ const NotificationDetails = () => {
             </CText>
           </TouchableOpacity>
         )}
-        {/* Action Buttons */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginTop: 20,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor:
-                deletingNotificationId === notification.id ? "#ccc" : "#F44336",
-              padding: 12,
-              borderRadius: 8,
-              marginRight: 10,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => handleDeleteNotification(notification.id)}
-            disabled={deletingNotificationId === notification.id}
-          >
-            <MaterialIcons name="delete" size={20} color="white" />
-            <CText
-              fontSize={14}
-              fontFamily="semibold"
-              color="white"
-              style={{ marginLeft: 6 }}
-            >
-              {deletingNotificationId === notification.id
-                ? "Deleting..."
-                : "Delete"}
-            </CText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor:
-                markingReadId === notification.id ? "#ccc" : "#4CAF50",
-              padding: 12,
-              borderRadius: 8,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => handleMarkAsRead(notification.id)}
-            disabled={markingReadId === notification.id}
-          >
-            <MaterialIcons name="done-all" size={20} color="white" />
-            <CText
-              fontSize={14}
-              fontFamily="semibold"
-              color="white"
-              style={{ marginLeft: 6 }}
-            >
-              {markingReadId === notification.id
-                ? "Marking..."
-                : "Mark as Read"}
-            </CText>
-          </TouchableOpacity>
-        </View>
       </View>
     </GradientSafeAreaView>
   );
