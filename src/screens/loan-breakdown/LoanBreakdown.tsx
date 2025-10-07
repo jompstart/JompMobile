@@ -6,9 +6,11 @@ import {
   StyleSheet,
   Modal,
   Pressable,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import React, { use, useEffect, useState } from "react";
-import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { makeRequest } from "../../config/api.config";
 import { API_RESPONSE } from "../../services/dto/user.dto";
 import PTextInput from "../../shared/PTextInput";
@@ -18,14 +20,22 @@ import { NotificationItemData } from "../Notifications/Notification";
 import CustomDropdown from "../../components/dropdown/CustomDropDown";
 import ReviewPlanSection from "./ReviewPlan";
 import { colors } from "../../constants/colors";
+import { formatToAmount } from "../../utils/stringManipulation";
+import MonthZero from "./PaymentBreakdown";
+import PaymentBreakdown from "./PaymentBreakdown";
+import { updateToast } from "../../features/ui/ui.slice";
 
-type PaymentBreakDownProps = {
+// ---------------------------------------------
+// ✅ Type Definitions
+// ---------------------------------------------
+export type PaymentBreakDownProps = {
   month: number;
   openingPrincipal: number;
   interest: number;
   principalRepayment: number;
   monthlyInstallment: number;
 };
+
 type ProcessingFeeType = {
   adminFee: number;
   insuranceFee: number;
@@ -37,17 +47,14 @@ export type PaymentTerms = {
   name: string;
   description: string;
 };
+
 export type FormFieldValues = {
   Country?: string;
   ContactAddress?: string;
   duration?: string;
   State?: string;
 };
-export type FormFieldTypes = {
-  label: string;
-  placeholder: string;
-  key: string;
-};
+
 export type PaymentDurationTerm = {
   id: string;
   name: string;
@@ -56,6 +63,7 @@ export type PaymentDurationTerm = {
   createAt: string;
   updateAt: string;
 };
+
 export type CustomerRequestType = {
   customerRequest: number;
   description: string;
@@ -65,64 +73,58 @@ export type CustomerRequestType = {
   serviceCategory: string;
 };
 
-const inputFields: FormFieldTypes[] = [
-  {
-    label: "Contact Address",
-    placeholder: "12 Lekki Phase 1",
-    key: "ContactAddress",
-  },
-  {
-    label: "State",
-    placeholder: "Lagos",
-    key: "State",
-  },
-  {
-    label: "Country",
-    placeholder: "Nigeria",
-    key: "Country",
-  },
-];
-
+// ---------------------------------------------
+// ✅ Loan Breakdown Component
+// ---------------------------------------------
 const LoanBreakdown = () => {
   const route = useRoute();
   const { id, notification } = route.params as {
     id: string;
     notification: NotificationItemData;
   };
-  const [acceptedCustomerId, setAcceptedCustomerId] = useState("");
-  const [acceptedServiceId, setAcceptedServiceId] = useState("");
+
+  // ---------------------------------------------
+  // ✅ Component States
+  // ---------------------------------------------
   const [amountAccepted, setAmountAccepted] = useState<number>(0);
   const [amountDisbursed, setAmountDisbursed] = useState<number>(0);
   const [userContribution, setUserContribution] = useState<number>(0);
   const [amountRequested, setAmountRequested] = useState<number>(0);
   const [paymentTermsLoading, setPaymentTermsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms[] | undefined>(
-    undefined
-  );
+  const [paymentTerms, setPaymentTerms] = useState<PaymentTerms[]>();
   const [selectedPaymentTerm, setSelectedPaymentTerm] = useState("");
   const [breakDown, setBreakDown] = useState<PaymentBreakDownProps[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isReviewPlan, setIsReviewPlan] = useState(false);
   const [processingFee, setProcessingFee] = useState<any>(null);
   const [serviceCat, setServiceCat] = useState<any>(null);
   const [serviceDuration, setServiceDuration] = useState<any>(null);
   const [interestRate, setInterestRate] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [formFields, setFormFields] = useState<FormFieldValues>(
     {} as FormFieldValues
   );
-  const [disbursed, setDisbursed] = useState<number | null>(null);
-
+  const [disbursed, setDisbursed] = useState<number>(0);
+  const navigation = useNavigation();
+  // ---------------------------------------------
+  // ✅ Select duration from modal dropdown
+  // ---------------------------------------------
   const handleSelect = (value: string) => {
     setFormFields({ ...formFields, duration: value });
     setModalVisible(false);
     setSelectedPaymentTerm(value);
   };
+
+  // ---------------------------------------------
+  // ✅ Extract service category from notification
+  // ---------------------------------------------
   useEffect(() => {
-    if (!notification) return;
-    setServiceCat(notification.serviceType);
-  }, []);
+    if (notification) setServiceCat(notification.serviceType);
+  }, [notification]);
+
+  // ---------------------------------------------
+  // ✅ Fetch service durations from API
+  // ---------------------------------------------
   useEffect(() => {
     if (!serviceCat) return;
 
@@ -132,15 +134,18 @@ const LoanBreakdown = () => {
           method: "GET",
           url: "/service-categories",
         });
+
         if (response?.success) {
           const normalizedServiceCat = serviceCat.trim().toLowerCase();
           const data = response.data as PaymentDurationTerm[];
 
+          // Extract keywords for fuzzy matching
           const extractKeywords = (str: string) =>
             str.split(/\s+/).filter((word) => word.length > 2);
 
           const queryWords = extractKeywords(normalizedServiceCat);
 
+          // Try to find category that matches user service type
           const matchedCategory = data.find((cat: any) => {
             const catName = cat.name.trim().toLowerCase();
             const categoryWords = extractKeywords(catName);
@@ -150,19 +155,17 @@ const LoanBreakdown = () => {
             return commonWords.length > 0;
           });
 
+          // Convert duration string (e.g. "12 months") into an array of months
           if (matchedCategory) {
-            const durationString = matchedCategory?.duration;
-            if (typeof durationString === "string") {
-              const durationInMonths =
-                parseInt(durationString.replace(/\D/g, ""), 10) || 0;
+            const durationInMonths =
+              parseInt(matchedCategory.duration.replace(/\D/g, ""), 10) || 0;
 
-              const monthsArray = Array.from(
-                { length: durationInMonths },
-                (_, i) => `Month ${i + 1}`
-              );
+            const monthsArray = Array.from(
+              { length: durationInMonths },
+              (_, i) => `Month ${i + 1}`
+            );
 
-              setServiceDuration(monthsArray);
-            }
+            setServiceDuration(monthsArray);
           } else {
             setServiceDuration([]);
           }
@@ -174,7 +177,10 @@ const LoanBreakdown = () => {
 
     getCategoryDuration();
   }, [serviceCat]);
-  // ✅ Fetch loan processing service
+
+  // ---------------------------------------------
+  // ✅ Fetch Loan Processing Service
+  // ---------------------------------------------
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -184,19 +190,20 @@ const LoanBreakdown = () => {
         });
         if (resp?.success) {
           const data = resp.data as CustomerRequestType;
-          console.log(data);
-          // console.log("Processing service response:", resp.data);
           setDisbursed(data.disbursedAmount || 0);
           setAmountRequested(data.customerRequest || 0);
           setAmountDisbursed(data.disbursedAmount || 0);
         }
       } catch (error) {
-        // console.log("Error fetching processing service:", error);
+        console.log("Error fetching processing service:", error);
       }
     };
     fetchData();
   }, [id]);
-  // ✅ Fetch payment terms, processing fee, and interest rate
+
+  // ---------------------------------------------
+  // ✅ Fetch Payment Terms, Processing Fee, and Interest Rate
+  // ---------------------------------------------
   useEffect(() => {
     const getPaymentTerms = async () => {
       try {
@@ -205,7 +212,6 @@ const LoanBreakdown = () => {
           method: "GET",
           url: "/payment-terms",
         });
-        // console.log("Payment terms response:", paymentTerms);
         if (response.success) {
           setPaymentTerms(response.data as PaymentTerms[]);
         }
@@ -222,21 +228,18 @@ const LoanBreakdown = () => {
           method: "GET",
           url: "/get-processing-fee",
         });
-
         if (response.success) {
           setProcessingFee(response.data as ProcessingFeeType);
-          // console.log("processing fee", processingFee);
         }
 
+        // Fetch interest rate
         const res = await makeRequest({
           method: "GET",
-          url: `/get-interestRate`,
+          url: "/get-interateRate",
         });
-        // console.log("interestRate", res);
-        // setProcessingFee(res?.data?.data);
-        // setInterestRate(res?.data?.data);
+        setInterestRate(res?.data as any[]);
       } catch (error) {
-        // console.log("Error fetching fee or interest rate:", error);
+        console.log("Error fetching fee or interest rate:", error);
       } finally {
         setPaymentTermsLoading(false);
       }
@@ -246,56 +249,68 @@ const LoanBreakdown = () => {
     getProcessingFee();
   }, []);
 
-  // ✅ Fetch payment breakdown based on term and amount
-  useEffect(() => {
-    const handlePaymentBreakdown = async () => {
-      if (!selectedPaymentTerm || !disbursed) return;
-
-      try {
-        const response = await makeRequest({
-          method: "GET",
-          url: `/payment-breakdown?months=${selectedPaymentTerm}&loanAmount=${disbursed}`,
-        });
-        // console.log("Payment breakdown:", response);
-      } catch (error) {
-        console.log("Error fetching payment breakdown:", error);
-      }
-    };
-
-    handlePaymentBreakdown();
-  }, [selectedPaymentTerm, disbursed]);
-
+  // ---------------------------------------------
+  // ✅ Accept Service Handler
+  // ---------------------------------------------
   const acceptService = async () => {
     const paymentTermNumber = selectedPaymentTerm.replace(/\D/g, "");
 
     const payload = {
       loanDuration: paymentTermNumber,
-      amountDisbursed: amountDisbursed,
-      interestRate: 0,
+      amountDisbursed,
+      interestRate: interestRate[0]?.rate ?? 1,
       monthlyInstallment: 0,
       customerContribution: 0,
       marginAmount: 0,
       serviceId: id || "",
-      status: "string",
+      status: "accept",
     };
     try {
+      setSubmitLoading(true);
       const resp = await makeRequest({
         method: "POST",
         url: "/customer-accept-service",
         data: payload,
       });
       console.log(resp);
-    } catch (error) {
-      console.log(error);
+      if (resp.success) {
+        setSubmitLoading(false);
+        navigation.navigate("SuccessPage", {
+          title: "Loan Accepted",
+          message: "Your loan breakdown has been processed",
+        });
+        updateToast({
+          displayToast: true,
+          toastMessage: resp.message,
+          toastType: "success",
+        });
+      }
+    } catch (error: any) {
+      setSubmitLoading(false);
+
+      updateToast({
+        displayToast: true,
+        toastMessage: error.message,
+        toastType: "info",
+      });
     }
   };
 
+  // ---------------------------------------------
+  // ✅ Toggle Review Plan Section
+  // ---------------------------------------------
   const handleToggleReviewPlan = () => {
     !isReviewPlan ? setIsReviewPlan(true) : acceptService();
   };
+
+  // ---------------------------------------------
+  // ✅ Component Render
+  // ---------------------------------------------
   return (
     <GradientSafeAreaView>
       <HeaderWithBackIcon title="Loan Breakdown" />
+
+      {/* Review Plan Section */}
       {isReviewPlan ? (
         <ReviewPlanSection
           onChangePlan={() => setIsReviewPlan(false)}
@@ -308,25 +323,11 @@ const LoanBreakdown = () => {
           interestRate={interestRate}
         />
       ) : (
-        <View>
+        <View style={{ flex: 1, marginTop: 20 }}>
           {paymentTermsLoading && <Text>Loading payment terms...</Text>}
+
+          {/* Duration Dropdown */}
           <View style={{ marginHorizontal: 10 }}>
-            <View style={{ marginVertical: 16, gap: 10 }}>
-              {inputFields.map((field: FormFieldTypes, index) => (
-                <View key={field.key}>
-                  <Text style={{ marginBottom: 8, fontWeight: "600" }}>
-                    {field.label}
-                  </Text>
-                  <PTextInput
-                    value={formFields[field.key]}
-                    onChangeText={(text) =>
-                      setFormFields({ ...formFields, [field.key]: text })
-                    }
-                    placeholder={field.placeholder}
-                  />
-                </View>
-              ))}
-            </View>
             {serviceDuration && (
               <>
                 <Pressable
@@ -338,6 +339,7 @@ const LoanBreakdown = () => {
                   </Text>
                 </Pressable>
 
+                {/* Modal for selecting duration */}
                 <Modal
                   visible={modalVisible}
                   transparent
@@ -350,7 +352,7 @@ const LoanBreakdown = () => {
 
                       <FlatList
                         data={serviceDuration}
-                        keyExtractor={(item, index) => String(index)}
+                        keyExtractor={(_, index) => String(index)}
                         ListEmptyComponent={<Text>No durations available</Text>}
                         renderItem={({ item }) => (
                           <TouchableOpacity
@@ -374,14 +376,36 @@ const LoanBreakdown = () => {
               </>
             )}
           </View>
+
+          {selectedPaymentTerm && (
+            <PaymentBreakdown
+              amountAccepted={amountAccepted}
+              amountDisbursed={amountDisbursed}
+              userContribution={userContribution}
+              processingFee={processingFee}
+              breakDown={breakDown}
+              interestRate={interestRate}
+              selectedPaymentTerm={selectedPaymentTerm}
+              disbursed={disbursed}
+              setBreakDown={setBreakDown}
+            />
+          )}
         </View>
       )}
+
+      {/* Review / Submit Button */}
       <TouchableOpacity
         onPress={handleToggleReviewPlan}
         style={styles.submitButtonStyles}
       >
         <Text style={styles.submitButtonStylesText}>
-          {isReviewPlan ? "Submit Plan" : "Review Plan"}
+          {submitLoading ? (
+            <ActivityIndicator color="white" />
+          ) : isReviewPlan ? (
+            "Submit Plan"
+          ) : (
+            "Review Plan"
+          )}
         </Text>
       </TouchableOpacity>
     </GradientSafeAreaView>
@@ -389,8 +413,13 @@ const LoanBreakdown = () => {
 };
 
 export default LoanBreakdown;
+
+// ---------------------------------------------
+// ✅ Styles
+// ---------------------------------------------
 const styles = StyleSheet.create({
   submitButtonStyles: {
+    marginVertical: 20,
     backgroundColor: colors.primary(),
     height: 40,
     marginBottom: 20,
@@ -440,16 +469,39 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
-  optionSub: {
-    fontSize: 14,
-    color: "#777",
-  },
   cancelButton: {
     marginTop: 12,
     alignSelf: "flex-end",
   },
   cancelText: {
     color: "#007BFF",
+    fontWeight: "600",
+  },
+  container: {
+    paddingVertical: 16,
+  },
+  item: {
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    paddingBottom: 12,
+  },
+  month: {
+    fontWeight: "700",
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  label: {
+    fontSize: 14,
+    color: "#333",
+  },
+  value: {
+    fontSize: 14,
     fontWeight: "600",
   },
 });

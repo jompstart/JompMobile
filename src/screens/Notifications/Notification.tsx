@@ -12,8 +12,7 @@ import { useAppSelector } from "../../controller/redux.controller";
 import { userSelector } from "../../features/user/user.selector";
 import HeaderWithBackIcon from "../../components/headers/HeaderWithBackIcon";
 import { notificationStyles as styles } from "./notif.style";
-import NotificationDetails from "./NotificationDetails";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { colors } from "../../constants/colors";
 
 // Interfaces
 export interface NotificationItemData {
@@ -57,7 +56,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   return (
-    <TouchableOpacity style={styles.notificationItem} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.notificationItem,
+        {
+          backgroundColor: hasRedDot ? "white" : colors.appBackground(),
+        },
+      ]}
+      onPress={onPress}
+    >
       <View style={styles.notificationContent}>
         <View
           style={[styles.iconContainer, { backgroundColor: getIconColor() }]}
