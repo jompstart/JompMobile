@@ -867,14 +867,14 @@ const HouseRentsForms = ({
             onChangeText={(text) => {
               dispatch({ type: 'SET_COMPANY_NAME', payload: text });
             }}
-            placeholder="Your Company/Organization Name"
+            placeholder="Your Company/Business Name"
           />
           <PTextInput
             value={state.companyPhone}
             onChangeText={(text) => {
               dispatch({ type: 'SET_COMPANY_PHONE', payload: text });
             }}
-            placeholder="Company/Organization Phone Number"
+            placeholder="Company/Business Phone Number"
             keyboardType="phone-pad"
           />
           <PTextInput
@@ -890,14 +890,14 @@ const HouseRentsForms = ({
             onChangeText={(text) => {
               dispatch({ type: 'SET_COMPANY_EMAIL', payload: text });
             }}
-            placeholder="Company/Organization Email Address"
+            placeholder="Company/Business Email Address"
           />
           <PTextInput
             value={state.companyAddress}
             onChangeText={(text) => {
               dispatch({ type: 'SET_COMPANY_ADDRESS', payload: text });
             }}
-            placeholder="Company/Organization Address"
+            placeholder="Company/Business Address"
           />
         </View>
       ),

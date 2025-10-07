@@ -8,20 +8,19 @@ export interface CreateSavingsRequestDto {
   savingCategory: string;
   savingSource: string;
   frequency: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   preferredTime: string;
-  savingsTime: string;
   targetBreakBeforeEndDate: boolean;
   autoSave: boolean;
   autoWithdrawal: boolean;
   interestTagentSaving: boolean;
   cardDetails: {
-    cardNumber: '';
-    expiryMonth: '';
-    expiry_year: '';
-    cvv: '';
-  };
+    cardNumber: string;
+    expiryMonth: string;
+    expiry_year: string;
+    cvv: string;
+  } | null; // Allow null if backend supports it
 }
 
 export type GetSavingsCategoryResponseDto = {
