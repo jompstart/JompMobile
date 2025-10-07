@@ -131,8 +131,9 @@ const NotificationDetails = () => {
             style={{
               backgroundColor: colors.primarySuccess(),
               height: 50,
+              marginTop: 20,
               borderRadius: 8,
-
+              marginHorizontal: 5,
               marginRight: 10,
               flexDirection: "row",
               justifyContent: "center",

@@ -73,6 +73,7 @@ export const notificationStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginHorizontal: 5,
   },
   additionalInfo: {
     marginTop: size.getHeightSize(32),
