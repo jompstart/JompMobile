@@ -2,7 +2,6 @@ import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import { NotificationScreenProps } from "../../types/navigations.types";
-import GradientHeader from "../../shared/GradientHeader";
 import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import CText from "../../shared/CText";
@@ -279,7 +278,7 @@ const Notification: React.FC<NotificationScreenProps> = ({
 
       if (
         message === "All user notifications deleted." ||
-        response.status === 200 ||
+        response.success ||
         response.statusCode === 200
       ) {
         Toast.show({

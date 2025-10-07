@@ -200,7 +200,9 @@ const Drawer = (props: Props) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate("services");
+              navigation.navigate("HomePage", {
+                screen: "Services",
+              });
             }}
             style={styles.view1}
           >

@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Platform,
-  View,
   TouchableOpacity,
   BackHandler,
 } from "react-native";
@@ -19,7 +18,6 @@ import { useNavigationState, useNavigation } from "@react-navigation/native";
 import Dashboard from "../screens/homeTabs/Dashboard";
 import Transactions from "../screens/homeTabs/Transactions";
 import Savings from "../screens/homeTabs/Savings";
-import More from "../screens/homeTabs/More";
 import HomeIcon from "../../assets/svgs/Home/HomeIcon";
 import ServicesIcon from "../../assets/svgs/Home/ServicesIcon";
 import TransactionsIcon from "../../assets/svgs/Home/TransactionsIcon";
@@ -31,7 +29,7 @@ import {
   updateCompliancePromptVisibility,
 } from "../features/ui/ui.slice";
 import { accountDetailsBottomsheetSelector } from "../features/ui/ui.selector";
-import ServiceScreen from "../screens/homeTabs/ServiceScreen";
+import ServiceScreen from "../screens/services/servicehistory/ServiceScreen";
 const Tab = createBottomTabNavigator();
 
 type RootStackParamList = {

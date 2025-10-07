@@ -10,17 +10,18 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { size } from "../../config/size";
-import { colors } from "../../constants/colors";
-import CText from "../../shared/CText";
-import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
-import { useGetUserServices } from "../../hooks/api/providers";
-import { useAppSelector } from "../../controller/redux.controller";
-import { userSelector } from "../../features/user/user.selector";
-import { formatToAmount } from "../../utils/stringManipulation";
-import { RootStackParamList } from "../../types/navigations.types";
-import PrimaryButton from "../../shared/PrimaryButton";
-import HeaderWithMenu from "../../components/headers/HeaderWithMenu";
+import { size } from "../../../config/size";
+import { colors } from "../../../constants/colors";
+import CText from "../../../shared/CText";
+import GradientSafeAreaView from "../../../shared/GradientSafeAreaView";
+import { useGetUserServices } from "../../../hooks/api/providers";
+import { useAppSelector } from "../../../controller/redux.controller";
+import { userSelector } from "../../../features/user/user.selector";
+import { formatToAmount } from "../../../utils/stringManipulation";
+import { RootStackParamList } from "../../../types/navigations.types";
+import PrimaryButton from "../../../shared/PrimaryButton";
+import HeaderWithMenu from "../../../components/headers/HeaderWithMenu";
+import Toast from "react-native-toast-message";
 
 // Utility function to format service description to serviceType
 const formatServiceType = (description: string): string => {
@@ -67,8 +68,6 @@ const ServiceScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   // Log services data
-  console.log("Services data:", JSON.stringify(services, null, 2));
-  console.log(isError, isPending);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -85,7 +84,10 @@ const ServiceScreen = () => {
     // Use service.description as serviceType
     const serviceType = service.description; // "Other School Request" -> "other_school_request"
 
-    navigation.navigate("ServiceDetailScreen", { service, serviceType });
+    navigation.navigate("ServiceDetailScreen", {
+      service,
+      serviceType,
+    } as never);
   };
 
   const mappedStatus = {
@@ -145,7 +147,7 @@ const ServiceScreen = () => {
           {isPending && !refreshing ? (
             <ActivityIndicator
               size="large"
-              color={colors.primaryColor || "#007AFF"}
+              color={colors.primaryColor() || "#007AFF"}
               style={{ marginTop: size.getHeightSize(24) }}
             />
           ) : (

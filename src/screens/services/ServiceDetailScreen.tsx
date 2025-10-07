@@ -13,8 +13,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { size } from "../../config/size";
 import { colors } from "../../constants/colors";
 import CText from "../../shared/CText";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import GradientHeader from "../../shared/GradientHeader";
 import GradientSafeAreaView from "../../shared/GradientSafeAreaView";
 import { formatToAmount } from "../../utils/stringManipulation";
 import { RootStackParamList } from "../../types/navigations.types";
