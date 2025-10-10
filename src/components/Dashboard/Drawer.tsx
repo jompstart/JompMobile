@@ -15,20 +15,59 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import TransportCreditIcon from "../../../assets/svgs/Drawer/TransportCreditIcon";
 import CancelIcon from "../../../assets/svgs/Home/CancelIcon";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
-import { useAppDispatch } from "../../controller/redux.controller";
+import { useAppDispatch, useAppSelector } from "../../controller/redux.controller";
 import {
   updateLogoutBottomsheetVisibility,
   updateTermsAndConditionVisibility,
+  updateCompliancePromptVisibility,
 } from "../../features/ui/ui.slice";
+
 interface Props {
   props: DrawerContentComponentProps;
 }
+
 const Drawer = (props: Props) => {
   const {
     props: { navigation },
   } = props;
   const { top } = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user);
+
+  const handleNavigationPress = (navigateTo: () => void) => {
+    if (user.complianceStatus === false) {
+      // Prevent navigation and show compliance prompt
+      dispatch(updateCompliancePromptVisibility(true));
+    } else {
+      // Allow navigation only if complianceStatus is true
+      navigateTo();
+    }
+  };
+
+  const handleLogoutPress = () => {
+    // Logout is always allowed regardless of compliance status
+    dispatch(updateLogoutBottomsheetVisibility(true));
+  };
+
+  const handleTermsPress = () => {
+    // Terms & Conditions is always allowed
+    dispatch(
+      updateTermsAndConditionVisibility({
+        url: "https://dev.jompstart.com/terms&conditions",
+        visible: true,
+      })
+    );
+  };
+
+  const handlePrivacyPress = () => {
+    // Privacy is always allowed
+    dispatch(
+      updateTermsAndConditionVisibility({
+        url: "https://dev.jompstart.com/privacy",
+        visible: true,
+      })
+    );
+  };
 
   return (
     <View
@@ -68,10 +107,11 @@ const Drawer = (props: Props) => {
             paddingHorizontal: size.getWidthSize(4),
           }}
         >
+          {/* School Fee - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("PayServices");
-            }}
+            })}
             style={styles.view1}
           >
             <SchoolFeeIcon size={size.getWidthSize(40)} />
@@ -86,10 +126,12 @@ const Drawer = (props: Props) => {
               School Fee
             </CText>
           </Pressable>
+
+          {/* House Rent - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("HouseRentService");
-            }}
+            })}
             style={styles.view1}
           >
             <HouseRentIcon size={size.getWidthSize(40)} />
@@ -104,10 +146,12 @@ const Drawer = (props: Props) => {
               House Rent
             </CText>
           </Pressable>
-          <Pressable
-            onPress={() => {
+
+          {/* Notification - Locked */}
+          {/* <Pressable
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("Notification");
-            }}
+            })}
             style={styles.view1}
           >
             <HouseRentIcon size={size.getWidthSize(40)} />
@@ -121,11 +165,13 @@ const Drawer = (props: Props) => {
             >
               Notification
             </CText>
-          </Pressable>
+          </Pressable> */}
+
+          {/* Transport Credit - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("TransportDetails");
-            }}
+            })}
             style={styles.view1}
           >
             <TransportCreditIcon size={size.getWidthSize(40)} />
@@ -140,12 +186,14 @@ const Drawer = (props: Props) => {
               Transport Credit
             </CText>
           </Pressable>
+
+          {/* Savings - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("HomePage", {
                 screen: "Savings",
               });
-            }}
+            })}
             style={styles.view1}
           >
             <SavingsIcon size={size.getWidthSize(40)} />
@@ -160,12 +208,14 @@ const Drawer = (props: Props) => {
               Savings
             </CText>
           </Pressable>
+
+          {/* Transactions - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("HomePage", {
                 screen: "Transactions",
               });
-            }}
+            })}
             style={styles.view1}
           >
             <TransactionIcon size={size.getWidthSize(40)} />
@@ -180,10 +230,12 @@ const Drawer = (props: Props) => {
               Transactions
             </CText>
           </Pressable>
+
+          {/* Loan Calculator - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("LoanPage");
-            }}
+            })}
             style={styles.view1}
           >
             <LoanCalculatorIcon size={size.getWidthSize(40)} />
@@ -195,15 +247,17 @@ const Drawer = (props: Props) => {
                 flex: 1,
               }}
             >
-              Loan Calculator{" "}
+              Loan Calculator
             </CText>
           </Pressable>
+
+          {/* Service History - Locked */}
           <Pressable
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("HomePage", {
                 screen: "Services",
               });
-            }}
+            })}
             style={styles.view1}
           >
             <SavingsIcon size={size.getWidthSize(40)} />
@@ -218,32 +272,14 @@ const Drawer = (props: Props) => {
               Service History
             </CText>
           </Pressable>
-          {/* <Pressable
-            onPress={() => {
-              navigation.navigate('PayServices');
-            }}
-            style={styles.view1}
-          >
-            <SettingsIcon size={size.getWidthSize(40)} />
-            <CText
-              fontFamily="semibold"
-              fontSize={16}
-              color={colors.black('70') as any}
-              style={{
-                flex: 1,
-              }}
-            >
-              Settings
-            </CText>
-          </Pressable> */}
+
+          {/* Logout - Always allowed */}
           <Pressable
             style={{
               ...styles.view1,
               paddingTop: size.getHeightSize(32),
             }}
-            onPress={() => {
-              dispatch(updateLogoutBottomsheetVisibility(true));
-            }}
+            onPress={handleLogoutPress}
           >
             <LogOutIcon size={size.getWidthSize(40)} />
             <CText
@@ -257,14 +293,16 @@ const Drawer = (props: Props) => {
               Logout
             </CText>
           </Pressable>
+
+          {/* Delete Account - Locked */}
           <Pressable
             style={{
               ...styles.view1,
               paddingTop: size.getHeightSize(20),
             }}
-            onPress={() => {
+            onPress={() => handleNavigationPress(() => {
               navigation.navigate("Request");
-            }}
+            })}
           >
             <View
               style={{
@@ -299,6 +337,7 @@ const Drawer = (props: Props) => {
             flex: 1,
           }}
         />
+        {/* Bottom Links - Always allowed */}
         <View
           style={{
             flexDirection: "row",
@@ -310,14 +349,7 @@ const Drawer = (props: Props) => {
         >
           <CText
             fontFamily="semibold"
-            onPress={() =>
-              dispatch(
-                updateTermsAndConditionVisibility({
-                  url: "https://dev.jompstart.com/terms&conditions",
-                  visible: true,
-                })
-              )
-            }
+            onPress={handleTermsPress}
             fontSize={15}
             color={colors.primary() as any}
             lineHeight={19}
@@ -326,14 +358,7 @@ const Drawer = (props: Props) => {
           </CText>
           <CText
             fontFamily="semibold"
-            onPress={() =>
-              dispatch(
-                updateTermsAndConditionVisibility({
-                  url: "https://dev.jompstart.com/privacy",
-                  visible: true,
-                })
-              )
-            }
+            onPress={handlePrivacyPress}
             fontSize={15}
             color={colors.primary() as any}
             lineHeight={19}

@@ -23,6 +23,18 @@ import { SavingsService } from '../../services/savings/savings';
 import { useMutation } from '@tanstack/react-query';
 import { API_RESPONSE } from '../../types';
 import { updateToast } from '../../features/ui/ui.slice';
+
+// Utility function to add commas to a number
+const formatNumberWithCommas = (value: string | number): string => {
+  const num = value.toString().replace(/,/g, ''); // Remove existing commas
+  return num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+// Utility function to remove commas for processing
+const parseNumber = (value: string): string => {
+  return value.replace(/,/g, '');
+};
+
 interface Props {
   onClose: () => void;
   visibility: boolean;
@@ -40,6 +52,7 @@ const TopUpBottomsheet = ({
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
   const savingsService = new SavingsService(user.userId, user.customerId);
+
   const { mutate: topUp, isPending } = useMutation<
     API_RESPONSE<any>,
     Error,
@@ -60,6 +73,15 @@ const TopUpBottomsheet = ({
       onSuccess?.();
     },
   });
+
+  // Handle input change to format with commas
+  const handleAmountChange = (text: string) => {
+    const rawValue = parseNumber(text); // Remove commas
+    if (rawValue === '' || !isNaN(Number(rawValue))) {
+      setSelectedAmount(rawValue); // Store raw value
+    }
+  };
+
   return (
     <BottomsheetWrapper
       topRadius={16}
@@ -111,10 +133,8 @@ const TopUpBottomsheet = ({
         <BottomSheetTextInput
           placeholder="Enter Top Up Amount"
           style={styles.input}
-          value={`${selectedAmount.toString()}`}
-          onChangeText={(text) => {
-            setSelectedAmount(text);
-          }}
+          value={selectedAmount ? formatNumberWithCommas(selectedAmount) : ''} // Display formatted value
+          onChangeText={handleAmountChange} // Handle input with parsing
           keyboardType="decimal-pad"
         />
         <View
@@ -124,91 +144,26 @@ const TopUpBottomsheet = ({
             marginTop: size.getHeightSize(16),
           }}
         >
-          <Pressable
-            onPress={() => {
-              setSelectedAmount('500');
-            }}
-            style={
-              selectedAmount == '500' ? styles.amountSelected : styles.view2
-            }
-          >
-            <CText
-              color={'black'}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="semibold"
+          {['500', '1000', '1500', '5000', '10000'].map((amount) => (
+            <Pressable
+              key={amount}
+              onPress={() => {
+                setSelectedAmount(amount); // Set raw value
+              }}
+              style={
+                selectedAmount === amount ? styles.amountSelected : styles.view2
+              }
             >
-              ₦ 500
-            </CText>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedAmount('1000');
-            }}
-            style={
-              selectedAmount == '1000' ? styles.amountSelected : styles.view2
-            }
-          >
-            <CText
-              color={'black'}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="semibold"
-            >
-              ₦ 1,000
-            </CText>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedAmount('1500');
-            }}
-            style={
-              selectedAmount == '1500' ? styles.amountSelected : styles.view2
-            }
-          >
-            <CText
-              color={'black'}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="semibold"
-            >
-              ₦ 1,500
-            </CText>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedAmount('5000');
-            }}
-            style={
-              selectedAmount == '5000' ? styles.amountSelected : styles.view2
-            }
-          >
-            <CText
-              color={'black'}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="semibold"
-            >
-              ₦ 5,000
-            </CText>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setSelectedAmount('10000');
-            }}
-            style={
-              selectedAmount == '10000' ? styles.amountSelected : styles.view2
-            }
-          >
-            <CText
-              color={'black'}
-              fontSize={12}
-              lineHeight={19.2}
-              fontFamily="semibold"
-            >
-              ₦ 10,000
-            </CText>
-          </Pressable>
+              <CText
+                color={'black'}
+                fontSize={12}
+                lineHeight={19.2}
+                fontFamily="semibold"
+              >
+                ₦ {formatNumberWithCommas(amount)}
+              </CText>
+            </Pressable>
+          ))}
         </View>
         <View
           style={{
@@ -221,7 +176,7 @@ const TopUpBottomsheet = ({
             onPress={() => {
               topUp({
                 goalId,
-                selectedAmount,
+                selectedAmount, // Send raw value to API
               });
             }}
             disabled={!selectedAmount}
@@ -249,10 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: size.getHeightSize(8),
   },
   input: {
-    // paddingVertical: size.getHeightSize(17.5),
-
     fontSize: size.fontSize(16),
-    // lineHeight: size.getHeightSize(22.4),
     fontFamily: 'AvenirLTStd-Medium',
     paddingHorizontal: size.getWidthSize(16),
     borderColor: '#21212130',

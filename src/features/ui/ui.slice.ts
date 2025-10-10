@@ -4,7 +4,7 @@ const initialState: UIState = {
   toast: {
     displayToast: false,
     toastMessage: '',
-    toastType: 'info',
+    toastType: 'success',
   },
   isCompliancePromptVisible: false,
   successModal: {

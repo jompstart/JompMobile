@@ -38,8 +38,8 @@ export const createSavingsInitialState: CreateSavingsFormState = {
   savingCategory: '',
   savingSource: '',
   frequency: '',
-  startDate: new Date(),
-  endDate: new Date(),
+ startDate: null,
+  endDate: null, // Initialize as null
   preferredTime: '',
   savingsTime: '',
   targetBreakBeforeEndDate: false,

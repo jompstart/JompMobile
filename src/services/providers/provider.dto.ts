@@ -124,3 +124,31 @@ export interface PayWithWalletDto {
   amount: number;
   loanAgreement: boolean;
 }
+
+
+export interface MakePaymentDto {
+  amount: number;
+  loanAgreement: boolean;
+}
+
+
+
+export interface PayWithWalletDto {
+  serviceId: string;
+  amount: number;
+  loanAgreement: boolean;
+}
+
+export interface VerifyPaymentResponse {
+  status: string;
+  transactionId?: string;
+  amount?: number;
+  message?: string;
+}
+
+export interface API_RESPONSE<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  status?: number;
+}

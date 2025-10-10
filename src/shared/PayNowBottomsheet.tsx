@@ -1,5 +1,5 @@
-import { StyleSheet, View, Pressable, ActivityIndicator } from 'react-native';
-import React from 'react';
+import { StyleSheet, View, Pressable, ActivityIndicator, Alert } from 'react-native';
+import React, { useEffect } from 'react';
 import BottomsheetWrapper from './BottomsheetWrapper';
 import { size } from '../config/size';
 import CText from './CText';
@@ -15,16 +15,12 @@ import { userSelector } from '../features/user/user.selector';
 import { formatToAmount } from '../utils/stringManipulation';
 import { colors } from '../constants/colors';
 import InfoIcon from '../../assets/svgs/support/InfoIcon';
-import { API_RESPONSE } from '../types';
-import {
-  MakePaymentDto,
-  MakePaymnetApiResponse,
-  PayWithWalletDto,
-} from '../services/providers/provider.dto';
+import { API_RESPONSE, MakePaymentDto, MakePaymentApiResponse, PayWithWalletDto, VerifyPaymentResponse } from '../services/providers/provider.dto';
 import { ProviderService } from '../services/providers/provider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import ShowLoader from './ShowLoader';
+
 const PayNowBottomsheet = () => {
   const paymentSheet = useAppSelector(payNowBottomsheetSelector);
   const { navigate } = useNavigation();
@@ -32,51 +28,135 @@ const PayNowBottomsheet = () => {
   const user = useAppSelector(userSelector);
   const queryClient = useQueryClient();
   const providerInstance = new ProviderService(user.userId, user.customerId);
+
+  // Debug paymentSheet
+  useEffect(() => {
+    console.log("PayNowBottomsheet paymentSheet:", paymentSheet);
+  }, [paymentSheet]);
+
   const { mutate: payNow, isPending: isPaymentPending } = useMutation<
-    API_RESPONSE<MakePaymnetApiResponse>,
+    API_RESPONSE<MakePaymentApiResponse>,
     Error,
     MakePaymentDto
   >({
-    mutationFn: async (data) => providerInstance.makePayment(data),
+    mutationFn: async (data) => {
+      console.log('Sending payment request:', { customerId: user.customerId, ...data });
+      const maxRetries = 3;
+      let attempt = 0;
+      while (attempt < maxRetries) {
+        try {
+          return await providerInstance.makePayment(data);
+        } catch (error) {
+          attempt++;
+          console.warn(`Payment attempt ${attempt} failed:`, error);
+          if (attempt === maxRetries) throw error;
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      }
+    },
     onSuccess: (response) => {
-      queryClient.invalidateQueries({
-        queryKey: ['refreschUserData'],
-      });
-      if (response.success) {
+      console.log('Payment response:', response);
+      queryClient.invalidateQueries({ queryKey: ['refreschUserData', 'transactions', user.customerId, 'pendingAdminReview'] });
+      if (response.success && response.data?.paymentUrl) {
         dispatch(
           updatePayStackModal({
             visible: true,
-            url: response.data?.paymentUrl || '',
+            url: response.data.paymentUrl,
           })
         );
+      } else {
+        Alert.alert('Error', response.message || 'Failed to initiate payment');
       }
     },
-    onError: (error) => {
-      console.error('Error making payment:', error);
+    onError: (error: any) => {
+      console.error('Error making payment:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      Alert.alert('Error', error.response?.data?.message || 'Failed to initiate payment. Please try again.');
     },
   });
 
-  const { mutate: payWithWallet, isPending: payWithWalletLoading } =
-    useMutation<API_RESPONSE<any>, Error, PayWithWalletDto>({
-      mutationFn: async (data) => providerInstance.makePaymentWithWallet(data),
-      onSuccess: (response) => {
-        if (response.success) {
-          dispatch(
-            updatePayNowBottomsheet({
-              amount: 0,
-              visible: false,
-              serviceId: '',
-            })
-          );
-          navigate('SuccessPage', {
-            message: response.message,
-          });
-        }
-      },
-      onError: (error) => {
-        console.error('Error making payment:', error);
-      },
-    });
+  const { mutate: verifyPayment, isPending: isVerificationPending } = useMutation<
+    API_RESPONSE<VerifyPaymentResponse>,
+    Error,
+    string
+  >({
+    mutationFn: async (reference) => providerInstance.verifyPayment(reference),
+    onSuccess: (response) => {
+      console.log('Payment verification response:', response);
+      queryClient.invalidateQueries({ queryKey: ['transactions', user.customerId, 'pendingAdminReview'] });
+      if (response.success) {
+        dispatch(
+          updatePayNowBottomsheet({
+            amount: 0,
+            visible: false,
+            serviceId: '',
+          })
+        );
+        navigate('SuccessPage', {
+          message: response.data?.message || 'Payment completed successfully',
+        });
+      } else {
+        Alert.alert('Error', response.message || 'Payment verification failed');
+      }
+    },
+    onError: (error: any) => {
+      console.error('Error verifying payment:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      Alert.alert('Error', 'Failed to verify payment. Please try again.');
+    },
+  });
+
+  const { mutate: payWithWallet, isPending: payWithWalletLoading } = useMutation<
+    API_RESPONSE<MakePaymentApiResponse>,
+    Error,
+    PayWithWalletDto
+  >({
+    mutationFn: async (data) => {
+      console.log('Sending wallet payment request:', { customerId: user.customerId, ...data });
+      return providerInstance.makePaymentWithWallet(data);
+    },
+    onSuccess: (response) => {
+      console.log('Wallet payment response:', response);
+      queryClient.invalidateQueries({ queryKey: ['refreschUserData', 'transactions', user.customerId, 'pendingAdminReview'] });
+      if (response.success) {
+        dispatch(
+          updatePayNowBottomsheet({
+            amount: 0,
+            visible: false,
+            serviceId: '',
+          })
+        );
+        navigate('SuccessPage', {
+          message: response.data?.message || 'Wallet payment successful',
+        });
+      } else {
+        Alert.alert('Error', response.message || 'Wallet payment failed');
+      }
+    },
+    onError: (error: any) => {
+      console.error('Error making wallet payment:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      Alert.alert('Error', 'Failed to process wallet payment. Please try again.');
+    },
+  });
+
+  const handlePaymentCallback = (reference: string) => {
+    if (reference) {
+      console.log('Verifying payment with reference:', reference);
+      verifyPayment(reference);
+    } else {
+      Alert.alert('Error', 'No payment reference provided');
+    }
+  };
 
   return (
     <BottomsheetWrapper
@@ -101,34 +181,35 @@ const PayNowBottomsheet = () => {
       >
         <Pressable
           onPress={() => {
-            if (paymentSheet.amount < user.balance) {
-              dispatch(
-                updateAccountDetailsBottomsheetVisibility({
-                  isVisible: true,
-                  shouldConfirmTransfer: true,
-                })
-              );
+            if (!paymentSheet.amount || paymentSheet.amount <= 0) {
+              Alert.alert('Error', 'Invalid payment amount');
+              return;
             }
+            if (paymentSheet.amount > user.balance) {
+              Alert.alert('Insufficient Balance', 'Please fund your wallet to complete this payment.');
+              return;
+            }
+            dispatch(
+              updateAccountDetailsBottomsheetVisibility({
+                isVisible: true,
+                shouldConfirmTransfer: true,
+              })
+            );
           }}
           style={styles.row}
         >
           <Pressable
             disabled={payWithWalletLoading}
             onPress={() => {
-              if (false) {
-                payWithWallet({
-                  serviceId: paymentSheet.serviceId,
-                  amount: paymentSheet.amount,
-                  loanAgreement: true,
-                });
-              } else {
-                dispatch(
-                  updateAccountDetailsBottomsheetVisibility({
-                    isVisible: true,
-                    shouldConfirmTransfer: true,
-                  })
-                );
+              if (!paymentSheet.serviceId) {
+                Alert.alert('Error', 'Service ID is required for wallet payment');
+                return;
               }
+              payWithWallet({
+                serviceId: paymentSheet.serviceId,
+                amount: paymentSheet.amount,
+                loanAgreement: true,
+              });
             }}
             style={styles.view}
           >
@@ -143,7 +224,7 @@ const PayNowBottomsheet = () => {
             >
               Wallet Balance: ₦{formatToAmount(user?.balance)}
             </CText>
-            {paymentSheet.amount < user.balance && (
+            {paymentSheet.amount > user.balance && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -158,9 +239,7 @@ const PayNowBottomsheet = () => {
                   fontFamily="semibold"
                   fontSize={15}
                   lineHeight={20}
-                  style={{
-                    flex: 1,
-                  }}
+                  style={{ flex: 1 }}
                 >
                   Please fund your wallet to complete this payment.
                 </CText>
@@ -181,8 +260,12 @@ const PayNowBottomsheet = () => {
           )}
         </Pressable>
         <Pressable
-          disabled={isPaymentPending}
+          disabled={isPaymentPending || isVerificationPending}
           onPress={() => {
+            if (!paymentSheet.amount || paymentSheet.amount <= 0) {
+              Alert.alert('Error', 'Invalid payment amount');
+              return;
+            }
             payNow({
               amount: paymentSheet.amount,
               loanAgreement: true,
@@ -203,7 +286,7 @@ const PayNowBottomsheet = () => {
               Securely pay using your debit or credit card.
             </CText>
           </View>
-          {isPaymentPending ? (
+          {isPaymentPending || isVerificationPending ? (
             <ActivityIndicator
               size={size.getHeightSize(20)}
               color={colors.primary()}
@@ -217,12 +300,10 @@ const PayNowBottomsheet = () => {
           )}
         </Pressable>
       </View>
-      <ShowLoader isLoading={isPaymentPending || payWithWalletLoading} />
+      <ShowLoader isLoading={isPaymentPending || payWithWalletLoading || isVerificationPending} />
     </BottomsheetWrapper>
   );
 };
-
-export default PayNowBottomsheet;
 
 const styles = StyleSheet.create({
   row: {
@@ -239,3 +320,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default PayNowBottomsheet;

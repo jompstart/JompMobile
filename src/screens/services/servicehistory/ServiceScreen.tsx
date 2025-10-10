@@ -147,7 +147,7 @@ const ServiceScreen = () => {
           {isPending && !refreshing ? (
             <ActivityIndicator
               size="large"
-              color={colors.primaryColor() || "#007AFF"}
+              color={colors.black("10") || "#007AFF"}
               style={{ marginTop: size.getHeightSize(24) }}
             />
           ) : (

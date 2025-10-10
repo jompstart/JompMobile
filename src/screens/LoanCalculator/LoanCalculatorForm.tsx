@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React, { useEffect, useReducer, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import React, { useReducer, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CText from '../../shared/CText';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -12,7 +12,7 @@ import PTextInput from '../../shared/PTextInput';
 import PrimaryButton from '../../shared/PrimaryButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useMutation } from '@tanstack/react-query';
-import LoanDescriptionsheet from '../../components/LoanCalculator/LoanDescriptionsheet';
+import LoanDescriptionSheet from '../../components/LoanCalculator/LoanDescriptionsheet';
 import { LoanCalculatorFormProps } from '../../types/navigations.types';
 import {
   useAppDispatch,
@@ -34,15 +34,18 @@ interface Forms {
   loanAmount: number;
   durationInMonths: number;
 }
+
 const formInitialState: Forms = {
   salary: 0,
   loanAmount: 0,
   durationInMonths: 0,
 };
+
 type FormAction =
   | { type: 'SET_SALARY'; payload: number }
   | { type: 'SET_LOAN_AMOUNT'; payload: number }
   | { type: 'SET_DURATION'; payload: number };
+
 const loanCalculatorReducer = (state: Forms, action: FormAction): Forms => {
   switch (action.type) {
     case 'SET_SALARY':
@@ -59,13 +62,11 @@ const loanCalculatorReducer = (state: Forms, action: FormAction): Forms => {
 const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
   const user = useAppSelector(userSelector);
   const dispatch = useAppDispatch();
-  const [showBottomsheet, setShowBottomsheet] = useState(false);
-  const [details, stateDispatch] = useReducer(
-    loanCalculatorReducer,
-    formInitialState
-  );
   const { navigate } = useNavigation();
-  const loanType = params?.loanType || 'House Rent';
+  const [showBottomsheet, setShowBottomsheet] = useState(false);
+  const [details, stateDispatch] = useReducer(loanCalculatorReducer, formInitialState);
+
+  const loanType = params?.loanType || 'rent';
   const pageTitle =
     loanType === 'rent'
       ? 'House Rent'
@@ -78,32 +79,72 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
       : loanType === 'school fee'
       ? 'School Fees'
       : 'Transportation';
-
   const loanDuration =
     params?.loanType === 'school fee' ? 3 : params?.loanType === 'rent' ? 6 : 1;
+
   const providerInstance = new ProviderService(user.userId, user.customerId);
+
   const {
     mutateAsync: calculateLoanOffer,
     isPending,
     data,
-  } = useMutation<API_RESPONSE<CalculateLoanResponse>, Error, CalculateLoanDto>(
-    {
-      mutationFn: (data) => providerInstance.calculateLoan(data),
-      onSuccess: (response) => {
-        setShowBottomsheet(true);
-      },
-      onError: (error) => {
-        dispatch(
-          updateToast({
-            displayToast: true,
-            toastMessage: error.message,
-            toastType: 'info',
-          })
-        );
-        console.error('Error calculating loan offer:', error);
-      },
+  } = useMutation<API_RESPONSE<CalculateLoanResponse>, Error, CalculateLoanDto>({
+    mutationFn: (data) => providerInstance.calculateLoan(data),
+    onSuccess: (response) => {
+      setShowBottomsheet(true);
+    },
+    onError: (error) => {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: error.message || 'Failed to calculate loan offer',
+          toastType: 'error',
+        })
+      );
+      console.error('Error calculating loan offer:', error);
+    },
+  });
+
+  const handleCalculateLoan = () => {
+    if (!params.userEmail) {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'User email is required',
+          toastType: 'error',
+        })
+      );
+      return;
     }
-  );
+    if (details.salary <= 0 || details.loanAmount <= 0) {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'Please enter valid salary and loan amount',
+          toastType: 'error',
+        })
+      );
+      return;
+    }
+    if (details.durationInMonths <= 0) {
+      dispatch(
+        updateToast({
+          displayToast: true,
+          toastMessage: 'Please select a valid duration',
+          toastType: 'error',
+        })
+      );
+      return;
+    }
+
+    calculateLoanOffer({
+      salary: details.salary,
+      loanAmount: details.loanAmount,
+      durationInMonths: details.durationInMonths,
+      email: params.userEmail,
+      url: params.loanUrl,
+    });
+  };
 
   return (
     <GradientSafeAreaView>
@@ -183,7 +224,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
               }}
             >
               This loan type offers a repayment of up to {loanDuration}{' '}
-              {loanDuration == 1 ? 'month' : 'months'}
+              {loanDuration === 1 ? 'month' : 'months'}
             </CText>
           </View>
 
@@ -203,14 +244,16 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
             />
             <PTextInput
               isAmount
-              maxAmount={50000000000000000}
+              maxAmount={500000}
               onChangeText={(text) => {
                 stateDispatch({ type: 'SET_LOAN_AMOUNT', payload: +text });
               }}
               value={details.loanAmount.toString()}
               placeholder="₦ Enter your desired loan amount"
             />
-
+            <CText>
+              Select repayment duration (in months)
+            </CText>
             <View
               style={{
                 height: size.getHeightSize(52),
@@ -223,6 +266,7 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
                 justifyContent: 'space-between',
                 paddingHorizontal: size.getWidthSize(16),
               }}
+              
             >
               <AntDesign
                 name="minus"
@@ -261,48 +305,23 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
             </View>
           </View>
           <PrimaryButton
-            // isLoading={isPending}
             style={{
               marginTop: size.getHeightSize(40),
             }}
             label="Calculate Loan Offer"
-            onPress={() => {
-              if (details.salary <= 0 || details.loanAmount <= 0) {
-                dispatch(
-                  updateToast({
-                    displayToast: true,
-                    toastMessage: 'Please enter valid salary and loan amount',
-                    toastType: 'info',
-                  })
-                );
-                return;
-              } else if (details.durationInMonths <= 0) {
-                dispatch(
-                  updateToast({
-                    displayToast: true,
-                    toastMessage: 'Please select a valid duration',
-                    toastType: 'info',
-                  })
-                );
-                return;
-              }
-
-              calculateLoanOffer({
-                salary: details.salary,
-                loanAmount: details.loanAmount,
-                durationInMonths: details.durationInMonths,
-              });
-            }}
+            onPress={handleCalculateLoan}
+            disabled={isPending}
           />
         </KeyboardAwareScrollView>
       </View>
-      <LoanDescriptionsheet
+      <LoanDescriptionSheet
         onContinue={() => {
+          setShowBottomsheet(false);
           if (loanType === 'rent') {
             navigate('HouseRentService');
-          } else if (loanType == 'school fee') {
+          } else if (loanType === 'school fee') {
             navigate('PayServices');
-          } else if (loanType == 'transport') {
+          } else if (loanType === 'transport') {
             navigate('TransportDetails');
           }
         }}
@@ -312,12 +331,13 @@ const LoanCalculatorForm = ({ route: { params } }: LoanCalculatorFormProps) => {
         }}
         label={
           loanType === 'rent'
-            ? 'Apply For House Rent'
+            ? 'Apply For loan'
             : loanType === 'school fee'
-            ? 'Apply for School Fees'
-            : 'Apply For Transport Credit'
+            ? 'Apply for loan'
+            : 'Apply For loan'
         }
         data={data?.data}
+        loanType={loanType} // Pass loanType to LoanDescriptionSheet
       />
       <ShowLoader isLoading={isPending} />
     </GradientSafeAreaView>

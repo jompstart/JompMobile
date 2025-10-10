@@ -10,55 +10,41 @@ import CText from './CText';
 import ScrollablebottomsheetWrapper from './ScrollablebottomsheetWrapper';
 import CancelIcon from '../../assets/svgs/Onboarding/CancelIcon';
 import { searchArray } from '../utils/stringManipulation';
-import { StyleSheet, TextInput, Pressable, View, Platform } from 'react-native';
+import { StyleSheet, Pressable, View, Platform } from 'react-native';
 
 interface Props {
   isVisible: boolean;
   onClose?: () => void;
-  onStateSelected?: (bank: { name: string; state_code: string }) => void;
+  onAccommodationSelected?: (accommodation: { name: string; value: string }) => void;
 }
 
-const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
-  const statelists = [
-    { name: 'Abia', state_code: 'AB' },
-    { name: 'Adamawa', state_code: 'AD' },
-    { name: 'Akwa Ibom', state_code: 'AK' },
-    { name: 'Anambra', state_code: 'AN' },
-    { name: 'Bauchi', state_code: 'BA' },
-    { name: 'Bayelsa', state_code: 'BY' },
-    { name: 'Benue', state_code: 'BE' },
-    { name: 'Borno', state_code: 'BO' },
-    { name: 'Cross River', state_code: 'CR' },
-    { name: 'Delta', state_code: 'DE' },
-    { name: 'Ebonyi', state_code: 'EB' },
-    { name: 'Edo', state_code: 'ED' },
-    { name: 'Ekiti', state_code: 'EK' },
-    { name: 'Enugu', state_code: 'EN' },
-    { name: 'Federal Capital Territory', state_code: 'FC' },
-    { name: 'Gombe', state_code: 'GO' },
-    { name: 'Imo', state_code: 'IM' },
-    { name: 'Jigawa', state_code: 'JI' },
-    { name: 'Kaduna', state_code: 'KD' },
-    { name: 'Kano', state_code: 'KN' },
-    { name: 'Katsina', state_code: 'KT' },
-    { name: 'Kebbi', state_code: 'KE' },
-    { name: 'Kogi', state_code: 'KO' },
-    { name: 'Kwara', state_code: 'KW' },
-    { name: 'Lagos', state_code: 'LA' },
-    { name: 'Nasarawa', state_code: 'NA' },
-    { name: 'Niger', state_code: 'NI' },
-    { name: 'Ogun', state_code: 'OG' },
-    { name: 'Ondo', state_code: 'ON' },
-    { name: 'Osun', state_code: 'OS' },
-    { name: 'Oyo', state_code: 'OY' },
-    { name: 'Plateau', state_code: 'PL' },
-    { name: 'Sokoto', state_code: 'SO' },
-    { name: 'Taraba', state_code: 'TA' },
-    { name: 'Yobe', state_code: 'YO' },
-    { name: 'Zamfara', state_code: 'ZA' },
+const AccommodationTypeBottomsheet = ({ onAccommodationSelected, isVisible, onClose }: Props) => {
+  const accommodationTypes = [
+    { name: 'Self Contain (Selfcon)', value: 'selfcon' },
+    { name: 'Single Room (Shared Facilities)', value: 'single_room' },
+    { name: 'Mini Flat (1 Bedroom + Living Room)', value: 'mini_flat' },
+    { name: '2 Bedroom Flat', value: '2_bedroom' },
+    { name: '3 Bedroom Flat', value: '3_bedroom' },
+    { name: 'Bungalow', value: 'bungalow' },
+    { name: 'Duplex', value: 'duplex' },
+    { name: 'Terrace', value: 'terrace' },
+    { name: 'Penthouse', value: 'penthouse' },
+    { name: 'Studio Apartment', value: 'studio' },
+    { name: 'Mansion', value: 'mansion' },
+    { name: 'Hotel', value: 'hotel' },
+    { name: 'Apartment', value: 'apartment' },
+    { name: 'Guest House', value: 'guest_house' },
+    { name: 'Hostel', value: 'hostel' },
+    { name: 'Resort', value: 'resort' },
+    { name: 'Villa', value: 'villa' },
+    { name: 'Motel', value: 'motel' },
+    { name: 'Bed & Breakfast', value: 'bnb' },
+    { name: 'Lodge', value: 'lodge' },
+    { name: 'Serviced Apartment', value: 'serviced_apartment' },
+    { name: 'Others', value: 'others' },
   ];
 
-  const [filteredStates, setFilteredStates] = useState(statelists);
+  const [filteredAccommodations, setFilteredAccommodations] = useState(accommodationTypes);
 
   return (
     <ScrollablebottomsheetWrapper
@@ -87,7 +73,7 @@ const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
             flex: 1,
           }}
         >
-          Select your state
+          Select accommodation type
         </CText>
         <CancelIcon
           onPress={() => onClose?.()}
@@ -113,7 +99,7 @@ const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
       >
         <BottomSheetTextInput
           onChangeText={(text) => {
-            setFilteredStates(searchArray(statelists, 'name', text));
+            setFilteredAccommodations(searchArray(accommodationTypes, 'name', text));
           }}
           cursorColor={'#F5F7FF'}
           placeholderTextColor={'#61616150'}
@@ -141,13 +127,13 @@ const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
           gap: size.getHeightSize(8),
           paddingHorizontal: size.getWidthSize(16),
         }}
-        data={filteredStates}
+        data={filteredAccommodations}
         showsVerticalScrollIndicator={true}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.value}
         renderItem={({ index, item }) => (
           <Pressable
             onPress={() => {
-              onStateSelected?.(item);
+              onAccommodationSelected?.(item);
               onClose?.();
             }}
             key={index}
@@ -176,7 +162,7 @@ const StatesBottomsheet = ({ onStateSelected, isVisible, onClose }: Props) => {
   );
 };
 
-export default StatesBottomsheet;
+export default AccommodationTypeBottomsheet;
 
 const styles = StyleSheet.create({
   input: {

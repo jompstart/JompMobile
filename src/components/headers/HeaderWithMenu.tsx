@@ -10,17 +10,21 @@ import {
 import { size } from "../../config/size";
 import NotificationBell from "../../../assets/svgs/Home/NotificationBell";
 import { UserService } from "../../services/user";
-import { useAppSelector } from "../../controller/redux.controller";
+import { useAppDispatch, useAppSelector } from "../../controller/redux.controller";
 import { userSelector } from "../../features/user/user.selector";
 import CText from "../../shared/CText";
+import { updateCompliancePromptVisibility } from "../../features/ui/ui.slice";
+
 interface HeaderWithMenuProps {
   showNotification?: boolean;
   disable?: boolean;
 }
+
 const HeaderWithMenu = ({ showNotification, disable }: HeaderWithMenuProps) => {
   const { navigate, dispatch } = useNavigation();
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const user = useAppSelector(userSelector);
+  const reduxDispatch = useAppDispatch();
   const userService = new UserService(user.customerId, user.userId);
 
   const fetchUnreadCount = useCallback(async () => {
@@ -55,6 +59,16 @@ const HeaderWithMenu = ({ showNotification, disable }: HeaderWithMenuProps) => {
     }, [user.userId, user.customerId, fetchUnreadCount])
   );
 
+  const handleNotificationPress = () => {
+    if (user.complianceStatus === false) {
+      // Prevent navigation and show compliance prompt
+      reduxDispatch(updateCompliancePromptVisibility(true));
+    } else {
+      // Allow navigation only if complianceStatus is true
+      navigate("Notification");
+    }
+  };
+
   return (
     <GradientHeader disable={disable}>
       <MenuIcon
@@ -66,7 +80,7 @@ const HeaderWithMenu = ({ showNotification, disable }: HeaderWithMenuProps) => {
       <View style={{ flex: 1 }} />
       {showNotification && (
         <Pressable
-          onPress={() => navigate("Notification")}
+          onPress={handleNotificationPress}
           style={{ position: "relative" }}
         >
           <NotificationBell size={size.getHeightSize(28)} />
@@ -77,14 +91,12 @@ const HeaderWithMenu = ({ showNotification, disable }: HeaderWithMenuProps) => {
           )}
         </Pressable>
       )}
-
-      {/* <SearchIcon size={size.getHeightSize(28)} />
-        <NotificationBell size={size.getHeightSize(28)} /> */}
     </GradientHeader>
   );
 };
 
 export default HeaderWithMenu;
+
 export const styles = StyleSheet.create({
   badge: {
     position: "absolute",

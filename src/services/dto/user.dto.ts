@@ -326,3 +326,13 @@ export interface UpdateDeviceTokenDto {
   userId?: string;
   deviceToken?: string;
 }
+
+export interface CustomerTransactionRequestDto {
+  customerId: string;
+  page: number;
+  size: number;
+  serviceName?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}

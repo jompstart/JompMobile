@@ -29,7 +29,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
     user.customerId,
     params?.goalId
   );
-
+console.log('savings', savings);
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -50,7 +50,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
       <View
         style={{
           paddingHorizontal: size.getWidthSize(16),
-          paddingTop: size.getHeightSize(16),
+          paddingTop: size.getHeightSize(20),
         }}
       >
         <CText
@@ -60,7 +60,7 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
           fontFamily="bold"
           style={{
             opacity: 0.75,
-            marginBottom: size.getHeightSize(16),
+            marginBottom: size.getHeightSize(2),
           }}
         >
           Ongoing Savings
@@ -286,6 +286,40 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
                 )}
             </CText>
           </View>
+           <View style={styles.view2}>
+            <CText
+              color={'secondaryBlack'}
+              fontSize={12}
+              lineHeight={16.8}
+              fontFamily="regular"
+              style={{
+                flex: 1,
+              }}
+            >
+              next saving date
+            </CText>
+            <CText
+              color={'black'}
+              fontSize={13}
+              lineHeight={18.2}
+              fontFamily="semibold"
+            >
+               {savings?.data?.nextSavingDate && (() => {
+    const dateStr = savings.data.nextSavingDate;
+    // Check if it contains a date in parentheses
+    const match = dateStr.match(/\((\d{4}-\d{2}-\d{2})\)/);
+    if (match) {
+      return new Date(match[1]).toLocaleDateString('en-GB', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      });
+    }
+    // Otherwise just display the string as is
+    return dateStr;
+  })()}
+            </CText>
+          </View>
           <View style={styles.view2}>
             <CText
               color={'secondaryBlack'}
@@ -428,13 +462,15 @@ const SavingsDetails = ({ route: { params } }: SavingsDetailsScreenProps) => {
           }}
         />
       </View>
-      <WithdrawBottomsheet
-        goalId={params?.goalId}
-        onClose={() => {
-          setShowWithdrawal(false);
-        }}
-        visibility={showWithdrawal}
-      />
+     <WithdrawBottomsheet
+  goalId={params?.goalId}
+  savedAmount={savings?.data?.savedAmount || Number(params?.savedAmount) || 0} // Use savings.data.savedAmount or params.savedAmount
+  targetAmount={savings?.data?.targetAmount || 0} // Use savings.data.targetAmount
+  onClose={() => {
+    setShowWithdrawal(false);
+  }}
+  visibility={showWithdrawal}
+/>
       <TopUpBottomsheet
         visibility={showTopUp}
         goalId={params?.goalId}
@@ -468,10 +504,10 @@ const styles = StyleSheet.create({
   view1: {
     justifyContent: 'center',
     alignItems: 'center',
-    gap: size.getHeightSize(8),
+    gap: size.getHeightSize(20),
     backgroundColor: colors.white(),
     paddingVertical: size.getHeightSize(26),
-    borderRadius: size.getHeightSize(8),
+    borderRadius: size.getHeightSize(20),
   },
   view2: {
     flexDirection: 'row',
@@ -481,9 +517,9 @@ const styles = StyleSheet.create({
   view3: {
     backgroundColor: colors.white(),
     paddingVertical: size.getHeightSize(16),
-    borderRadius: size.getHeightSize(8),
-    marginTop: size.getHeightSize(16),
-    paddingHorizontal: size.getHeightSize(16),
+    borderRadius: size.getHeightSize(20),
+    marginTop: size.getHeightSize(20),
+    paddingHorizontal: size.getHeightSize(20),
     gap: size.getHeightSize(16),
   },
 });

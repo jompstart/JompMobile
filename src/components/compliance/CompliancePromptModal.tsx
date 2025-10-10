@@ -65,7 +65,7 @@ const CompliancePromptModal = () => {
         </View>
         <PrimaryButton
           onPress={() => {
-            navigation.navigate('Verification');
+            navigation.navigate('VerifyBvn');
             dispatch(updateCompliancePromptVisibility(false));
           }}
           label="Continue"

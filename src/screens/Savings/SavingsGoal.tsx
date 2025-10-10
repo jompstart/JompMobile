@@ -91,26 +91,25 @@ const SavingsGoal = () => {
     setShowDate(false);
     if (selectedDate) {
       setDate(selectedDate);
+      const midnightDate = new Date(selectedDate.setHours(0, 0, 0, 0));
       savingsInitialState({
         type: 'SET_START_DATE',
-        payload: selectedDate,
+        payload: midnightDate,
       });
     }
   };
 
-  const paystackKey = Constants.expoConfig?.extra?.PAYSTACK_KEY as string;
-
   const onChangeTime = (event: any, selectedDate?: Date) => {
     if (event.type === 'set' && selectedDate) {
       setSelectedTime(selectedDate);
-      const time = selectedDate.toLocaleTimeString('en-GB', {
+      const timeString = selectedDate.toLocaleTimeString('en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
       });
       savingsInitialState({
         type: 'SET_PREFERRED_TIME',
-        payload: time,
+        payload: timeString,
       });
       setShowTime(false);
     } else if (event.type === 'dismissed') {
@@ -126,14 +125,17 @@ const SavingsGoal = () => {
     if (state.startDate && state.duration) {
       const startDate = new Date(state.startDate);
       const duration = new Date(state.duration);
-      const endDate = new Date(startDate);
-      endDate.setFullYear(duration.getFullYear());
-      endDate.setMonth(duration.getMonth());
-      endDate.setDate(duration.getDate());
-      savingsInitialState({
-        type: 'SET_END_DATE',
-        payload: endDate,
-      });
+      if (!isNaN(startDate.getTime()) && !isNaN(duration.getTime())) {
+        const endDate = new Date(startDate);
+        endDate.setFullYear(duration.getFullYear());
+        endDate.setMonth(duration.getMonth());
+        endDate.setDate(duration.getDate());
+        endDate.setHours(0, 0, 0, 0);
+        savingsInitialState({
+          type: 'SET_END_DATE',
+          payload: endDate,
+        });
+      }
     }
   }, [state.startDate, state.duration]);
 
@@ -142,7 +144,9 @@ const SavingsGoal = () => {
       state.targetAmount &&
       state.endDate &&
       state.frequency &&
-      state.startDate
+      state.startDate &&
+      !isNaN(new Date(state.endDate).getTime()) &&
+      !isNaN(new Date(state.startDate).getTime())
     ) {
       const savingsPerPeriod = calculateSavingsPerPeriod(
         +state.targetAmount,
@@ -157,7 +161,9 @@ const SavingsGoal = () => {
       state.endDate &&
       state.frequency &&
       state.startDate &&
-      state.monthlyContribution
+      state.monthlyContribution &&
+      !isNaN(new Date(state.endDate).getTime()) &&
+      !isNaN(new Date(state.startDate).getTime())
     ) {
       const savingsPerPeriod = calculateGoalAmount(
         +state.monthlyContribution,
@@ -202,6 +208,33 @@ const SavingsGoal = () => {
     }
   }, [state]);
 
+  const paystackKey = Constants.expoConfig?.extra?.PAYSTACK_KEY as string;
+
+  const formatTimeFromTimestamp = (timestamp: string | null) => {
+    if (!timestamp) return null;
+    try {
+      if (/^\d{2}:\d{2}(:\d{2})?$/.test(timestamp)) {
+        return timestamp.split(':').slice(0, 2).join(':');
+      }
+      if (/^\d+$/.test(timestamp)) {
+        const ticks = parseInt(timestamp);
+        const totalSeconds = Math.floor(ticks / 10000000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      }
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return null;
+    }
+  };
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -209,7 +242,7 @@ const SavingsGoal = () => {
           name="arrow-back-ios"
           size={size.getHeightSize(18)}
           color="white"
-          onPress={() => navigate('PreviousScreen')} // Replace with actual navigation
+          onPress={() => navigate('PreviousScreen')}
         />
         <CText
           color={'white'}
@@ -238,7 +271,6 @@ const SavingsGoal = () => {
           >
             Create a Savings Goal
           </CText>
-          
           <View
             style={{
               backgroundColor: '#DBD4FC',
@@ -317,9 +349,10 @@ const SavingsGoal = () => {
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 1);
+                    date.setHours(0, 0, 0, 0);
                     savingsInitialState({
                       type: 'SET_DURATION',
-                      payload: date,
+                      payload: date.toISOString(),
                     });
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
@@ -343,9 +376,10 @@ const SavingsGoal = () => {
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 3);
+                    date.setHours(0, 0, 0, 0);
                     savingsInitialState({
                       type: 'SET_DURATION',
-                      payload: date,
+                      payload: date.toISOString(),
                     });
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
@@ -369,9 +403,10 @@ const SavingsGoal = () => {
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 6);
+                    date.setHours(0, 0, 0, 0);
                     savingsInitialState({
                       type: 'SET_DURATION',
-                      payload: date,
+                      payload: date.toISOString(),
                     });
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
@@ -395,9 +430,10 @@ const SavingsGoal = () => {
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setMonth(date.getMonth() + 9);
+                    date.setHours(0, 0, 0, 0);
                     savingsInitialState({
                       type: 'SET_DURATION',
-                      payload: date,
+                      payload: date.toISOString(),
                     });
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
@@ -421,9 +457,10 @@ const SavingsGoal = () => {
                     setHideCustomizedDuration(true);
                     const date = new Date();
                     date.setFullYear(date.getFullYear() + 1);
+                    date.setHours(0, 0, 0, 0);
                     savingsInitialState({
                       type: 'SET_DURATION',
-                      payload: date,
+                      payload: date.toISOString(),
                     });
                     savingsInitialState({
                       type: 'SET_DURATION_STRING',
@@ -687,9 +724,7 @@ const SavingsGoal = () => {
               style={styles.view4}
             >
               <CText
-                color={
-                  state.savingSource ? 'black' : colors.black('70')
-                }
+                color={state.savingSource ? 'black' : colors.black('70')}
                 fontSize={14}
                 lineHeight={19.2}
                 fontFamily="semibold"
@@ -721,7 +756,9 @@ const SavingsGoal = () => {
             {state.targetAmount &&
               state.endDate &&
               state.frequency &&
-              state.startDate && (
+              state.startDate &&
+              !isNaN(new Date(state.endDate).getTime()) &&
+              !isNaN(new Date(state.startDate).getTime()) && (
                 <View
                   style={{
                     backgroundColor: '#DBD4FC',
@@ -789,7 +826,9 @@ const SavingsGoal = () => {
             {state.targetAmount &&
               state.endDate &&
               state.frequency &&
-              state.startDate && (
+              state.startDate &&
+              !isNaN(new Date(state.endDate).getTime()) &&
+              !isNaN(new Date(state.startDate).getTime()) && (
                 <View style={styles.view3}>
                   {generateSuggestions(
                     calculateSavingsPerPeriod(
@@ -833,9 +872,7 @@ const SavingsGoal = () => {
               style={styles.view4}
             >
               <CText
-                color={
-                  state.savingCategory ? 'black' : colors.black('70')
-                }
+                color={state.savingCategory ? 'black' : colors.black('70')}
                 fontSize={14}
                 lineHeight={19.2}
                 fontFamily="semibold"
@@ -889,7 +926,7 @@ const SavingsGoal = () => {
                     fontFamily="regular"
                   >
                     {state.preferredTime
-                      ? state.preferredTime
+                      ? formatTimeFromTimestamp(state.preferredTime)
                       : 'Select preferred time'}
                   </CText>
                 </Pressable>
@@ -942,6 +979,7 @@ const SavingsGoal = () => {
             disabled={isProceedButtonDisabled}
             onPress={() => {
               if (
+                state.startDate &&
                 state.startDate.toDateString() === new Date().toDateString() &&
                 +state.monthlyContribution > (user.balance ?? 0)
               ) {
@@ -1062,10 +1100,11 @@ const SavingsGoal = () => {
         }}
         isVisible={showDuration}
         onSelected={(value, duration) => {
+          const midnightDate = new Date(value.setHours(0, 0, 0, 0));
           setCustomizedDuration(duration);
           savingsInitialState({
             type: 'SET_DURATION',
-            payload: value,
+            payload: midnightDate.toISOString(),
           });
           savingsInitialState({
             type: 'SET_DURATION_STRING',

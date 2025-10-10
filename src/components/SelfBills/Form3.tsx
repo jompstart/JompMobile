@@ -121,6 +121,8 @@ const Form3 = () => {
           )
         }
         value={selfSchoolFeeDetails?.employmentDetails?.companyPhoneNumber}
+          maxLength={11} // Cap phone number to 11 digits
+
       />
       <View
         style={{

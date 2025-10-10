@@ -15,10 +15,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import SuccessModal from '../../shared/SuccessModal';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import { ComplianceService } from '../../services/compliance';
-import {
-  useAppSelector,
-  useAppDispatch,
-} from '../../controller/redux.controller';
+import { useAppSelector, useAppDispatch } from '../../controller/redux.controller';
 import { userSelector } from '../../features/user/user.selector';
 import { updateToast } from '../../features/ui/ui.slice';
 import { changeUserState } from '../../features/user/user.slice';
@@ -114,15 +111,11 @@ const VerifyBvn = () => {
       if (!base64String) {
         throw new Error('No base64 string provided');
       }
-
-      // Check if it already has data URI prefix
       if (base64String.includes('data:')) {
         const [prefix, base64] = base64String.split(',');
         const mimeType = prefix.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+)/)?.[1] || 'image/jpeg';
         return { mimeType, base64: base64 || base64String };
       }
-
-      // If no prefix, assume it's raw base64 for JPEG
       return { mimeType: 'image/jpeg', base64: base64String };
     } catch (error) {
       console.error('Error extracting base64 data:', error);
@@ -133,12 +126,8 @@ const VerifyBvn = () => {
   // Convert base64 to file object (React Native compatible)
   const base64ToFile = async (base64Data, fileName, mimeType) => {
     try {
-      // Clean the base64 string
       const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
-      
-      // Create a temporary file path
       const fileUri = `${fileName}.${mimeType.split('/')[1]}`;
-      
       return {
         uri: `data:${mimeType};base64,${cleanBase64}`,
         name: fileUri,
@@ -150,117 +139,155 @@ const VerifyBvn = () => {
     }
   };
 
+  // Format phone number with country code if required
+  const formatPhoneNumber = (phone) => {
+    if (!phone.startsWith('+234') && phone.length === 11 && phone.startsWith('0')) {
+      return `+234${phone.slice(1)}`;
+    }
+    return phone;
+  };
+
   const handleVerifyBvn = async () => {
     if (!validateInputs()) {
       return;
     }
 
     setVerificationLoadingState(true);
-    
+    console.log('========== STARTING BVN VERIFICATION PROCESS ==========');
+    console.log('Inputs:', { bvn, phoneNumber, customerId: user.customerId, userId: user.userId });
+
+    let response;
     try {
-      // Step 1: Validate BVN
-      console.log('Starting BVN validation...');
-      const response = await complianceInstance.validateCustomerCompliance('bvn', bvn);
-      
+      // Step 1: Validate BVN and Phone Number
+      console.log('STEP 1: Validating BVN and Phone Number...');
+      const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+      response = await complianceInstance.validateCustomerCompliance('bvn', bvn, formattedPhoneNumber);
       console.log('BVN validation response:', JSON.stringify(response, null, 2));
 
       if (!response?.success || response?.statusCode !== 200) {
-        throw new Error(response?.message || 'BVN validation failed');
+        throw new Error(response?.message || 'BVN or Phone Number validation failed');
       }
 
-      if (!response.data?.status || response.data.status !== 'found') {
-        throw new Error('BVN not found or invalid');
+      console.log('BVN and Phone Number validation successful, proceeding...');
+
+      // Step 2: Verify customer (always called, even without image)
+      console.log('STEP 2: Verifying customer...');
+      const fullName = `${response.data?.firstName || ''} ${response.data?.lastName || ''}`.trim() || user.fullName || 'N/A';
+      let fileData = null;
+      if (response.data?.image) {
+        console.log('Processing BVN image...');
+        const { mimeType, base64 } = extractBase64Data(response.data.image);
+        fileData = await base64ToFile(base64, 'bvn_image', mimeType);
+        console.log('File data prepared:', {
+          name: fileData.name,
+          type: fileData.type,
+          uriLength: fileData.uri.length,
+        });
+      } else {
+        console.warn('No image data in response, proceeding with null file...');
       }
 
-      if (!response.data?.image) {
-        throw new Error('No image data returned for BVN verification');
-      }
-
-      // Step 2: Process the image
-      console.log('Processing BVN image...');
-      const { mimeType, base64 } = extractBase64Data(response.data.image);
-      const fileData = await base64ToFile(base64, 'bvn_image', mimeType);
-
-      console.log('File data prepared:', { 
-        name: fileData.name, 
-        type: fileData.type,
-        uriLength: fileData.uri.length 
-      });
-
-      // Step 3: Verify customer
-      console.log('Verifying customer...');
-      const fullName = `${response.data.firstName || ''} ${response.data.lastName || ''}`.trim();
-      
       const verifyCustomer = await complianceInstance.verifyCustomer(
-        user.customerId,
-        response.data.status,
+        'bvn',
+        response.data?.status || 'pending',
         bvn,
         'BVN',
         fullName,
         fileData,
-        phoneNumber
+        formattedPhoneNumber
       );
-
-      console.log('Customer verification response:', verifyCustomer);
+      console.log('Customer verification response:', JSON.stringify(verifyCustomer, null, 2));
 
       if (!verifyCustomer?.success || verifyCustomer?.statusCode !== 201) {
         throw new Error(verifyCustomer?.message || 'Customer verification failed');
       }
 
-      // Step 4: Create bank account
-      try {
-        console.log('Creating bank account...');
-        await complianceInstance.createAccount();
-        console.log('Bank account created successfully');
-      } catch (accountError) {
-        console.error('Create account error:', accountError);
-        // Don't fail the entire process if account creation fails
-        dispatch(
-          updateToast({
-            displayToast: true,
-            toastMessage: 'BVN verified, but account creation pending.',
-            toastType: 'info',
-          })
-        );
-      }
-
-      // Success - update state and show feedback
+      // Success: Backend handles /create-account
+      console.log('========== VERIFICATION SUCCESSFUL ==========');
       dispatch(
         updateToast({
           displayToast: true,
-          toastMessage: 'BVN Verified Successfully!',
+          toastMessage: 'BVN and Phone Number Verified Successfully!',
           toastType: 'success',
         })
       );
-      
       setShowConfetti(true);
       setVerificationStatus(true);
       dispatch(changeUserState({ key: 'bvnStatus', value: true }));
       dispatch(changeUserState({ key: 'complianceStatus', value: true }));
-
     } catch (error) {
-      console.error('BVN verification error:', error);
-      
-      const errorMessage = error?.message || 
-        error?.response?.data?.message || 
-        'An error occurred during BVN verification. Please try again.';
-      
-      dispatch(
-        updateToast({
-          displayToast: true,
-          toastMessage: errorMessage,
-          toastType: 'error',
-        })
-      );
+      console.error('========== VERIFICATION FAILED ==========');
+      console.error('Error:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error response:', JSON.stringify(error?.response, null, 2));
+
+      // Fallback: Retry verifyCustomer with null file
+      if (error?.message === 'Image cannot be empty.' || !response?.data?.image) {
+        console.log('Falling back: Retrying verifyCustomer with null file...');
+        try {
+          console.log('STEP 2: Verifying customer (fallback)...');
+          const fullName = `${response?.data?.firstName || ''} ${response?.data?.lastName || ''}`.trim() || user.fullName || 'N/A';
+          const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+          const verifyCustomer = await complianceInstance.verifyCustomer(
+            'bvn',
+            response?.data?.status || 'pending',
+            bvn,
+            'BVN',
+            fullName,
+            null,
+            formattedPhoneNumber
+          );
+          console.log('Customer verification response (fallback):', JSON.stringify(verifyCustomer, null, 2));
+
+          if (!verifyCustomer?.success || verifyCustomer?.statusCode !== 201) {
+            throw new Error(verifyCustomer?.message || 'Customer verification failed in fallback');
+          }
+
+          // Success: Backend handles /create-account
+          console.log('========== VERIFICATION SUCCESSFUL (FALLBACK) ==========');
+          dispatch(
+            updateToast({
+              displayToast: true,
+              toastMessage: 'BVN and Phone Number Verified Successfully!',
+              toastType: 'success',
+            })
+          );
+          setShowConfetti(true);
+          setVerificationStatus(true);
+          dispatch(changeUserState({ key: 'bvnStatus', value: true }));
+          dispatch(changeUserState({ key: 'complianceStatus', value: true }));
+        } catch (fallbackError) {
+          console.error('Fallback error:', fallbackError);
+          console.error('Fallback error details:', JSON.stringify(fallbackError?.response?.data || fallbackError, null, 2));
+          dispatch(
+            updateToast({
+              displayToast: true,
+              toastMessage: `Verification failed: ${fallbackError.message || 'Unknown error'}`,
+              toastType: 'info',
+            })
+          );
+        }
+      } else {
+        const errorMessage =
+          error?.message === 'BVN or Phone Number validation failed'
+            ? 'Invalid BVN or Phone Number. Please check and try again.'
+            : `Verification failed: ${error?.message || 'Unknown error'}`;
+        dispatch(
+          updateToast({
+            displayToast: true,
+            toastMessage: errorMessage,
+            toastType: 'info',
+          })
+        );
+      }
     } finally {
+      console.log('========== VERIFICATION PROCESS ENDED ==========');
       setVerificationLoadingState(false);
     }
   };
 
   return (
     <CustomSafeArea statusBarColor={colors.appBackground()}>
-     
-     
       <View
         style={{
           flex: 1,

@@ -52,6 +52,8 @@ const Form1 = () => {
         }
         keyboardType="phone-pad"
         value={childSchoolFeeDetails.guardianDetails.phoneNumber}
+          maxLength={11} // Cap phone number to 11 digits
+
       />
       <PTextInput
         isAmount

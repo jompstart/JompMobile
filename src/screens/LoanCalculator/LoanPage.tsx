@@ -10,8 +10,34 @@ import { useNavigation } from '@react-navigation/native';
 import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
 import CarIcon from '../../../assets/svgs/Home/CarIcon';
 import HouseIcon from '../../../assets/svgs/Loan/HouseIcon';
+import { useAppSelector } from '../../controller/redux.controller';
+import { userSelector } from '../../features/user/user.selector';
+
 const LoanPage = () => {
   const navigation = useNavigation();
+  const user = useAppSelector(userSelector);
+
+  const getLoanUrl = (loanType: string) => {
+    const urlMap = {
+      'school fee': 'https://www.jompstart.com/school-fees',
+      'transport': 'https://www.jompstart.com/transport',
+      'rent': 'https://www.jompstart.com/house-rent',
+    };
+    return urlMap[loanType] || 'https://www.jompstart.com';
+  };
+
+  console.log('User email:', user.email);
+
+  if (!user.email) {
+    return (
+      <View style={{ padding: size.getWidthSize(16) }}>
+        <CText color="red" fontSize={16}>
+          Error: Please log in to continue.
+        </CText>
+      </View>
+    );
+  }
+
   return (
     <GradientSafeAreaView>
       <GradientHeader>
@@ -52,7 +78,7 @@ const LoanPage = () => {
             marginTop: size.getHeightSize(16),
           }}
         >
-          Loan Calculator
+          Select Loan Duration
         </CText>
         <CText
           color="secondaryBlack"
@@ -105,6 +131,8 @@ const LoanPage = () => {
           onPress={() => {
             navigation.navigate('LoanCalculatorForm', {
               loanType: 'school fee',
+              userEmail: user.email,
+              loanUrl: getLoanUrl('school fee'),
             });
           }}
           style={[
@@ -158,6 +186,8 @@ const LoanPage = () => {
           onPress={() => {
             navigation.navigate('LoanCalculatorForm', {
               loanType: 'transport',
+              userEmail: user.email,
+              loanUrl: getLoanUrl('transport'),
             });
           }}
           style={[
@@ -211,6 +241,8 @@ const LoanPage = () => {
           onPress={() => {
             navigation.navigate('LoanCalculatorForm', {
               loanType: 'rent',
+              userEmail: user.email,
+              loanUrl: getLoanUrl('rent'),
             });
           }}
           style={[

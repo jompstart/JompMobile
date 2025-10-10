@@ -123,7 +123,7 @@ const BottomtabNavigation = () => {
           height:
             Platform.OS === "ios"
               ? size.getHeightSize(72)
-              : size.getHeightSize(64),
+              : size.getHeightSize(120),
           backgroundColor: colors.white(),
           borderTopWidth: 0,
           paddingTop: size.getHeightSize(6),

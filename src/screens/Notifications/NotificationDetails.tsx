@@ -217,32 +217,7 @@ const NotificationDetails = () => {
             </CText>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor:
-                markingReadId === notification.id ? "#ccc" : "#4CAF50",
-              padding: 12,
-              borderRadius: 8,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => handleMarkAsRead(notification.id)}
-            disabled={markingReadId === notification.id}
-          >
-            <MaterialIcons name="done-all" size={20} color="white" />
-            <CText
-              fontSize={14}
-              fontFamily="semibold"
-              color="white"
-              style={{ marginLeft: 6 }}
-            >
-              {markingReadId === notification.id
-                ? "Marking..."
-                : "Mark as Read"}
-            </CText>
-          </TouchableOpacity>
+         
         </View>
       </View>
     </GradientSafeAreaView>

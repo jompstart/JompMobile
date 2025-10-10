@@ -542,19 +542,24 @@ export class UserService {
  });
  }
 
- async getUnifiedTransactions(data: UnifiedTransactionDto) {
- const url = data.serviceName
- ? `/get-unified-transaction-history?CustomerId=${this.customerId}&page=${data.page}&pageSize=${data.size}&serviceName=${data.serviceName}`
- : `/get-unified-transaction-history?CustomerId=${this.customerId}&page=${data.page}&pageSize=${data.size}`;
- return await makeRequest<API_RESPONSE<UnifiedTransactionResponseDto[]>>({
- method: 'POST',
- url: url,
- data: {
- customerId: this.customerId,
- ...data,
- },
- });
- }
+async getUnifiedTransactions(data: UnifiedTransactionDto) {
+    let url = `/get-unified-transaction-history?CustomerId=${this.customerId}&page=${data.page}&pageSize=${data.size}`;
+    if (data.serviceName) url += `&serviceName=${data.serviceName}`;
+    if (data.startDate) url += `&StartDate=${data.startDate}`;
+    if (data.endDate) url += `&EndDate=${data.endDate}`;
+
+    try {
+      const response = await makeRequest({
+        method: 'GET', // Changed from POST to GET
+        url: url,
+      });
+      return response;
+    } catch (error) {
+      console.error(`Failed to fetch transactions: ${error.message}`);
+      throw error;
+    }
+  }
+
 
  async updateProfile(data: UpdateProfileDto) {
  return await makeRequest<API_RESPONSE<any>>({

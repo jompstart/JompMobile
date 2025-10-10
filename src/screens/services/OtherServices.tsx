@@ -200,6 +200,8 @@ const OtherServices = () => {
               keyboardType="phone-pad"
               placeholder="Provider’s Phone Number"
               value={state.ServiceProviderContact}
+                maxLength={11} // Cap phone number to 11 digits
+
               onChangeText={(text) => {
                 dispatch({
                   type: 'SET_SERVICE_PROVIDER_CONTACT',
@@ -323,6 +325,8 @@ const OtherServices = () => {
                 });
               }}
               placeholder="Guarantor’s Phone Number"
+                maxLength={11} // Cap phone number to 11 digits
+
             />
             <PTextInput
               value={state.GuarantorAddress}

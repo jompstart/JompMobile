@@ -55,6 +55,7 @@ const Transactions = () => {
   };
   const transactions = data?.pages.flatMap((page) => page.data) || [];
 
+  console.log('transactions', transactions);
   const categories = [
     {
       name: 'All',

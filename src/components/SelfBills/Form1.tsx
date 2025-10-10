@@ -52,6 +52,8 @@ const Form1 = () => {
           setSelfSchoolFeeDetails('basicInformation', 'phoneNumber', text);
         }}
         value={selfSchoolFeeDetails?.basicInformation?.phoneNumber}
+          maxLength={11} // Cap phone number to 11 digits
+
       />
       <PTextInput
         placeholder="Contact Address"

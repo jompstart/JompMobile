@@ -1,27 +1,49 @@
 import { useEffect, useState } from "react";
 import { FlatList, Modal, TouchableOpacity, View } from "react-native";
-import CText from "../../shared/CText";
 
-const CustomDropdown = ({
-  options,
-  selectedValue,
-  onValueChange,
-  placeholder,
-}: {
-  options: { label: string; value: string }[];
+
+import CText from "../../shared/CText";
+import { colors } from "../../constants/colors";
+import { size } from "../../config/size";
+
+interface AccommodationType {
+  label: string;
+  value: string;
+}
+
+interface Props {
   selectedValue: string;
   onValueChange: (value: string) => void;
-  placeholder: string;
-}) => {
+  placeholder?: string;
+}
+
+const AccommodationTypeDropdown = ({
+  selectedValue,
+  onValueChange,
+  placeholder = "Select accommodation type",
+}: Props) => {
+  const accommodationTypes: AccommodationType[] = [
+    { label: "Hotel", value: "hotel" },
+    { label: "Apartment", value: "apartment" },
+    { label: "Guest House", value: "guest_house" },
+    { label: "Hostel", value: "hostel" },
+    { label: "Resort", value: "resort" },
+    { label: "Villa", value: "villa" },
+    { label: "Motel", value: "motel" },
+    { label: "Bed & Breakfast", value: "bnb" },
+    { label: "Lodge", value: "lodge" },
+    { label: "Serviced Apartment", value: "serviced_apartment" },
+  ];
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState("");
 
   useEffect(() => {
-    const selectedOption = options.find(
+    const selectedOption = accommodationTypes.find(
       (option) => option.value === selectedValue
     );
     setSelectedLabel(selectedOption ? selectedOption.label : "");
-  }, [selectedValue, options]);
+  }, [selectedValue]);
 
   const handleSelect = (value: string, label: string) => {
     onValueChange(value);
@@ -34,11 +56,11 @@ const CustomDropdown = ({
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={{
-          borderWidth: 1,
+          borderWidth: size.getHeightSize(1),
           borderColor: "#E5E5E5",
-          borderRadius: 8,
-          padding: 16,
-          backgroundColor: "white",
+          borderRadius: size.getHeightSize(8),
+          padding: size.getHeightSize(16),
+          backgroundColor: colors.white(),
         }}
       >
         <CText
@@ -69,40 +91,40 @@ const CustomDropdown = ({
         >
           <View
             style={{
-              backgroundColor: "white",
-              borderRadius: 12,
-              padding: 20,
+              backgroundColor: colors.white(),
+              borderRadius: size.getHeightSize(12),
+              padding: size.getHeightSize(20),
               width: "80%",
               maxHeight: "60%",
             }}
           >
             <CText
-              color={"black"}
+              color="black"
               fontSize={18}
               lineHeight={28.8}
               fontFamily="bold"
               style={{
                 opacity: 0.75,
-                marginBottom: 16,
+                marginBottom: size.getHeightSize(16),
                 textAlign: "center",
               }}
             >
               Select Accommodation Type
             </CText>
             <FlatList
-              data={options}
+              data={accommodationTypes}
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() => handleSelect(item.value, item.label)}
                   style={{
-                    padding: 16,
-                    borderBottomWidth: 1,
+                    padding: size.getHeightSize(16),
+                    borderBottomWidth: size.getHeightSize(1),
                     borderBottomColor: "#F0F0F0",
                   }}
                 >
                   <CText
-                    color={"black"}
+                    color="black"
                     fontSize={16}
                     lineHeight={22.4}
                     fontFamily="regular"
@@ -118,15 +140,15 @@ const CustomDropdown = ({
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={{
-                marginTop: 16,
-                padding: 12,
+                marginTop: size.getHeightSize(16),
+                padding: size.getHeightSize(12),
                 backgroundColor: "#F0F0F0",
-                borderRadius: 8,
+                borderRadius: size.getHeightSize(8),
                 alignItems: "center",
               }}
             >
               <CText
-                color={"black"}
+                color="black"
                 fontSize={16}
                 lineHeight={22.4}
                 fontFamily="medium"
@@ -143,4 +165,5 @@ const CustomDropdown = ({
     </View>
   );
 };
-export default CustomDropdown;
+
+export default AccommodationTypeDropdown;

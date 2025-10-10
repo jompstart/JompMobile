@@ -120,6 +120,8 @@ const Form3 = ({ onSelectState }: { onSelectState?: () => void }) => {
         }
         keyboardType="number-pad"
         placeholder="Company’s Phone Number"
+          maxLength={11} // Cap phone number to 11 digits
+
       />
       <View
         style={{

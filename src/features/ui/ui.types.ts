@@ -4,7 +4,7 @@ export interface ToastState {
   displayToast: boolean;
   toastMessage: string;
   message2?: string;
-  toastType: 'success' | 'info';
+  toastType: 'success' | 'info' | 'error' ;
 }
 
 export interface UIState {

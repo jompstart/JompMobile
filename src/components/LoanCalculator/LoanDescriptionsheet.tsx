@@ -6,27 +6,28 @@ import CancelIcon from '../../../assets/svgs/Home/CancelIcon';
 import { size } from '../../config/size';
 import { colors } from '../../constants/colors';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import SchoolIcon from '../../../assets/svgs/Home/SchoolIcon';
-import CarIcon from '../../../assets/svgs/Dashboard/CarIcon';
-import HeartIcon from '../../../assets/svgs/Dashboard/HeartIcon';
 import PrimaryButton from '../../shared/PrimaryButton';
 import SecondaryButton from '../../shared/SecondaryButton';
 import LoanInfoIcon from '../../../assets/svgs/Loan/LoanInfoIcon';
 import { CalculateLoanResponse } from '../../services/providers/provider.dto';
 import { useNavigation } from '@react-navigation/native';
+
 interface Props {
   onClose: () => void;
   isVisible: boolean;
   data?: CalculateLoanResponse;
   label: string;
   onContinue: () => void;
+  loanType?: string; // Add loanType to props for maximum amount mapping
 }
-const LoanDescriptionsheet = ({
+
+const LoanDescriptionSheet = ({
   isVisible,
   onClose,
   data,
   label,
   onContinue,
+  loanType,
 }: Props) => {
   const {
     approvedLoanAmount,
@@ -34,16 +35,36 @@ const LoanDescriptionsheet = ({
     isApproved,
     message,
     monthlyRepayment,
-  } = data ? data : {};
+  } = data ?? {};
+
+  // Define maximum amounts per loan type
+  const maxLoanAmounts: Record<string, number> = {
+    'school fee': 500000,
+    'transport': 300000, // Example value, adjust as needed
+    'rent': 1000000, // Example value, adjust as needed
+  };
+
+  // Get the maximum amount for the loan type, fallback to a default if loanType is undefined
+  const maxAmount = loanType ? maxLoanAmounts[loanType] ?? 500000 : 500000;
+
+  // Format numbers with proper currency formatting
+  const formatCurrency = (value?: number) => {
+    if (value === undefined || value === null) return 'N/A';
+    return value.toLocaleString('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   return (
     <BottomsheetWrapper
       topRadius={16}
       enableBackdrop
       backgroundColor="#F9F8FF"
       visibility={isVisible}
-      onClose={() => {
-        onClose();
-      }}
+      onClose={onClose}
     >
       <CancelIcon
         onPress={onClose}
@@ -53,129 +74,69 @@ const LoanDescriptionsheet = ({
         }}
         size={size.getHeightSize(24)}
       />
-      <View
-        style={{
-          backgroundColor: '#F0EDFF',
-          paddingHorizontal: size.getWidthSize(16),
-          paddingVertical: size.getHeightSize(16),
-          borderRadius: size.getHeightSize(8),
-          marginTop: size.getHeightSize(32),
-        }}
-      >
-        <CText
-          color="secondaryBlack"
-          fontSize={16}
-          lineHeight={22.4}
-          fontFamily="regular"
+      {data ? (
+        <View
           style={{
-            textAlign: 'center',
+            backgroundColor: '#F0EDFF',
+            paddingHorizontal: size.getWidthSize(16),
+            paddingVertical: size.getHeightSize(16),
+            borderRadius: size.getHeightSize(8),
+            marginTop: size.getHeightSize(32),
           }}
         >
-          Based on your monthly income and selected loan type, we can offer you
-          a loan of{' '}
           <CText
-            color={'#31005C' as any}
+            color="secondaryBlack"
             fontSize={16}
             lineHeight={22.4}
-            fontFamily="bold"
+            fontFamily="regular"
+            style={{ textAlign: 'center' }}
           >
-            ₦{approvedLoanAmount?.toLocaleString()}
-          </CText>{' '}
-          to be repaid over{' '}
-          <CText
-            color={'#31005C' as any}
-            fontSize={16}
-            lineHeight={22.4}
-            fontFamily="bold"
-          >
-            {durationInMonths} months
-          </CText>{' '}
-          with a monthly repayment of{' '}
-          <CText
-            color={'#31005C' as any}
-            fontSize={16}
-            lineHeight={22.4}
-            fontFamily="bold"
-          >
-            ₦
-            {monthlyRepayment?.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            Based on your monthly income and selected loan type, we can offer you an estimated loan of{' '}
+            <CText
+              color={'#31005C' as any}
+              fontSize={16}
+              lineHeight={22.4}
+              fontFamily="bold"
+            >
+              {formatCurrency(approvedLoanAmount)}
+            </CText>{' '}
+            to be repaid in{' '}
+            <CText
+              color={'#31005C' as any}
+              fontSize={16}
+              lineHeight={22.4}
+              fontFamily="bold"
+            >
+              {durationInMonths ?? 'N/A'} months
+            </CText>{' '}
+           
+            .
           </CText>
-          .
-        </CText>
-      </View>
-
-      <View
-        style={{
-          backgroundColor: '#F0EDFF',
-          paddingHorizontal: size.getWidthSize(16),
-          paddingVertical: size.getHeightSize(8),
-          borderRadius: size.getHeightSize(8),
-          marginTop: size.getHeightSize(16),
-          gap: size.getWidthSize(8),
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <LoanInfoIcon size={size.getHeightSize(24)} />
+        </View>
+      ) : (
         <CText
-          color="secondaryBlack"
+          color="red"
           fontSize={16}
           lineHeight={22.4}
           fontFamily="regular"
-          style={{
-            textAlign: 'left',
-            flex: 1,
-          }}
+          style={{ textAlign: 'center', marginTop: size.getHeightSize(32) }}
         >
-          The maximum amount you can get for this loan type is{' '}
-          <CText
-            color={'#31005C' as any}
-            fontSize={16}
-            lineHeight={22.4}
-            fontFamily="bold"
-          >
-            ₦{approvedLoanAmount?.toLocaleString()}
-          </CText>
-          .
+          No loan data available.
         </CText>
-      </View>
-      {/* <CText
-        color="secondaryBlack"
-        fontSize={16}
-        lineHeight={22.4}
-        fontFamily="regular"
-        style={{
-          textAlign: 'center',
-          marginTop: size.getHeightSize(24),
-        }}
-      >
-        An email containing the details for this loan calculator has been sent
-        to{' '}
-        <CText
-          color="black"
-          fontSize={16}
-          lineHeight={22.4}
-          fontFamily="regular"
-        >
-          timmyagbaakin@gmail.com
-        </CText>
-      </CText> */}
+      )}
+     
       <View
         style={{
           gap: size.getHeightSize(16),
           marginTop: size.getHeightSize(54),
         }}
       >
-        {/* <PrimaryButton label="Apply for Loan" /> */}
         <PrimaryButton label={label} onPress={onContinue} />
       </View>
     </BottomsheetWrapper>
   );
 };
 
-export default LoanDescriptionsheet;
+export default LoanDescriptionSheet;
 
 const styles = StyleSheet.create({});

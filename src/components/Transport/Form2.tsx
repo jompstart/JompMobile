@@ -487,6 +487,8 @@ const Form2 = () => {
           placeholder="Employer’s Contact (If Applicable)"
           value={transportDetails.employmentDetails?.employerContact}
           keyboardType="phone-pad"
+            maxLength={11} // Cap phone number to 11 digits
+
         />
       </View>
     </View>

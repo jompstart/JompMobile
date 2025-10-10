@@ -125,21 +125,32 @@ const LoanBreakdown = () => {
   // ---------------------------------------------
   // ✅ Fetch service durations from API
   // ---------------------------------------------
-  useEffect(() => {
-    if (!serviceCat) return;
+// ---------------------------------------------
+// ✅ Fetch service durations from API
+// ---------------------------------------------
+// ---------------------------------------------
+// ✅ Fetch service durations from API
+// ---------------------------------------------
+useEffect(() => {
+  if (!serviceCat) return;
 
-    const getCategoryDuration = async () => {
-      try {
-        const response = await makeRequest({
-          method: "GET",
-          url: "/service-categories",
-        });
+  const getCategoryDuration = async () => {
+    try {
+      const response = await makeRequest({
+        method: "GET",
+        url: "/service-categories",
+      });
 
-        if (response?.success) {
-          const normalizedServiceCat = serviceCat.trim().toLowerCase();
-          const data = response.data as PaymentDurationTerm[];
+      console.log("API Response for service-categories:", response); // Debug log
 
-          // Extract keywords for fuzzy matching
+      if (response?.success) {
+        const normalizedServiceCat = serviceCat.trim().toLowerCase();
+        const data = response.data as PaymentDurationTerm[];
+
+        let durationInMonths = 6; // Default to 6 months for house rent
+
+        if (!normalizedServiceCat.includes("house rent")) {
+          // Extract keywords for fuzzy matching for non-house-rent categories
           const extractKeywords = (str: string) =>
             str.split(/\s+/).filter((word) => word.length > 2);
 
@@ -155,29 +166,35 @@ const LoanBreakdown = () => {
             return commonWords.length > 0;
           });
 
-          // Convert duration string (e.g. "12 months") into an array of months
           if (matchedCategory) {
-            const durationInMonths =
-              parseInt(matchedCategory.duration.replace(/\D/g, ""), 10) || 0;
-
-            const monthsArray = Array.from(
-              { length: durationInMonths },
-              (_, i) => `Month ${i + 1}`
-            );
-
-            setServiceDuration(monthsArray);
-          } else {
-            setServiceDuration([]);
+            durationInMonths =
+              parseInt(matchedCategory.duration.replace(/\D/g, ""), 10) || 6;
           }
         }
-      } catch (error) {
-        console.error("Error fetching service categories:", error);
+
+        console.log("Calculated durationInMonths:", durationInMonths); // Debug log
+
+        // Create array of formatted duration strings (e.g., "1 month", "2 months")
+        const monthsArray = Array.from(
+          { length: Math.min(durationInMonths, 6) }, // Cap at 6 months
+          (_, i) => `${i + 1} ${i + 1 === 1 ? "month" : "months"}`
+        );
+
+        console.log("Generated monthsArray:", monthsArray); // Debug log
+
+        setServiceDuration(monthsArray);
+      } else {
+        console.log("API response unsuccessful:", response);
+        setServiceDuration([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching service categories:", error);
+      setServiceDuration([]);
+    }
+  };
 
-    getCategoryDuration();
-  }, [serviceCat]);
-
+  getCategoryDuration();
+}, [serviceCat]);
   // ---------------------------------------------
   // ✅ Fetch Loan Processing Service
   // ---------------------------------------------

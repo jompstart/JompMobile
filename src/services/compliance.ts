@@ -1,15 +1,16 @@
 import { makeRequest } from '../config/api.config';
 import { CustomerVerificationType } from '../types/verification.type';
-// import { testData } from '../utils/formatter';
 import { UserService } from './user';
 
 export class ComplianceService extends UserService {
   constructor(userId: string, customerId: string) {
     super(customerId, userId);
   }
+
   async validateCustomerCompliance(
     verificationType: CustomerVerificationType,
-    verification: string
+    verification: string,
+    phoneNumber: string
   ) {
     const path =
       verificationType === 'nin'
@@ -17,23 +18,13 @@ export class ComplianceService extends UserService {
         : `/bvn-verification?bvn=${verification}&UserId=${this.customerId}`;
     const body =
       verificationType === 'nin'
-        ? { Nin: verification }
-        : { bvn: verification };
-    return await makeRequest<{
-      status: string;
-      image: string;
-      firstName: string;
-      lastName: string;
-    }>({
+        ? { Nin: verification, phoneNumber }
+        : { bvn: verification, phoneNumber };
+    return await makeRequest({
       method: 'POST',
-      url: `${path}`,
-      data: {},
+      url: path,
+      data: body,
     });
-    // return {
-    //   statusCode: 200,
-    //   success: true,
-    //   data: testData,
-    // };
   }
 
   async verifyCustomer(
@@ -45,16 +36,14 @@ export class ComplianceService extends UserService {
     file: any,
     PhoneNumber: string
   ) {
-    // console.log(file);
     const formData = new FormData();
     formData.append('CustomerId', this.customerId);
-    formData.append('VerificationStatus', VerificationStatus);
+    formData.append('VerificationStatus', VerificationStatus || 'pending');
     formData.append('IdentificationNumber', IdentificationNumber);
     formData.append('IdentificationType', IdentificationType);
-    formData.append('FullName', FullName);
+    formData.append('FullName', FullName || 'N/A');
     formData.append('PhoneNumber', PhoneNumber);
-
-    formData.append('file', file);
+    if (file) formData.append('file', file);
 
     return await makeRequest({
       method: 'POST',
@@ -64,20 +53,5 @@ export class ComplianceService extends UserService {
       },
       data: formData,
     });
-  }
-  async createAccount() {
-    return await makeRequest({
-      method: 'GET',
-      url: `/create-account?UserId=${this.userId}`,
-    });
-
-    // if (complianceStatus && complianceStatus === true) {
-    //   return;
-    // } else {
-    //   return await makeRequest({
-    //     method: 'GET',
-    //     url: `/create-account?UserId=${this.userId}`,
-    //   });
-    // }
   }
 }
